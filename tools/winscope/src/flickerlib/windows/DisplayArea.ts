@@ -14,34 +14,30 @@
  * limitations under the License.
  */
 
-import {
-  DisplayArea,
-} from "../common"
-
-import { applyMixins } from '../mixin'
-
+import { getWMPropertiesForDisplay,  shortenName } from '../mixin'
+import { DisplayArea } from "../common"
 import WindowContainer from "./WindowContainer"
 
-export class DisplayAreaMixin {
-  get kind() {
-    return "DisplayArea"
-  }
+DisplayArea.fromProto = function (proto, isActivityInTree: Boolean): DisplayArea {
+    if (proto == null) {
+        return null
+    } else {
+        const windowContainer = WindowContainer.fromProto({proto: proto.windowContainer, nameOverride: proto.name})
+        if (windowContainer == null) {
+            throw "Window container should not be null: " + JSON.stringify(proto)
+        }
+        const entry = new DisplayArea(proto.isTaskDisplayArea, windowContainer)
 
-  static fromProto(proto) {
-    const windowContainer = WindowContainer.fromProto(proto.windowContainer,
-                                                      null)
+        proto.windowContainer.children.reverse()
+            .map(it => WindowContainer.childrenFromProto(entry, it, isActivityInTree))
+            .filter(it => it != null)
+            .forEach(it => windowContainer.childContainers.push(it))
 
-    const displayArea = new DisplayArea(windowContainer)
-
-    const obj = Object.assign({}, proto)
-    delete obj.windowContainer
-    Object.assign(obj, windowContainer.obj)
-    displayArea.attachObject(obj)
-
-    return displayArea
-  }
+        entry.obj = getWMPropertiesForDisplay(proto)
+        entry.shortName = shortenName(entry.name)
+        entry.children = entry.childrenWindows
+        return entry
+    }
 }
-
-applyMixins(DisplayArea, [DisplayAreaMixin])
 
 export default DisplayArea
