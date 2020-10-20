@@ -18,13 +18,13 @@ import { FILE_TYPES, TRACE_TYPES } from '@/decode.js';
 import TraceBase from './TraceBase';
 
 export default class InputMethodClients extends TraceBase {
-  imeTraceFile: any;
+  imeTraceFileClients: any;
 
   constructor(files) {
-    const imeTraceFile = files[FILE_TYPES.IME_TRACE_CLIENTS];
-    super(imeTraceFile.data, imeTraceFile.timeline, files);
+    const imeTraceFileClients = files[FILE_TYPES.IME_TRACE_CLIENTS];
+    super(imeTraceFileClients.data, imeTraceFileClients.timeline, files);
 
-    this.imeTraceFile = imeTraceFile;
+    this.imeTraceFileClients = imeTraceFileClients;
   }
 
   get type() {
