@@ -6,7 +6,7 @@
   ~ you may not use this file except in compliance with the License.
   ~ You may obtain a copy of the License at
   ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~     http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,12 +16,8 @@
   -->
 
 <resources>
-    <string name="app_name">Receive Content Demo</string>
-    <string name="hint_edittext_no_callback">Default EditText</string>
-    <string name="hint_edittext_images">
-        EditText with a listener that handles images
-    </string>
-    <string name="hint_edittext_all_types">
-        EditText with a listener that handles all content
-    </string>
+    <string name="app_name">Android: Receive Content Demo</string>
+    <string name="app_menu_item_clear_attachments">Clear attachments</string>
+    <string name="text_input_default_text">Try inserting text, images and other content
+        using copy/paste or drag-and-drop</string>
 </resources>
