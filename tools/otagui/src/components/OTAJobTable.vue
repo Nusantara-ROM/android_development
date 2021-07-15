@@ -13,6 +13,7 @@
 <script>
 import TableLite from 'vue3-table-lite'
 import FormDate from '../services/FormDate.js'
+import { TableSort } from '../services/TableService.js'
 
 export default {
   components: {
@@ -70,7 +71,7 @@ export default {
           display: function (row) {
             return FormDate.formDate(row.finish_time)
           }
-        }
+        },
       ],
       sortable: {
         order: "start_time",
@@ -82,28 +83,15 @@ export default {
     }
   },
   created() {
-    this.rows = this.sort(this.jobs, this.sortable.order, this.sortable.sort, 0, 10)
+    this.rows = TableSort(this.jobs, this.sortable.order, this.sortable.sort, 0, 10)
     this.total = this.jobs.length
   },
   methods: {
-    sort(arr, key, sortOrder, offset, limit) {
-      let orderNumber = 1
-      if (sortOrder==="desc") {
-        orderNumber = -1
-      }
-      return arr.sort(function(a, b) {
-        var keyA = a[key],
-          keyB = b[key];
-        if (keyA < keyB) return -1*orderNumber;
-        if (keyA > keyB) return 1*orderNumber;
-        return 0;
-      }).slice(offset, offset + limit);
-    },
     doSearch(offset, limit, order, sort) {
       this.isLoading = true
       this.sortable.order = order
       this.sortable.sort = sort
-      this.rows = this.sort(this.jobs, order, sort, offset, limit)
+      this.rows = TableSort(this.jobs, order, sort, offset, limit)
       this.total = this.jobs.length
       this.isLoading = false
     }
