@@ -18,9 +18,11 @@ import LayersTrace from './LayersTrace';
 import WindowManagerState from './WindowManagerState';
 import WindowManagerTrace from './WindowManagerTrace';
 import ObjectFormatter from './ObjectFormatter';
+import TagTrace from './TagTrace';
+import ErrorTrace from './ErrorTrace';
 /**
  * Entry point into the flickerlib for Winscope.
  * Expose everything we want Winscope to have access to here.
  */
-export {ObjectFormatter, LayersTrace, WindowManagerState, WindowManagerTrace};
+export {ObjectFormatter, LayersTrace, WindowManagerState, WindowManagerTrace, TagTrace, ErrorTrace};
 
