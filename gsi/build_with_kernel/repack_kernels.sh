@@ -19,17 +19,17 @@ source development/gsi/build_with_kernel/repack_kernels_common.sh
 set -e
 
 prepare_kernel_image \
-  "artifacts/common-android12-5_10-kernel_aarch64" \
+  "artifacts/common-android13-5_10-kernel_aarch64" \
   "5.10" \
   "arm64"
 
 prepare_kernel_image \
-  "artifacts/common-android12-5_10-kernel_debug_aarch64" \
+  "artifacts/common-android13-5_10-kernel_debug_aarch64" \
   "5.10" \
   "arm64" \
   "debug"
 
 prepare_kernel_modules \
-  "artifacts/common-android12-5_10-kernel_virt_aarch64" \
+  "artifacts/common-android13-5_10-kernel_virt_aarch64" \
   "5.10" \
   "arm64" \
