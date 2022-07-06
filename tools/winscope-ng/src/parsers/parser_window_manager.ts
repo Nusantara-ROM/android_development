@@ -31,7 +31,7 @@ class ParserWindowManager extends Parser {
     return ParserWindowManager.MAGIC_NUMBER;
   }
 
-  override decodeProto(buffer: Uint8Array): any {
+  override decodeTrace(buffer: Uint8Array): any[] {
     return (<any>WindowManagerTraceFileProto.decode(buffer)).entry;
   }
 
@@ -39,7 +39,7 @@ class ParserWindowManager extends Parser {
     return Number(entryProto.elapsedRealtimeNanos);
   }
 
-  override processTraceEntryProto(entryProto: any): WindowManagerState {
+  override processDecodedEntry(entryProto: any): WindowManagerState {
     return WindowManagerState.fromProto(entryProto.windowManagerService, entryProto.elapsedRealtimeNanos, entryProto.where);
   }
 
