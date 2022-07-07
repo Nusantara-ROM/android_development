@@ -18,6 +18,10 @@ const configCommon = require('./webpack.config.common');
 
 const configDev = {
   mode: 'development',
+  entry: {
+    polyfills: "./src/polyfills.ts",
+    app: "./src/main.dev.ts"
+  },
   devtool: "source-map",
 };
 

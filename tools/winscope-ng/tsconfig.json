@@ -27,6 +27,7 @@
     "resolveJsonModule": true,
   },
   "include": ["src"],
+  "exclude": ["src/test/e2e"],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
