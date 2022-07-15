@@ -19,9 +19,9 @@ import {Component} from "@angular/core";
 @Component({
   selector: "web-adb",
   template: `
-    <div class="title">Unable to connect to Web ADB</div>
+    <div class="title">Connect a new device</div>
     <div class="md-body-2">
-      <p>Instructions for connecting via Web ADB.</p>
+      <p>Follow instructions in the Chrome pop-up.</p>
     </div>
     <div class="md-layout">
       <button mat-raised-button class="md-accent" (click)="restart()">Retry</button>
