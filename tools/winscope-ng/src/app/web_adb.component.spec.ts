@@ -15,19 +15,19 @@
  */
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {WebAdbComponent} from "./web_adb.component";
+import { MatIconModule } from "@angular/material/icon";
+import { MatCardModule } from "@angular/material/card";
 
 describe("WebAdbComponent", () => {
   let fixture: ComponentFixture<WebAdbComponent>;
   let component: WebAdbComponent;
   let htmlElement: HTMLElement;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [MatIconModule, MatCardModule],
       declarations: [WebAdbComponent],
     }).compileComponents();
-  });
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(WebAdbComponent);
     component = fixture.componentInstance;
     htmlElement = fixture.nativeElement;
@@ -37,9 +37,9 @@ describe("WebAdbComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("renders the title", () => {
-    const divTitle = htmlElement.querySelector(".web-adb div.title");
-    expect(divTitle?.innerHTML).toContain("Unable to connect to Web ADB");
+  it("renders the info message", () => {
+    fixture.detectChanges();
+    expect(htmlElement.querySelector(".adb-info")?.innerHTML).toBe("Add new device");
+    expect(htmlElement.querySelector(".adb-icon")?.innerHTML).toBe("info");
   });
-
 });
