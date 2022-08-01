@@ -15,8 +15,8 @@
  */
 import {TraceType} from "common/trace/trace_type";
 import {Viewer} from "viewers/viewer";
-import {Presenter} from "./presenter";
-import {UiData} from "./ui_data";
+import {Presenter} from "../../presenters/presenter";
+import {UiData} from "../../ui_data/ui_data";
 
 class ViewerWindowManager implements Viewer {
   constructor() {
@@ -33,6 +33,10 @@ class ViewerWindowManager implements Viewer {
 
   public getView(): HTMLElement {
     return this.view;
+  }
+
+  public getDependencies(): TraceType[] {
+    return ViewerWindowManager.DEPENDENCIES;
   }
 
   public static readonly DEPENDENCIES: TraceType[] = [TraceType.WINDOW_MANAGER];
