@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 class ScreenRecordingTraceEntry {
-  constructor(public timestamp: number,
-              public videoTimeSeconds: number,
+  constructor(public videoTimeSeconds: number,
               public videoData: Blob) {
   }
 }
