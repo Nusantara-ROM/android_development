@@ -27,12 +27,20 @@ class ViewerWindowManager implements Viewer {
     this.view.addEventListener("outputEvent", () => this.presenter.notifyUiEvent());
   }
 
+  public getTitle() {
+    return "Window Manager";
+  }
+
   public notifyCurrentTraceEntries(entries: Map<TraceType, any>): void {
     this.presenter.notifyCurrentTraceEntries(entries);
   }
 
   public getView(): HTMLElement {
     return this.view;
+  }
+
+  public getDependencies(): TraceType[] {
+    return ViewerWindowManager.DEPENDENCIES;
   }
 
   public static readonly DEPENDENCIES: TraceType[] = [TraceType.WINDOW_MANAGER];
