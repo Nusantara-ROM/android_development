@@ -19,8 +19,8 @@ import {CommonTestUtils} from "test/common/utils";
 
 class UnitTestUtils extends CommonTestUtils {
   static async getParser(filename: string): Promise<Parser> {
-    const trace = CommonTestUtils.getFixtureBlob(filename);
-    const parsers = await new ParserFactory().createParsers([trace]);
+    const trace = await CommonTestUtils.getFixtureFile(filename);
+    const [parsers, errors] = await new ParserFactory().createParsers([trace]);
     expect(parsers.length).toEqual(1);
     return parsers[0];
   }
