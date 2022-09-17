@@ -17,141 +17,25 @@ import { Presenter } from "./presenter";
 import { UiData } from "./ui_data";
 import { UserOptions } from "viewers/common/user_options";
 import { TraceType } from "common/trace/trace_type";
-import { RELATIVE_Z_CHIP, VISIBLE_CHIP } from "viewers/common/chip";
-import { Transform, LayerTraceEntry } from "common/trace/flickerlib/common";
-import { DiffType, PropertiesTree, Terminal, Tree } from "viewers/common/tree_utils";
+import { LayerTraceEntry } from "common/trace/flickerlib/common";
+import { HierarchyTree, PropertiesTree } from "viewers/common/tree_utils";
+import { UnitTestUtils } from "test/unit/utils";
+import { HierarchyTreeBuilder } from "test/unit/hierarchy_tree_builder";
 
 describe("PresenterSurfaceFlinger", () => {
   let presenter: Presenter;
   let uiData: UiData;
   let entries: Map<TraceType, any>;
-  let transform: Transform;
-  let visibleLayerRect: any;
-  let selectedItem: Tree;
+  let selectedTree: HierarchyTree;
 
   beforeAll(async () => {
     entries = new Map<TraceType, any>();
-    transform = {matrix: {
-      dsdx: 1,
-      dsdy: 0,
-      dtdx: 0,
-      dtdy: 1,
-      tx: 1,
-      ty: 1,
-    }};
-    const displayRect = {
-      topLeft: {x: 0, y: 0},
-      bottomRight: {x: 1, y: -1},
-      transform: transform,
-      height: 1,
-      width: 1,
-      ref: null,
-      id: 12345,
-    };
-    visibleLayerRect = {
-      topLeft: {x: 0, y: 0},
-      bottomRight: {x: 1, y: -1},
-      transform: transform,
-      height: 1,
-      width: 1,
-      label: "Layer1Rect",
-      ref: null,
-      id: 54321,
-    };
-    const entry: LayerTraceEntry = {
-      kind: "entry",
-      name: "BaseLayerTraceEntry",
-      stableId: "BaseLayerTraceEntry",
-      shortName: "BLTE",
-      id: 0,
-      chips: [],
-      displays: [{
-        layerStackSpace: displayRect,
-        name: "DisplayStack0",
-        id: 44,
-        layerStackId: 0,
-      }],
-      visibleLayers: [
-        {
-          name: "Layer1",
-          id: 1,
-          stableId: "1 Layer1",
-          rect: visibleLayerRect,
-          stackId: 0,
-          absoluteZ: 0,
-          isVisible: true,
-        }
-      ],
-      children: [
-        {
-          name: "Layer1",
-          id: 1,
-          stableId: "1 Layer1",
-          rect: visibleLayerRect,
-          stackId: 0,
-          absoluteZ: 0,
-          isVisible: true,
-        },
-        {
-          kind: "3",
-          id: "3",
-          name: "Child1",
-          stableId: "3 Child1",
-          stackId: 0,
-          absoluteZ: 0,
-          isVisible: true,
-          children: [
-            {
-              kind: "2",
-              id: "2",
-              name: "Child2",
-              stableId: "2 Child2",
-              children: [],
-              stackId: 0,
-              absoluteZ: 0,
-              isVisible: true,
-            }
-          ]
-        }
-      ]
-    };
-    selectedItem = {
-      id: "3",
-      name: "Child1",
-      stackId: 0,
-      isVisible: true,
-      kind: "3",
-      stableId: "3 Child1",
-      shortName: undefined,
-      simplifyNames: true,
-      showInFilteredView: true,
-      proto: {
-        barrierLayer: [],
-        id: 3,
-        parent: 1,
-        type: "ContainerLayer",
-      },
-      chips: [ VISIBLE_CHIP, RELATIVE_Z_CHIP ],
-      children: [{
-        id: "2",
-        name: "Child2",
-        stackId: 0,
-        children: [],
-        kind: "2",
-        stableId: "2 Child2",
-        shortName: undefined,
-        simplifyNames: true,
-        proto: {
-          barrierLayer: [],
-          id: 2,
-          parent: 3,
-          type: "ContainerLayer",
-        },
-        isVisible: true,
-        showInFilteredView: true,
-        chips: [ VISIBLE_CHIP, RELATIVE_Z_CHIP ],
-      }],
-    };
+    const entry: LayerTraceEntry = await UnitTestUtils.getLayerTraceEntry();
+
+
+    selectedTree = new HierarchyTreeBuilder().setName("Dim layer#53").setStableId("EffectLayer 53 Dim layer#53")
+      .setFilteredView(true).setKind("53").setDiffType("EffectLayer").setId(53).build();
+
     entries.set(TraceType.SURFACE_FLINGER, [entry, null]);
   });
 
@@ -170,25 +54,27 @@ describe("PresenterSurfaceFlinger", () => {
     const propertyOpts = uiData.propertiesUserOptions ?
       Object.keys(uiData.propertiesUserOptions) : null;
     expect(uiData.highlightedItems?.length).toEqual(0);
-    expect(filteredUiDataRectLabels).toContain("Layer1Rect");
-    expect(filteredUiDataRectLabels).toContain("DisplayStack0");
+    expect(filteredUiDataRectLabels?.length).toEqual(7);
     expect(uiData.displayIds).toContain(0);
     expect(hierarchyOpts).toBeTruthy();
     expect(propertyOpts).toBeTruthy();
 
     // does not check specific tree values as tree generation method may change
-    expect(Object.keys(uiData.tree).length > 0).toBeTrue();
+    expect(Object.keys(uiData.tree!).length > 0).toBeTrue();
+  });
+
+  it("can handle unavailable trace entry", () => {
+    presenter.notifyCurrentTraceEntries(entries);
+    expect(Object.keys(uiData.tree!).length > 0).toBeTrue();
+    const emptyEntries = new Map<TraceType, any>();
+    presenter.notifyCurrentTraceEntries(emptyEntries);
+    expect(uiData.tree).toBeFalsy();
   });
 
   it("can update pinned items", () => {
     expect(uiData.pinnedItems).toEqual([]);
-    const pinnedItem = {
-      name: "FirstPinnedItem",
-      kind: "4",
-      id: 4,
-      type: "TestItem",
-      stableId: "TestItem 4 FirstPinnedItem"
-    };
+    const pinnedItem = new HierarchyTreeBuilder().setName("FirstPinnedItem")
+      .setStableId("TestItem 4").setLayerId(4).build();
     presenter.updatePinnedItems(pinnedItem);
     expect(uiData.pinnedItems).toContain(pinnedItem);
   });
@@ -222,26 +108,47 @@ describe("PresenterSurfaceFlinger", () => {
     };
 
     presenter.notifyCurrentTraceEntries(entries);
+    expect(uiData.tree?.children.length).toEqual(3);
+
     presenter.updateHierarchyTree(userOptions);
     expect(uiData.hierarchyUserOptions).toEqual(userOptions);
-
-    // nested child should now be on same level its parent
-    expect(uiData.tree.children.length).toEqual(3);
+    // nested children should now be on same level as initial parents
+    expect(uiData.tree?.children.length).toEqual(94);
   });
 
   it("can filter hierarchy tree", () => {
+    const userOptions: UserOptions = {
+      showDiff: {
+        name: "Show diff",
+        enabled: false
+      },
+      simplifyNames: {
+        name: "Simplify names",
+        enabled: true
+      },
+      onlyVisible: {
+        name: "Only visible",
+        enabled: false
+      },
+      flat: {
+        name: "Flat",
+        enabled: true
+      }
+    };
     presenter.notifyCurrentTraceEntries(entries);
-    presenter.filterHierarchyTree("Child");
-    // Layer1 should be filtered out
-    expect(uiData.tree.children.length).toEqual(1);
+    presenter.updateHierarchyTree(userOptions);
+    expect(uiData.tree?.children.length).toEqual(94);
+    presenter.filterHierarchyTree("Wallpaper");
+    // All but four layers should be filtered out
+    expect(uiData.tree?.children.length).toEqual(4);
   });
 
 
   it("can set new properties tree and associated ui data", () => {
     presenter.notifyCurrentTraceEntries(entries);
-    presenter.newPropertiesTree(selectedItem);
+    presenter.newPropertiesTree(selectedTree);
     // does not check specific tree values as tree transformation method may change
-    expect(Object.keys(uiData.selectedTree).length > 0).toBeTrue();
+    expect(uiData.propertiesTree).toBeTruthy();
   });
 
   it("can update properties tree", () => {
@@ -263,32 +170,27 @@ describe("PresenterSurfaceFlinger", () => {
     };
 
     presenter.notifyCurrentTraceEntries(entries);
-    presenter.newPropertiesTree(selectedItem);
+    presenter.newPropertiesTree(selectedTree);
+    expect(uiData.propertiesTree?.diffType).toBeFalsy();
     presenter.updatePropertiesTree(userOptions);
     expect(uiData.propertiesUserOptions).toEqual(userOptions);
     //check that diff type added
-    expect(uiData.selectedTree.diffType).toEqual(DiffType.NONE);
+    expect(uiData.propertiesTree?.diffType).toBeTruthy();
   });
 
   it("can filter properties tree", () => {
     presenter.notifyCurrentTraceEntries(entries);
-    presenter.newPropertiesTree(selectedItem);
+    presenter.newPropertiesTree(selectedTree);
+    let nonTerminalChildren = uiData.propertiesTree?.children?.filter(
+      (child: PropertiesTree) => typeof child.propertyKey === "string"
+    ) ?? [];
 
-    let nonTerminalChildren = uiData.selectedTree
-      .children[0]
-      .children.filter(
-        (child: PropertiesTree) => !(child.propertyKey instanceof Terminal)
-      );
-    expect(nonTerminalChildren.length).toEqual(2);
+    expect(nonTerminalChildren.length).toEqual(55);
+    presenter.filterPropertiesTree("bound");
 
-    presenter.filterPropertiesTree("ContainerLayer");
-
-    // ContainerLayer should be filtered out
-    nonTerminalChildren = uiData.selectedTree
-      .children[0]
-      .children.filter(
-        (child: PropertiesTree) => !(child.propertyKey instanceof Terminal)
-      );
-    expect(nonTerminalChildren.length).toEqual(1);
+    nonTerminalChildren = uiData.propertiesTree?.children?.filter(
+      (child: PropertiesTree) => typeof child.propertyKey === "string"
+    ) ?? [];
+    expect(nonTerminalChildren.length).toEqual(3);
   });
 });
