@@ -49,6 +49,7 @@ import { PersistentStore } from "common/persistent_store";
             <properties-view
               [userOptions]="inputData?.propertiesUserOptions ?? {}"
               [propertiesTree]="inputData?.propertiesTree ?? {}"
+              [isProtoDump]="true"
             ></properties-view>
           </mat-card>
         </div>

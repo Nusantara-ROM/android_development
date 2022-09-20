@@ -20,7 +20,7 @@ import { TraceType } from "common/trace/trace_type";
 import { Rectangle } from "viewers/common/rectangle";
 
 export class UiData {
-  dependencies: Array<TraceType> = [TraceType.SURFACE_FLINGER];
+  dependencies: Array<TraceType>;
   rects: Rectangle[] = [];
   displayIds: number[] = [];
   hasVirtualDisplays = false;
@@ -31,4 +31,8 @@ export class UiData {
   tree: HierarchyTreeNode | null = null;
   propertiesTree: PropertiesTreeNode | null = null;
   selectedLayer: Layer = {};
+
+  constructor(dependencies?: Array<TraceType>) {
+    this.dependencies = dependencies ?? [];
+  }
 }
