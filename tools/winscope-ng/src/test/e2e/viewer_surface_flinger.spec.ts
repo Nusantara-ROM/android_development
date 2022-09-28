@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {browser, element, by, ElementFinder} from "protractor";
+import {browser, element, by} from "protractor";
 import {E2eTestUtils} from "./utils";
 
 describe("Viewer SurfaceFlinger", () => {
