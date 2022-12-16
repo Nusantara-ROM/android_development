@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
@@ -62,14 +61,6 @@ module.exports = {
       },
     ]
   },
-
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "src/index.html",
-      inject: "body",
-      inlineSource: ".(css|js)$",
-    })
-  ],
 
   optimization: {
     minimizer: [

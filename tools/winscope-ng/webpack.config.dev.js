@@ -15,6 +15,7 @@
  */
 const {merge} = require("webpack-merge");
 const configCommon = require("./webpack.config.common");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const configDev = {
   mode: "development",
@@ -27,6 +28,13 @@ const configDev = {
     app: "./src/main.dev.ts"
   },
   devtool: "source-map",
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "src/index.html",
+      inject: "body",
+      inlineSource: ".(css|js)$",
+    })
+  ]
 };
 
 module.exports = merge(configCommon, configDev);
