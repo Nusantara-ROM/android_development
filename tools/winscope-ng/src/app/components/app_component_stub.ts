@@ -21,4 +21,8 @@ export class AppComponentStub implements AppComponentDependencyInversion {
   onTraceDataLoaded(viewers: Viewer[]) {
     // do nothing
   }
+
+  onUploadNewClick() {
+    // do nothing
+  }
 }
