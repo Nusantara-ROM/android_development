@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+export type OnBugAttachmentsDownloadStart = () => void;
 export type OnBugAttachmentsReceived = (attachments: File[]) => Promise<void>;
 
 export interface AbtChromeExtensionProtocolDependencyInversion {
+  setOnBugAttachmentsDownloadStart(callback: OnBugAttachmentsDownloadStart): void;
   setOnBugAttachmentsReceived(callback: OnBugAttachmentsReceived): void;
   run(): void;
 }
