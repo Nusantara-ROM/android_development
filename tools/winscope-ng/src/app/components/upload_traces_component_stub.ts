@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import {UploadTracesComponentDependencyInversion} from "./upload_traces_component_dependency_inversion";
+import {FilesDownloadListener} from "interfaces/files_download_listener";
 
-export class UploadTracesComponentStub implements UploadTracesComponentDependencyInversion {
+export class UploadTracesComponentStub implements FilesDownloadListener {
   onFilesDownloadStart() {
     // do nothing
   }
 
-  async processFiles(files: File[]) {
+  async onFilesDownloaded(files: File[]) {
     // do nothing
   }
 }
