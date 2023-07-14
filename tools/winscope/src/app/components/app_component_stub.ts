@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
+import {AppEvent} from 'app/app_event';
+import {AppEventListener} from 'interfaces/app_event_listener';
 import {TraceDataListener} from 'interfaces/trace_data_listener';
 import {Viewer} from 'viewers/viewer';
 
-export class AppComponentStub implements TraceDataListener {
+export class AppComponentStub implements AppEventListener, TraceDataListener {
+  async onAppEvent(event: AppEvent) {
+    // do nothing
+  }
+
   onTraceDataLoaded(viewers: Viewer[]) {
     // do nothing
   }
