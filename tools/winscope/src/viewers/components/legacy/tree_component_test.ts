@@ -75,7 +75,7 @@ describe('TreeComponentLegacy', () => {
     expect(!currCollapseValue).toBe(component.treeComponents.first.localExpandedState);
   });
 
-  it('scrolls selected node into view if out of view', async () => {
+  it('scrolls selected node into view if out of view', () => {
     const treeNode = assertDefined(htmlElement.querySelector('#node1child50'));
     const spy = spyOn(treeNode, 'scrollIntoView');
     component.highlightedItem = '1child50';

@@ -17,6 +17,7 @@ import {Component, ElementRef, Inject, Input} from '@angular/core';
 import {PersistentStore} from 'common/persistent_store';
 import {TraceTreeNode} from 'trace/trace_tree_node';
 import {TraceType, ViewNode} from 'trace/trace_type';
+import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {PropertiesTreeNodeLegacy, Terminal} from 'viewers/common/ui_tree_utils_legacy';
 import {UserOptions} from 'viewers/common/user_options';
 import {ViewerEvents} from 'viewers/common/viewer_events';
@@ -61,23 +62,31 @@ import {nodeStyles} from 'viewers/components/styles/node.styles';
 
     <div class="properties-content">
       <h3
-        *ngIf="objectKeys(propertiesTree).length > 0 && isProtoDump"
+        *ngIf="isProtoDump && (isValidTree() || isValidLegacyTree())"
         class="properties-title mat-subheading-2">
         Properties - Proto Dump
       </h3>
 
       <div class="tree-wrapper">
         <tree-view-legacy
-          *ngIf="objectKeys(propertiesTree).length > 0 && !showViewCaptureFormat()"
+          *ngIf="isValidLegacyTree() && !showViewCaptureFormat()"
           [item]="propertiesTree"
           [showNode]="showNode"
           [store]="store"
           [useStoredExpandedState]="true"
-          [isExpandedByDefault]="false"
           [itemsClickable]="true"
           [highlightedItem]="highlightedProperty"
           (highlightedChange)="onHighlightedPropertyChange($event)"
           [isLeaf]="isLeaf"></tree-view-legacy>
+
+        <tree-view
+          *ngIf="isValidTree() && !showViewCaptureFormat()"
+          [node]="propertiesTree"
+          [store]="store"
+          [useStoredExpandedState]="true"
+          [itemsClickable]="true"
+          [highlightedItem]="highlightedProperty"
+          (highlightedChange)="onHighlightedPropertyChange($event)"></tree-view>
       </div>
     </div>
   `,
@@ -133,7 +142,7 @@ export class PropertiesComponentLegacy {
   filterString = '';
 
   @Input() userOptions: UserOptions = {};
-  @Input() propertiesTree: PropertiesTreeNodeLegacy = {};
+  @Input() propertiesTree: PropertiesTreeNodeLegacy | PropertyTreeNode = {};
   @Input() highlightedProperty: string = '';
   @Input() selectedItem: TraceTreeNode | ViewNode | null = null;
   @Input() displayPropertyGroups = false;
@@ -199,5 +208,17 @@ export class PropertiesComponentLegacy {
 
   isSurfaceFlinger(): boolean {
     return this.traceType === TraceType.SURFACE_FLINGER;
+  }
+
+  isValidLegacyTree(): boolean {
+    return (
+      this.propertiesTree &&
+      !(this.propertiesTree instanceof PropertyTreeNode) &&
+      this.objectKeys(this.propertiesTree).length > 0
+    );
+  }
+
+  isValidTree(): boolean {
+    return this.propertiesTree instanceof PropertyTreeNode;
   }
 }

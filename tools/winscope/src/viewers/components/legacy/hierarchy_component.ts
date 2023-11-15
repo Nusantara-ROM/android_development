@@ -17,6 +17,8 @@ import {Component, ElementRef, Inject, Input} from '@angular/core';
 import {PersistentStore} from 'common/persistent_store';
 import {TraceType} from 'trace/trace_type';
 import {TableProperties} from 'viewers/common/table_properties';
+import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
+import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
 import {
   HierarchyTreeNodeLegacy,
   UiTreeNode,
@@ -53,7 +55,7 @@ import {nodeStyles} from 'viewers/components/styles/node.styles';
         [properties]="tableProperties"></properties-table>
       <div *ngIf="pinnedItems.length > 0" class="pinned-items">
         <tree-node-legacy
-          *ngFor="let pinnedItem of pinnedItems"
+          *ngFor="let pinnedItem of pinnedLegacyItems()"
           class="node"
           [class]="diffClassLegacy(pinnedItem)"
           [class.selected]="isHighlightedLegacy(pinnedItem, highlightedItem)"
@@ -64,6 +66,18 @@ import {nodeStyles} from 'viewers/components/styles/node.styles';
           [isSelected]="isHighlightedLegacy(pinnedItem, highlightedItem)"
           (pinNodeChange)="onPinnedItemChange($event)"
           (click)="onPinnedLegacyNodeClick($event, pinnedItem)"></tree-node-legacy>
+        <tree-node
+          *ngFor="let pinnedItem of pinnedNewItems()"
+          class="node"
+          [class]="node.getDiff()"
+          [class.selected]="isHighlighted(pinnedItem, highlightedItem)"
+          [class.clickable]="true"
+          [node]="pinnedItem"
+          [isPinned]="true"
+          [isInPinnedSection]="true"
+          [isSelected]="isHighlighted(pinnedItem, highlightedItem)"
+          (pinNodeChange)="onPinnedItemChange($event)"
+          (click)="onPinnedNodeClick($event, pinnedItem)"></tree-node>
       </div>
     </div>
     <mat-divider></mat-divider>
@@ -81,6 +95,24 @@ import {nodeStyles} from 'viewers/components/styles/node.styles';
         (highlightedChange)="onHighlightedItemChange($event)"
         (pinnedItemChange)="onPinnedItemChange($event)"
         (selectedTreeChange)="onSelectedTreeChange($event)"></tree-view-legacy>
+
+      <div class="children">
+        <tree-view
+          *ngFor="let subtree of subtrees; trackBy: trackById"
+          class="childrenTree"
+          [node]="subtree"
+          [store]="store"
+          [dependencies]="dependencies"
+          [isFlattened]="isFlattened()"
+          [useStoredExpandedState]="true"
+          [initialDepth]="1"
+          [highlightedItem]="highlightedItem"
+          [pinnedItems]="pinnedItems"
+          [itemsClickable]="true"
+          (highlightedChange)="onHighlightedItemChange($event)"
+          (pinnedItemChange)="onPinnedItemChange($event)"
+          (selectedTreeChange)="onSelectedTreeChange($event)"></tree-view>
+      </div>
     </div>
   `,
   styles: [
@@ -132,19 +164,33 @@ export class HierarchyComponentLegacy {
   filterString = '';
   diffClassLegacy = UiTreeUtilsLegacy.diffClass;
   isHighlightedLegacy = UiTreeUtilsLegacy.isHighlighted;
+  isHighlighted = UiTreeUtils.isHighlighted;
 
   @Input() tree!: HierarchyTreeNodeLegacy | null;
+  @Input() subtrees: UiHierarchyTreeNode[] = [];
   @Input() tableProperties?: TableProperties | null;
   @Input() dependencies: TraceType[] = [];
   @Input() highlightedItem: string = '';
-  @Input() pinnedItems: HierarchyTreeNodeLegacy[] = [];
+  @Input() pinnedItems: Array<HierarchyTreeNodeLegacy | UiHierarchyTreeNode> = [];
   @Input() store!: PersistentStore;
   @Input() userOptions: UserOptions = {};
 
   constructor(@Inject(ElementRef) private elementRef: ElementRef) {}
 
+  trackById(index: number, child: UiHierarchyTreeNode): string {
+    return child.id;
+  }
+
   isFlattened() {
     return this.userOptions['flat']?.enabled;
+  }
+
+  pinnedLegacyItems() {
+    return this.pinnedItems.filter((item) => item instanceof HierarchyTreeNodeLegacy);
+  }
+
+  pinnedNewItems() {
+    return this.pinnedItems.filter((item) => item instanceof UiHierarchyTreeNode);
   }
 
   onPinnedLegacyNodeClick(event: MouseEvent, pinnedItem: HierarchyTreeNodeLegacy) {
@@ -153,6 +199,15 @@ export class HierarchyComponentLegacy {
       return;
     }
     if (pinnedItem.stableId) this.onHighlightedItemChange(`${pinnedItem.stableId}`);
+    this.onSelectedTreeChange(pinnedItem);
+  }
+
+  onPinnedNodeClick(event: MouseEvent, pinnedItem: UiHierarchyTreeNode) {
+    event.preventDefault();
+    if (window.getSelection()?.type === 'range') {
+      return;
+    }
+    this.onHighlightedItemChange(pinnedItem.id);
     this.onSelectedTreeChange(pinnedItem);
   }
 
@@ -180,10 +235,7 @@ export class HierarchyComponentLegacy {
     this.elementRef.nativeElement.dispatchEvent(event);
   }
 
-  onSelectedTreeChange(item: UiTreeNode) {
-    if (!(item instanceof HierarchyTreeNodeLegacy)) {
-      return;
-    }
+  onSelectedTreeChange(item: UiTreeNode | UiHierarchyTreeNode) {
     const event: CustomEvent = new CustomEvent(ViewerEvents.SelectedTreeChange, {
       bubbles: true,
       detail: {selectedItem: item},
@@ -192,9 +244,6 @@ export class HierarchyComponentLegacy {
   }
 
   onPinnedItemChange(item: UiTreeNode) {
-    if (!(item instanceof HierarchyTreeNodeLegacy)) {
-      return;
-    }
     const event: CustomEvent = new CustomEvent(ViewerEvents.HierarchyPinnedChange, {
       bubbles: true,
       detail: {pinnedItem: item},
