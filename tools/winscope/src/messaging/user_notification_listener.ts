@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {ParserError} from 'parsers/parser_factory';
+import {WinscopeError} from 'messaging/winscope_error';
 
 export interface UserNotificationListener {
-  onParserErrors(errors: ParserError[]): void;
+  onErrors(errors: WinscopeError[]): void;
 }
