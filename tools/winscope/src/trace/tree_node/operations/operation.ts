@@ -17,5 +17,5 @@
 import {TreeNode} from 'trace/tree_node/tree_node';
 
 export interface Operation<T extends TreeNode> {
-  apply(value: T): T;
+  apply(value: T): void;
 }
