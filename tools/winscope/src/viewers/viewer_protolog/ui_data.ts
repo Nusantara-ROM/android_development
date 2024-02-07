@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {LogMessage} from 'trace/protolog';
 
-export interface UiDataMessage extends LogMessage {
-  originalIndex: number;
+export interface UiDataMessage {
+  readonly originalIndex: number;
+  readonly text: string;
+  readonly time: string;
+  readonly tag: string;
+  readonly level: string;
+  readonly at: string;
 }
 
 export class UiData {
