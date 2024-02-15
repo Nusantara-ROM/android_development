@@ -19,8 +19,8 @@ import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 export interface Transition {
   id: number;
   type: string;
-  sendTime?: string;
-  finishTime?: string;
+  sendTime?: PropertyTreeNode;
+  dispatchTime?: PropertyTreeNode;
   duration?: string;
   merged: boolean;
   aborted: boolean;
