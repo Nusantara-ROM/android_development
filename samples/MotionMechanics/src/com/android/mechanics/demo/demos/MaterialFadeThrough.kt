@@ -61,11 +61,10 @@ import com.android.mechanics.demo.tuneable.Section
 import com.android.mechanics.demo.tuneable.SpringParameterSection
 import com.android.mechanics.demo.util.ExpandableCard
 
-object Elements {
-    val ExpandableContent = ElementKey("ExpandableContent")
-}
-
 object MaterialFadeThrough : Demo<MaterialFadeThrough.Config> {
+    object Elements {
+        val ExpandableContent = ElementKey("ExpandableContent")
+    }
 
     data class Config(val fadeSpec: FadeContentRevealSpec, val showItemBackground: Boolean)
 
