@@ -18,7 +18,7 @@ use std::{fs::read_to_string, io, path::Path};
 
 use serde::Deserialize;
 
-/// A parsed android_config.json file
+/// A parsed android_config.toml file
 #[derive(Deserialize, Debug, Default, Clone)]
 pub struct CrateConfig {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -34,10 +34,14 @@ pub enum Error {
     IoError(#[from] io::Error),
 }
 
+/// The crate config file name.
+pub static CONFIG_FILE_NAME: &str = "android_config.toml";
+
 impl CrateConfig {
-    /// Read the android_config.toml file in the specified directory.
-    pub fn read(config_file: impl AsRef<Path>) -> Result<CrateConfig, Error> {
-        let config_file = config_file.as_ref();
+    /// Read the android_config.toml file in the specified directory. If not present,
+    /// a default version is returned.
+    pub fn read(crate_dir: impl AsRef<Path>) -> Result<CrateConfig, Error> {
+        let config_file = crate_dir.as_ref().join(CONFIG_FILE_NAME);
         if !config_file.exists() {
             return Ok(CrateConfig::default());
         }
@@ -47,5 +51,35 @@ impl CrateConfig {
     /// Get an iterator over directories and files to delete.
     pub fn deletions(&self) -> impl Iterator<Item = &str> {
         self.deletions.iter().map(|d| d.as_str())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs::write;
+
+    use super::*;
+
+    #[test]
+    fn basic() {
+        let dir = tempfile::tempdir().expect("Failed to create tempdir");
+        write(dir.path().join(CONFIG_FILE_NAME), r#"deletions = ["foo"]"#)
+            .expect("Failed to write to tempdir");
+        let config = CrateConfig::read(dir.path()).expect("Failed to read config file");
+        assert_eq!(config.deletions, ["foo"]);
+    }
+
+    #[test]
+    fn default() {
+        let dir = tempfile::tempdir().expect("Failed to create tempdir");
+        let config = CrateConfig::read(dir.path()).expect("Failed to get default config");
+        assert!(config.deletions.is_empty());
+    }
+
+    #[test]
+    fn parse_error() {
+        let dir = tempfile::tempdir().expect("Failed to create tempdir");
+        write(dir.path().join(CONFIG_FILE_NAME), r#"blah"#).expect("Failed to write to tempdir");
+        assert!(matches!(CrateConfig::read(dir.path()), Err(Error::TomlParseError(_))));
     }
 }
