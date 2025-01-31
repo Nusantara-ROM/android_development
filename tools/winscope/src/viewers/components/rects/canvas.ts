@@ -114,6 +114,21 @@ export class Canvas {
     }
   }
 
+  onDestroy() {
+    this.lastScene.rectIdToRectGraphics.forEach((graphics) => {
+      this.disposeMesh(graphics.mesh, graphics.rect.id);
+    });
+    this.lastScene.rectIdToLabelGraphics.forEach((graphics) => {
+      this.disposeObj(graphics.circle);
+      this.disposeObj(graphics.line);
+      this.disposeObj(graphics.text);
+    });
+    this.renderer.dispose();
+    this.renderer.info.programs?.forEach((program) => program.destroy());
+    this.renderer.renderLists.dispose();
+    this.renderer.forceContextLoss();
+  }
+
   updateViewPosition(camera: Camera, bounds: Box3D, zDepth: number) {
     // Must set 100% width and height so the HTML element expands to the parent's
     // boundaries and the correct clientWidth and clientHeight values can be read
@@ -178,9 +193,13 @@ export class Canvas {
   updateRects(rects: UiRect3D[]) {
     for (const key of this.lastScene.rectIdToRectGraphics.keys()) {
       if (!rects.some((rect) => rect.id === key)) {
+        const lastObj = assertDefined(
+          this.lastScene.rectIdToRectGraphics.get(key),
+        );
         this.lastScene.rectIdToRectGraphics.delete(key);
-        this.removeRays(key); // rays are added directly to the scene
         this.scene.remove(assertDefined(this.scene.getObjectByName(key)));
+        this.removeRays(key); // rays are added directly to the scene
+        this.disposeMesh(lastObj.mesh, lastObj.rect.id);
       }
     }
     rects.forEach((rect) => {
@@ -729,13 +748,13 @@ export class Canvas {
 
     if (!newRect.fillRegion && existingRect.fillRegion) {
       existingMesh.material = fillMaterial;
-      existingMesh.remove(
-        assertDefined(
-          existingMesh.getObjectByName(
-            existingRect.id + Canvas.GRAPHICS_NAMES.fillRegion,
-          ),
+      const existingFillRegion = assertDefined(
+        existingMesh.getObjectByName(
+          existingRect.id + Canvas.GRAPHICS_NAMES.fillRegion,
         ),
       );
+      existingMesh.remove(existingFillRegion);
+      this.disposeObj(existingFillRegion);
     } else if (newRect.fillRegion && !existingRect.fillRegion) {
       existingMesh.material = Canvas.TRANSPARENT_MATERIAL;
       this.addFillRegionMesh(newRect, fillMaterial, existingMesh);
@@ -751,13 +770,13 @@ export class Canvas {
         },
       );
       if (fillRegionChanged) {
-        existingMesh.remove(
-          assertDefined(
-            existingMesh.getObjectByName(
-              existingRect.id + Canvas.GRAPHICS_NAMES.fillRegion,
-            ),
+        const existingFillRegion = assertDefined(
+          existingMesh.getObjectByName(
+            existingRect.id + Canvas.GRAPHICS_NAMES.fillRegion,
           ),
         );
+        existingMesh.remove(existingFillRegion);
+        this.disposeObj(existingFillRegion);
         this.addFillRegionMesh(newRect, fillMaterial, existingMesh);
       }
     }
@@ -787,6 +806,7 @@ export class Canvas {
       newRect.cornerRadius !== existingRect.cornerRadius;
 
     if (isGeometryChanged) {
+      existingMesh.geometry.dispose();
       existingMesh.geometry = this.makeRoundedRectGeometry(newRect);
       existingMesh.position.z = newRect.topLeft.z;
     }
@@ -795,13 +815,13 @@ export class Canvas {
       this.isDarkMode() !== this.lastScene.isDarkMode ||
       newRect.isPinned !== existingRect.isPinned;
     if (isGeometryChanged || isColorChanged) {
-      existingMesh.remove(
-        assertDefined(
-          existingMesh.getObjectByName(
-            existingRect.id + Canvas.GRAPHICS_NAMES.border,
-          ),
+      const existingBorder = assertDefined(
+        existingMesh.getObjectByName(
+          existingRect.id + Canvas.GRAPHICS_NAMES.border,
         ),
       );
+      existingMesh.remove(existingBorder);
+      this.disposeObj(existingBorder);
       this.addRectBorders(newRect, existingMesh);
     }
 
@@ -931,6 +951,7 @@ export class Canvas {
     );
 
     if (newLabel.circle.radius !== existingLabel.circle.radius) {
+      circle.geometry.dispose();
       circle.geometry = new THREE.CircleGeometry(newLabel.circle.radius, 20);
     }
     if (!newLabel.circle.center.isEqual(existingLabel.circle.center)) {
@@ -946,7 +967,9 @@ export class Canvas {
       this.isDarkMode() !== this.lastScene.isDarkMode
     ) {
       const lineMaterial = this.makeLabelMaterial(newLabel);
+      this.disposeMaterial(circle);
       circle.material = lineMaterial;
+      this.disposeMaterial(line);
       line.material = lineMaterial;
       text.element.style.color = newLabel.isHighlighted ? '' : 'gray';
     }
@@ -956,6 +979,7 @@ export class Canvas {
         (a as Point3D).isEqual(b as Point3D),
       )
     ) {
+      line.geometry.dispose();
       line.geometry = this.makeLabelLineGeometry(newLabel);
     }
 
@@ -992,6 +1016,9 @@ export class Canvas {
         this.scene.remove(graphics.line);
         this.scene.remove(graphics.text);
         this.lastScene.rectIdToLabelGraphics.delete(rectId);
+        this.disposeObj(graphics.circle);
+        this.disposeObj(graphics.line);
+        this.disposeObj(graphics.text);
       }
     }
   }
@@ -1000,6 +1027,7 @@ export class Canvas {
     let existingObj = root.getObjectByName(name);
     while (existingObj) {
       root.remove(existingObj);
+      this.disposeObj(existingObj);
       existingObj = root.getObjectByName(name);
     }
   }
@@ -1027,6 +1055,29 @@ export class Canvas {
     return this.isDarkMode()
       ? Canvas.RECT_EDGE_COLOR_DARK_MODE
       : Canvas.RECT_EDGE_COLOR_LIGHT_MODE;
+  }
+
+  private disposeMesh(obj: any, rectId: string) {
+    this.removeAllByName(obj, rectId + Canvas.GRAPHICS_NAMES.fillRegion);
+    this.removeAllByName(obj, rectId + Canvas.GRAPHICS_NAMES.pointerCircle);
+    this.removeAllByName(obj, rectId + Canvas.GRAPHICS_NAMES.pointerCrosshairs);
+    this.removeAllByName(obj, rectId + Canvas.GRAPHICS_NAMES.border);
+    this.disposeObj(obj);
+  }
+
+  private disposeObj(obj: any) {
+    if (obj.geometry) {
+      obj.geometry.dispose();
+    }
+    this.disposeMaterial(obj);
+  }
+
+  private disposeMaterial(obj: any) {
+    if (Array.isArray(obj.material)) {
+      obj.material.forEach((m: THREE.Material) => m.dispose());
+    } else if (obj.material) {
+      obj.material.dispose();
+    }
   }
 }
 
