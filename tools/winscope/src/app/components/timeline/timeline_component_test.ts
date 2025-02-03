@@ -59,9 +59,11 @@ import {TRACE_INFO} from 'trace/trace_info';
 import {TracePosition} from 'trace/trace_position';
 import {TraceType} from 'trace/trace_type';
 import {QueryResult} from 'trace_processor/query_result';
+import {CanvasDrawer} from './expanded-timeline/canvas_drawer';
 import {DefaultTimelineRowComponent} from './expanded-timeline/default_timeline_row_component';
 import {ExpandedTimelineComponent} from './expanded-timeline/expanded_timeline_component';
 import {TransitionTimelineComponent} from './expanded-timeline/transition_timeline_component';
+import {MiniTimelineDrawerImpl} from './mini-timeline/drawer/mini_timeline_drawer_impl';
 import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
 import {SliderComponent} from './mini-timeline/slider_component';
 import {TimelineComponent} from './timeline_component';
@@ -1118,6 +1120,55 @@ describe('TimelineComponent', () => {
     expect(spyNextEntry).not.toHaveBeenCalled();
   });
 
+  it('redraws both timelines on scroll', () => {
+    loadSfWmTraces();
+    openExpandedTimeline();
+    const expandedDrawSpy = spyOn(CanvasDrawer.prototype, 'drawRect');
+    const miniDrawSpy = spyOn(MiniTimelineDrawerImpl.prototype, 'draw');
+
+    // scroll from expanded timeline
+    const wheelEvent = new WheelEvent('wheel');
+    spyOnProperty(wheelEvent, 'deltaY').and.returnValue(-200);
+    spyOnProperty(wheelEvent, 'deltaX').and.returnValue(0);
+    spyOnProperty(wheelEvent, 'y').and.returnValue(10);
+    assertDefined(htmlElement.querySelector('single-timeline')).dispatchEvent(
+      wheelEvent,
+    );
+    fixture.detectChanges();
+    expect(expandedDrawSpy).toHaveBeenCalledTimes(6); // 4 entries total + 2 selected
+    expect(miniDrawSpy).toHaveBeenCalledTimes(1); // all on one canvas so spy called once
+
+    // scroll from mini timeline
+    expandedDrawSpy.calls.reset();
+    miniDrawSpy.calls.reset();
+    spyOnProperty(wheelEvent, 'target').and.returnValue(
+      assertDefined(htmlElement.querySelector('#mini-timeline-canvas')),
+    );
+    assertDefined(htmlElement.querySelector('mini-timeline')).dispatchEvent(
+      wheelEvent,
+    );
+    fixture.detectChanges();
+    expect(expandedDrawSpy).toHaveBeenCalledTimes(4); // 2 entries total + 2 selected
+    expect(miniDrawSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('redraws both timelines on new position from expanded timeline click', () => {
+    loadSfWmTraces();
+    openExpandedTimeline();
+    const expandedDrawSpy = spyOn(CanvasDrawer.prototype, 'drawRect');
+    const miniDrawSpy = spyOn(MiniTimelineDrawerImpl.prototype, 'draw');
+
+    const clickEvent = new MouseEvent('mousedown');
+    spyOnProperty(clickEvent, 'offsetX').and.returnValue(0);
+    spyOnProperty(clickEvent, 'offsetY').and.returnValue(0);
+    assertDefined(
+      htmlElement.querySelector<HTMLElement>('single-timeline #canvas'),
+    ).dispatchEvent(clickEvent);
+    fixture.detectChanges();
+    expect(expandedDrawSpy).toHaveBeenCalledTimes(3); // redraws SF timeline row
+    expect(miniDrawSpy).toHaveBeenCalledTimes(1); // all on one canvas so spy called once
+  });
+
   function loadSfWmTraces(hostComponent = component, hostFixture = fixture) {
     const traces = new TracesBuilder()
       .setTimestamps(TraceType.SURFACE_FLINGER, [time100, time110])
@@ -1420,6 +1471,16 @@ describe('TimelineComponent', () => {
   function checkTimelineDisabled() {
     expect(htmlElement.querySelector('.disabled-component')).toBeTruthy();
     expect(htmlElement.querySelector('.disabled-message')).toBeTruthy();
+  }
+
+  function openExpandedTimeline() {
+    const timelineComponent = assertDefined(component.timeline);
+    assertDefined(
+      htmlElement.querySelector<HTMLElement>(
+        `.${timelineComponent.TOGGLE_BUTTON_CLASS}`,
+      ),
+    ).click();
+    fixture.detectChanges();
   }
 
   @Component({
