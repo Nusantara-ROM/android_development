@@ -141,7 +141,7 @@ describe('TraceConfigComponent', () => {
     const spy = spyOn(newComponent.traceConfigChange, 'emit');
 
     newComponent.title = 'Targets';
-    newComponent.initialTraceConfig = component.traceConfig;
+    newComponent.traceConfig = component.traceConfig;
     newComponent.traceConfigStoreKey = 'TestConfigSettings';
     newComponent.storage = component.storage;
     await detectNgModelChanges(newFixture);
@@ -342,7 +342,7 @@ describe('TraceConfigComponent', () => {
     storage: Store = new InMemoryStorage(),
   ) {
     c.title = 'Targets';
-    c.initialTraceConfig = {
+    c.traceConfig = {
       layers_trace: {
         name: 'layers_trace',
         available: true,
