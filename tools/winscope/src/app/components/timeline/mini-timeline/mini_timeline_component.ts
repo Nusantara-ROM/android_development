@@ -221,6 +221,21 @@ export class MiniTimelineComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (!this.drawer) {
+      return;
+    }
+    const singleChange = Object.keys(changes).length === 1;
+    if (changes['expandedTimelineMouseXRatio']) {
+      const mouseXRatio: number | undefined =
+        changes['expandedTimelineMouseXRatio'].currentValue;
+      this.lastMousePosX = mouseXRatio
+        ? mouseXRatio * this.drawer.getWidth()
+        : undefined;
+      this.updateHoverTimestamp();
+      if (singleChange) {
+        return;
+      }
+    }
     if (changes['expandedTimelineScrollEvent']?.currentValue) {
       const event = changes['expandedTimelineScrollEvent'].currentValue;
       const moveDirection = this.getMoveDirection(event);
@@ -232,16 +247,11 @@ export class MiniTimelineComponent {
       if (event.deltaX !== 0 && moveDirection === 'x') {
         this.updateHorizontalScroll(event);
       }
-    } else if (this.drawer && changes['expandedTimelineMouseXRatio']) {
-      const mouseXRatio: number | undefined =
-        changes['expandedTimelineMouseXRatio'].currentValue;
-      this.lastMousePosX = mouseXRatio
-        ? mouseXRatio * this.drawer.getWidth()
-        : undefined;
-      this.updateHoverTimestamp();
-    } else if (this.drawer !== undefined) {
-      this.drawer.draw();
+      if (singleChange) {
+        return;
+      }
     }
+    this.drawer.draw();
   }
 
   getTracesToShow(): Array<Trace<object>> {

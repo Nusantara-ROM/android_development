@@ -884,6 +884,7 @@ export class TimelineComponent
 
   updateScrollEvent(event: WheelEvent) {
     this.expandedTimelineScrollEvent = event;
+    this.changeDetectorRef.detectChanges();
   }
 
   updateExpandedTimelineMouseXRatio(mouseXRatio: number | undefined) {

@@ -135,10 +135,7 @@ describe('MiniTimelineComponent', () => {
     expect(zoomRange).not.toEqual(fullRange);
     fixture.detectChanges();
 
-    const zoomButton = assertDefined(
-      htmlElement.querySelector('button#reset-zoom-btn'),
-    ) as HTMLButtonElement;
-    zoomButton.click();
+    getResetButton().click();
     fixture.detectChanges();
 
     expect(timelineData.getZoomRange()).toEqual(fullRange);
@@ -155,10 +152,7 @@ describe('MiniTimelineComponent', () => {
     expect(timelineData.getZoomRange()).toEqual(newZoom);
     fixture.detectChanges();
 
-    const zoomButton = assertDefined(
-      htmlElement.querySelector('button#reset-zoom-btn'),
-    ) as HTMLButtonElement;
-    zoomButton.click();
+    getResetButton().click();
     fixture.detectChanges();
 
     expect(timelineData.getZoomRange()).toEqual(initialZoom);
@@ -171,9 +165,7 @@ describe('MiniTimelineComponent', () => {
     );
     expect(window.getComputedStyle(zoomControlDiv).visibility).toBe('visible');
 
-    const zoomButton = assertDefined(
-      htmlElement.querySelector('button#reset-zoom-btn'),
-    ) as HTMLButtonElement;
+    const zoomButton = getResetButton();
     expect(window.getComputedStyle(zoomButton).visibility).toBe('visible');
   });
 
@@ -188,9 +180,7 @@ describe('MiniTimelineComponent', () => {
     );
     expect(window.getComputedStyle(zoomControlDiv).visibility).toBe('visible');
 
-    const zoomButton = assertDefined(
-      htmlElement.querySelector('button#reset-zoom-btn'),
-    ) as HTMLButtonElement;
+    const zoomButton = getResetButton();
     expect(window.getComputedStyle(zoomButton).visibility).toBe('visible');
   });
 
@@ -272,19 +262,12 @@ describe('MiniTimelineComponent', () => {
 
     fixture.detectChanges();
 
-    const zoomInButton = assertDefined(
-      htmlElement.querySelector('#zoom-in-btn'),
-    ) as HTMLButtonElement;
-    const zoomOutButton = assertDefined(
-      htmlElement.querySelector('#zoom-out-btn'),
-    ) as HTMLButtonElement;
-
-    zoomInButton.click();
+    getZoomInButton().click();
     fixture.detectChanges();
     const zoomedIn = timelineData.getZoomRange();
     checkZoomDifference(initialZoom, zoomedIn);
 
-    zoomOutButton.click();
+    getZoomOutButton().click();
     fixture.detectChanges();
     const zoomedOut = timelineData.getZoomRange();
     checkZoomDifference(zoomedOut, zoomedIn);
@@ -299,11 +282,7 @@ describe('MiniTimelineComponent', () => {
     timelineData.setPosition(position800);
     fixture.detectChanges();
 
-    const zoomButton = assertDefined(
-      htmlElement.querySelector('#zoom-out-btn'),
-    ) as HTMLButtonElement;
-
-    zoomButton.click();
+    getZoomOutButton().click();
     fixture.detectChanges();
 
     let finalZoom = timelineData.getZoomRange();
@@ -349,7 +328,6 @@ describe('MiniTimelineComponent', () => {
     initializeTraces();
 
     const initialZoom = new TimeRange(timestamp10, timestamp1000);
-    fixture.detectChanges();
     assertDefined(component.miniTimelineComponent).onZoomChanged(initialZoom);
     fixture.detectChanges();
 
@@ -374,8 +352,7 @@ describe('MiniTimelineComponent', () => {
       .dispatchEvent(new MouseEvent('contextmenu'));
     fixture.detectChanges();
 
-    const menu = assertDefined(document.querySelector('.context-menu'));
-    const options = menu.querySelectorAll('.context-menu-item');
+    const options = getContextMenuItems();
     expect(options.length).toEqual(2);
   });
 
@@ -391,10 +368,9 @@ describe('MiniTimelineComponent', () => {
       .dispatchEvent(new MouseEvent('contextmenu'));
     fixture.detectChanges();
 
-    const menu = assertDefined(document.querySelector('.context-menu'));
-    const options = menu.querySelectorAll('.context-menu-item');
-    expect(options.item(0).textContent).toContain('Add bookmark');
-    (options.item(0) as HTMLElement).click();
+    const options = getContextMenuItems();
+    expect(options[0].textContent).toContain('Add bookmark');
+    options[0].click();
 
     expect(spy).toHaveBeenCalledWith({
       range: new TimeRange(timestamp10, timestamp10),
@@ -415,10 +391,9 @@ describe('MiniTimelineComponent', () => {
       .dispatchEvent(new MouseEvent('contextmenu'));
     fixture.detectChanges();
 
-    const menu = assertDefined(document.querySelector('.context-menu'));
-    const options = menu.querySelectorAll('.context-menu-item');
-    expect(options.item(0).textContent).toContain('Remove bookmark');
-    (options.item(0) as HTMLElement).click();
+    const options = getContextMenuItems();
+    expect(options[0].textContent).toContain('Remove bookmark');
+    options[0].click();
 
     expect(spy).toHaveBeenCalledWith({
       range: new TimeRange(timestamp10, timestamp10),
@@ -439,10 +414,9 @@ describe('MiniTimelineComponent', () => {
       .dispatchEvent(new MouseEvent('contextmenu'));
     fixture.detectChanges();
 
-    const menu = assertDefined(document.querySelector('.context-menu'));
-    const options = menu.querySelectorAll('.context-menu-item');
-    expect(options.item(1).textContent).toContain('Remove all bookmarks');
-    (options.item(1) as HTMLElement).click();
+    const options = getContextMenuItems();
+    expect(options[1].textContent).toContain('Remove all bookmarks');
+    options[1].click();
 
     expect(spy).toHaveBeenCalled();
   });
@@ -569,12 +543,8 @@ describe('MiniTimelineComponent', () => {
       zoomOutByScrollWheel,
     );
 
-    const zoomInButton = assertDefined(
-      htmlElement.querySelector('#zoom-in-btn'),
-    ) as HTMLButtonElement;
-    const zoomOutButton = assertDefined(
-      htmlElement.querySelector('#zoom-out-btn'),
-    ) as HTMLButtonElement;
+    const zoomInButton = getZoomInButton();
+    const zoomOutButton = getZoomOutButton();
 
     checkZoomOnTimestamp(
       fullRangeQuarterTimestamp,
@@ -631,12 +601,8 @@ describe('MiniTimelineComponent', () => {
       zoomOutByScrollWheel,
     );
 
-    const zoomInButton = assertDefined(
-      htmlElement.querySelector('#zoom-in-btn'),
-    ) as HTMLButtonElement;
-    const zoomOutButton = assertDefined(
-      htmlElement.querySelector('#zoom-out-btn'),
-    ) as HTMLButtonElement;
+    const zoomInButton = getZoomInButton();
+    const zoomOutButton = getZoomOutButton();
 
     checkZoomOnTimestamp(
       fullRangeQuarterTimestamp,
@@ -676,12 +642,8 @@ describe('MiniTimelineComponent', () => {
       zoomOutByScrollWheel,
     );
 
-    const zoomInButton = assertDefined(
-      htmlElement.querySelector('#zoom-in-btn'),
-    ) as HTMLButtonElement;
-    const zoomOutButton = assertDefined(
-      htmlElement.querySelector('#zoom-out-btn'),
-    ) as HTMLButtonElement;
+    const zoomInButton = getZoomInButton();
+    const zoomOutButton = getZoomOutButton();
 
     checkZoomOnTimestamp(
       fullRangeMiddleTimestamp,
@@ -702,9 +664,8 @@ describe('MiniTimelineComponent', () => {
     initializeTracesForWASDZoom();
     const initialZoom = new TimeRange(timestamp1000, timestamp4000);
     component.initialZoom = initialZoom;
-    component.currentTracePosition = TracePosition.fromTimestamp(timestamp2000);
     fixture.detectChanges();
-
+    component.currentTracePosition = TracePosition.fromTimestamp(timestamp2000);
     component.expandedTimelineMouseXRatio = 0.25;
     fixture.detectChanges();
 
@@ -797,6 +758,29 @@ describe('MiniTimelineComponent', () => {
       target: {id: 'mini-timeline-canvas', offsetLeft: 0},
     } as unknown as WheelEvent);
     fixture.detectChanges();
+  }
+
+  function getResetButton(): HTMLElement {
+    return assertDefined(
+      htmlElement.querySelector<HTMLElement>('button#reset-zoom-btn'),
+    );
+  }
+
+  function getZoomInButton(): HTMLElement {
+    return assertDefined(
+      htmlElement.querySelector<HTMLElement>('#zoom-in-btn'),
+    );
+  }
+
+  function getZoomOutButton(): HTMLElement {
+    return assertDefined(
+      htmlElement.querySelector<HTMLElement>('#zoom-out-btn'),
+    );
+  }
+
+  function getContextMenuItems(): HTMLElement[] {
+    const menu = assertDefined(document.querySelector('.context-menu'));
+    return Array.from(menu.querySelectorAll<HTMLElement>('.context-menu-item'));
   }
 
   function checkZoomOnTimestamp(
