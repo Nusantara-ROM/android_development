@@ -23,6 +23,11 @@
     "name": "android.test.runner",
     "jar": "android.test.runner.jar",
     "manifest": false
+  },
+  {
+    "name": "wear-sdk",
+    "jar": "wear-sdk.jar",
+    "manifest": false
   }
 ]
 
