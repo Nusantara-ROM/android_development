@@ -520,7 +520,9 @@ fun SystemUi(
                         modifier =
                             // Make this layout accessible to UiAutomator.
                             Modifier.semantics { testTagsAsResourceId = true }
-                                .testTag("SystemUiSceneTransitionLayout"),
+                                .thenIf(layoutState.currentTransition == null) {
+                                    Modifier.testTag("SystemUiSceneTransitionLayout:idle")
+                                },
                         swipeSourceDetector =
                             if (configuration.enableOverlays) {
                                 remember {

@@ -72,7 +72,7 @@ fun SceneTransitionLayoutBenchmarkScope.setupSwipeFromScene(fromScene: String, t
     // Wait for the root SceneTransitionLayout to be there. Note that startDemoActivity already
     // waited for fromScene, so we know it's there.
     val device = device()
-    device.waitForObject(StlDemoConstants.ROOT_STL_SELECTOR)
+    device.waitForObject(StlDemoConstants.ROOT_STL_SELECTOR_IDLE)
 
     // Verify that toScene is not there yet.
     device.waitUntilGone(sceneSelector(toScene))
@@ -85,7 +85,7 @@ fun swipeFromScene(fromScene: String, toScene: String, direction: Direction) {
     val swipeSpeed = 1_500 // in dp/s
     val device = device()
     device
-        .findObject(StlDemoConstants.ROOT_STL_SELECTOR)
+        .findObject(StlDemoConstants.ROOT_STL_SELECTOR_IDLE)
         .swipe(direction, /* percent= */ 0.9f, /* speed= */ (swipeSpeed * density).roundToInt())
 
     // Wait for fromScene to disappear.
@@ -93,6 +93,9 @@ fun swipeFromScene(fromScene: String, toScene: String, direction: Direction) {
 
     // Check that we are at toScene.
     device.waitForObject(sceneSelector(toScene))
+
+    // Wait for the layout to be idle.
+    device.waitForObject(StlDemoConstants.ROOT_STL_SELECTOR_IDLE)
 }
 
 /**
@@ -139,7 +142,7 @@ object StlDemoConstants {
     internal const val FULLSCREEN_EXTRA = "fullscreen"
     internal const val DISABLE_RIPPLE_EXTRA = "disable_ripple"
     internal const val NOTIFICATIONS_IN_SHADE = "notifications_in_shade"
-    internal val ROOT_STL_SELECTOR = By.res("SystemUiSceneTransitionLayout")
+    internal val ROOT_STL_SELECTOR_IDLE = By.res("SystemUiSceneTransitionLayout:idle")
 }
 
 /** A scene whose key depends on whether we are using split scenes or not. */
