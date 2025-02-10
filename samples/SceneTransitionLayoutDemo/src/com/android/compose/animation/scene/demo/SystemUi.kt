@@ -534,6 +534,7 @@ fun SystemUi(
                             } else {
                                 DefaultEdgeDetector
                             },
+                        implicitTestTags = true,
                     ) {
                         scene(Scenes.Launcher, Launcher.userActions(shadeScene, configuration)) {
                             Launcher(launcherColumns)
