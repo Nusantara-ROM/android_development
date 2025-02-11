@@ -56,6 +56,7 @@ class DemoActivity : ComponentActivity() {
         const val FULLSCREEN_EXTRA = "fullscreen"
         const val DISABLE_RIPPLE_EXTRA = "disable_ripple"
         const val NOTIFICATIONS_IN_SHADE = "notifications_in_shade"
+        const val OVERLAYS_EXTRA = "overlays"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +70,7 @@ class DemoActivity : ComponentActivity() {
 
         val isFullscreen = intent.extras?.getBoolean(FULLSCREEN_EXTRA) ?: false
         val disableRipple = intent.extras?.getBoolean(DISABLE_RIPPLE_EXTRA) ?: false
+        val enableOverlays = intent.extras?.getBoolean(OVERLAYS_EXTRA) ?: false
         val notificationsInShade = intent.extras?.getInt(NOTIFICATIONS_IN_SHADE, 10) ?: 10
 
         setContent {
@@ -78,6 +80,7 @@ class DemoActivity : ComponentActivity() {
                         DemoConfiguration(
                             isFullscreen = isFullscreen,
                             notificationsInShade = notificationsInShade,
+                            enableOverlays = enableOverlays,
                         )
                     )
                 }
