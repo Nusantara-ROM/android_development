@@ -1,9 +1,11 @@
 <div class="flex justify-center items-center h-full p-4">
-  <div *ngIf="videoUrl">
-    <video #videoPlayer width="320" height="240" [src]="videoUrl">
-      Your browser does not support the video tag.
-    </video>
-    <div class="flex justify-center mt-2" [style.visibility]="videoUrl ? 'visible' : 'hidden'">
+  <div *ngIf="videoUrl" class="max-w-xl mx-auto">
+    <div class="relative aspect-video">
+      <video #videoPlayer [src]="videoUrl" class="object-contain w-full h-full">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div class="mt-4 flex justify-center space-x-2" [style.visibility]="videoUrl ? 'visible' : 'hidden'">
       <button mat-icon-button (click)="goToStart()" class="mr-2">
         <mat-icon>first_page</mat-icon>
       </button>
