@@ -28,6 +28,9 @@ android_app {
         "guava",
         "hilt_android",
     ],
+    lint: {
+        baseline_filename: "lint-baseline.xml",
+    },
 }
 
 android_app {
