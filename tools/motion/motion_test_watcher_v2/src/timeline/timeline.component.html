@@ -1,7 +1,7 @@
-<div *ngIf="selectedGolden" class="w-full h-[500px] p-4 relative">
-  <div class="flex flex-col items-stretch h-full bg-white rounded shadow-md p-4">
-    <div class="flex-grow">
+<div *ngIf="selectedGolden" class="w-full h-full p-4 relative overflow-y-auto">
+  <div class="flex flex-col flex-grow items-stretch bg-white rounded shadow-md p-4">
       <app-graph
+        class="flex flex-grow w-full h-96"
         *ngIf="expandedGraphIdx !== -1 && !loading"
         [expectedData]="expectedData"
         [actualData]="actualData"
@@ -10,10 +10,10 @@
         (expand)="toggleGraph($event)"
       ></app-graph>
 
-       <div class="grid grid-cols-3 gap-4" *ngIf="expandedGraphIdx === -1 && !loading && actualData && actualData.features">
+       <div class="flex flex-col gap-4" *ngIf="expandedGraphIdx === -1 && !loading && actualData && actualData.features">
         <app-graph
           *ngFor="let feature of actualData.features; let i = index"
-          class="h-96 w-full"
+          class="h-48 w-full"
           [expectedData]="expectedData"
           [actualData]="actualData"
           [featureName]="getFeatureName(i)"
@@ -23,7 +23,6 @@
       </div>
 
       <div *ngIf="loading">Loading...</div>
-    </div>
   </div>
 
   <div class="mt-4 flex justify-center space-x-2" *ngIf="expandedGraphIdx !== -1">

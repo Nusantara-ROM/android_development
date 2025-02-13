@@ -3,6 +3,7 @@ import {
   MotionGolden,
   MotionGoldenData,
   MotionGoldenFeature,
+  isNotFound,
 } from '../model/golden';
 import { GoldensService } from '../service/goldens.service';
 import { PreviewService } from '../service/preview.service';
@@ -80,7 +81,7 @@ export class TimelineComponent implements OnChanges {
       ) {
         let firstValidDataPoint: any = null;
         for (const dataPoint of feature.data_points) {
-          if (typeof dataPoint === 'object' && dataPoint !== null) {
+          if (typeof dataPoint === 'object' && !isNotFound(dataPoint)) {
             firstValidDataPoint = dataPoint;
             break;
           }
