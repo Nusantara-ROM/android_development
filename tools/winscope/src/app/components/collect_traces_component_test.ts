@@ -52,7 +52,6 @@ import {CollectTracesComponent} from './collect_traces_component';
 import {LoadProgressComponent} from './load_progress_component';
 import {TraceConfigComponent} from './trace_config_component';
 import {WarningDialogComponent} from './warning_dialog_component';
-import {WebAdbComponent} from './web_adb_component';
 
 describe('CollectTracesComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
@@ -94,7 +93,6 @@ describe('CollectTracesComponent', () => {
         TestHostComponent,
         CollectTracesComponent,
         AdbProxyComponent,
-        WebAdbComponent,
         TraceConfigComponent,
         LoadProgressComponent,
         WarningDialogComponent,

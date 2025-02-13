@@ -77,7 +77,6 @@ import {TimelineComponent} from './timeline/timeline_component';
 import {TraceConfigComponent} from './trace_config_component';
 import {TraceViewComponent} from './trace_view_component';
 import {UploadTracesComponent} from './upload_traces_component';
-import {WebAdbComponent} from './web_adb_component';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -124,7 +123,6 @@ describe('AppComponent', () => {
         TraceViewComponent,
         UploadTracesComponent,
         ViewerSurfaceFlingerComponent,
-        WebAdbComponent,
         ShortcutsComponent,
         SnackBarComponent,
       ],
