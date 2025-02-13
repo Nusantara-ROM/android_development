@@ -104,7 +104,6 @@ import {TraceConfigComponent} from './components/trace_config_component';
 import {TraceViewComponent} from './components/trace_view_component';
 import {UploadTracesComponent} from './components/upload_traces_component';
 import {WarningDialogComponent} from './components/warning_dialog_component';
-import {WebAdbComponent} from './components/web_adb_component';
 import {GlobalErrorHandler} from './global_error_handler';
 
 @NgModule({
@@ -124,7 +123,6 @@ import {GlobalErrorHandler} from './global_error_handler';
     CollectTracesComponent,
     UploadTracesComponent,
     AdbProxyComponent,
-    WebAdbComponent,
     TraceConfigComponent,
     HierarchyComponent,
     PropertiesComponent,
