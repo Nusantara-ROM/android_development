@@ -15,6 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
+import {byteArrayToString} from 'common/buffer_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {
   HttpRequest,
@@ -415,8 +416,7 @@ export class WinscopeProxyConnection extends AdbConnection {
     httpResponse: HttpResponse,
   ) => {
     try {
-      const enc = new TextDecoder('utf-8');
-      const resp = enc.decode(httpResponse.body);
+      const resp = byteArrayToString(httpResponse.body);
       const filesByType = JSON.parse(resp);
 
       for (const filetype of Object.keys(filesByType)) {
