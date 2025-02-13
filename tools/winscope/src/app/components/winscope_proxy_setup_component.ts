@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {proxySetupStyles} from 'app/styles/proxy_setup.styles';
 import {Download} from 'common/download';
 import {getRootUrl} from 'common/url_utils';
 import {ConnectionState} from 'trace_collection/connection_state';
@@ -126,24 +127,6 @@ import {WinscopeProxyConnection} from 'trace_collection/winscope_proxy/winscope_
   `,
   styles: [
     `
-      .icon-information {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-      .further-adb-info-text {
-        display: flex;
-        flex-direction: column;
-        overflow-wrap: break-word;
-        gap: 10px;
-        margin-bottom: 10px;
-      }
-      .further-adb-info-actions {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
       /* TODO(b/300063426): remove after migration to angular 15, replace with subscriptSizing */
       ::ng-deep .proxy-command-form .mat-form-field-wrapper {
         padding: 0;
@@ -152,10 +135,8 @@ import {WinscopeProxyConnection} from 'trace_collection/winscope_proxy/winscope_
         user-select: all;
         overflow: auto;
       }
-      .adb-info {
-        margin-left: 5px;
-      }
     `,
+    proxySetupStyles,
   ],
 })
 export class WinscopeProxySetupComponent {

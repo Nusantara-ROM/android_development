@@ -56,6 +56,13 @@ describe('WinscopeProxySetupComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('correct connecting message', () => {
+    fixture.detectChanges();
+    expect(
+      htmlElement.querySelector('.connecting-message')?.textContent,
+    ).toContain('Connecting...');
+  });
+
   it('correct icon and message displays if no proxy', () => {
     component.state = ConnectionState.NOT_FOUND;
     fixture.detectChanges();
