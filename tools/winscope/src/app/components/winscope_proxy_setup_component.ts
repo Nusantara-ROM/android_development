@@ -17,12 +17,17 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Download} from 'common/download';
 import {getRootUrl} from 'common/url_utils';
 import {ConnectionState} from 'trace_collection/connection_state';
-import {ProxyConnection} from 'trace_collection/proxy_connection';
+import {WinscopeProxyConnection} from 'trace_collection/winscope_proxy/winscope_proxy_connection';
 
 @Component({
-  selector: 'adb-proxy',
+  selector: 'winscope-proxy-setup',
   template: `
     <ng-container [ngSwitch]="state">
+      <ng-container *ngSwitchCase="${ConnectionState.CONNECTING}">
+        <p class="connecting-message mat-body-1">
+          Connecting...
+        </p>
+      </ng-container>
       <ng-container *ngSwitchCase="${ConnectionState.NOT_FOUND}">
         <div class="further-adb-info-text">
           <p class="mat-body-1">
@@ -153,14 +158,14 @@ import {ProxyConnection} from 'trace_collection/proxy_connection';
     `,
   ],
 })
-export class AdbProxyComponent {
+export class WinscopeProxySetupComponent {
   @Input() state: ConnectionState | undefined;
   @Output() readonly retryConnection = new EventEmitter<string>();
 
   readonly downloadProxyUrl: string = getRootUrl() + 'winscope_proxy.py';
   readonly proxyCommand: string =
     'python3 $ANDROID_BUILD_TOP/development/tools/winscope/src/adb/winscope_proxy.py';
-  readonly proxyVersion = ProxyConnection.VERSION;
+  readonly proxyVersion = WinscopeProxyConnection.VERSION;
   proxyToken = '';
 
   onRetryButtonClick() {

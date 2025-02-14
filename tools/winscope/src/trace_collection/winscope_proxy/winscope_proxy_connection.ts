@@ -30,16 +30,19 @@ import {
   ProxyTracingErrors,
   ProxyTracingWarnings,
 } from 'messaging/user_warnings';
-import {AdbConnection, OnRequestSuccessCallback} from './adb_connection';
-import {AdbDevice} from './adb_device';
-import {ConnectionState} from './connection_state';
-import {ProxyEndpoint} from './proxy_endpoint';
-import {TraceRequest} from './trace_request';
+import {
+  AdbConnection,
+  OnRequestSuccessCallback,
+} from 'trace_collection/adb_connection';
+import {AdbDevice} from 'trace_collection/adb_device';
+import {ConnectionState} from 'trace_collection/connection_state';
+import {TraceRequest} from 'trace_collection/trace_request';
+import {Endpoint} from './endpoint';
 
 /**
  * A connection to the Winscope Proxy server.
  */
-export class ProxyConnection extends AdbConnection {
+export class WinscopeProxyConnection extends AdbConnection {
   static readonly VERSION = '5.0.0';
   static readonly WINSCOPE_PROXY_URL = 'http://localhost:5544';
 
@@ -186,7 +189,7 @@ export class ProxyConnection extends AdbConnection {
 
   private async updateAdbData(device: AdbDevice) {
     await this.getFromProxy(
-      `${ProxyEndpoint.FETCH}${device.id}/`,
+      `${Endpoint.FETCH}${device.id}/`,
       this.onSuccessFetchFiles,
       'arraybuffer',
     );
@@ -219,9 +222,7 @@ export class ProxyConnection extends AdbConnection {
       case ConnectionState.STARTING_TRACE: {
         const startTimeMs = Date.now();
         await this.postToProxy(
-          `${ProxyEndpoint.START_TRACE}${
-            assertDefined(this.selectedDevice).id
-          }/`,
+          `${Endpoint.START_TRACE}${assertDefined(this.selectedDevice).id}/`,
           (response: HttpResponse) => {
             this.tryProcessWarnings(response);
             this.keepTraceAlive();
@@ -238,7 +239,7 @@ export class ProxyConnection extends AdbConnection {
       }
       case ConnectionState.ENDING_TRACE:
         await this.postToProxy(
-          `${ProxyEndpoint.END_TRACE}${assertDefined(this.selectedDevice).id}/`,
+          `${Endpoint.END_TRACE}${assertDefined(this.selectedDevice).id}/`,
           (response: HttpResponse) => {
             const errors = JSON.parse(response.body);
             if (Array.isArray(errors) && errors.length > 0) {
@@ -260,7 +261,7 @@ export class ProxyConnection extends AdbConnection {
 
       case ConnectionState.DUMPING_STATE:
         await this.postToProxy(
-          `${ProxyEndpoint.DUMP}${assertDefined(this.selectedDevice).id}/`,
+          `${Endpoint.DUMP}${assertDefined(this.selectedDevice).id}/`,
           (response: HttpResponse) => {
             this.tryProcessWarnings(response);
           },
@@ -303,7 +304,7 @@ export class ProxyConnection extends AdbConnection {
     }
 
     await this.getFromProxy(
-      `${ProxyEndpoint.STATUS}${assertDefined(this.selectedDevice).id}/`,
+      `${Endpoint.STATUS}${assertDefined(this.selectedDevice).id}/`,
       async (request: HttpResponse) => {
         if (request.text !== 'True') {
           window.clearInterval(this.keepTraceAliveWorker);
@@ -354,7 +355,7 @@ export class ProxyConnection extends AdbConnection {
       return;
     }
 
-    await this.getFromProxy(ProxyEndpoint.DEVICES, this.onSuccessGetDevices);
+    await this.getFromProxy(Endpoint.DEVICES, this.onSuccessGetDevices);
   }
 
   private onSuccessGetDevices: OnRequestSuccessCallback = async (
@@ -387,7 +388,7 @@ export class ProxyConnection extends AdbConnection {
           }),
           multiDisplayScreenRecordingAvailable:
             devices[deviceId].screenrecord_version >=
-            ProxyConnection.MULTI_DISPLAY_SCREENRECORD_VERSION,
+            WinscopeProxyConnection.MULTI_DISPLAY_SCREENRECORD_VERSION,
         };
       });
       this.devicesChangeCallback(this.devices);
@@ -439,12 +440,9 @@ export class ProxyConnection extends AdbConnection {
 
   private isWaylandAvailable(): Promise<boolean> {
     return new Promise((resolve) => {
-      this.getFromProxy(
-        ProxyEndpoint.CHECK_WAYLAND,
-        (request: HttpResponse) => {
-          resolve(request.text === 'true');
-        },
-      );
+      this.getFromProxy(Endpoint.CHECK_WAYLAND, (request: HttpResponse) => {
+        resolve(request.text === 'true');
+      });
     });
   }
 
@@ -498,7 +496,7 @@ export class ProxyConnection extends AdbConnection {
       .split('.')
       .map((s) => Number(s));
     const [clientMajor, clientMinor, clientPatch] =
-      ProxyConnection.VERSION.split('.').map((s) => Number(s));
+      WinscopeProxyConnection.VERSION.split('.').map((s) => Number(s));
 
     if (proxyMajor !== clientMajor) {
       return false;
@@ -521,6 +519,6 @@ export class ProxyConnection extends AdbConnection {
   }
 
   private makeRequestPath(path: string): string {
-    return ProxyConnection.WINSCOPE_PROXY_URL + path;
+    return WinscopeProxyConnection.WINSCOPE_PROXY_URL + path;
   }
 }
