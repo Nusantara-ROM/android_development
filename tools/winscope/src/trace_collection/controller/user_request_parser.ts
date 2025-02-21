@@ -32,7 +32,7 @@ function makeMatchersWithWinscopeExts(matcher: string) {
 
 export class UserRequestParser {
   private readonly targetPerfettoDsMap = new Map([
-  [UiTraceTarget.SURFACE_FLINGER_TRACE, 'android.surfaceflinger.layers'],
+    [UiTraceTarget.SURFACE_FLINGER_TRACE, 'android.surfaceflinger.layers'],
     [UiTraceTarget.WINDOW_MANAGER_TRACE, 'android.windowmanager'],
     [UiTraceTarget.IME, 'android.inputmethod'],
     [UiTraceTarget.TRANSACTIONS, 'android.surfaceflinger.transactions'],
