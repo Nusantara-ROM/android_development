@@ -210,14 +210,14 @@ export class Mediator {
           'Downloading files...',
           undefined,
         );
-        console.log("App reset for remote tool download.");
+        console.log('App reset for remote tool download.');
       },
     );
 
     await event.visit(
       WinscopeEventType.REMOTE_TOOL_FILES_RECEIVED,
       async (event) => {
-        console.log("Remote tool files received.");
+        console.log('Remote tool files received.');
         await this.processRemoteFilesReceived(
           event.files,
           FilesSource.REMOTE_TOOL,
