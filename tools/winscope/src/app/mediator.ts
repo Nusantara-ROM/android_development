@@ -640,6 +640,8 @@ export class Mediator {
   }
 
   private findViewerByType(type: TraceType): Viewer | undefined {
-    return this.viewers.find((viewer) => viewer.getTraces()[0].type === type);
+    return this.viewers.find(
+      (viewer) => viewer.getTraces().at(0)?.type === type,
+    );
   }
 }
