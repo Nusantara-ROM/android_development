@@ -16,6 +16,8 @@
 
 package com.android.sharetest
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.ClipData
 import android.content.Intent
 import android.content.res.Configuration
@@ -24,7 +26,6 @@ import android.provider.MediaStore
 import android.service.chooser.ChooserSession
 import android.service.chooser.ChooserSession.ChooserController
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -68,7 +71,7 @@ private const val KEY_SESSION = "chooser-session"
 private const val EXTRA_CHOOSER_INTERACTIVE_CALLBACK =
     "com.android.extra.EXTRA_CHOOSER_INTERACTIVE_CALLBACK"
 
-@AndroidEntryPoint(value = ComponentActivity::class)
+@AndroidEntryPoint(value = FragmentActivity::class)
 class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
     private val TAG = "ShareTest/$hashId"
     private var chooserWindowTopOffset = MutableStateFlow(-1)
@@ -149,10 +152,13 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
                             Button(onClick = { startCameraApp() }) { Text("Pick Camera App") }
                             Button(onClick = { launchActivity() }) { Text("Launch Activity") }
                         }
-                        if (showLaunchInSplitScreen) {
-                            Button(onClick = { launchSelfInSplitScreen() }) {
-                                Text("Launch Self in Split-Screen")
+                        Row(horizontalArrangement = Arrangement.spacedBy(spacing)) {
+                            if (showLaunchInSplitScreen) {
+                                Button(onClick = { launchSelfInSplitScreen() }) {
+                                    Text("Launch Self in Split-Screen")
+                                }
                             }
+                            Button(onClick = { launchDialog() }) { Text("Launch Dialog") }
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
@@ -251,6 +257,11 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
         startActivity(Intent(this, SendTextActivity::class.java))
     }
 
+    private fun launchDialog() {
+        val dialog = TestDialog()
+        dialog.show(supportFragmentManager, "dialog")
+    }
+
     private fun launchSelfInSplitScreen() {
         startActivity(
             Intent(this, javaClass).apply {
@@ -315,5 +326,14 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
         } else {
             chooserController.updateIntent(chooserIntent)
         }
+    }
+}
+
+class TestDialog : DialogFragment() {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return AlertDialog.Builder(requireContext())
+            .setMessage("Just a test dialog")
+            .setPositiveButton("Close") { _, _ -> dismiss() }
+            .create()
     }
 }
