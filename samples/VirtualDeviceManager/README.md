@@ -423,7 +423,7 @@ which showcases implicit intent handling.
 
 ### Android 16 / Baklava
 
--   Added `COMPANION_DEVICE_NEARBY_SENSOR_STREAMING` device profile.
+-   Added `COMPANION_DEVICE_VIRTUAL_DEVICE` device profile.
 
 -   Added support for custom power management.
 

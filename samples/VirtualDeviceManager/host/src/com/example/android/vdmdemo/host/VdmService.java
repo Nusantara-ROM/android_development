@@ -37,6 +37,7 @@ import android.app.Service;
 import android.app.role.RoleManager;
 import android.companion.AssociationInfo;
 import android.companion.AssociationRequest;
+import android.companion.BluetoothDeviceFilter;
 import android.companion.CompanionDeviceManager;
 import android.companion.virtual.VirtualDeviceManager;
 import android.companion.virtual.VirtualDeviceManager.ActivityListener;
@@ -71,6 +72,7 @@ import com.example.android.vdmdemo.common.RemoteEventProto;
 import com.example.android.vdmdemo.common.RemoteEventProto.DeviceCapabilities;
 import com.example.android.vdmdemo.common.RemoteEventProto.DisplayChangeEvent;
 import com.example.android.vdmdemo.common.RemoteEventProto.RemoteEvent;
+import com.example.android.vdmdemo.common.RemoteEventProto.RequestBluetoothDiscoverable;
 import com.example.android.vdmdemo.common.RemoteEventProto.SensorCapabilities;
 import com.example.android.vdmdemo.common.RemoteEventProto.StartStreaming;
 import com.example.android.vdmdemo.common.RemoteIo;
@@ -86,6 +88,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -453,6 +456,7 @@ public final class VdmService extends Hilt_VdmService {
         mAudioInjector.stop();
     }
 
+    @SuppressLint("MissingPermission")
     private void associateAndCreateVirtualDevice() {
         CompanionDeviceManager cdm =
                 Objects.requireNonNull(getSystemService(CompanionDeviceManager.class));
@@ -480,19 +484,35 @@ public final class VdmService extends Hilt_VdmService {
             return;
         }
 
-        @SuppressLint("MissingPermission")
         AssociationRequest.Builder associationRequest =
                 new AssociationRequest.Builder()
                         .setDeviceProfile(deviceProfile)
-                        .setDisplayName(mDeviceCapabilities.getDeviceName())
-                        .setSelfManaged(true);
-        if (VdmCompat.isAtLeastB() && android.companion.Flags.associationDeviceIcon()) {
-            associationRequest.setDeviceIcon(Icon.createWithResource(this, R.drawable.device_icon));
+                        .setDisplayName(mDeviceCapabilities.getDeviceName());
+
+        if (deviceProfile.equals(AssociationRequest.DEVICE_PROFILE_VIRTUAL_DEVICE)) {
+            Log.i(TAG, "Looking for bluetooth device "
+                    + mDeviceCapabilities.getBluetoothDeviceName());
+            associationRequest
+                    .setSingleDevice(true)
+                    .addDeviceFilter(new BluetoothDeviceFilter.Builder()
+                            .setNamePattern(
+                                    Pattern.compile(mDeviceCapabilities.getBluetoothDeviceName()))
+                            .build());
+            mRemoteIo.sendMessage(RemoteEvent.newBuilder()
+                    .setRequestBluetoothDiscoverable(RequestBluetoothDiscoverable.newBuilder())
+                    .build());
+        } else {
+            associationRequest.setSelfManaged(true);
+            if (VdmCompat.isAtLeastB() && android.companion.Flags.associationDeviceIcon()) {
+                associationRequest.setDeviceIcon(
+                        Icon.createWithResource(this, R.drawable.device_icon));
+            }
         }
 
         cdm.associate(
                 associationRequest.build(),
                 new CompanionDeviceManager.Callback() {
+
                     @Override
                     public void onAssociationPending(@NonNull IntentSender intentSender) {
                         try {
