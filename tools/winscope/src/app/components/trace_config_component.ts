@@ -31,7 +31,7 @@ import {
   SelectionConfiguration,
   TraceConfigurationMap,
   updateConfigsFromStore,
-} from 'trace_collection/trace_configuration';
+} from 'trace_collection/ui/ui_trace_configuration';
 import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
 
 @Component({

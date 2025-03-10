@@ -29,7 +29,7 @@ import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {Store} from 'common/store/store';
 import {UnitTestUtils} from 'test/unit/utils';
 import {TraceType} from 'trace/trace_type';
-import {ConfigurationOptions} from 'trace_collection/trace_configuration';
+import {ConfigurationOptions} from 'trace_collection/ui/ui_trace_configuration';
 import {TraceConfigComponent} from './trace_config_component';
 
 describe('TraceConfigComponent', () => {

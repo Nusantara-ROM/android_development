@@ -18,6 +18,7 @@ import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {TRACE_INFO} from 'trace/trace_info';
 import {TraceType} from 'trace/trace_type';
+import {UiTraceTarget} from './ui_trace_target';
 
 /**
  * Represents a trace target and its required/optional configuration.
@@ -160,156 +161,182 @@ export function makeScreenRecordingSelectionConfigs(
   ];
 }
 
-const traceDefaultConfig: TraceConfigurationMap = {
-  layers_trace: {
-    name: TRACE_INFO[TraceType.SURFACE_FLINGER].name,
-    config: {
-      enabled: true,
-      checkboxConfigs: sfTraceCheckboxConfigs,
-      selectionConfigs: sfTraceSelectionConfigs,
+const traceDefaultConfig = new Map([
+  [
+    UiTraceTarget.SURFACE_FLINGER_TRACE,
+    {
+      name: TRACE_INFO[TraceType.SURFACE_FLINGER].name,
+      config: {
+        enabled: true,
+        checkboxConfigs: sfTraceCheckboxConfigs,
+        selectionConfigs: sfTraceSelectionConfigs,
+      },
+      available: true,
+      types: [TraceType.SURFACE_FLINGER],
     },
-    available: true,
-    types: [TraceType.SURFACE_FLINGER],
-  },
-  window_trace: {
-    name: TRACE_INFO[TraceType.WINDOW_MANAGER].name,
-    config: {
-      enabled: true,
-      checkboxConfigs: [],
-      selectionConfigs: wmTraceSelectionConfigs,
+  ],
+  [
+    UiTraceTarget.WINDOW_MANAGER_TRACE,
+    {
+      name: TRACE_INFO[TraceType.WINDOW_MANAGER].name,
+      config: {
+        enabled: true,
+        checkboxConfigs: [],
+        selectionConfigs: wmTraceSelectionConfigs,
+      },
+      available: true,
+      types: [TraceType.WINDOW_MANAGER],
     },
-    available: true,
-    types: [TraceType.WINDOW_MANAGER],
-  },
-  screen_recording: {
-    name: TRACE_INFO[TraceType.SCREEN_RECORDING].name,
-    config: {
-      enabled: true,
-      checkboxConfigs: [
-        {
-          name: 'pointer location and touches',
-          key: 'pointer_and_touches',
-          enabled: true,
-        },
+  ],
+  [
+    UiTraceTarget.SCREEN_RECORDING,
+    {
+      name: TRACE_INFO[TraceType.SCREEN_RECORDING].name,
+      config: {
+        enabled: true,
+        checkboxConfigs: [
+          {
+            name: 'pointer location and touches',
+            key: 'pointer_and_touches',
+            enabled: true,
+          },
+        ],
+        selectionConfigs: makeScreenRecordingSelectionConfigs([], ''),
+      },
+      available: true,
+      types: [TraceType.SCREEN_RECORDING],
+    },
+  ],
+  [
+    UiTraceTarget.IME,
+    {
+      name: 'IME',
+      config: {
+        enabled: true,
+        checkboxConfigs: [],
+        selectionConfigs: [],
+      },
+      available: true,
+      types: [
+        TraceType.INPUT_METHOD_CLIENTS,
+        TraceType.INPUT_METHOD_SERVICE,
+        TraceType.INPUT_METHOD_MANAGER_SERVICE,
       ],
-      selectionConfigs: makeScreenRecordingSelectionConfigs([], ''),
     },
-    available: true,
-    types: [TraceType.SCREEN_RECORDING],
-  },
-  ime: {
-    name: 'IME',
-    config: {
-      enabled: true,
-      checkboxConfigs: [],
-      selectionConfigs: [],
+  ],
+  [
+    UiTraceTarget.TRANSACTIONS,
+    {
+      name: TRACE_INFO[TraceType.TRANSACTIONS].name,
+      config: {
+        enabled: true,
+        checkboxConfigs: [],
+        selectionConfigs: [],
+      },
+      available: true,
+      types: [TraceType.TRANSACTIONS],
     },
-    available: true,
-    types: [
-      TraceType.INPUT_METHOD_CLIENTS,
-      TraceType.INPUT_METHOD_SERVICE,
-      TraceType.INPUT_METHOD_MANAGER_SERVICE,
-    ],
-  },
-  transactions: {
-    name: TRACE_INFO[TraceType.TRANSACTIONS].name,
-    config: {
-      enabled: true,
-      checkboxConfigs: [],
-      selectionConfigs: [],
+  ],
+  [
+    UiTraceTarget.PROTO_LOG,
+    {
+      name: TRACE_INFO[TraceType.PROTO_LOG].name,
+      config: {
+        enabled: false,
+        checkboxConfigs: [],
+        selectionConfigs: [],
+      },
+      available: true,
+      types: [TraceType.PROTO_LOG],
     },
-    available: true,
-    types: [TraceType.TRANSACTIONS, TraceType.TRANSACTIONS_LEGACY],
-  },
-  proto_log: {
-    name: TRACE_INFO[TraceType.PROTO_LOG].name,
-    config: {
-      enabled: false,
-      checkboxConfigs: [],
-      selectionConfigs: [],
+  ],
+  [
+    UiTraceTarget.WAYLAND,
+    {
+      name: TRACE_INFO[TraceType.WAYLAND].name,
+      config: {
+        enabled: false,
+        checkboxConfigs: [],
+        selectionConfigs: [],
+      },
+      available: false,
+      types: [TraceType.WAYLAND, TraceType.WAYLAND_DUMP],
     },
-    available: true,
-    types: [TraceType.PROTO_LOG],
-  },
-  wayland_trace: {
-    name: TRACE_INFO[TraceType.WAYLAND].name,
-    config: {
-      enabled: false,
-      checkboxConfigs: [],
-      selectionConfigs: [],
+  ],
+  [
+    UiTraceTarget.EVENTLOG,
+    {
+      name: TRACE_INFO[TraceType.EVENT_LOG].name + ' (CUJs)',
+      config: {
+        enabled: false,
+        checkboxConfigs: [],
+        selectionConfigs: [],
+      },
+      available: true,
+      types: [TraceType.EVENT_LOG, TraceType.CUJS],
     },
-    available: false,
-    types: [TraceType.WAYLAND, TraceType.WAYLAND_DUMP],
-  },
-  eventlog: {
-    name: TRACE_INFO[TraceType.EVENT_LOG].name + ' (CUJs)',
-    config: {
-      enabled: false,
-      checkboxConfigs: [],
-      selectionConfigs: [],
+  ],
+  [
+    UiTraceTarget.TRANSITIONS,
+    {
+      name: TRACE_INFO[TraceType.SHELL_TRANSITION].name,
+      config: {
+        enabled: false,
+        checkboxConfigs: [],
+        selectionConfigs: [],
+      },
+      available: true,
+      types: [
+        TraceType.SHELL_TRANSITION,
+        TraceType.WM_TRANSITION,
+        TraceType.TRANSITION,
+      ],
     },
-    available: true,
-    types: [TraceType.EVENT_LOG, TraceType.CUJS],
-  },
-  transition_traces: {
-    name: TRACE_INFO[TraceType.SHELL_TRANSITION].name,
-    config: {
-      enabled: false,
-      checkboxConfigs: [],
-      selectionConfigs: [],
+  ],
+  [
+    UiTraceTarget.VIEW_CAPTURE,
+    {
+      name: TRACE_INFO[TraceType.VIEW_CAPTURE].name,
+      config: {
+        enabled: false,
+        checkboxConfigs: [],
+        selectionConfigs: [],
+      },
+      available: true,
+      types: [TraceType.VIEW_CAPTURE],
     },
-    available: true,
-    types: [
-      TraceType.SHELL_TRANSITION,
-      TraceType.WM_TRANSITION,
-      TraceType.TRANSITION,
-    ],
-  },
-  view_capture_traces: {
-    name: TRACE_INFO[TraceType.VIEW_CAPTURE].name,
-    config: {
-      enabled: false,
-      checkboxConfigs: [],
-      selectionConfigs: [],
+  ],
+  [
+    UiTraceTarget.INPUT,
+    {
+      name: 'Input',
+      config: {
+        enabled: true,
+        checkboxConfigs: [],
+        selectionConfigs: [],
+      },
+      available: true,
+      types: [
+        TraceType.INPUT_KEY_EVENT,
+        TraceType.INPUT_MOTION_EVENT,
+        TraceType.INPUT_EVENT_MERGED,
+      ],
     },
-    available: true,
-    types: [TraceType.VIEW_CAPTURE],
-  },
-  input: {
-    name: 'Input',
-    config: {
-      enabled: true,
-      checkboxConfigs: [],
-      selectionConfigs: [],
-    },
-    available: true,
-    types: [
-      TraceType.INPUT_KEY_EVENT,
-      TraceType.INPUT_MOTION_EVENT,
-      TraceType.INPUT_EVENT_MERGED,
-    ],
-  },
-};
+  ],
+]);
 
 export function makeDefaultTraceConfigMap(): TraceConfigurationMap {
-  return structuredClone({
-    window_trace: traceDefaultConfig['window_trace'],
-    layers_trace: traceDefaultConfig['layers_trace'],
-    transactions: traceDefaultConfig['transactions'],
-    proto_log: traceDefaultConfig['proto_log'],
-    screen_recording: traceDefaultConfig['screen_recording'],
-    ime: traceDefaultConfig['ime'],
-    eventlog: traceDefaultConfig['eventlog'],
-    transition_traces: traceDefaultConfig['transition_traces'],
-    view_capture_trace: traceDefaultConfig['view_capture_traces'],
-    input: traceDefaultConfig['input'],
-    wayland_trace: traceDefaultConfig['wayland_trace'],
-  });
+  const map = new Map<UiTraceTarget, TraceConfiguration>();
+  for (const [target, config] of traceDefaultConfig.entries()) {
+    map.set(target, structuredClone(config));
+  }
+  return Object.fromEntries(map);
 }
 
-export function makeDefaultDumpConfigMap(): TraceConfigurationMap {
-  return structuredClone({
-    window_dump: {
+const dumpDefaultConfig = new Map([
+  [
+    UiTraceTarget.WINDOW_MANAGER_DUMP,
+    {
       name: 'Window Manager',
       config: {
         enabled: true,
@@ -319,7 +346,10 @@ export function makeDefaultDumpConfigMap(): TraceConfigurationMap {
       available: true,
       types: [TraceType.WINDOW_MANAGER],
     },
-    layers_dump: {
+  ],
+  [
+    UiTraceTarget.SURFACE_FLINGER_DUMP,
+    {
       name: 'Surface Flinger',
       config: {
         enabled: true,
@@ -329,7 +359,10 @@ export function makeDefaultDumpConfigMap(): TraceConfigurationMap {
       available: true,
       types: [TraceType.SURFACE_FLINGER],
     },
-    screenshot: {
+  ],
+  [
+    UiTraceTarget.SCREENSHOT,
+    {
       name: 'Screenshot',
       config: {
         enabled: true,
@@ -339,7 +372,15 @@ export function makeDefaultDumpConfigMap(): TraceConfigurationMap {
       available: true,
       types: [TraceType.SCREENSHOT],
     },
-  });
+  ],
+]);
+
+export function makeDefaultDumpConfigMap(): TraceConfigurationMap {
+  const map = new Map<UiTraceTarget, TraceConfiguration>();
+  for (const [target, config] of dumpDefaultConfig.entries()) {
+    map.set(target, structuredClone(config));
+  }
+  return Object.fromEntries(map);
 }
 
 /**

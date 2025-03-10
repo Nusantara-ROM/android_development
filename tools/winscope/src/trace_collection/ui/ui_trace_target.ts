@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-export interface TraceRequest {
-  name: string;
-  config: TraceRequestConfig[];
-}
-
-export interface TraceRequestConfig {
-  key: string;
-  value?: string | string[];
+export enum UiTraceTarget {
+  VIEW_CAPTURE,
+  WINDOW_MANAGER_TRACE,
+  SURFACE_FLINGER_TRACE,
+  SCREEN_RECORDING,
+  TRANSACTIONS,
+  PROTO_LOG,
+  IME,
+  WAYLAND,
+  EVENTLOG,
+  TRANSITIONS,
+  INPUT,
+  WINDOW_MANAGER_DUMP,
+  SURFACE_FLINGER_DUMP,
+  SCREENSHOT,
 }
