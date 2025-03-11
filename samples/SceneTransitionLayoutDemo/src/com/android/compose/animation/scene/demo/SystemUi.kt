@@ -105,6 +105,7 @@ import com.android.compose.animation.scene.demo.transitions.systemUiTransitions
 import com.android.compose.gesture.effect.rememberOffsetOverscrollEffectFactory
 import com.android.compose.modifiers.thenIf
 import com.android.compose.windowsizeclass.calculateWindowSizeClass
+import com.android.mechanics.behavior.VerticalExpandContainerSpec
 import kotlin.math.max
 
 object Scenes {
@@ -290,9 +291,13 @@ fun SystemUi(
 
     val hapticFeedback = LocalHapticFeedback.current
     val revealHaptics = remember(hapticFeedback) { DemoContainerRevealHaptics(hapticFeedback) }
+    val shadeMotionSpec =
+        remember(shouldUseSplitScenes) {
+            VerticalExpandContainerSpec(isFloating = shouldUseSplitScenes)
+        }
     val transitions =
-        remember(quickSettingsPagerState, revealHaptics) {
-            systemUiTransitions(quickSettingsPagerState, revealHaptics)
+        remember(quickSettingsPagerState, revealHaptics, shouldUseSplitScenes) {
+            systemUiTransitions(quickSettingsPagerState, revealHaptics, shadeMotionSpec)
         }
 
     val sceneSaver =
