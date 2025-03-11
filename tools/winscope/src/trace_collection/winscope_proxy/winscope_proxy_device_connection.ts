@@ -123,6 +123,7 @@ export class WinscopeProxyDeviceConnection extends AdbDeviceConnection {
         stopCmd: target.stopCmd,
       },
     );
+    console.debug(`Started trace for ${target.traceName} on ${this.id}`);
   }
 
   override async endTrace(target: TraceTarget) {

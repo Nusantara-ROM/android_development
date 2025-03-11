@@ -102,6 +102,7 @@ export class WdpDeviceConnection extends AdbDeviceConnection {
         UserNotifier.add(new ProxyTracingWarnings([warning])).notify();
       }
     }
+    console.debug(`Started trace for ${target.traceName} on ${this.id}`);
   }
 
   override async endTrace(target: TraceTarget) {
@@ -111,6 +112,7 @@ export class WdpDeviceConnection extends AdbDeviceConnection {
       stream?.close();
       this.screenRecordingStreams.delete(target.traceName);
     }
+    console.debug(`Ending trace for ${target.traceName}.`);
     const output = await this.runShellCommand(target.stopCmd);
     console.debug(`Ended trace for ${target.traceName}. Output: ${output}`);
   }

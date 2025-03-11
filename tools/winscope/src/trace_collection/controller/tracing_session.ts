@@ -59,6 +59,9 @@ export class TracingSession {
           await device.runShellCommand(
             `su root [ ! -f ${filepath} ] || su root mv ${filepath} ${WINSCOPE_BACKUP_DIR}${file.destName}`,
           );
+          console.debug(
+            `Moved ${filepath} to ${WINSCOPE_BACKUP_DIR}${file.destName} on device`,
+          );
         } catch (e) {
           console.warn(
             `Unable to move file ${filepath}: ${(e as Error).message}`,

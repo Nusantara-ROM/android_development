@@ -52,6 +52,7 @@ export class PerfettoSessionModerator {
   }
 
   async clearPreviousConfigFiles() {
+    console.debug('Clearing perfetto config file for previous tracing session');
     await this.device.runShellCommand(`su root rm -f ${this.configFilepath}`);
     console.debug('Cleared perfetto config file for previous tracing session');
   }
@@ -76,6 +77,7 @@ export class PerfettoSessionModerator {
     if (!this.prevSessionActive) {
       return;
     }
+    console.debug('Stopping already-running winscope perfetto session.');
     await this.device?.runShellCommand(
       'perfetto --attach=WINSCOPE-PROXY-TRACING-SESSION --stop',
     );
