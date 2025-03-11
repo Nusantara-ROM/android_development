@@ -169,6 +169,7 @@ object StlDemoConstants {
     val SHADE_SCENE by AdaptiveScene("Shade", "SplitShade")
     const val QUICK_SETTINGS_SCENE = "QuickSettings"
     const val NOTIFICATIONS_OVERLAY = "NotificationsOverlay"
+    const val QUICK_SETTINGS_OVERLAY = "QuickSettingsOverlay"
 
     internal const val INITIAL_SCENE_EXTRA = "initial_scene"
     internal const val FULLSCREEN_EXTRA = "fullscreen"

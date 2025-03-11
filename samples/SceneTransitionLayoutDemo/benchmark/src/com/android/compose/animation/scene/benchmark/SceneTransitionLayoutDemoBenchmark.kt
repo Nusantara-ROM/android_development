@@ -85,6 +85,17 @@ class SceneTransitionLayoutDemoBenchmark {
         )
     }
 
+    @Test
+    fun lockscreenToQuickSettingsOverlay() {
+        benchmarkSwipeFromScene(
+            fromScene = StlDemoConstants.LOCKSCREEN_SCENE,
+            toContent = StlDemoConstants.QUICK_SETTINGS_OVERLAY,
+            direction = Direction.DOWN,
+            toContentIsOverlay = true,
+            swipeOn = StlDemoConstants.STL_END_HALF_SELECTOR,
+        )
+    }
+
     private fun benchmarkSwipeFromScene(
         fromScene: String,
         toContent: String,
