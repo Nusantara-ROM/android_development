@@ -90,7 +90,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
       </div>
     </div>
     <mat-divider></mat-divider>
-    <span class="mat-body-1 placeholder-text" *ngIf="showPlaceholderText()"> {{ placeholderText }} </span>
+    <span class="mat-body-1 placeholder-text" *ngIf="showPlaceholderText()"> {{ placeholderText + ' Try changing timeline position.' }} </span>
     <div class="hierarchy-content tree-wrapper">
       <div class="trees">
         <tree-view
