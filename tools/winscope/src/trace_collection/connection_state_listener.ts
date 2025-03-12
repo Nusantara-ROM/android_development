@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-export interface TraceRequest {
-  name: string;
-  config: TraceRequestConfig[];
-}
+import {
+  AdbDeviceConnection,
+  AdbDeviceConnectionListener,
+} from './adb/adb_device_connection';
 
-export interface TraceRequestConfig {
-  key: string;
-  value?: string | string[];
+export interface ConnectionStateListener extends AdbDeviceConnectionListener {
+  onDevicesChange(devices: AdbDeviceConnection[]): void;
 }

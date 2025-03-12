@@ -19,7 +19,7 @@ import {TraceType} from 'trace/trace_type';
 import {
   TraceConfigurationMap,
   updateConfigsFromStore,
-} from './trace_configuration';
+} from './ui_trace_configuration';
 
 describe('updateConfigsFromStore', () => {
   const traceKey = 'test_trace';
