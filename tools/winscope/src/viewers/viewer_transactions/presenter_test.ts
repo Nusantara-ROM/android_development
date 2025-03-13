@@ -79,6 +79,17 @@ class PresenterTransactionsTest extends AbstractLogViewerPresenterTest<UiData> {
     {
       header: new LogHeader(
         {
+          name: 'PROCESS',
+          cssClass: 'process',
+          columnType: TransactionColumnType.PROCESS,
+        },
+        new LogSelectFilter(['']),
+      ),
+      options: ['N/A'],
+    },
+    {
+      header: new LogHeader(
+        {
           name: 'TYPE',
           cssClass: 'transaction-type',
           columnType: TransactionColumnType.TRANSACTION_TYPE,

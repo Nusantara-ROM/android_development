@@ -76,21 +76,22 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
   }
 
   override async getEntry(index: number): Promise<HierarchyTreeNode> {
-    const sql = `
-      SELECT
-        sft.transaction_id,
-        sft.pid,
-        sft.uid,
-        sft.layer_id,
-        sft.display_id,
-        sft.flags_id,
-        sft.transaction_type,
-        sft.arg_set_id,
-        sfs.vsync_id
-      FROM __intrinsic_surfaceflinger_transaction AS sft
-      INNER JOIN surfaceflinger_transactions AS sfs
-        ON sfs.id = ${this.entryIndexToRowIdMap[index]}
-        AND sfs.id = sft.snapshot_id`;
+    const sql = `SELECT
+      sft.transaction_id,
+      sft.pid,
+      sft.uid,
+      sft.process_name,
+      sft.layer_id,
+      sft.display_id,
+      sft.flags_id,
+      sft.transaction_type,
+      sft.arg_set_id,
+      sfs.vsync_id
+    FROM __transaction_with_process AS sft
+    INNER JOIN surfaceflinger_transactions AS sfs
+      ON sfs.id = ${this.entryIndexToRowIdMap[index]}
+      AND sfs.id = sft.snapshot_id`;
+
     const queryResult = await this.traceProcessor.queryAllRows(sql);
 
     if (this.flags === undefined) {
@@ -102,10 +103,6 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
     }
 
     return this.makeHierarchyTree(queryResult);
-  }
-
-  protected override getTableName(): string {
-    return 'surfaceflinger_transactions';
   }
 
   override async customQuery<Q extends CustomQueryType>(
@@ -124,35 +121,33 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
         );
       })
       .visit(CustomQueryType.LOG_TABLE_FILTER_VALUES, async () => {
-        let tableName: string;
+        let tableName = this.getTransactionTableName();
         let columns: string[];
         switch (param) {
           case TransactionColumnType.TRANSACTION_ID:
-            tableName = '__intrinsic_surfaceflinger_transaction';
             columns = ['transaction_id'];
             break;
           case TransactionColumnType.VSYNC_ID:
-            tableName = 'surfaceflinger_transactions';
+            tableName = this.getTableName();
             columns = ['vsync_id'];
             break;
           case TransactionColumnType.PID:
-            tableName = '__intrinsic_surfaceflinger_transaction';
             columns = ['pid'];
             break;
           case TransactionColumnType.UID:
-            tableName = '__intrinsic_surfaceflinger_transaction';
             columns = ['uid'];
             break;
+          case TransactionColumnType.PROCESS:
+            columns = ['process_name'];
+            break;
           case TransactionColumnType.TRANSACTION_TYPE:
-            tableName = '__intrinsic_surfaceflinger_transaction';
             columns = ['transaction_type'];
             break;
           case TransactionColumnType.LAYER_OR_DISPLAY_ID:
-            tableName = '__intrinsic_surfaceflinger_transaction';
             columns = ['layer_id', 'display_id'];
             break;
           case TransactionColumnType.FLAGS:
-            tableName = '__intrinsic_surfaceflinger_transaction_flag';
+            tableName = this.getFlagTableName();
             columns = ['flag'];
             break;
 
@@ -162,6 +157,88 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
         return getDistinctValues(this.traceProcessor, tableName, columns);
       })
       .getResult();
+  }
+
+  protected override async preProcessTrace(): Promise<void> {
+    const sql = `
+CREATE PERFETTO TABLE ${this.getTransactionTableName()} AS
+  WITH process_matches AS (
+  SELECT
+      sft.id as row_id,
+      processes.name AS process_name,
+      0 AS match_priority
+  FROM __intrinsic_surfaceflinger_transaction AS sft
+  INNER JOIN process AS processes
+      ON sft.pid = processes.pid AND sft.uid = processes.uid
+  WHERE
+      (sft.pid IS NOT NULL AND sft.pid != 0)
+      AND (sft.uid IS NOT NULL AND sft.uid != 0)
+
+  UNION ALL
+
+  SELECT
+      sft.id as row_id,
+      processes.name AS process_name,
+      1 AS match_priority
+  FROM __intrinsic_surfaceflinger_transaction AS sft
+  INNER JOIN process AS processes
+      ON sft.pid = processes.pid
+  WHERE
+      (sft.uid IS NULL OR sft.uid = 0)
+      AND (sft.pid IS NOT NULL AND sft.pid != 0)
+
+  UNION ALL
+
+  SELECT
+      sft.id as row_id,
+      processes.name AS process_name,
+      2 AS match_priority
+  FROM __intrinsic_surfaceflinger_transaction AS sft
+  INNER JOIN process AS processes
+      ON sft.uid = processes.uid
+  WHERE
+      (sft.pid IS NULL OR sft.pid = 0)
+      AND (sft.uid IS NOT NULL AND sft.uid != 0)
+),
+ranked_process_matches AS (
+    SELECT
+        row_id,
+        process_name,
+        match_priority,
+        COUNT(*) OVER (PARTITION BY row_id, match_priority) as num_matches_at_priority,
+        ROW_NUMBER() OVER (PARTITION BY row_id ORDER BY match_priority ASC) as row_number
+    FROM process_matches
+)
+SELECT
+    sft.snapshot_id,
+    sft.transaction_id,
+    sft.pid,
+    sft.uid,
+    CASE
+        WHEN rpm.num_matches_at_priority > 1 THEN NULL
+        ELSE rpm.process_name
+    END AS process_name,
+    sft.layer_id,
+    sft.display_id,
+    sft.flags_id,
+    sft.transaction_type,
+    sft.arg_set_id
+FROM __intrinsic_surfaceflinger_transaction AS sft
+LEFT JOIN ranked_process_matches AS rpm
+    ON sft.id = rpm.row_id AND rpm.row_number = 1;`;
+    await this.traceProcessor.query(sql);
+  }
+
+  protected override getTableName(): string {
+    return 'surfaceflinger_transactions';
+  }
+
+  private getTransactionTableName(): string {
+    return '__transaction_with_process';
+  }
+
+  private getFlagTableName(): string {
+    return '__intrinsic_surfaceflinger_transaction_flag';
   }
 
   private makeHierarchyTree(result: QueryResult): HierarchyTreeNode {
@@ -181,6 +258,7 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
       'transaction_id',
       'pid',
       'uid',
+      'process_name',
       'layer_id',
       'display_id',
       'flags_id',
@@ -293,7 +371,7 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
 
   private async queryFlags(): Promise<Map<number, string>> {
     const sql =
-      'SELECT flags_id, flag FROM __intrinsic_surfaceflinger_transaction_flag;';
+      `SELECT flags_id, flag FROM ${this.getFlagTableName()};`;
     const result = await this.traceProcessor.queryAllRows(sql);
 
     const flags = new Map<number, string>();

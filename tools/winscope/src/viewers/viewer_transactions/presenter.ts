@@ -60,6 +60,11 @@ export class Presenter extends AbstractLogViewerPresenter<
       cssClass: 'uid right-align',
       columnType: TransactionColumnType.UID,
     },
+    process: {
+      name: 'PROCESS',
+      cssClass: 'process',
+      columnType: TransactionColumnType.PROCESS,
+    },
     type: {
       name: 'TYPE',
       cssClass: 'transaction-type',
@@ -119,6 +124,7 @@ export class Presenter extends AbstractLogViewerPresenter<
       ),
       new LogHeader(Presenter.COLUMNS.pid, new LogSelectFilter([])),
       new LogHeader(Presenter.COLUMNS.uid, new LogSelectFilter([])),
+      new LogHeader(Presenter.COLUMNS.process, new LogSelectFilter([])),
       new LogHeader(
         Presenter.COLUMNS.type,
         new LogSelectFilter([], false, '175'),
@@ -190,6 +196,9 @@ export class Presenter extends AbstractLogViewerPresenter<
         const uid = transactionNode
           .getEagerPropertyByName('uid')
           ?.formattedValue();
+        const process = transactionNode
+          .getEagerPropertyByName('processName')
+          ?.formattedValue();
         const layerId = transactionNode
           .getEagerPropertyByName('layerId')
           ?.formattedValue();
@@ -229,6 +238,10 @@ export class Presenter extends AbstractLogViewerPresenter<
           {spec: Presenter.COLUMNS.vsyncId, value: assertDefined(vsyncId)},
           {spec: Presenter.COLUMNS.pid, value: pid ?? Presenter.VALUE_NA},
           {spec: Presenter.COLUMNS.uid, value: uid ?? Presenter.VALUE_NA},
+          {
+            spec: Presenter.COLUMNS.process,
+            value: process ?? Presenter.VALUE_NA,
+          },
           {
             spec: Presenter.COLUMNS.type,
             value: transactionType,

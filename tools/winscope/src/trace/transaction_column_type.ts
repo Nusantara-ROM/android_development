@@ -19,6 +19,7 @@ export enum TransactionColumnType {
   VSYNC_ID,
   PID,
   UID,
+  PROCESS,
   TRANSACTION_TYPE,
   LAYER_OR_DISPLAY_ID,
   FLAGS,

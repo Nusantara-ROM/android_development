@@ -137,6 +137,40 @@ describe('PerfettoParserTransactions', () => {
       checkEagerProperty(n2, 'flagsId', 9n, expectedFlags);
     });
 
+    it('fetches process properties', async () => {
+      const transactions0 = (await parser.getEntry(0)).getAllChildren();
+      const transactions1 = (await parser.getEntry(679)).getAllChildren();
+
+      // translated due to uid/pid dual match though multiple uid=1003 in trace
+      checkProcessProperties(transactions0[0], 515n, 1003n, 'process515');
+
+      // not translated due to multiple uid=1003 processes in trace
+      checkProcessProperties(transactions0[1], 0n, 1003n, undefined);
+
+      // not translated due to missing process in trace
+      checkProcessProperties(transactions1[0], 0n, 10239n, undefined);
+
+      // translated due to uid/pid dual match
+      checkProcessProperties(transactions1[3], 1593n, 1000n, 'process1593');
+
+      // not translated due to zero uid/pid
+      checkProcessProperties(transactions1[7], 0n, 0n, undefined);
+
+      // translated due to single pid match
+      checkProcessProperties(transactions1[8], 0n, 10169n, 'process3300');
+
+      // translated due to single uid match
+      checkProcessProperties(transactions1[9], 3300n, 0n, 'process3300');
+
+      // not translated due to missing pid and uid
+      checkProcessProperties(
+        transactions1[11],
+        undefined,
+        undefined,
+        undefined,
+      );
+    });
+
     function checkIdProperties(
       t: HierarchyTreeNode,
       txid: bigint | undefined,
@@ -148,6 +182,17 @@ describe('PerfettoParserTransactions', () => {
       checkEagerProperty(t, 'layerId', layerId);
       checkEagerProperty(t, 'displayId', displayId);
       checkEagerProperty(t, 'transactionType', transactionType);
+    }
+
+    function checkProcessProperties(
+      t: HierarchyTreeNode,
+      pid: bigint | undefined,
+      uid: bigint | undefined,
+      name: string | undefined,
+    ) {
+      checkEagerProperty(t, 'pid', pid);
+      checkEagerProperty(t, 'uid', uid);
+      checkEagerProperty(t, 'processName', name);
     }
 
     function checkEagerProperty(
