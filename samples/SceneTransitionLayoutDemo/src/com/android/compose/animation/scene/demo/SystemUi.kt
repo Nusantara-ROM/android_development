@@ -361,6 +361,7 @@ fun SystemUi(
                 canShowOverlay = { configuration.canChangeSceneOrOverlays },
                 canHideOverlay = { configuration.canChangeSceneOrOverlays },
                 canReplaceOverlay = { _, _ -> configuration.canChangeSceneOrOverlays },
+                deferTransitionProgress = configuration.deferTransitionProgress,
             )
         }
 
@@ -546,6 +547,7 @@ fun SystemUi(
                         implicitTestTags = true,
                     ) {
                         scene(Scenes.Launcher, Launcher.userActions(shadeScene, configuration)) {
+                            FirstCompositionDelay(configuration)
                             Launcher(launcherColumns)
                         }
                         scene(
@@ -563,6 +565,7 @@ fun SystemUi(
                                 configuration,
                             ),
                         ) {
+                            FirstCompositionDelay(configuration)
                             Lockscreen(
                                 notificationList = {
                                     NotificationList(
@@ -586,6 +589,7 @@ fun SystemUi(
                                 configuration,
                             ),
                         ) {
+                            FirstCompositionDelay(configuration)
                             SplitLockscreen(
                                 notificationList = {
                                     NotificationList(
@@ -603,6 +607,7 @@ fun SystemUi(
                             )
                         }
                         scene(Scenes.StubStart, Stub.startUserActions(lockscreenScene)) {
+                            FirstCompositionDelay(configuration)
                             Stub(
                                 rootKey = Stub.Elements.SceneStart,
                                 textKey = Stub.Elements.TextStart,
@@ -610,14 +615,19 @@ fun SystemUi(
                             )
                         }
                         scene(Scenes.StubEnd, Stub.endUserActions(lockscreenScene)) {
+                            FirstCompositionDelay(configuration)
                             Stub(
                                 rootKey = Stub.Elements.SceneEnd,
                                 textKey = Stub.Elements.TextEnd,
                                 text = "Stub scene (end)",
                             )
                         }
-                        scene(Scenes.Camera, Camera.userActions(lockscreenScene)) { Camera() }
+                        scene(Scenes.Camera, Camera.userActions(lockscreenScene)) {
+                            FirstCompositionDelay(configuration)
+                            Camera()
+                        }
                         scene(Scenes.Bouncer, Bouncer.userActions(lockscreenScene)) {
+                            FirstCompositionDelay(configuration)
                             Bouncer(
                                 onBouncerCancelled = { onChangeScene(lockscreenScene) },
                                 onBouncerSolved = { onChangeScene(Scenes.Launcher) },
@@ -631,6 +641,7 @@ fun SystemUi(
                                 isLockscreenDismissed,
                             ),
                         ) {
+                            FirstCompositionDelay(configuration)
                             QuickSettings(
                                 qsPager,
                                 mediaPlayer = defaultMediaPlayer,
@@ -642,6 +653,7 @@ fun SystemUi(
                             Scenes.Shade,
                             Shade.userActions(isLockscreenDismissed, lockscreenScene),
                         ) {
+                            FirstCompositionDelay(configuration)
                             Shade(
                                 notificationList = { overscrollEffect ->
                                     NotificationList(
@@ -658,6 +670,7 @@ fun SystemUi(
                             Scenes.SplitShade,
                             SplitShade.userActions(isLockscreenDismissed, lockscreenScene),
                         ) {
+                            FirstCompositionDelay(configuration)
                             SplitShade(
                                 notificationList = {
                                     NotificationList(
@@ -674,6 +687,7 @@ fun SystemUi(
                         }
 
                         scene(Scenes.AlwaysOnDisplay) {
+                            FirstCompositionDelay(configuration)
                             AlwaysOnDisplay(Modifier.clickable { onChangeScene(lockscreenScene) })
                         }
 
@@ -683,6 +697,7 @@ fun SystemUi(
                             alignment = Alignment.TopEnd,
                             effectFactory = overlayEffectFactory,
                         ) {
+                            FirstCompositionDelay(configuration)
                             QuickSettingsShade(qsPager, compactMediaPlayer)
                         }
 
@@ -692,6 +707,7 @@ fun SystemUi(
                             alignment = Alignment.TopStart,
                             effectFactory = overlayEffectFactory,
                         ) {
+                            FirstCompositionDelay(configuration)
                             NotificationShade(
                                 clock =
                                     if (shouldUseSplitScenes) {
@@ -719,6 +735,14 @@ fun SystemUi(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun FirstCompositionDelay(configuration: DemoConfiguration) {
+    val delay = configuration.firstCompositionDelay
+    if (delay > 0L) {
+        remember<Any> { Thread.sleep(delay) }
     }
 }
 
