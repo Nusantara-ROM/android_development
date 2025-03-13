@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "motion_test_watcher_v2": {
+    "watch_web_app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/motion_test_watcher_v2",
+            "outputPath": "dist/watch_web_app",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "motion_test_watcher_v2:build:production"
+              "buildTarget": "watch_web_app:build:production"
             },
             "development": {
-              "buildTarget": "motion_test_watcher_v2:build:development"
+              "buildTarget": "watch_web_app:build:development"
             }
           },
           "defaultConfiguration": "development"
