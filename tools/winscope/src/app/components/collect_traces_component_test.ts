@@ -580,6 +580,7 @@ describe('CollectTracesComponent', () => {
     clickCheckboxAndCheckTraceConfig(UiTraceTarget.WINDOW_MANAGER_DUMP, true);
 
     hostComponent.showFirstComponent = false;
+    fixture.detectChanges();
     hostComponent.showSecondComponent = true;
     fixture.detectChanges();
     await fixture.whenStable();
@@ -657,6 +658,7 @@ describe('CollectTracesComponent', () => {
   it('changes host type by default if in store', async () => {
     await changeConnection(1);
     hostComponent.showFirstComponent = false;
+    fixture.detectChanges();
     hostComponent.showSecondComponent = true;
     fixture.detectChanges();
     await fixture.whenStable();
