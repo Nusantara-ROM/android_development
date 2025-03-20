@@ -447,6 +447,9 @@ class RemoteDisplay implements AutoCloseable {
             case DEVICE_TYPE_ROTARY_ENCODER:
                 processRotaryEvent(motionEventToVirtualRotaryEncoderEvent((MotionEvent) event));
                 break;
+            case DEVICE_TYPE_MOUSE:
+                processVirtualMouseEvent(motionEventToVirtualMouseEvent((MotionEvent) event));
+                break;
             case DEVICE_TYPE_TOUCHSCREEN:
                 mTouchscreen.sendTouchEvent(motionEventToVirtualTouchEvent((MotionEvent) event));
                 break;
@@ -621,6 +624,36 @@ class RemoteDisplay implements AutoCloseable {
                 .setX(motionEvent.getX())
                 .setY(motionEvent.getY())
                 .build();
+    }
+
+    private static Object motionEventToVirtualMouseEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_BUTTON_PRESS:
+            case MotionEvent.ACTION_BUTTON_RELEASE:
+                return new VirtualMouseButtonEvent.Builder()
+                        .setEventTimeNanos((long) (event.getEventTime() * 1e6))
+                        .setButtonCode(event.getActionButton())
+                        .setAction(event.getAction())
+                        .build();
+            case MotionEvent.ACTION_HOVER_ENTER:
+            case MotionEvent.ACTION_HOVER_EXIT:
+            case MotionEvent.ACTION_HOVER_MOVE:
+                return new VirtualMouseRelativeEvent.Builder()
+                        .setEventTimeNanos((long) (event.getEventTime() * 1e6))
+                        .setRelativeX(event.getX())
+                        .setRelativeY(event.getY())
+                        .build();
+            case MotionEvent.ACTION_SCROLL:
+                float scrollX = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
+                float scrollY = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+                return new VirtualMouseScrollEvent.Builder()
+                        .setEventTimeNanos((long) (event.getEventTime() * 1e6))
+                        .setXAxisMovement(InputController.clampMouseScroll(scrollX))
+                        .setYAxisMovement(InputController.clampMouseScroll(scrollY))
+                        .build();
+            default:
+                return null;
+        }
     }
 
     private static VirtualRotaryEncoderScrollEvent remoteEventToVirtualRotaryEncoderEvent(

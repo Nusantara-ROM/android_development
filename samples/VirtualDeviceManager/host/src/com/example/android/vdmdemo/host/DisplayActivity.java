@@ -150,6 +150,15 @@ public class DisplayActivity extends Hilt_DisplayActivity
             return true;
         });
 
+        textureView.setOnGenericMotionListener((v, event) -> {
+            if (event.getDevice() == null || mDisplay == null
+                    || !event.getDevice().supportsSource(InputDevice.SOURCE_MOUSE)) {
+                return false;
+            }
+            mDisplay.processVirtualMouseEvent(event);
+            return true;
+        });
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
