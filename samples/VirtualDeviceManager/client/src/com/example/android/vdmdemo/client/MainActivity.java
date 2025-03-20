@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.android.vdmdemo.common.ConnectionManager;
 import com.example.android.vdmdemo.common.DpadFragment;
+import com.example.android.vdmdemo.common.EdgeToEdgeUtils;
 import com.example.android.vdmdemo.common.NavTouchpadFragment;
 import com.example.android.vdmdemo.common.RemoteEventProto.DeviceCapabilities;
 import com.example.android.vdmdemo.common.RemoteEventProto.DeviceState;
@@ -120,6 +121,7 @@ public class MainActivity extends Hilt_MainActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = requireViewById(R.id.main_tool_bar);
         setSupportActionBar(toolbar);
+        EdgeToEdgeUtils.applyTopInsets(toolbar);
 
         ClientView displaysView = requireViewById(R.id.displays);
         displaysView.setLayoutManager(
