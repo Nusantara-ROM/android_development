@@ -21,29 +21,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.SurfaceTexture;
+import android.hardware.display.DisplayManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Display;
+import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.TextureView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.android.vdmdemo.common.EdgeToEdgeUtils;
+import com.example.android.vdmdemo.common.RemoteEventProto;
 
 import dagger.hilt.android.AndroidEntryPoint;
+
+import javax.inject.Inject;
 
 /**
  * VDM activity, showing an interactive virtual display.
  */
 @AndroidEntryPoint(AppCompatActivity.class)
-public class DisplayActivity extends Hilt_DisplayActivity {
+public class DisplayActivity extends Hilt_DisplayActivity
+        implements DisplayManager.DisplayListener {
 
     public static final String TAG = "VdmHost_DisplayActivity";
 
@@ -52,6 +60,11 @@ public class DisplayActivity extends Hilt_DisplayActivity {
     private static final float DIP_TO_DPI = 160f;
 
     static final String EXTRA_DISPLAY_ID = "displayId";
+
+    @Inject
+    InputController mInputController;
+
+    DisplayManager mDisplayManager;
 
     private VdmService mVdmService = null;
     private int mDisplayId;
@@ -82,6 +95,8 @@ public class DisplayActivity extends Hilt_DisplayActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mDisplayManager = getSystemService(DisplayManager.class);
+        mDisplayManager.registerDisplayListener(this, null);
         mDisplayId = getIntent().getIntExtra(EXTRA_DISPLAY_ID, Display.INVALID_DISPLAY);
         mDpi = (int) (getResources().getDisplayMetrics().density * DIP_TO_DPI);
 
@@ -124,6 +139,26 @@ public class DisplayActivity extends Hilt_DisplayActivity {
                 }
             }
         });
+
+        textureView.setOnTouchListener((v, event) -> {
+            if (event.getDevice().supportsSource(InputDevice.SOURCE_TOUCHSCREEN)
+                    && mDisplay != null) {
+                textureView.getParent().requestDisallowInterceptTouchEvent(true);
+                mDisplay.processInputEvent(
+                        RemoteEventProto.InputDeviceType.DEVICE_TYPE_TOUCHSCREEN, event);
+            }
+            return true;
+        });
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (mDisplay != null) {
+                    mDisplay.sendBack();
+                }
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -134,9 +169,21 @@ public class DisplayActivity extends Hilt_DisplayActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mInputController.setFocusedRemoteDisplayId(mDisplayId);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         unbindService(mServiceConnection);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDisplayManager.unregisterDisplayListener(this);
     }
 
     @Override
@@ -170,11 +217,19 @@ public class DisplayActivity extends Hilt_DisplayActivity {
                 }
                 return true;
             case R.id.back:
-                // TODO(b/404803361): send back
+                if (mDisplay != null) {
+                    mDisplay.sendBack();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        mDisplay.processInputEvent(RemoteEventProto.InputDeviceType.DEVICE_TYPE_KEYBOARD, event);
+        return true;
     }
 
     private synchronized void createDisplay() {
@@ -185,4 +240,17 @@ public class DisplayActivity extends Hilt_DisplayActivity {
         mDisplay = mVdmService.createRemoteDisplay(
                 this, mDisplayId, mSurfaceWidth, mSurfaceHeight, mDpi, mSurface, null);
     }
+
+    @Override
+    public void onDisplayAdded(int displayId) {}
+
+    @Override
+    public void onDisplayRemoved(int displayId) {
+        if (mDisplay != null && displayId == mDisplay.getDisplayId()) {
+            finish();
+        }
+    }
+
+    @Override
+    public void onDisplayChanged(int displayId) {}
 }

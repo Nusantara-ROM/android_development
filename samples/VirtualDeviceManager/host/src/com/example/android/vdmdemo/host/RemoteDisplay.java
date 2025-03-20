@@ -394,6 +394,15 @@ class RemoteDisplay implements AutoCloseable {
                 ActivityOptions.makeBasic().setLaunchDisplayId(targetDisplayId).toBundle());
     }
 
+    void sendBack() {
+        for (int action : new int[]{VirtualKeyEvent.ACTION_DOWN, VirtualKeyEvent.ACTION_UP}) {
+            mDpad.sendKeyEvent(new VirtualKeyEvent.Builder()
+                    .setKeyCode(KeyEvent.KEYCODE_BACK)
+                    .setAction(action)
+                    .build());
+        }
+    }
+
     private void processInputEvent(RemoteInputEvent inputEvent) {
         switch (inputEvent.getDeviceType()) {
             case DEVICE_TYPE_NONE:
@@ -437,6 +446,9 @@ class RemoteDisplay implements AutoCloseable {
                 break;
             case DEVICE_TYPE_ROTARY_ENCODER:
                 processRotaryEvent(motionEventToVirtualRotaryEncoderEvent((MotionEvent) event));
+                break;
+            case DEVICE_TYPE_TOUCHSCREEN:
+                mTouchscreen.sendTouchEvent(motionEventToVirtualTouchEvent((MotionEvent) event));
                 break;
             default:
                 Log.e(TAG, "processInputEvent got an invalid input device type: "
