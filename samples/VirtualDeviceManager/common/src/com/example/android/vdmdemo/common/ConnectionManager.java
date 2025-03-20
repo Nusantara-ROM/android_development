@@ -225,6 +225,9 @@ public class ConnectionManager {
     }
 
     private void onInitialized() {
+        if (mDiscoverySession == null) {
+            return;
+        }
         synchronized (mConnectionStatus) {
             mConnectionStatus.state = ConnectionStatus.State.INITIALIZED;
             notifyStateChangedLocked();

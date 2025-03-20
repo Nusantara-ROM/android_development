@@ -78,6 +78,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".DisplayActivity"
+            android:label="Virtual Display"
+            android:exported="false" />
+        <activity
             android:name=".CustomLauncherActivity"
             android:exported="true"
             android:launchMode="singleTop"

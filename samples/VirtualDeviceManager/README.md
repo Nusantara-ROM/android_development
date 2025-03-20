@@ -312,7 +312,11 @@ you likely need to enable this in the host Settings. On a Pixel device: System
 
 #### Debug
 
--   **Record encoder output**: Enables recording the output of the encoder on
+-   **Single device demo**: Does not require a connection to a client device.
+    The contents of the virtual displays are rendered locally in a separate
+    activity.
+
+- **Record encoder output**: Enables recording the output of the encoder on
     the host device to a local file on the device. This can be helpful with
     debugging Encoding related issues. To download and play the file locally:
 
