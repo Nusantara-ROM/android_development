@@ -14,7 +14,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <TextureView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextureView
         android:id="@+id/display_surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

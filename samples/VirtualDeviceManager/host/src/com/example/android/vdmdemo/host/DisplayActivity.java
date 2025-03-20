@@ -16,8 +16,19 @@
 
 package com.example.android.vdmdemo.host;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.SurfaceTexture;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
+import android.view.TextureView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -31,14 +42,105 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint(AppCompatActivity.class)
 public class DisplayActivity extends Hilt_DisplayActivity {
 
+    public static final String TAG = "VdmHost_DisplayActivity";
+
+    // Approximately, see
+    // https://developer.android.com/reference/android/util/DisplayMetrics#density
+    private static final float DIP_TO_DPI = 160f;
+
+    static final String EXTRA_DISPLAY_ID = "displayId";
+
+    private VdmService mVdmService = null;
+    private int mDisplayId;
+    private Surface mSurface;
+    private int mSurfaceWidth;
+    private int mSurfaceHeight;
+    private int mDpi;
+
+    private RemoteDisplay mDisplay;
+
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            Log.d(TAG, "Connected to VDM Service");
+            mVdmService = ((VdmService.LocalBinder) binder).getService();
+            createDisplay();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName className) {
+            Log.d(TAG, "Disconnected from VDM Service");
+            mVdmService = null;
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mDisplayId = getIntent().getIntExtra(EXTRA_DISPLAY_ID, Display.INVALID_DISPLAY);
+        mDpi = (int) (getResources().getDisplayMetrics().density * DIP_TO_DPI);
+
         setContentView(R.layout.activity_display);
         Toolbar toolbar = requireViewById(R.id.main_tool_bar);
         setSupportActionBar(toolbar);
-
+        setTitle(getTitle() + " " + mDisplayId);
         EdgeToEdgeUtils.applyTopInsets(toolbar);
+
+        TextureView textureView = requireViewById(R.id.display_surface_view);
+        EdgeToEdgeUtils.applyBottomInsets(textureView);
+
+        textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override
+            public void onSurfaceTextureUpdated(@NonNull SurfaceTexture texture) {}
+
+            @Override
+            public void onSurfaceTextureAvailable(
+                    @NonNull SurfaceTexture texture, int width, int height) {
+                Log.v(TAG, "Setting surface for local display " + mDisplayId);
+                mSurface = new Surface(texture);
+                mSurfaceWidth = width;
+                mSurfaceHeight = height;
+                createDisplay();
+            }
+
+            @Override
+            public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture texture) {
+                Log.v(TAG, "onSurfaceTextureDestroyed for local display " + mDisplayId);
+                mSurface = null;
+                return true;
+            }
+
+            @Override
+            public void onSurfaceTextureSizeChanged(
+                    @NonNull SurfaceTexture texture, int width, int height) {
+                Log.v(TAG, "onSurfaceTextureSizeChanged for local display " + mDisplayId);
+                if (mDisplay != null) {
+                    mDisplay.reset(width, height, mDpi);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, VdmService.class);
+        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(mServiceConnection);
+    }
+
+    private synchronized void createDisplay() {
+        if (mVdmService == null || mSurface == null || mDisplay != null) {
+            return;
+        }
+
+        mDisplay = mVdmService.createRemoteDisplay(
+                this, mDisplayId, mSurfaceWidth, mSurfaceHeight, mDpi, mSurface, null);
     }
 }
