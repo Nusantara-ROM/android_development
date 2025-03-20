@@ -62,7 +62,6 @@ import android.os.Looper;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.Display;
-import android.view.Surface;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -393,7 +392,7 @@ public final class VdmService extends Hilt_VdmService {
             createRemoteDisplay(this, event.getDisplayId(),
                     event.getDisplayCapabilities().getViewportWidth(),
                     event.getDisplayCapabilities().getViewportHeight(),
-                    event.getDisplayCapabilities().getDensityDpi(), null, mRemoteIo);
+                    event.getDisplayCapabilities().getDensityDpi(), mRemoteIo);
         } else if (event.hasStopStreaming() && !event.getStopStreaming().getPause()) {
             closeRemoteDisplay(event.getDisplayId());
         } else if (event.hasDisplayChangeEvent() && event.getDisplayChangeEvent().getFocused()) {
@@ -735,25 +734,20 @@ public final class VdmService extends Hilt_VdmService {
     }
 
     RemoteDisplay createRemoteDisplay(
-            Context context, int displayId, int width, int height, int dpi, Surface surface,
+            Context context, int remoteDisplayId, int width, int height, int dpi,
             RemoteIo remoteIo) {
-        Optional<RemoteDisplay> existingDisplay =
-                mDisplayRepository.getDisplayByRemoteId(displayId);
-        if (existingDisplay.isPresent()) {
-            existingDisplay.get().setSurface(surface);
-            existingDisplay.get().reset(width, height, dpi);
-            return existingDisplay.get();
-        }
-
-        RemoteDisplay remoteDisplay = new RemoteDisplay(context, displayId, width, height, dpi,
-                mVirtualDevice, surface, remoteIo, mPendingDisplayType, mPreferenceController);
-        remoteDisplay.setSurface(surface);
+        RemoteDisplay remoteDisplay = new RemoteDisplay(context, remoteDisplayId, width, height,
+                dpi, mVirtualDevice, remoteIo, mPendingDisplayType, mPreferenceController);
         mDisplayRepository.addDisplay(remoteDisplay);
         if (mPendingRemoteIntent != null) {
             remoteDisplay.launchIntent(mPendingRemoteIntent);
             mPendingRemoteIntent = null;
         }
         return remoteDisplay;
+    }
+
+    Optional<RemoteDisplay> getRemoteDisplay(int remoteDisplayId) {
+        return mDisplayRepository.getDisplayByRemoteId(remoteDisplayId);
     }
 
     void closeRemoteDisplay(int remoteDisplayId) {
