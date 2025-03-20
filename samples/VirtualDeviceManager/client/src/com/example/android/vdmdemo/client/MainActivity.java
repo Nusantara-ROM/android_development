@@ -16,6 +16,7 @@
 
 package com.example.android.vdmdemo.client;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -100,13 +101,15 @@ public class MainActivity extends Hilt_MainActivity {
                     mRemoteIo.sendMessage(RemoteEvent.newBuilder()
                             .setDeviceCapabilities(DeviceCapabilities.newBuilder()
                                     .setDeviceName(Build.MODEL)
+                                    .setBluetoothDeviceName(
+                                            BluetoothAdapter.getDefaultAdapter().getName())
                                     .addAllSensorCapabilities(
                                             mSensorController.getSensorCapabilities())
                                     .addAllCameraCapabilities(
                                             mVirtualCameraController.getCameraCapabilities())
                                     .setSupportsAudioOutput(supportsAudioOutput)
-                                    .setSupportsAudioInput(supportsAudioInput)
-                            ).build());
+                                    .setSupportsAudioInput(supportsAudioInput))
+                            .build());
                 } else {
                     if (mDisplayAdapter != null) {
                         runOnUiThread(mDisplayAdapter::clearDisplays);
@@ -267,6 +270,11 @@ public class MainActivity extends Hilt_MainActivity {
             mPowerOn = event.getDeviceState().getPowerOn();
         } else if (event.hasBrightnessEvent()) {
             runOnUiThread(() -> setBrightness(event.getBrightnessEvent().getBrightness()));
+        } else if (event.hasRequestBluetoothDiscoverable()) {
+            if (BluetoothAdapter.getDefaultAdapter().getScanMode()
+                    != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+                startActivity(new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE));
+            }
         }
     }
 
