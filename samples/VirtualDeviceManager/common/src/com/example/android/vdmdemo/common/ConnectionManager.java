@@ -209,6 +209,10 @@ public class ConnectionManager {
             mDiscoverySession.close();
             mDiscoverySession = null;
         }
+        synchronized (mConnectionStatus) {
+            mConnectionStatus.state = ConnectionStatus.State.DISCONNECTED;
+            notifyStateChangedLocked();
+        }
     }
 
     private void onSocketAvailable(Socket socket) throws IOException {
