@@ -25,6 +25,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.Surface;
 import android.view.TextureView;
 
@@ -58,6 +61,7 @@ public class DisplayActivity extends Hilt_DisplayActivity {
     private int mDpi;
 
     private RemoteDisplay mDisplay;
+    private boolean mPoweredOn = true;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -133,6 +137,44 @@ public class DisplayActivity extends Hilt_DisplayActivity {
     protected void onStop() {
         super.onStop();
         unbindService(mServiceConnection);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.display, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.close:
+                if (mVdmService != null) {
+                    mVdmService.closeRemoteDisplay(mDisplayId);
+                }
+                finish();
+                return true;
+            case R.id.pip:
+                // TODO(b/404803361): enter PiP
+                return true;
+            case R.id.power:
+                if (mDisplay != null) {
+                    mPoweredOn = !mPoweredOn;
+                    mVdmService.setPowerState(mPoweredOn);
+                }
+                return true;
+            case R.id.home:
+                if (mDisplay != null) {
+                    mDisplay.goHome();
+                }
+                return true;
+            case R.id.back:
+                // TODO(b/404803361): send back
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private synchronized void createDisplay() {

@@ -395,13 +395,8 @@ public final class VdmService extends Hilt_VdmService {
             closeRemoteDisplay(event.getDisplayId());
         } else if (event.hasDisplayChangeEvent() && event.getDisplayChangeEvent().getFocused()) {
             mInputController.setFocusedRemoteDisplayId(event.getDisplayId());
-        } else if (event.hasDeviceState() && VdmCompat.isAtLeastB()
-                && Flags.deviceAwareDisplayPower() && mVirtualDevice != null) {
-            if (event.getDeviceState().getPowerOn()) {
-                mVirtualDevice.wakeUp();
-            } else {
-                mVirtualDevice.goToSleep();
-            }
+        } else if (event.hasDeviceState()) {
+            setPowerState(event.getDeviceState().getPowerOn());
         }
     }
 
@@ -743,6 +738,16 @@ public final class VdmService extends Hilt_VdmService {
 
     void closeRemoteDisplay(int remoteDisplayId) {
         mDisplayRepository.removeDisplayByRemoteId(remoteDisplayId);
+    }
+
+    void setPowerState(boolean poweredOn) {
+        if (VdmCompat.isAtLeastB() && Flags.deviceAwareDisplayPower() && mVirtualDevice != null) {
+            if (poweredOn) {
+                mVirtualDevice.wakeUp();
+            } else {
+                mVirtualDevice.goToSleep();
+            }
+        }
     }
 
     void startIntentOnDisplayIndex(Intent intent, int displayIndex) {
