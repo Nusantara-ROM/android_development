@@ -614,12 +614,11 @@ public final class VdmService extends Hilt_VdmService {
 
             if (mDeviceCapabilities.getSensorCapabilitiesCount() > 0) {
                 mRemoteSensorManager = new RemoteSensorManager(mRemoteIo);
-                virtualDeviceBuilder
-                        .setDevicePolicy(POLICY_TYPE_SENSORS, DEVICE_POLICY_CUSTOM)
-                        .setVirtualSensorCallback(
-                                MoreExecutors.directExecutor(),
-                                mRemoteSensorManager.getVirtualSensorCallback());
+                virtualDeviceBuilder.setVirtualSensorCallback(
+                        MoreExecutors.directExecutor(),
+                        mRemoteSensorManager.getVirtualSensorCallback());
             }
+            virtualDeviceBuilder.setDevicePolicy(POLICY_TYPE_SENSORS, DEVICE_POLICY_CUSTOM);
         }
 
         if (mPreferenceController.getBoolean(R.string.pref_enable_client_camera)) {
