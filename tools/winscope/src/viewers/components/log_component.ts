@@ -27,7 +27,7 @@ import {
 } from '@angular/core';
 import {MatSelectChange} from '@angular/material/select';
 
-import {DOMUtils} from 'common/dom_utils';
+import {isElementVisible, KeyboardEventKey} from 'common/dom_utils';
 import {Timestamp, TimestampFormatType} from 'common/time/time';
 import {TimeUtils} from 'common/time/time_utils';
 import {TraceType} from 'trace/trace_type';
@@ -368,15 +368,13 @@ export class LogComponent {
 
   @HostListener('document:keydown', ['$event'])
   async handleKeyboardEvent(event: KeyboardEvent) {
-    const logComponentVisible = DOMUtils.isElementVisible(
-      this.elementRef.nativeElement,
-    );
-    if (event.key === 'ArrowDown' && logComponentVisible) {
+    const logComponentVisible = isElementVisible(this.elementRef.nativeElement);
+    if (event.key === KeyboardEventKey.ARROW_DOWN && logComponentVisible) {
       event.stopPropagation();
       event.preventDefault();
       this.emitEvent(ViewerEvents.ArrowDownPress);
     }
-    if (event.key === 'ArrowUp' && logComponentVisible) {
+    if (event.key === KeyboardEventKey.ARROW_UP && logComponentVisible) {
       event.stopPropagation();
       event.preventDefault();
       this.emitEvent(ViewerEvents.ArrowUpPress);
