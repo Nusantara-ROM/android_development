@@ -109,7 +109,6 @@ describe('SelectWithFilterComponent', () => {
 
   it('applies selection correctly', () => {
     openSelectPanel();
-
     const options = getOptions();
 
     options[0].click();
@@ -208,6 +207,71 @@ describe('SelectWithFilterComponent', () => {
     checkSelectValue(['0', '1', '2']);
   });
 
+  it('does not emit second change after shift + click for adjacent options', () => {
+    openSelectPanel();
+    const options = getOptions();
+
+    const shiftAndClick = new MouseEvent('click', {shiftKey: true});
+    options[0].dispatchEvent(shiftAndClick);
+    expect(selectChangeSpy).toHaveBeenCalledTimes(1);
+
+    options[1].dispatchEvent(shiftAndClick);
+    expect(selectChangeSpy).toHaveBeenCalledTimes(2);
+
+    options[0].dispatchEvent(shiftAndClick);
+    expect(selectChangeSpy).toHaveBeenCalledTimes(3);
+
+    options[1].click();
+    expect(selectChangeSpy).toHaveBeenCalledTimes(4);
+  });
+
+  it('emits second change after shift + click to toggle options in-between', () => {
+    openSelectPanel();
+    const options = getOptions();
+
+    const shiftAndClick = new MouseEvent('click', {shiftKey: true});
+    options[0].click();
+    selectChangeSpy.calls.reset();
+
+    options[2].dispatchEvent(shiftAndClick);
+    expect(selectChangeSpy).toHaveBeenCalledTimes(2);
+    checkSelectValue(['0', '2', '1'], ['0', '1', '2']);
+    selectChangeSpy.calls.reset();
+
+    options[0].dispatchEvent(shiftAndClick);
+    expect(selectChangeSpy).toHaveBeenCalledTimes(2);
+    checkSelectValue([]);
+  });
+
+  it('sets in-between options to value of clicked option, regardless of current state', () => {
+    component.allOptions.push('3');
+    openSelectPanel();
+    const options = getOptions();
+
+    const shiftAndClick = new MouseEvent('click', {shiftKey: true});
+    options[2].click();
+    options[3].click();
+    fixture.detectChanges();
+    checkSelectValue(['2', '3']);
+    selectChangeSpy.calls.reset();
+
+    options[0].dispatchEvent(shiftAndClick);
+    fixture.detectChanges();
+    expect(selectChangeSpy).toHaveBeenCalledTimes(2);
+    checkSelectValue(['0', '2', '3', '1'], ['0', '1', '2', '3']);
+
+    options[2].click();
+    options[3].click();
+    fixture.detectChanges();
+    checkSelectValue(['0', '1']);
+    selectChangeSpy.calls.reset();
+
+    options[0].dispatchEvent(shiftAndClick);
+    fixture.detectChanges();
+    expect(selectChangeSpy).toHaveBeenCalledTimes(2);
+    checkSelectValue([]);
+  });
+
   function openSelectPanel() {
     assertDefined(
       htmlElement.querySelector<HTMLElement>('.mat-select-trigger'),
@@ -254,17 +318,17 @@ describe('SelectWithFilterComponent', () => {
     ).slice(1);
   }
 
-  function checkSelectValue(expected: string[]) {
+  function checkSelectValue(expValues: string[], expOpts = expValues) {
     expect(selectChangeSpy).toHaveBeenCalled();
     expect(
       assertDefined(selectChangeSpy.calls.mostRecent().args[0]).value,
-    ).toEqual(expected);
+    ).toEqual(expValues);
     if (!document.querySelector('.mat-select-panel')) {
       openSelectPanel();
     }
     expect(
       Array.from(getPinnedOptions()).map((o) => o.textContent?.trim()),
-    ).toEqual(expected);
+    ).toEqual(expOpts);
   }
 
   @Component({
