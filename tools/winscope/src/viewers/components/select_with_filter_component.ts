@@ -153,10 +153,12 @@ export class SelectWithFilterComponent {
         ? this.options.slice(this.lastClickedIndex, i)
         : this.options.slice(i + 1, this.lastClickedIndex + 1);
 
+    const filteredOptions = optionsToToggle.filter((o) => !this.hideOption(o));
+
     if (option.selected) {
-      this.addValuesToSelect(select, optionsToToggle);
+      this.addValuesToSelect(select, filteredOptions);
     } else {
-      this.removeValuesFromSelect(select, optionsToToggle);
+      this.removeValuesFromSelect(select, filteredOptions);
     }
 
     this.lastClickedIndex = i;

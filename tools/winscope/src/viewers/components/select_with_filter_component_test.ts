@@ -33,6 +33,7 @@ import {KeyboardEventCode, KeyboardEventKeyCode} from 'common/dom_utils';
 import {SelectWithFilterComponent} from './select_with_filter_component';
 
 describe('SelectWithFilterComponent', () => {
+  const shiftAndClick = new MouseEvent('click', {shiftKey: true});
   let fixture: ComponentFixture<TestHostComponent>;
   let component: TestHostComponent;
   let htmlElement: HTMLElement;
@@ -211,7 +212,6 @@ describe('SelectWithFilterComponent', () => {
     openSelectPanel();
     const options = getOptions();
 
-    const shiftAndClick = new MouseEvent('click', {shiftKey: true});
     options[0].dispatchEvent(shiftAndClick);
     expect(selectChangeSpy).toHaveBeenCalledTimes(1);
 
@@ -229,7 +229,6 @@ describe('SelectWithFilterComponent', () => {
     openSelectPanel();
     const options = getOptions();
 
-    const shiftAndClick = new MouseEvent('click', {shiftKey: true});
     options[0].click();
     selectChangeSpy.calls.reset();
 
@@ -248,7 +247,6 @@ describe('SelectWithFilterComponent', () => {
     openSelectPanel();
     const options = getOptions();
 
-    const shiftAndClick = new MouseEvent('click', {shiftKey: true});
     options[2].click();
     options[3].click();
     fixture.detectChanges();
@@ -270,6 +268,23 @@ describe('SelectWithFilterComponent', () => {
     fixture.detectChanges();
     expect(selectChangeSpy).toHaveBeenCalledTimes(2);
     checkSelectValue([]);
+  });
+
+  it('only toggles non-hidden options between last and current clicks', () => {
+    component.allOptions.push('10');
+    openSelectPanel();
+    const options = getOptions();
+
+    const inputEl = getFilterInput();
+    dispatchInput(inputEl, '1');
+
+    options[1].click();
+    fixture.detectChanges();
+    selectChangeSpy.calls.reset();
+    options[3].dispatchEvent(shiftAndClick);
+    fixture.detectChanges();
+    checkSelectValue(['1', '10']);
+    expect(selectChangeSpy).toHaveBeenCalledTimes(2);
   });
 
   function openSelectPanel() {
