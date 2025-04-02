@@ -28,8 +28,8 @@ import {assertDefined} from 'common/assert_utils';
 import {Rect} from 'common/geometry/rect';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {TimeRange} from 'common/time/time';
+import {waitToBeCalled} from 'test/unit/spy_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
-import {waitToBeCalled} from 'test/utils';
 import {TraceType} from 'trace/trace_type';
 import {DefaultTimelineRowComponent} from './default_timeline_row_component';
 

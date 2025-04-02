@@ -44,8 +44,8 @@ import {
   NoTraceTargetsSelected,
   WinscopeEvent,
 } from 'messaging/winscope_event';
+import {waitToBeCalled} from 'test/unit/spy_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
-import {waitToBeCalled} from 'test/utils';
 import {TraceType} from 'trace/trace_type';
 import {
   AdbDeviceConnection,
