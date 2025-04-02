@@ -28,9 +28,9 @@ import {
   FailedToCreateTracesParser,
   IncompleteFrameMapping,
   InvalidLegacyTrace,
+  InvalidPerfettoTrace,
   NoTraceTargetsSelected,
   NoValidFiles,
-  UnsupportedFileFormat,
 } from 'messaging/user_warnings';
 import {
   ActiveTraceChanged,
@@ -281,7 +281,9 @@ describe('Mediator', () => {
     );
     expect(
       userNotifierChecker.expectNotified([
-        new UnsupportedFileFormat('empty.pb'),
+        new InvalidPerfettoTrace('empty.pb', [
+          'Perfetto trace has no Winscope trace entries',
+        ]),
       ]),
     );
     expect(appComponent.onWinscopeEvent).not.toHaveBeenCalled();

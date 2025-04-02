@@ -238,9 +238,7 @@ describe('TracePipeline', () => {
     const corruptedArchive = await getFixtureFile(
       'invalid_files/corrupted_archive.zip',
     );
-
     await loadFiles([corruptedArchive]);
-
     await expectLoadResult(0, [
       new CorruptedArchive(corruptedArchive),
       new NoValidFiles(),
@@ -250,8 +248,23 @@ describe('TracePipeline', () => {
   it('is robust to invalid trace files', async () => {
     const invalidFiles = [jpgFile];
     await loadFiles(invalidFiles);
-
     await expectLoadResult(0, [
+      new UnsupportedFileFormat('winscope_homepage.jpg'),
+    ]);
+  });
+
+  it('notifies for unsupported file uploaded before valid file', async () => {
+    const invalidFiles = [jpgFile, perfettoFile];
+    await loadFiles(invalidFiles);
+    await expectLoadResult(1, [
+      new UnsupportedFileFormat('winscope_homepage.jpg'),
+    ]);
+  });
+
+  it('notifies for unsupported file uploaded after valid file', async () => {
+    const invalidFiles = [perfettoFile, jpgFile];
+    await loadFiles(invalidFiles);
+    await expectLoadResult(1, [
       new UnsupportedFileFormat('winscope_homepage.jpg'),
     ]);
   });
@@ -260,9 +273,7 @@ describe('TracePipeline', () => {
     const invalidFiles = [
       await getFixtureFile('invalid_files/invalid_protolog.perfetto-trace'),
     ];
-
     await loadFiles(invalidFiles);
-
     await expectLoadResult(0, [
       new InvalidPerfettoTrace('invalid_protolog.perfetto-trace', [
         'Perfetto trace has no Winscope trace entries',
