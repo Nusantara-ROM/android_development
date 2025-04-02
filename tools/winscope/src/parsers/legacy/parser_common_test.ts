@@ -32,7 +32,7 @@ describe('Parser', () => {
 
   it('is robust to empty trace file', async () => {
     const trace = new TraceFile(
-      await getFixtureFile('traces/empty.pb'),
+      await getFixtureFile('invalid_files/empty.pb'),
       undefined,
     );
     const parsers = await new ParserFactory().createParsers(
@@ -45,7 +45,7 @@ describe('Parser', () => {
 
   it('is robust to trace with no entries', async () => {
     const trace = new TraceFile(
-      await getFixtureFile('traces/no_entries_InputMethodClients.pb'),
+      await getFixtureFile('invalid_files/no_entries_InputMethodClients.pb'),
       undefined,
     );
     const parsers = await new ParserFactory().createParsers(
@@ -58,7 +58,7 @@ describe('Parser', () => {
 
   it('is robust to view capture trace with no entries', async () => {
     const trace = new TraceFile(
-      await getFixtureFile('traces/no_entries_view_capture.vc'),
+      await getFixtureFile('invalid_files/no_entries_view_capture.vc'),
       undefined,
     );
     const parsers = await new ParserFactory().createParsers(

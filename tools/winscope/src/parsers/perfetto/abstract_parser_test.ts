@@ -19,7 +19,7 @@ import {TraceType} from 'trace/trace_type';
 describe('Perfetto AbstractParser', () => {
   it('fails parsing if there are no trace entries', async () => {
     const parsers = await UnitTestUtils.getPerfettoParsers(
-      'traces/perfetto/no_winscope_traces.perfetto-trace',
+      'invalid_files/no_winscope_traces.perfetto-trace',
     );
     expect(parsers.length).toEqual(0);
   });
