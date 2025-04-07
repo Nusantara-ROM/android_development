@@ -60,8 +60,8 @@ import {
   ViewersLoaded,
   ViewersUnloaded,
 } from 'messaging/winscope_event';
+import {waitToBeCalled} from 'test/unit/spy_utils';
 import {TracesBuilder} from 'test/unit/traces_builder';
-import {waitToBeCalled} from 'test/utils';
 import {ViewerSurfaceFlingerComponent} from 'viewers/viewer_surface_flinger/viewer_surface_flinger_component';
 import {AppComponent} from './app_component';
 import {
