@@ -253,6 +253,12 @@ export class DOMTestHelper<T> {
       : expect(this.root.className).not.toContain(value);
   }
 
+  checkClassNameExact(value: string, isPresent = true) {
+    isPresent
+      ? expect(this.root.className).toEqual(value)
+      : expect(this.root.className).not.toEqual(value);
+  }
+
   checkDisabled(value: boolean) {
     if ('disabled' in this.root) {
       return (this.root as any).disabled === value;
