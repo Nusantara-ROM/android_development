@@ -73,6 +73,10 @@ describe('ParserSurfaceFlinger', () => {
       );
     });
 
+    it('does not provide entry', () => {
+      expect(realParser.getEntry).toThrow();
+    });
+
     it('converts to valid perfetto packets', async () => {
       const packets = realParser.convertToPerfettoPackets!(10);
       expect(packets.length).toEqual(21);
@@ -115,12 +119,6 @@ describe('ParserSurfaceFlinger', () => {
         expect(
           assertDefined(perfettoParser.getTimestamps()).slice(0, 3),
         ).toEqual(expected);
-      });
-
-      it('provides correct root entry node', async () => {
-        const entry = await perfettoParser.getEntry(1);
-        expect(entry.id).toEqual('LayerTraceEntry root');
-        expect(entry.name).toEqual('root');
       });
 
       it('decodes layer state flags', async () => {

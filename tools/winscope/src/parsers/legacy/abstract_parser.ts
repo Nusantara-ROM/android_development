@@ -44,7 +44,6 @@ export abstract class AbstractParser<
   protected abstract getMagicNumber(): undefined | number[];
   protected abstract decodeTrace(trace: Uint8Array): U[] | Promise<U[]>;
   protected abstract getTimestamp(decodedEntry: U): Timestamp;
-  protected abstract processDecodedEntry(index: number, decodedEntry: U): T;
 
   constructor(
     trace: TraceFile,
@@ -99,6 +98,10 @@ export abstract class AbstractParser<
   }
 
   convertToPerfettoPackets(sequenceId: number): perfetto.protos.TracePacket[] {
+    throw new Error('not implemented');
+  }
+
+  protected processDecodedEntry(index: number, decodedEntry: U): T {
     throw new Error('not implemented');
   }
 

@@ -82,7 +82,7 @@ export abstract class AbstractParser<T> implements Parser<T> {
       }
     }
     this.realToBootTimeOffsetNs = await this.queryRealToBootTimeOffset(
-      assertDefined(lastNonZeroTimestamp),
+      assertDefined(lastNonZeroTimestamp ?? INVALID_TIME_NS),
     );
   }
 

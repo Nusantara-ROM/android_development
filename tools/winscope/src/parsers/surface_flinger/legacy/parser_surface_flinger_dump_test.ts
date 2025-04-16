@@ -73,9 +73,8 @@ describe('ParserSurfaceFlingerDump', () => {
       expect(parserWithTimezoneInfo.getTimestamps()).toEqual(expected);
     });
 
-    it('retrieves trace entry', async () => {
-      const entry = await parser.getEntry(0);
-      expect(entry).toBeTruthy();
+    it('does not provide entry', () => {
+      expect(parser.getEntry).toThrow();
     });
 
     it('converts to valid perfetto trace', async () => {
@@ -125,6 +124,10 @@ describe('ParserSurfaceFlingerDump', () => {
       expect(
         packets[0].surfaceflingerLayersSnapshot?.layers?.layers?.length,
       ).toEqual(91);
+    });
+
+    it('does not provide entry', () => {
+      expect(parser.getEntry).toThrow();
     });
   });
 });
