@@ -31,8 +31,8 @@ export interface FilterResult {
 }
 
 export class TraceFileFilter {
-  private static readonly BUGREPORT_SYSTRACE_PATH =
-    'FS/data/misc/perfetto-traces/bugreport/systrace.pftrace';
+  private static readonly BUGREPORT_SYSTRACE_DIR =
+    'FS/data/misc/perfetto-traces/bugreport';
   private static readonly BUGREPORT_LEGACY_FILES_ALLOWLIST = [
     'FS/data/misc/wmtrace/',
     'FS/data/misc/perfetto-traces/',
@@ -176,9 +176,12 @@ export class TraceFileFilter {
         unzippedLegacyFiles.push(file);
       }
     }
-    const perfettoFile = perfettoFiles.find(
-      (file) => file.file.name === TraceFileFilter.BUGREPORT_SYSTRACE_PATH,
-    );
+    const perfettoFile = perfettoFiles.find((file) => {
+      return (
+        FileUtils.getFileDirectory(file.file.name) ===
+        TraceFileFilter.BUGREPORT_SYSTRACE_DIR
+      );
+    });
     return {
       perfetto: perfettoFile,
       legacy: unzippedLegacyFiles,
