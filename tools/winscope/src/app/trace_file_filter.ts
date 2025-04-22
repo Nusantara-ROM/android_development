@@ -15,8 +15,8 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {byteArrayToString} from 'common/buffer_utils';
 import {FileUtils} from 'common/file_utils';
+import {utf8Decode} from 'common/string_utils';
 import {TimezoneInfo} from 'common/time/time';
 import {UserNotifier} from 'common/user_notifier';
 import {TraceOverridden} from 'messaging/user_warnings';
@@ -91,7 +91,7 @@ export class TraceFileFilter {
     }
 
     const traceBuffer = new Uint8Array(await rawBugReport.file.arrayBuffer());
-    const fileData = byteArrayToString(traceBuffer);
+    const fileData = utf8Decode(traceBuffer);
 
     const timezoneStartIndex = fileData.indexOf('[persist.sys.timezone]');
     if (timezoneStartIndex === -1) {
@@ -203,7 +203,7 @@ export class TraceFileFilter {
     const metadata: TraceMetadata = {};
     for (const file of files) {
       const buffer = new Uint8Array(await file.file.arrayBuffer());
-      const text = byteArrayToString(buffer);
+      const text = utf8Decode(buffer);
       try {
         const data = JSON.parse(text);
         if (
