@@ -15,7 +15,7 @@
  */
 
 import {ArrayBufferBuilder} from 'common/buffer_utils';
-import {binaryEncode, utf8Decode} from 'common/string_utils';
+import {base64Encode, binaryEncode, utf8Decode} from 'common/string_utils';
 import {UnitTestUtils} from 'test/unit/utils';
 import {SyncStream} from './sync_stream';
 
@@ -56,14 +56,14 @@ describe('SyncStream', () => {
     );
   });
 
-  it('calls error listener if unexpected message type received - AdbResponse json', async () => {
+  it('calls error listener if unexpected message type received - AdbResponse json without response', async () => {
     setMessageResponses([
       JSON.stringify({error: {type: '', message: 'failed'}}),
     ]);
     const receivedData = await stream.pullFile(testFilepath);
     expect(errorListener).toHaveBeenCalledOnceWith(
       `Could not parse data:\nReceived: {"error":{"type":"","message":"failed"}}` +
-        `\nError: Expected message data to be ArrayBuffer or Blob.` +
+        `\nError: Received empty ADB response.` +
         `\nADB Error: failed`,
     );
     expect(receivedData).toEqual(Uint8Array.from([]));
@@ -75,7 +75,7 @@ describe('SyncStream', () => {
     const receivedData = await stream.pullFile(testFilepath);
     expect(errorListener).toHaveBeenCalledOnceWith(
       `Could not parse data:\nReceived: unknown error` +
-        `\nError: Expected message data to be ArrayBuffer or Blob.`,
+        `\nError: Failed to decode ADB JSON response.`,
     );
     expect(receivedData).toEqual(Uint8Array.from([]));
     errorListener.calls.reset();
@@ -247,6 +247,18 @@ describe('SyncStream', () => {
       .append(['DATA', testFileData.length, testFileData, 'DONE', emptyByte])
       .build();
     setMessageResponses([new Blob([messageData])]);
+    const receivedData = await stream.pullFile(testFilepath);
+    expect(utf8Decode(receivedData)).toEqual(testFileDataString);
+  });
+
+  it('pulls file data from AdbResponse json message with response', async () => {
+    const data = new ArrayBufferBuilder()
+      .append(['DATA', testFileData.length, testFileData, 'DONE', emptyByte])
+      .build();
+    const messageData = JSON.stringify({
+      response: base64Encode(new Uint8Array(data)),
+    });
+    setMessageResponses([messageData]);
     const receivedData = await stream.pullFile(testFilepath);
     expect(utf8Decode(receivedData)).toEqual(testFileDataString);
   });
