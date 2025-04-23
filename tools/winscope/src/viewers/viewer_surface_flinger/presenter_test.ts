@@ -23,6 +23,7 @@ import {
 } from 'messaging/winscope_event';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
+import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {UnitTestUtils} from 'test/unit/utils';
 import {CustomQueryType} from 'trace/custom_query';
@@ -242,7 +243,7 @@ the default for its data type.`,
   override createPresenterWithEmptyTrace(
     callback: NotifyHierarchyViewCallbackType<UiData>,
   ): Presenter {
-    const trace = UnitTestUtils.makeEmptyTrace(TraceType.SURFACE_FLINGER);
+    const trace = makeEmptyTrace(TraceType.SURFACE_FLINGER);
     const traces = new Traces();
     traces.addTrace(trace);
     return new Presenter(trace, traces, new InMemoryStorage(), callback);

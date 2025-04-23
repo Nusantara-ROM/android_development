@@ -19,6 +19,7 @@ import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {Store} from 'common/store/store';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {TraceBuilder} from 'test/unit/trace_builder';
+import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {UnitTestUtils} from 'test/unit/utils';
@@ -126,7 +127,7 @@ the default for its data type.`,
   override createPresenterWithEmptyTrace(
     callback: NotifyHierarchyViewCallbackType<ImeUiData>,
   ): AbstractPresenterInputMethod {
-    const trace = UnitTestUtils.makeEmptyTrace(this.imeTraceType);
+    const trace = makeEmptyTrace(this.imeTraceType);
     const traces = new Traces();
     traces.addTrace(trace);
     return new this.PresenterInputMethod(

@@ -298,18 +298,6 @@ class UnitTestUtils {
     return parser.getEntry(index);
   }
 
-  static makeEmptyTrace<T extends TraceType>(
-    traceType: T,
-    descriptors: string[] = [],
-  ): Trace<TraceEntryTypeMap[T]> {
-    return new TraceBuilder<TraceEntryTypeMap[T]>()
-      .setEntries([])
-      .setTimestamps([])
-      .setDescriptors(descriptors)
-      .setType(traceType)
-      .build();
-  }
-
   static makeFakeWebSocket(): jasmine.SpyObj<WebSocket> {
     const socket = jasmine.createSpyObj<WebSocket>(
       'WebSocket',

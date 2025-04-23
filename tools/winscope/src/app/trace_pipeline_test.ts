@@ -30,7 +30,7 @@ import {
   UnsupportedFileFormat,
 } from 'messaging/user_warnings';
 import {getFixtureFile} from 'test/unit/fixture_utils';
-import {TracesUtils} from 'test/unit/traces_utils';
+import {extractEntries} from 'test/unit/traces_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {TraceType} from 'trace/trace_type';
 import {QueryResult} from 'trace_processor/query_result';
@@ -114,9 +114,7 @@ describe('TracePipeline', () => {
     );
     expect(tracePipeline.getTraces().getSize()).toEqual(2);
 
-    const traceEntries = await TracesUtils.extractEntries(
-      tracePipeline.getTraces(),
-    );
+    const traceEntries = await extractEntries(tracePipeline.getTraces());
     expect(traceEntries.get(TraceType.WINDOW_MANAGER)?.length).toBeGreaterThan(
       0,
     );
@@ -140,7 +138,7 @@ describe('TracePipeline', () => {
     expect(traces.getSize()).toEqual(2);
     expect(traces.getTraces(TraceType.WINDOW_MANAGER).length).toEqual(2);
 
-    const traceEntries = await TracesUtils.extractEntries(traces);
+    const traceEntries = await extractEntries(traces);
     expect(traceEntries.get(TraceType.WINDOW_MANAGER)?.length).toBeGreaterThan(
       0,
     );

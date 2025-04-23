@@ -22,6 +22,7 @@ import {
   TracePositionUpdate,
 } from 'messaging/winscope_event';
 import {TraceBuilder} from 'test/unit/trace_builder';
+import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {UnitTestUtils} from 'test/unit/utils';
 import {CustomQueryType} from 'trace/custom_query';
 import {Parser} from 'trace/parser';
@@ -269,8 +270,8 @@ the default for its data type.`,
       it('exposes all VC traces', () => {
         const traces = new Traces();
         const vcTraces = [
-          UnitTestUtils.makeEmptyTrace(TraceType.VIEW_CAPTURE),
-          UnitTestUtils.makeEmptyTrace(TraceType.VIEW_CAPTURE),
+          makeEmptyTrace(TraceType.VIEW_CAPTURE),
+          makeEmptyTrace(TraceType.VIEW_CAPTURE),
         ];
         vcTraces.forEach((trace) => traces.addTrace(trace));
         const notifyViewCallback = (newData: UiData) => {
@@ -298,7 +299,7 @@ the default for its data type.`,
       });
 
       it('handles double click if SF trace present', async () => {
-        const sfTrace = UnitTestUtils.makeEmptyTrace(TraceType.SURFACE_FLINGER);
+        const sfTrace = makeEmptyTrace(TraceType.SURFACE_FLINGER);
         const presenter = createPresenterWithSfTrace(
           assertDefined(this.traces),
           sfTrace,

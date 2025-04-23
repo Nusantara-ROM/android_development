@@ -19,6 +19,7 @@ import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {Store} from 'common/store/store';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {TraceBuilder} from 'test/unit/trace_builder';
+import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
 import {UnitTestUtils} from 'test/unit/utils';
 import {Trace} from 'trace/trace';
@@ -166,7 +167,7 @@ the default for its data type.`,
   override createPresenterWithEmptyTrace(
     callback: NotifyHierarchyViewCallbackType<UiData>,
   ): Presenter {
-    const trace = UnitTestUtils.makeEmptyTrace(TraceType.WINDOW_MANAGER);
+    const trace = makeEmptyTrace(TraceType.WINDOW_MANAGER);
     const traces = new Traces();
     traces.addTrace(trace);
     return new Presenter(trace, traces, new InMemoryStorage(), callback);

@@ -18,6 +18,7 @@ import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {TraceBuilder} from 'test/unit/trace_builder';
+import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {UnitTestUtils} from 'test/unit/utils';
 import {Parser} from 'trace/parser';
 import {Trace} from 'trace/trace';
@@ -84,7 +85,7 @@ class PresenterJankCujsTest extends AbstractLogViewerPresenterTest<UiData> {
   override async createPresenterWithEmptyTrace(
     callback: NotifyLogViewCallbackType<UiData>,
   ): Promise<Presenter> {
-    const trace = UnitTestUtils.makeEmptyTrace(TraceType.CUJS);
+    const trace = makeEmptyTrace(TraceType.CUJS);
     return new Presenter(trace, new InMemoryStorage(), callback);
   }
 
