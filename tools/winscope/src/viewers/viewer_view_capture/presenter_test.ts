@@ -21,9 +21,9 @@ import {
   TabbedViewSwitchRequest,
   TracePositionUpdate,
 } from 'messaging/winscope_event';
+import {getLayerTraceEntry, getParsers} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {UnitTestUtils} from 'test/unit/utils';
 import {CustomQueryType} from 'trace/custom_query';
 import {Parser} from 'trace/parser';
 import {Trace} from 'trace/trace';
@@ -126,7 +126,7 @@ the default for its data type.`,
   override readonly treeNodeShortName = 'TaskbarView@80213537';
 
   override async setUpTestEnvironment(): Promise<void> {
-    const parsers = (await UnitTestUtils.getParsers(
+    const parsers = (await getParsers(
       'traces/elapsed_and_real_timestamp/com.google.android.apps.nexuslauncher_0.vc',
     )) as Array<Parser<HierarchyTreeNode>>;
 
@@ -288,7 +288,7 @@ the default for its data type.`,
       it('extracts rects from SF trace', async () => {
         const sfTrace = new TraceBuilder<HierarchyTreeNode>()
           .setType(TraceType.SURFACE_FLINGER)
-          .setEntries([await UnitTestUtils.getLayerTraceEntry(0)])
+          .setEntries([await getLayerTraceEntry(0)])
           .build();
         const presenter = createPresenterWithSfTrace(
           assertDefined(this.traces),

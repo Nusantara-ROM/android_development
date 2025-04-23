@@ -17,9 +17,9 @@
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TracePositionUpdate} from 'messaging/winscope_event';
+import {getTracesParser} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {UnitTestUtils} from 'test/unit/utils';
 import {Parser} from 'trace/parser';
 import {Trace} from 'trace/trace';
 import {Traces} from 'trace/traces';
@@ -68,7 +68,7 @@ class PresenterJankCujsTest extends AbstractLogViewerPresenterTest<UiData> {
   private positionUpdate: TracePositionUpdate | undefined;
 
   override async setUpTestEnvironment(): Promise<void> {
-    const parser = (await UnitTestUtils.getTracesParser([
+    const parser = (await getTracesParser([
       'traces/elapsed_and_real_timestamp/eventlog.winscope',
     ])) as Parser<PropertyTreeNode>;
 
