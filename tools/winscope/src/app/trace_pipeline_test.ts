@@ -29,6 +29,7 @@ import {
   TraceOverridden,
   UnsupportedFileFormat,
 } from 'messaging/user_warnings';
+import {BugreportFileSelected} from 'messaging/winscope_event';
 import {getFixtureFile} from 'test/unit/fixture_utils';
 import {TracesUtils} from 'test/unit/traces_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
@@ -36,6 +37,7 @@ import {TraceType} from 'trace/trace_type';
 import {QueryResult} from 'trace_processor/query_result';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {FilesSource} from './files_source';
+import {TraceFileFilter} from './trace_file_filter';
 import {TracePipeline} from './trace_pipeline';
 
 describe('TracePipeline', () => {
@@ -231,6 +233,18 @@ describe('TracePipeline', () => {
     expect(
       timestampConverter.makeTimestampFromMonotonicNs(14500282843n),
     ).toEqual(expectedTimestamp);
+  });
+
+  it('forwards winscope events to file filter', async () => {
+    const setEmitEventSpy = spyOn(TraceFileFilter.prototype, 'setEmitEvent');
+    const emitEventSpy = jasmine.createSpy();
+    tracePipeline.setEmitEvent(emitEventSpy);
+    expect(setEmitEventSpy).toHaveBeenCalledOnceWith(emitEventSpy);
+
+    const onEventSpy = spyOn(TraceFileFilter.prototype, 'onWinscopeEvent');
+    const testEvent = new BugreportFileSelected('f1');
+    tracePipeline.onWinscopeEvent(testEvent);
+    expect(onEventSpy).toHaveBeenCalledOnceWith(testEvent);
   });
 
   it('is robust to corrupted archive', async () => {
