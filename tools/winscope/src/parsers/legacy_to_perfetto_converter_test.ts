@@ -115,6 +115,16 @@ describe('LegacyToPerfettoConverter', () => {
     expect(trace.packet).toEqual([clockSnapshot20, emptyPacket, testPacket2]);
   });
 
+  it('robust to errors in packet conversion', async () => {
+    const fileAndParser = makeFileAndParser(undefined, true);
+    expect(
+      await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
+        [fileAndParser],
+        0n,
+      ),
+    ).toBeUndefined();
+  });
+
   function makeExistingPerfettoFile(
     clockSnapshot20: perfetto.protos.TracePacket,
     emptyPacket: perfetto.protos.TracePacket,
@@ -132,6 +142,7 @@ describe('LegacyToPerfettoConverter', () => {
 
   function makeFileAndParser(
     testPacket?: perfetto.protos.TracePacket,
+    conversionError = false,
   ): FileAndParser {
     const parser = new ParserBuilder<object>()
       .setEntries([])
@@ -140,6 +151,10 @@ describe('LegacyToPerfettoConverter', () => {
     if (testPacket) {
       const parserConvertSpy = jasmine.createSpy();
       parserConvertSpy.and.returnValue([testPacket]);
+      parser.convertToPerfettoPackets = parserConvertSpy;
+    } else if (conversionError) {
+      const parserConvertSpy = jasmine.createSpy();
+      parserConvertSpy.and.throwError(new Error('conversion failed'));
       parser.convertToPerfettoPackets = parserConvertSpy;
     }
     return new FileAndParser(new TraceFile(new File([], '')), parser);

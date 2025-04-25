@@ -49,12 +49,16 @@ export class LegacyToPerfettoConverter {
       ) + 1;
     for (const fileAndParser of legacy) {
       if (fileAndParser.parser.convertToPerfettoPackets) {
-        const packets =
-          fileAndParser.parser.convertToPerfettoPackets(sequenceId);
-        if (packets.length > 0) {
-          packets[0].firstPacketOnSequence = true;
-          legacyPackets.push(...packets);
-          sequenceId++;
+        try {
+          const packets =
+            fileAndParser.parser.convertToPerfettoPackets(sequenceId);
+          if (packets.length > 0) {
+            packets[0].firstPacketOnSequence = true;
+            legacyPackets.push(...packets);
+            sequenceId++;
+          }
+        } catch (e) {
+          // swallow
         }
       }
     }
