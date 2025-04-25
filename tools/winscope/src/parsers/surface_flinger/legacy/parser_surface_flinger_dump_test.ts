@@ -41,7 +41,7 @@ describe('ParserSurfaceFlingerDump', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .setFilename('traces/elapsed_and_real_timestamp/dump_SurfaceFlinger.pb')
+        .addFilename('traces/elapsed_and_real_timestamp/dump_SurfaceFlinger.pb')
         .getParser<HierarchyTreeNode>();
     });
 
@@ -65,7 +65,7 @@ describe('ParserSurfaceFlingerDump', () => {
 
     it('does not apply timezone info', async () => {
       const parserWithTimezoneInfo = await new LegacyParserProvider()
-        .setFilename('traces/elapsed_and_real_timestamp/dump_SurfaceFlinger.pb')
+        .addFilename('traces/elapsed_and_real_timestamp/dump_SurfaceFlinger.pb')
         .setConverter(getTimestampConverter(true))
         .getParser<HierarchyTreeNode>();
 
@@ -97,7 +97,7 @@ describe('ParserSurfaceFlingerDump', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .setFilename('traces/elapsed_timestamp/dump_SurfaceFlinger.pb')
+        .addFilename('traces/elapsed_timestamp/dump_SurfaceFlinger.pb')
         .getParser<HierarchyTreeNode>();
     });
 

@@ -45,15 +45,15 @@ export async function getFixtureFile(
 }
 
 export class LegacyParserProvider {
-  private filename: string | undefined;
+  private filenames: string[] = [];
   private converter = getTimestampConverter();
   private initializeRealToElapsedTimeOffsetNs = true;
   private metadata: TraceMetadata = {};
   private convertToPerfetto = false;
   private latestRealToElapsedTimeOffsetNs = 0n;
 
-  setFilename(value: string) {
-    this.filename = value;
+  addFilename(value: string) {
+    this.filenames.push(value);
     return this;
   }
 
@@ -87,7 +87,9 @@ export class LegacyParserProvider {
 
     expect(parsers.length)
       .withContext(
-        `Should have been able to create a parser for ${this.filename}`,
+        `Should have been able to create a parser for ${this.filenames.join(
+          ', ',
+        )}`,
       )
       .toBeGreaterThanOrEqual(1);
 
@@ -95,12 +97,16 @@ export class LegacyParserProvider {
   }
 
   async getParsers(): Promise<Array<Parser<object>>> {
-    const file = new TraceFile(
-      await getFixtureFile(assertDefined(this.filename)),
-      undefined,
-    );
+    const files = [];
+    for (const filename of this.filenames) {
+      const file = new TraceFile(
+        await getFixtureFile(assertDefined(filename)),
+        undefined,
+      );
+      files.push(file);
+    }
     const processedFiles = await new LegacyParserFactory().processFiles(
-      [file],
+      files,
       this.converter,
       this.metadata,
     );
@@ -146,7 +152,7 @@ export async function getTrace<T extends TraceType>(
 ): Promise<Trace<T>> {
   const converter = getTimestampConverter(false);
   const legacyParsers = await new LegacyParserProvider()
-    .setFilename(filename)
+    .addFilename(filename)
     .setConverter(converter)
     .getParsers();
   expect(legacyParsers.length).toBeLessThanOrEqual(1);
@@ -165,26 +171,6 @@ export async function getTrace<T extends TraceType>(
     .setType(type)
     .setParser(perfettoParsers[0] as unknown as Parser<T>)
     .build();
-}
-
-export async function getParser(
-  filename: string,
-  converter = getTimestampConverter(),
-  initializeRealToElapsedTimeOffsetNs = true,
-  metadata: TraceMetadata = {},
-): Promise<Parser<object>> {
-  const parsers = await getParsers(
-    filename,
-    converter,
-    initializeRealToElapsedTimeOffsetNs,
-    metadata,
-  );
-
-  expect(parsers.length)
-    .withContext(`Should have been able to create a parser for ${filename}`)
-    .toBeGreaterThanOrEqual(1);
-
-  return parsers[0];
 }
 
 function createTimestamps(
@@ -214,31 +200,6 @@ function createTimestamps(
   }
   fileAndParsers.forEach((fileAndParser) => {
     fileAndParser.parser.createTimestamps();
-  });
-}
-
-export async function getParsers(
-  filename: string,
-  converter = getTimestampConverter(),
-  initializeRealToElapsedTimeOffsetNs = true,
-  metadata: TraceMetadata = {},
-): Promise<Array<Parser<object>>> {
-  const file = new TraceFile(await getFixtureFile(filename), undefined);
-  const processedFiles = await new LegacyParserFactory().processFiles(
-    [file],
-    converter,
-    metadata,
-  );
-  const fileAndParsers = processedFiles.parsers;
-
-  createTimestamps(
-    fileAndParsers,
-    initializeRealToElapsedTimeOffsetNs,
-    converter,
-  );
-
-  return fileAndParsers.map((fileAndParser) => {
-    return fileAndParser.parser;
   });
 }
 
@@ -290,7 +251,7 @@ export async function getTracesParser(
     await Promise.all(
       filenames.map(async (filename) => {
         return new LegacyParserProvider()
-          .setFilename(filename)
+          .addFilename(filename)
           .setConverter(converter)
           .setInitializeRealToElapsedTimeOffsetNs(true)
           .getParsers();
@@ -410,7 +371,7 @@ export async function getImeTraceEntries(): Promise<
 
 export async function getTraceEntry<T>(filename: string, index = 0) {
   const parser = await new LegacyParserProvider()
-    .setFilename(filename)
+    .addFilename(filename)
     .setConvertToPerfetto(true)
     .getParser<T>();
   return parser.getEntry(index);

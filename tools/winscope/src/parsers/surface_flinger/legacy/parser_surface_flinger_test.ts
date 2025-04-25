@@ -50,7 +50,7 @@ describe('ParserSurfaceFlinger', () => {
     beforeAll(async () => {
       jasmine.addCustomEqualityTester(timestampEqualityTester);
       realParser = await new LegacyParserProvider()
-        .setFilename('traces/elapsed_and_real_timestamp/SurfaceFlinger.pb')
+        .addFilename('traces/elapsed_and_real_timestamp/SurfaceFlinger.pb')
         .getParser<HierarchyTreeNode>();
     });
 
@@ -94,7 +94,7 @@ describe('ParserSurfaceFlinger', () => {
 
       beforeAll(async () => {
         perfettoParser = await new LegacyParserProvider()
-          .setFilename('traces/elapsed_and_real_timestamp/SurfaceFlinger.pb')
+          .addFilename('traces/elapsed_and_real_timestamp/SurfaceFlinger.pb')
           .setConvertToPerfetto(true)
           .setLatestRealToElapsedTimeOffsetNs(
             assertDefined(realParser.getRealToMonotonicTimeOffsetNs()),
@@ -203,7 +203,7 @@ describe('ParserSurfaceFlinger', () => {
     describe('handles duplicate ids', () => {
       it('is robust to duplicated layer ids', async () => {
         const parser = await new LegacyParserProvider()
-          .setFilename(
+          .addFilename(
             'traces/elapsed_and_real_timestamp/SurfaceFlinger_with_duplicated_ids.pb',
           )
           .setConvertToPerfetto(true)
@@ -246,7 +246,7 @@ describe('ParserSurfaceFlinger', () => {
 
     beforeAll(async () => {
       elapsedParser = await new LegacyParserProvider()
-        .setFilename('traces/elapsed_timestamp/SurfaceFlinger.pb')
+        .addFilename('traces/elapsed_timestamp/SurfaceFlinger.pb')
         .getParser<HierarchyTreeNode>();
     });
 

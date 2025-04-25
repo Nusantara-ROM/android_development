@@ -178,7 +178,7 @@ the default for its data type.`,
 
   override async setUpTestEnvironment(): Promise<void> {
     const parser = await new LegacyParserProvider()
-      .setFilename(
+      .addFilename(
         'traces/elapsed_and_real_timestamp/SurfaceFlinger_multidisplay.pb',
       )
       .setConvertToPerfetto(true)
