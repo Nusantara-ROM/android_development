@@ -89,7 +89,8 @@ export class ParserSurfaceFlinger extends AbstractParser<
       packet.timestampClockId =
         perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.MONOTONIC;
       packet.trustedPacketSequenceId = sequenceId;
-      packet.surfaceflingerLayersSnapshot = this.convertSnapshot(entry);
+      packet.surfaceflingerLayersSnapshot =
+        perfetto.protos.LayersSnapshotProto.fromObject(entry);
       packets.push(packet);
     }
     return packets;
@@ -102,12 +103,5 @@ export class ParserSurfaceFlinger extends AbstractParser<
     return this.timestampConverter.makeTimestampFromMonotonicNs(
       BigInt(assertDefined(entry.elapsedRealtimeNanos).toString()),
     );
-  }
-
-  private convertSnapshot(
-    legacy: android.surfaceflinger.ILayersTraceProto,
-  ): perfetto.protos.LayersSnapshotProto {
-    const snapshot = perfetto.protos.LayersSnapshotProto.fromObject(legacy);
-    return snapshot;
   }
 }

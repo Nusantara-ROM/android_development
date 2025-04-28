@@ -85,7 +85,7 @@ describe('ParserSurfaceFlinger', () => {
         packets[0].surfaceflingerLayersSnapshot?.layers?.layers?.length,
       ).toEqual(83);
       expect(packets[0].timestamp).toEqual(
-        Long.fromString(BigInt(14500282843n).toString()),
+        Long.fromString(BigInt(14500282843).toString()),
       );
       expect(packets[0].timestampClockId).toEqual(
         perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.MONOTONIC,
@@ -270,7 +270,7 @@ describe('ParserSurfaceFlinger', () => {
         packets[0].surfaceflingerLayersSnapshot?.layers?.layers?.length,
       ).toEqual(94);
       expect(packets[0].timestamp).toEqual(
-        Long.fromString(BigInt(850335483446n).toString()),
+        Long.fromString(BigInt(850335483446).toString()),
       );
       expect(packets[0].timestampClockId).toEqual(
         perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.MONOTONIC,
