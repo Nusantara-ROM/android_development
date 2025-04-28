@@ -310,70 +310,53 @@ export async function getWindowManagerState(
   );
 }
 
-export async function getLayerTraceEntry(
-  index = 0,
-): Promise<HierarchyTreeNode> {
-  return await getTraceEntry<HierarchyTreeNode>(
-    'traces/elapsed_timestamp/SurfaceFlinger.pb',
-    index,
-  );
-}
-
 export async function getViewCaptureEntry(): Promise<HierarchyTreeNode> {
   return await getTraceEntry<HierarchyTreeNode>(
     'traces/elapsed_and_real_timestamp/com.google.android.apps.nexuslauncher_0.vc',
   );
 }
 
-export async function getMultiDisplayLayerTraceEntry(): Promise<HierarchyTreeNode> {
-  return await getTraceEntry<HierarchyTreeNode>(
-    'traces/elapsed_and_real_timestamp/SurfaceFlinger_multidisplay.pb',
-  );
-}
-
 export async function getImeTraceEntries(): Promise<
   [Map<TraceType, HierarchyTreeNode>, Map<TraceType, HierarchyTreeNode>]
 > {
-  const surfaceFlingerEntry = await getTraceEntry<HierarchyTreeNode>(
-    'traces/ime/SurfaceFlinger_with_IME.pb',
-    5,
-  );
+  const [clientsParser, managerServiceParser, serviceParser, sfParser] =
+    (await new LegacyParserProvider()
+      .addFilename('traces/ime/SurfaceFlinger_with_IME.pb')
+      .addFilename('traces/ime/InputMethodService.pb')
+      .addFilename('traces/ime/InputMethodManagerService.pb')
+      .addFilename('traces/ime/InputMethodClients.pb')
+      .setConvertToPerfetto(true)
+      .getParsers()) as Array<Parser<HierarchyTreeNode>>;
+
+  const surfaceFlingerEntry = await sfParser.getEntry(5);
+  const imServiceEntry = await serviceParser.getEntry(0);
+  const imManagerServiceEntry = await managerServiceParser.getEntry(0);
+  const clientsEntry0 = await clientsParser.getEntry(0);
+  const clientsEntry1 = await clientsParser.getEntry(1);
+
   const windowManagerEntry = await getTraceEntry<HierarchyTreeNode>(
     'traces/ime/WindowManager_with_IME.pb',
     2,
   );
 
   const entries = new Map<TraceType, HierarchyTreeNode>();
-  entries.set(
-    TraceType.INPUT_METHOD_CLIENTS,
-    await getTraceEntry('traces/ime/InputMethodClients.pb'),
-  );
-  entries.set(
-    TraceType.INPUT_METHOD_MANAGER_SERVICE,
-    await getTraceEntry('traces/ime/InputMethodManagerService.pb'),
-  );
-  entries.set(
-    TraceType.INPUT_METHOD_SERVICE,
-    await getTraceEntry('traces/ime/InputMethodService.pb'),
-  );
+  entries.set(TraceType.INPUT_METHOD_CLIENTS, clientsEntry0);
+  entries.set(TraceType.INPUT_METHOD_MANAGER_SERVICE, imManagerServiceEntry);
+  entries.set(TraceType.INPUT_METHOD_SERVICE, imServiceEntry);
   entries.set(TraceType.SURFACE_FLINGER, surfaceFlingerEntry);
   entries.set(TraceType.WINDOW_MANAGER, windowManagerEntry);
 
   const secondEntries = new Map<TraceType, HierarchyTreeNode>();
-  secondEntries.set(
-    TraceType.INPUT_METHOD_CLIENTS,
-    await getTraceEntry('traces/ime/InputMethodClients.pb', 1),
-  );
+  secondEntries.set(TraceType.INPUT_METHOD_CLIENTS, clientsEntry1);
   secondEntries.set(TraceType.SURFACE_FLINGER, surfaceFlingerEntry);
   secondEntries.set(TraceType.WINDOW_MANAGER, windowManagerEntry);
 
   return [entries, secondEntries];
 }
 
-export async function getTraceEntry<T>(filename: string, index = 0) {
+async function getTraceEntry<T>(filename: string, index = 0) {
   const parser = await new LegacyParserProvider()
     .addFilename(filename)
-    .setConvertToPerfetto(true)
     .getParser<T>();
   return parser.getEntry(index);
 }

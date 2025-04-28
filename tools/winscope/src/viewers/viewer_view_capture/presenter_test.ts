@@ -21,10 +21,7 @@ import {
   TabbedViewSwitchRequest,
   TracePositionUpdate,
 } from 'messaging/winscope_event';
-import {
-  getLayerTraceEntry,
-  LegacyParserProvider,
-} from 'test/unit/fixture_utils';
+import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {CustomQueryType} from 'trace/custom_query';
@@ -292,10 +289,12 @@ the default for its data type.`,
       });
 
       it('extracts rects from SF trace', async () => {
-        const sfTrace = new TraceBuilder<HierarchyTreeNode>()
-          .setType(TraceType.SURFACE_FLINGER)
-          .setEntries([await getLayerTraceEntry(0)])
-          .build();
+        const sfTrace = Trace.fromParser(
+          await new LegacyParserProvider()
+            .addFilename('traces/elapsed_timestamp/SurfaceFlinger.pb')
+            .setConvertToPerfetto(true)
+            .getParser<HierarchyTreeNode>(),
+        );
         const presenter = createPresenterWithSfTrace(
           assertDefined(this.traces),
           sfTrace,

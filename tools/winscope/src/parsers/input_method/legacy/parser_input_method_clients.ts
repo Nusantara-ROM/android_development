@@ -16,11 +16,11 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {Timestamp} from 'common/time/time';
-import {HierarchyTreeClientsFactory} from 'parsers/input_method/hierarchy_tree_clients_factory';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
 import {TamperedMessageType} from 'parsers/tampered_message_type';
 import root from 'protos/ime/udc/json';
 import {android} from 'protos/ime/udc/static';
+import {perfetto} from 'protos/perfetto/trace/static';
 import {TraceType} from 'trace/trace_type';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 
@@ -39,16 +39,6 @@ class ParserInputMethodClients extends AbstractParser<
       root.lookupType(
         'android.view.inputmethod.InputMethodClientsTraceFileProto',
       ),
-    );
-  private static readonly ENTRY_FIELD =
-    ParserInputMethodClients.InputMethodClientsTraceFileProto.fields['entry'];
-  private static readonly CLIENT_FIELD = assertDefined(
-    ParserInputMethodClients.ENTRY_FIELD.tamperedMessageType,
-  ).fields['client'];
-  private static readonly HIERARCHY_TREE_FACTORY =
-    new HierarchyTreeClientsFactory(
-      ParserInputMethodClients.ENTRY_FIELD,
-      ParserInputMethodClients.CLIENT_FIELD,
     );
 
   private realToBootTimeOffsetNs: bigint | undefined;
@@ -81,25 +71,27 @@ class ParserInputMethodClients extends AbstractParser<
     return decoded.entry ?? [];
   }
 
+  override convertToPerfettoPackets(
+    sequenceId: number,
+  ): perfetto.protos.TracePacket[] {
+    const packets = [];
+
+    for (const entry of this.decodedEntries) {
+      const packet = perfetto.protos.TracePacket.create();
+      packet.timestamp = assertDefined(entry.elapsedRealtimeNanos);
+      packet.trustedPacketSequenceId = sequenceId;
+      packet.winscopeExtensions = {
+        '.perfetto.protos.WinscopeExtensionsImpl.inputmethodClients':
+          perfetto.protos.InputMethodClientsTraceProto.fromObject(entry),
+      };
+      packets.push(packet);
+    }
+    return packets;
+  }
+
   protected override getTimestamp(entry: ImeProto): Timestamp {
     return this.timestampConverter.makeTimestampFromBootTimeNs(
       BigInt(assertDefined(entry.elapsedRealtimeNanos).toString()),
-    );
-  }
-
-  override processDecodedEntry(
-    index: number,
-    entry: ImeProto,
-  ): HierarchyTreeNode {
-    if (
-      entry.elapsedRealtimeNanos === undefined ||
-      entry.elapsedRealtimeNanos === null
-    ) {
-      throw new Error('Missing elapsedRealtimeNanos on IME Clients entry');
-    }
-
-    return ParserInputMethodClients.HIERARCHY_TREE_FACTORY.makeHierarchyTree(
-      entry,
     );
   }
 }
