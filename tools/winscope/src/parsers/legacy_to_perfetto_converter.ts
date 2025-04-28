@@ -209,6 +209,17 @@ export class LegacyToPerfettoConverter {
     legacyParsers: Array<Parser<object>>,
     trace: perfetto.protos.Trace,
   ): perfetto.protos.TracePacket[] {
+    const [largestUid, largestPid] = trace.packet.reduce(
+      ([uid, pid], packet) => {
+        return [
+          Math.max(packet.trustedUid ?? 0, uid),
+          Math.max(packet.trustedPid ?? 0, pid),
+        ];
+      },
+      [0, 0],
+    );
+    const [trustedUid, trustedPid] = [largestUid + 1, largestPid + 1];
+
     const packets: perfetto.protos.TracePacket[] = [];
     let sequenceId =
       Math.max(
@@ -217,7 +228,11 @@ export class LegacyToPerfettoConverter {
     for (const parser of legacyParsers) {
       if (parser.convertToPerfettoPackets) {
         try {
-          const legacyPackets = parser.convertToPerfettoPackets(sequenceId);
+          const legacyPackets = parser.convertToPerfettoPackets(
+            sequenceId,
+            trustedUid,
+            trustedPid,
+          );
           if (legacyPackets.length > 0) {
             legacyPackets[0].firstPacketOnSequence = true;
             packets.push(...legacyPackets);

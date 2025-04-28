@@ -97,7 +97,11 @@ export abstract class AbstractParser<
     throw new Error('Not implemented');
   }
 
-  convertToPerfettoPackets(sequenceId: number): perfetto.protos.TracePacket[] {
+  convertToPerfettoPackets(
+    sequenceId: number,
+    trustedPid: number,
+    trustedUid: number,
+  ): perfetto.protos.TracePacket[] {
     throw new Error('not implemented');
   }
 
