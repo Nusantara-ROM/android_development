@@ -15,114 +15,232 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
+import {TimestampConverterUtils} from 'common/time/test_utils';
 import Long from 'long';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {ParserBuilder} from 'test/unit/parser_builder';
+import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
-import {FileAndParser} from './file_and_parser';
-import {LegacyToPerfettoConverter} from './legacy_to_perfetto_converter';
+import {
+  ClockSnapshot,
+  LegacyToPerfettoConverter,
+} from './legacy_to_perfetto_converter';
 
 describe('LegacyToPerfettoConverter', () => {
-  const testPacket1 = perfetto.protos.TracePacket.create({
+  const testPacketBoottime = perfetto.protos.TracePacket.create({
     trustedPacketSequenceId: 1,
     timestamp: Long.fromInt(10, true),
-    timestampClockId: 4,
+    timestampClockId:
+      perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.BOOTTIME,
   });
-  const testPacket2 = perfetto.protos.TracePacket.create({
+  const testPacketMonotonic = perfetto.protos.TracePacket.create({
     trustedPacketSequenceId: 2,
     timestamp: Long.fromInt(20, true),
-    timestampClockId: 5,
+    timestampClockId:
+      perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.MONOTONIC,
   });
-  const clockSnapshot0 = makeExpectedClockSnapshot(new Long(0));
-  const clockSnapshot20 = makeExpectedClockSnapshot(new Long(20));
+  const legacyClock1 = {realtime: 50n, boottime: 30n, monotonic: 40n};
+  const clockSnapshot1 = makeExpectedClockSnapshot(legacyClock1);
   const emptyPacket = perfetto.protos.TracePacket.create();
   const existingPerfettoFile = makeExistingPerfettoFile(
-    clockSnapshot20,
+    clockSnapshot1,
     emptyPacket,
   );
 
   it('converts multiple legacy files to new perfetto file', async () => {
-    const fileAndParser1 = makeFileAndParser(testPacket1);
-    const fileAndParser2 = makeFileAndParser(testPacket2);
+    const parser1 = makeParser(testPacketBoottime);
+    spyOn(parser1, 'getRealToMonotonicTimeOffsetNs').and.returnValue(undefined);
+    const parser2 = makeParser(testPacketMonotonic);
+    spyOn(parser2, 'getRealToMonotonicTimeOffsetNs').and.returnValue(undefined);
 
     const perfettoFile =
       await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
-        [fileAndParser1, fileAndParser2],
-        0n,
+        [parser1, parser2],
+        [parser1, parser2],
       );
     const trace = await checkAndDecodePerfettoFile(assertDefined(perfettoFile));
-    expect(trace.packet).toEqual([clockSnapshot0, testPacket1, testPacket2]);
-  });
-
-  it('applies latest offset to new perfetto file clock snapshot', async () => {
-    const fileAndParser1 = makeFileAndParser(testPacket1);
-    const fileAndParser2 = makeFileAndParser(testPacket2);
-
-    const perfettoFile =
-      await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
-        [fileAndParser1, fileAndParser2],
-        20n,
-      );
-    const trace = await checkAndDecodePerfettoFile(assertDefined(perfettoFile));
-    expect(trace.packet).toEqual([clockSnapshot20, testPacket1, testPacket2]);
+    expect(trace.packet).toEqual([
+      makeExpectedClockSnapshot({
+        realtime: 10n,
+        boottime: 10n,
+        monotonic: undefined,
+      }),
+      makeExpectedClockSnapshot({
+        realtime: 20n,
+        boottime: 20n,
+        monotonic: undefined,
+      }),
+      testPacketBoottime,
+      testPacketMonotonic,
+    ]);
   });
 
   it('adds multiple legacy files to existing perfetto file', async () => {
-    const fileAndParser1 = makeFileAndParser(testPacket1);
-    const fileAndParser2 = makeFileAndParser(testPacket2);
+    const parser1 = makeParser(testPacketBoottime);
+    const parser2 = makeParser(testPacketMonotonic);
 
     const perfettoFile =
       await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
-        [fileAndParser1, fileAndParser2],
-        0n,
+        [parser1, parser2],
+        [parser1, parser2],
         existingPerfettoFile,
       );
     const trace = await checkAndDecodePerfettoFile(assertDefined(perfettoFile));
     expect(trace.packet).toEqual([
-      clockSnapshot20,
+      clockSnapshot1,
       emptyPacket,
-      testPacket1,
-      testPacket2,
+      testPacketBoottime,
+      testPacketMonotonic,
     ]);
   });
 
   it('ignores legacy file that cannot be converted to perfetto format', async () => {
-    const fileAndParser1 = makeFileAndParser();
+    const parser1 = makeParser();
 
     expect(
       await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
-        [fileAndParser1],
-        0n,
+        [parser1],
+        [parser1],
       ),
     ).toBeUndefined();
 
     expect(
       await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
-        [fileAndParser1],
-        0n,
+        [parser1],
+        [parser1],
         existingPerfettoFile,
       ),
     ).toBeUndefined();
 
-    const fileAndParser2 = makeFileAndParser(testPacket2);
+    const parser2 = makeParser(testPacketMonotonic);
     const perfettoFile =
       await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
-        [fileAndParser1, fileAndParser2],
-        0n,
+        [parser1, parser2],
+        [parser1, parser2],
         existingPerfettoFile,
       );
     const trace = await checkAndDecodePerfettoFile(assertDefined(perfettoFile));
-    expect(trace.packet).toEqual([clockSnapshot20, emptyPacket, testPacket2]);
+    expect(trace.packet).toEqual([
+      clockSnapshot1,
+      emptyPacket,
+      testPacketMonotonic,
+    ]);
+  });
+
+  it('converts elapsed legacy trace to new perfetto trace', async () => {
+    const parser = makeParser(testPacketBoottime);
+    spyOn(parser, 'getRealToBootTimeOffsetNs').and.returnValue(undefined);
+    spyOn(parser, 'getRealToMonotonicTimeOffsetNs').and.returnValue(undefined);
+
+    const perfettoFile =
+      await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
+        [parser],
+        [parser],
+      );
+    const trace = await checkAndDecodePerfettoFile(assertDefined(perfettoFile));
+    expect(trace.packet).toEqual([
+      makeExpectedClockSnapshot({
+        realtime: 10n,
+        boottime: 10n,
+        monotonic: 10n,
+      }),
+      testPacketBoottime,
+    ]);
+  });
+
+  it('converts legacy trace with real-to-boottime offset', async () => {
+    const parser = makeParser(testPacketBoottime);
+    spyOn(parser, 'getRealToBootTimeOffsetNs').and.returnValue(3n);
+    spyOn(parser, 'getRealToMonotonicTimeOffsetNs').and.returnValue(undefined);
+
+    const perfettoFile =
+      await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
+        [parser],
+        [parser],
+      );
+    const trace = await checkAndDecodePerfettoFile(assertDefined(perfettoFile));
+    expect(trace.packet).toEqual([
+      makeExpectedClockSnapshot({
+        realtime: 10n,
+        boottime: 7n,
+        monotonic: undefined,
+      }),
+      testPacketBoottime,
+    ]);
+  });
+
+  it('converts legacy trace with real-to-monotonic offset', async () => {
+    const parser = makeParser(testPacketMonotonic);
+    spyOn(parser, 'getRealToBootTimeOffsetNs').and.returnValue(undefined);
+    spyOn(parser, 'getRealToMonotonicTimeOffsetNs').and.returnValue(3n);
+
+    const perfettoFile =
+      await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
+        [parser],
+        [parser],
+      );
+    const trace = await checkAndDecodePerfettoFile(assertDefined(perfettoFile));
+    expect(trace.packet).toEqual([
+      makeExpectedClockSnapshot({
+        realtime: 20n,
+        boottime: 17n,
+        monotonic: 17n,
+      }),
+      testPacketMonotonic,
+    ]);
+  });
+
+  it('with boot-time and monotonically offset parsers loaded', async () => {
+    const parserBoottime = makeParser(testPacketBoottime);
+    spyOn(parserBoottime, 'getRealToBootTimeOffsetNs').and.returnValue(2n);
+    spyOn(parserBoottime, 'getRealToMonotonicTimeOffsetNs').and.returnValue(
+      undefined,
+    );
+
+    const parserMonotonic = makeParser(testPacketMonotonic);
+    spyOn(parserMonotonic, 'getRealToBootTimeOffsetNs').and.returnValue(
+      undefined,
+    );
+    spyOn(parserMonotonic, 'getRealToMonotonicTimeOffsetNs').and.returnValue(
+      3n,
+    );
+
+    const perfettoFile =
+      await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
+        [parserMonotonic],
+        [parserMonotonic, parserBoottime],
+      );
+    const trace = await checkAndDecodePerfettoFile(assertDefined(perfettoFile));
+    expect(trace.packet).toEqual([
+      makeExpectedClockSnapshot({
+        realtime: 10n,
+        boottime: 8n,
+        monotonic: 7n,
+      }),
+      makeExpectedClockSnapshot({
+        realtime: 20n,
+        boottime: 18n,
+        monotonic: 17n,
+      }),
+      testPacketMonotonic,
+    ]);
   });
 
   it('robust to errors in packet conversion', async () => {
-    const fileAndParser = makeFileAndParser(undefined, true);
+    const parser = makeParser(undefined, true);
     expect(
       await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
-        [fileAndParser],
-        0n,
+        [parser],
+        [parser],
       ),
     ).toBeUndefined();
+  });
+
+  it('throws error if allParsers empty and no Perfetto file provided', async () => {
+    const parser = makeParser(undefined, true);
+    await expectAsync(
+      LegacyToPerfettoConverter.convertToSinglePerfettoFile([parser], []),
+    ).toBeRejectedWithError('allParsers empty and no Perfetto file provided');
   });
 
   function makeExistingPerfettoFile(
@@ -140,13 +258,14 @@ describe('LegacyToPerfettoConverter', () => {
     );
   }
 
-  function makeFileAndParser(
+  function makeParser(
     testPacket?: perfetto.protos.TracePacket,
     conversionError = false,
-  ): FileAndParser {
+  ): Parser<object> {
+    const ts = BigInt(testPacket?.timestamp.toString() ?? 0n);
     const parser = new ParserBuilder<object>()
-      .setEntries([])
-      .setTimestamps([])
+      .setEntries([{}])
+      .setTimestamps([TimestampConverterUtils.makeRealTimestamp(ts)])
       .build();
     if (testPacket) {
       const parserConvertSpy = jasmine.createSpy();
@@ -157,7 +276,7 @@ describe('LegacyToPerfettoConverter', () => {
       parserConvertSpy.and.throwError(new Error('conversion failed'));
       parser.convertToPerfettoPackets = parserConvertSpy;
     }
-    return new FileAndParser(new TraceFile(new File([], '')), parser);
+    return parser;
   }
 
   async function checkAndDecodePerfettoFile(
@@ -170,42 +289,56 @@ describe('LegacyToPerfettoConverter', () => {
   }
 
   function makeExpectedClockSnapshot(
-    offset: Long,
+    clockSnapshot: ClockSnapshot,
   ): perfetto.protos.TracePacket {
-    return perfetto.protos.TracePacket.fromObject({
-      trustedPacketSequenceId: 1,
-      clockSnapshot: {
-        clocks: [
-          {
-            clockId: perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.BOOTTIME,
-            timestamp: new Long(0),
-          },
+    const realtime = Long.fromString(clockSnapshot.realtime.toString());
+    const clocks = [
+      {
+        clockId:
+          perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.REALTIME_COARSE,
+        timestamp: realtime,
+      },
+      {
+        clockId: perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.REALTIME,
+        timestamp: realtime,
+      },
+    ];
+
+    if (clockSnapshot.boottime) {
+      clocks.push({
+        clockId: perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.BOOTTIME,
+        timestamp: Long.fromString(clockSnapshot.boottime.toString()),
+      });
+    }
+
+    if (clockSnapshot.monotonic) {
+      const monotonic = Long.fromString(clockSnapshot.monotonic.toString());
+      clocks.push(
+        ...[
           {
             clockId:
-              perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.REALTIME_COARSE,
-            timestamp: offset,
+              perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.MONOTONIC,
+            timestamp: monotonic,
           },
           {
             clockId:
               perfetto.protos.ClockSnapshot.Clock.BuiltinClocks
                 .MONOTONIC_COARSE,
-            timestamp: new Long(0),
-          },
-          {
-            clockId: perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.REALTIME,
-            timestamp: offset,
-          },
-          {
-            clockId:
-              perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.MONOTONIC,
-            timestamp: new Long(0),
+            timestamp: monotonic,
           },
           {
             clockId:
               perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.MONOTONIC_RAW,
-            timestamp: new Long(0),
+            timestamp: monotonic,
           },
         ],
+      );
+    }
+
+    return perfetto.protos.TracePacket.fromObject({
+      trustedPacketSequenceId: 1,
+      clockSnapshot: {
+        clocks,
       },
     });
   }

@@ -23,7 +23,12 @@ import {UserNotifier} from 'common/user_notifier';
 import {TraceHasOldData, TraceOverridden} from 'messaging/user_warnings';
 import {FileAndParser} from 'parsers/file_and_parser';
 import {FileAndParsers} from 'parsers/file_and_parsers';
+import {
+  getParserWithLatestRealToBootTimeOffset,
+  getParserWithLatestRealToMonotonicTimeOffset,
+} from 'parsers/parser_time_utils';
 import {Parser} from 'trace/parser';
+import {TraceFile} from 'trace/trace_file';
 import {TRACE_INFO} from 'trace/trace_info';
 import {TraceEntryTypeMap, TraceType} from 'trace/trace_type';
 
@@ -70,6 +75,10 @@ export class LoadedParsers {
       ...this.perfettoParsers.values(),
     ];
     return fileAndParsers.map((fileAndParser) => fileAndParser.parser);
+  }
+
+  getPerfettoFile(): TraceFile | undefined {
+    return this.perfettoParsers.at(0)?.file;
   }
 
   remove<T extends TraceType>(
@@ -213,31 +222,15 @@ export class LoadedParsers {
   getLatestRealToMonotonicOffset(
     parsers: Array<Parser<object>>,
   ): bigint | undefined {
-    const p = parsers
-      .filter((offset) => offset.getRealToMonotonicTimeOffsetNs() !== undefined)
-      .sort((a, b) => {
-        return Number(
-          (a.getRealToMonotonicTimeOffsetNs() ?? 0n) -
-            (b.getRealToMonotonicTimeOffsetNs() ?? 0n),
-        );
-      })
-      .at(-1);
-    return p?.getRealToMonotonicTimeOffsetNs();
+    const parser = getParserWithLatestRealToMonotonicTimeOffset(parsers);
+    return parser?.getRealToMonotonicTimeOffsetNs();
   }
 
   getLatestRealToBootTimeOffset(
     parsers: Array<Parser<object>>,
   ): bigint | undefined {
-    const p = parsers
-      .filter((offset) => offset.getRealToBootTimeOffsetNs() !== undefined)
-      .sort((a, b) => {
-        return Number(
-          (a.getRealToBootTimeOffsetNs() ?? 0n) -
-            (b.getRealToBootTimeOffsetNs() ?? 0n),
-        );
-      })
-      .at(-1);
-    return p?.getRealToBootTimeOffsetNs();
+    const parser = getParserWithLatestRealToBootTimeOffset(parsers);
+    return parser?.getRealToBootTimeOffsetNs();
   }
 
   private addLegacyParsers(parsers: FileAndParser[]) {

@@ -50,7 +50,7 @@ export class LegacyParserProvider {
   private initializeRealToElapsedTimeOffsetNs = true;
   private metadata: TraceMetadata = {};
   private convertToPerfetto = false;
-  private latestRealToElapsedTimeOffsetNs = 0n;
+  private preloadedParsers: Array<Parser<object>> = [];
 
   addFilename(value: string) {
     this.filenames.push(value);
@@ -77,8 +77,8 @@ export class LegacyParserProvider {
     return this;
   }
 
-  setLatestRealToElapsedTimeOffsetNs(value: bigint) {
-    this.latestRealToElapsedTimeOffsetNs = value;
+  addPreloadedParser(parser: Parser<object>) {
+    this.preloadedParsers.push(parser);
     return this;
   }
 
@@ -128,10 +128,11 @@ export class LegacyParserProvider {
   private async convertToPerfettoTrace(
     fileAndParsers: FileAndParser[],
   ): Promise<FileAndParser[]> {
+    const parsers = fileAndParsers.map((p) => p.parser);
     const perfettoTrace =
       await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
-        fileAndParsers,
-        this.latestRealToElapsedTimeOffsetNs,
+        parsers,
+        parsers.concat(this.preloadedParsers),
       );
     if (perfettoTrace) {
       const processed = await new PerfettoParserFactory().processFile(
