@@ -95,6 +95,7 @@ the default for its data type.`,
     },
   };
 
+  override readonly rectIndex = 2;
   override readonly expectedInitialRectSpec = {
     type: TraceRectType.VIEWS,
     icon: TRACE_INFO[TraceType.VIEW_CAPTURE].icon,
