@@ -80,7 +80,6 @@ export class ParserSurfaceFlinger extends AbstractParser<
     sequenceId: number,
   ): perfetto.protos.TracePacket[] {
     const packets = [];
-
     for (const entry of this.decodedEntries) {
       const packet = perfetto.protos.TracePacket.create();
       packet.timestamp = this.isDump

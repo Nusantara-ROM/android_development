@@ -80,9 +80,6 @@ describe('ParserInputMethodManagerService', () => {
           'traces/elapsed_and_real_timestamp/InputMethodManagerService.pb',
         )
         .setConvertToPerfetto(true)
-        .setLatestRealToElapsedTimeOffsetNs(
-          assertDefined(parser.getRealToBootTimeOffsetNs()),
-        )
         .getParser<HierarchyTreeNode>();
 
       expect(perfettoParser.getTimestamps()).toEqual([

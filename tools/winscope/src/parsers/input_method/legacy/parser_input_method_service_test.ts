@@ -74,9 +74,6 @@ describe('ParserInputMethodService', () => {
       const perfettoParser = await new LegacyParserProvider()
         .addFilename('traces/elapsed_and_real_timestamp/InputMethodService.pb')
         .setConvertToPerfetto(true)
-        .setLatestRealToElapsedTimeOffsetNs(
-          assertDefined(parser.getRealToBootTimeOffsetNs()),
-        )
         .getParser<HierarchyTreeNode>();
 
       expect(perfettoParser.getTimestamps()).toEqual([

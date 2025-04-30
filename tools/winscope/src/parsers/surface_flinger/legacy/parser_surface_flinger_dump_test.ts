@@ -66,7 +66,7 @@ describe('ParserSurfaceFlingerDump', () => {
     it('does not apply timezone info', async () => {
       const parserWithTimezoneInfo = await new LegacyParserProvider()
         .addFilename('traces/elapsed_and_real_timestamp/dump_SurfaceFlinger.pb')
-        .setConverter(getTimestampConverter(true))
+        .setTimestampConverter(getTimestampConverter(true))
         .getParser<HierarchyTreeNode>();
 
       const expected = [TimestampConverterUtils.makeElapsedTimestamp(0n)];

@@ -79,6 +79,8 @@ export class ParserInputMethodManagerService extends AbstractParser<
     for (const entry of this.decodedEntries) {
       const packet = perfetto.protos.TracePacket.create();
       packet.timestamp = assertDefined(entry.elapsedRealtimeNanos);
+      packet.timestampClockId =
+        perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.BOOTTIME;
       packet.trustedPacketSequenceId = sequenceId;
       packet.winscopeExtensions = {
         '.perfetto.protos.WinscopeExtensionsImpl.inputmethodManagerService':

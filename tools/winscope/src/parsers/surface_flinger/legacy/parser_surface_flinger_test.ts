@@ -100,9 +100,6 @@ describe('ParserSurfaceFlinger', () => {
         perfettoParser = await new LegacyParserProvider()
           .addFilename('traces/elapsed_and_real_timestamp/SurfaceFlinger.pb')
           .setConvertToPerfetto(true)
-          .setLatestRealToElapsedTimeOffsetNs(
-            assertDefined(realParser.getRealToMonotonicTimeOffsetNs()),
-          )
           .getParser<HierarchyTreeNode>();
         perfettoTrace = new TraceBuilder<HierarchyTreeNode>()
           .setType(TraceType.SURFACE_FLINGER)

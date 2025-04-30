@@ -145,6 +145,35 @@ abstract class ParserProtologTest {
         checkMessagePacket(packets, this.messagePacketWithInternedStrings);
       });
 
+      it('converts to valid perfetto trace', async () => {
+        const perfettoParser = await new LegacyParserProvider()
+          .addFilename(this.traceFile)
+          .setConvertToPerfetto(true)
+          .getParser<PropertyTreeNode>();
+
+        expect(perfettoParser.getTimestamps()?.slice(0, 3)).toEqual(
+          this.first3ExpectedRealTimestamps,
+        );
+
+        const message = await perfettoParser.getEntry(0);
+
+        expect(
+          assertDefined(message.getChildByName('text')).formattedValue(),
+        ).toEqual(this.expectedFirstMessage.message);
+        expect(
+          assertDefined(message.getChildByName('timestamp')).formattedValue(),
+        ).toEqual(this.expectedFirstMessage.ts);
+        expect(
+          assertDefined(message.getChildByName('tag')).formattedValue(),
+        ).toEqual(this.expectedFirstMessage.tag);
+        expect(
+          assertDefined(message.getChildByName('level')).formattedValue(),
+        ).toEqual(this.expectedFirstMessage.level);
+        expect(
+          assertDefined(message.getChildByName('at')).formattedValue(),
+        ).toEqual(this.expectedFirstMessage.at);
+      });
+
       function checkMessagePacket(
         packets: perfetto.protos.TracePacket[],
         expectedMsg: ExpectedMessagePacket,
@@ -196,38 +225,6 @@ abstract class ParserProtologTest {
         expect(packet.protologViewerConfig).toBeNull();
         expect(packet.protologMessage).toBeNull();
       }
-
-      it('converts to valid perfetto trace', async () => {
-        const perfettoParser = await new LegacyParserProvider()
-          .addFilename(this.traceFile)
-          .setConvertToPerfetto(true)
-          .setLatestRealToElapsedTimeOffsetNs(
-            assertDefined(parser.getRealToBootTimeOffsetNs()),
-          )
-          .getParser<PropertyTreeNode>();
-
-        expect(perfettoParser.getTimestamps()?.slice(0, 3)).toEqual(
-          this.first3ExpectedRealTimestamps,
-        );
-
-        const message = await perfettoParser.getEntry(0);
-
-        expect(
-          assertDefined(message.getChildByName('text')).formattedValue(),
-        ).toEqual(this.expectedFirstMessage.message);
-        expect(
-          assertDefined(message.getChildByName('timestamp')).formattedValue(),
-        ).toEqual(this.expectedFirstMessage.ts);
-        expect(
-          assertDefined(message.getChildByName('tag')).formattedValue(),
-        ).toEqual(this.expectedFirstMessage.tag);
-        expect(
-          assertDefined(message.getChildByName('level')).formattedValue(),
-        ).toEqual(this.expectedFirstMessage.level);
-        expect(
-          assertDefined(message.getChildByName('at')).formattedValue(),
-        ).toEqual(this.expectedFirstMessage.at);
-      });
     });
   }
 }

@@ -21,6 +21,10 @@ import {getRootUrl} from 'common/url_utils';
 import {FileAndParser} from 'parsers/file_and_parser';
 import {ParserFactory as LegacyParserFactory} from 'parsers/legacy/parser_factory';
 import {LegacyToPerfettoConverter} from 'parsers/legacy_to_perfetto_converter';
+import {
+  getParserWithLatestRealToBootTimeOffset,
+  getParserWithLatestRealToMonotonicTimeOffset,
+} from 'parsers/parser_time_utils';
 import {ParserFactory as PerfettoParserFactory} from 'parsers/perfetto/parser_factory';
 import {TracesParserFactory} from 'parsers/traces/traces_parser_factory';
 import {Parser} from 'trace/parser';
@@ -46,7 +50,7 @@ export async function getFixtureFile(
 
 export class LegacyParserProvider {
   private filenames: string[] = [];
-  private converter = getTimestampConverter();
+  private timestampConverter = getTimestampConverter();
   private initializeRealToElapsedTimeOffsetNs = true;
   private metadata: TraceMetadata = {};
   private convertToPerfetto = false;
@@ -57,8 +61,8 @@ export class LegacyParserProvider {
     return this;
   }
 
-  setConverter(value: TimestampConverter) {
-    this.converter = value;
+  setTimestampConverter(value: TimestampConverter) {
+    this.timestampConverter = value;
     return this;
   }
 
@@ -107,44 +111,58 @@ export class LegacyParserProvider {
     }
     const processedFiles = await new LegacyParserFactory().processFiles(
       files,
-      this.converter,
+      this.timestampConverter,
       this.metadata,
     );
+
+    createTimestamps(
+      processedFiles.parsers,
+      this.initializeRealToElapsedTimeOffsetNs,
+      this.timestampConverter,
+    );
+
     const fileAndParsers = this.convertToPerfetto
-      ? await this.convertToPerfettoTrace(processedFiles.parsers)
+      ? await convertToPerfettoTrace(
+          processedFiles.parsers,
+          this.preloadedParsers,
+          this.timestampConverter,
+        )
       : processedFiles.parsers;
 
+    this.timestampConverter.clearCreatedTimestampType();
     createTimestamps(
       fileAndParsers,
       this.initializeRealToElapsedTimeOffsetNs,
-      this.converter,
+      this.timestampConverter,
     );
 
     return fileAndParsers.map((fileAndParser) => {
       return fileAndParser.parser;
     });
   }
+}
 
-  private async convertToPerfettoTrace(
-    fileAndParsers: FileAndParser[],
-  ): Promise<FileAndParser[]> {
-    const parsers = fileAndParsers.map((p) => p.parser);
-    const perfettoTrace =
-      await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
-        parsers,
-        parsers.concat(this.preloadedParsers),
-      );
-    if (perfettoTrace) {
-      const processed = await new PerfettoParserFactory().processFile(
-        perfettoTrace,
-        this.converter,
-      );
-      fileAndParsers = processed.parsers.map((parser) => {
-        return new FileAndParser(perfettoTrace, parser);
-      });
-    }
-    return fileAndParsers;
+export async function convertToPerfettoTrace(
+  fileAndParsers: FileAndParser[],
+  preloadedParsers: Array<Parser<object>>,
+  timestampConverter: TimestampConverter,
+): Promise<FileAndParser[]> {
+  const parsers = fileAndParsers.map((p) => p.parser);
+  const perfettoTrace =
+    await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
+      parsers,
+      parsers.concat(preloadedParsers),
+    );
+  if (perfettoTrace) {
+    const processed = await new PerfettoParserFactory().processFile(
+      perfettoTrace,
+      timestampConverter,
+    );
+    fileAndParsers = processed.parsers.map((parser) => {
+      return new FileAndParser(perfettoTrace, parser);
+    });
   }
+  return fileAndParsers;
 }
 
 export async function getTrace<T extends TraceType>(
@@ -154,7 +172,7 @@ export async function getTrace<T extends TraceType>(
   const converter = getTimestampConverter(false);
   const legacyParsers = await new LegacyParserProvider()
     .addFilename(filename)
-    .setConverter(converter)
+    .setTimestampConverter(converter)
     .getParsers();
   expect(legacyParsers.length).toBeLessThanOrEqual(1);
   if (legacyParsers.length === 1) {
@@ -180,23 +198,17 @@ function createTimestamps(
   converter: TimestampConverter,
 ) {
   if (initializeRealToElapsedTimeOffsetNs) {
-    const monotonicOffset = fileAndParsers
-      .find(
-        (fileAndParser) =>
-          fileAndParser.parser.getRealToMonotonicTimeOffsetNs() !== undefined,
-      )
-      ?.parser.getRealToMonotonicTimeOffsetNs();
+    const monotonicOffset = getParserWithLatestRealToMonotonicTimeOffset(
+      fileAndParsers.map((fileAndParser) => fileAndParser.parser),
+    )?.getRealToMonotonicTimeOffsetNs();
     if (monotonicOffset !== undefined) {
       converter.setRealToMonotonicTimeOffsetNs(monotonicOffset);
     }
-    const bootTimeOffset = fileAndParsers
-      .find(
-        (fileAndParser) =>
-          fileAndParser.parser.getRealToBootTimeOffsetNs() !== undefined,
-      )
-      ?.parser.getRealToBootTimeOffsetNs();
-    if (bootTimeOffset !== undefined) {
-      converter.setRealToBootTimeOffsetNs(bootTimeOffset);
+    const boottimeOffset = getParserWithLatestRealToBootTimeOffset(
+      fileAndParsers.map((fileAndParser) => fileAndParser.parser),
+    )?.getRealToBootTimeOffsetNs();
+    if (boottimeOffset !== undefined) {
+      converter.setRealToBootTimeOffsetNs(boottimeOffset);
     }
   }
   fileAndParsers.forEach((fileAndParser) => {
@@ -248,17 +260,12 @@ export async function getTracesParser(
   withUTCOffset = false,
 ): Promise<Parser<object>> {
   const converter = getTimestampConverter(withUTCOffset);
-  const legacyParsers = (
-    await Promise.all(
-      filenames.map(async (filename) => {
-        return new LegacyParserProvider()
-          .addFilename(filename)
-          .setConverter(converter)
-          .setInitializeRealToElapsedTimeOffsetNs(true)
-          .getParsers();
-      }),
-    )
-  ).reduce((acc, cur) => acc.concat(cur), []);
+  const provider = new LegacyParserProvider();
+  filenames.forEach((filename) => provider.addFilename(filename));
+  const legacyParsers = await provider
+    .setTimestampConverter(converter)
+    .setInitializeRealToElapsedTimeOffsetNs(true)
+    .getParsers();
 
   const perfettoParsers = (
     await Promise.all(
@@ -268,17 +275,10 @@ export async function getTracesParser(
 
   const parsersArray = legacyParsers.concat(perfettoParsers);
 
-  const offset = parsersArray
-    .filter((parser) => parser.getRealToBootTimeOffsetNs() !== undefined)
-    .sort((a, b) =>
-      Number(
-        (a.getRealToBootTimeOffsetNs() ?? 0n) -
-          (b.getRealToBootTimeOffsetNs() ?? 0n),
-      ),
-    )
-    .at(-1)
-    ?.getRealToBootTimeOffsetNs();
-
+  const offset =
+    getParserWithLatestRealToBootTimeOffset(
+      parsersArray,
+    )?.getRealToBootTimeOffsetNs();
   if (offset !== undefined) {
     converter.setRealToBootTimeOffsetNs(offset);
   }

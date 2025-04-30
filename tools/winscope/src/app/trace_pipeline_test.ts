@@ -580,56 +580,47 @@ describe('TracePipeline', () => {
         [parserSf],
         undefined,
       );
-      const traces = tracePipeline.getTraces();
-      expect(traces.getSize()).toEqual(1);
-      const perfettoParser = assertDefined(
-        traces.getTrace(TraceType.SURFACE_FLINGER),
-      );
-      expect(perfettoParser.isPerfetto()).toBeTrue();
+      expect(tracePipeline.getTraces().getSize()).toEqual(1);
+      checkSfTraceIsPerfetto();
     });
 
     it('with perfetto parser loaded', async () => {
       await loadFiles([perfettoFile]);
-      const parserPerfetto = assertDefined(
-        tracePipeline.getTraces().getTrace(TraceType.PROTO_LOG)?.getParser(),
-      );
-
+      const parserPerfetto = getParser(TraceType.PROTO_LOG);
       await tracePipeline.convertLegacyTracesToPerfetto();
       expect(converterSpy).toHaveBeenCalledOnceWith(
         [parserSf],
         [parserSf, parserPerfetto],
         new TraceFile(perfettoFile),
       );
-
-      const traces = tracePipeline.getTraces();
-      expect(traces.getSize()).toEqual(2);
-      const perfettoSfTrace = assertDefined(
-        traces.getTrace(TraceType.SURFACE_FLINGER),
-      );
-      expect(perfettoSfTrace.isPerfetto()).toBeTrue();
+      expect(tracePipeline.getTraces().getSize()).toEqual(2);
+      checkSfTraceIsPerfetto();
     });
 
     it('with multiple legacy traces', async () => {
       await loadFiles([validWmFile]);
-      const parserWm = assertDefined(
-        tracePipeline
-          .getTraces()
-          .getTrace(TraceType.WINDOW_MANAGER)
-          ?.getParser(),
-      );
+      const parserWm = getParser(TraceType.WINDOW_MANAGER);
       await tracePipeline.convertLegacyTracesToPerfetto();
       expect(converterSpy).toHaveBeenCalledOnceWith(
         [parserSf, parserWm],
         [parserSf, parserWm],
         undefined,
       );
-      const traces = tracePipeline.getTraces();
-      expect(traces.getSize()).toEqual(2);
-      const perfettoParser = assertDefined(
-        traces.getTrace(TraceType.SURFACE_FLINGER),
-      );
-      expect(perfettoParser.isPerfetto()).toBeTrue();
+      expect(tracePipeline.getTraces().getSize()).toEqual(2);
+      checkSfTraceIsPerfetto();
     });
+
+    function checkSfTraceIsPerfetto() {
+      const traces = tracePipeline.getTraces();
+      const trace = traces.getTrace(TraceType.SURFACE_FLINGER);
+      expect(trace?.isPerfetto()).toBeTrue();
+    }
+
+    function getParser(type: TraceType): Parser<{}> {
+      return assertDefined(
+        tracePipeline.getTraces().getTrace(type)?.getParser(),
+      );
+    }
   });
 
   async function loadFiles(

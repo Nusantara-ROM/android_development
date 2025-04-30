@@ -86,9 +86,6 @@ describe('ParserTransactions', () => {
         perfettoParser = await new LegacyParserProvider()
           .addFilename('traces/elapsed_and_real_timestamp/Transactions.pb')
           .setConvertToPerfetto(true)
-          .setLatestRealToElapsedTimeOffsetNs(
-            assertDefined(parser.getRealToMonotonicTimeOffsetNs()),
-          )
           .getParser<PropertyTreeNode>();
       });
 

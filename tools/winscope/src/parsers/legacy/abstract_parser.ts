@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {Timestamp} from 'common/time/time';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {perfetto} from 'protos/perfetto/trace/static';
@@ -94,7 +95,7 @@ export abstract class AbstractParser<
     entriesRange: EntriesRange,
     param?: CustomQueryParamTypeMap[Q],
   ): Promise<CustomQueryParserResultTypeMap[Q]> {
-    throw new Error('Not implemented');
+    throw NOT_IMPLEMENTED_ERROR;
   }
 
   convertToPerfettoPackets(
@@ -102,11 +103,11 @@ export abstract class AbstractParser<
     trustedPid: number,
     trustedUid: number,
   ): perfetto.protos.TracePacket[] {
-    throw new Error('not implemented');
+    throw NOT_IMPLEMENTED_ERROR;
   }
 
   protected processDecodedEntry(index: number, decodedEntry: U): T {
-    throw new Error('not implemented');
+    throw NOT_IMPLEMENTED_ERROR;
   }
 
   private decodeTimestamps(): Timestamp[] {

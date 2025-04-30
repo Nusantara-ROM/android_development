@@ -129,6 +129,8 @@ export class ParserProtoLog extends AbstractParser<
     for (const entry of this.decodedEntries) {
       const packet = this.createPacket(sequenceId, trustedUid, trustedPid);
       packet.timestamp = assertDefined(entry.elapsedRealtimeNanos);
+      packet.timestampClockId =
+        perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.BOOTTIME;
 
       let messageId: Long;
       if (this.is64BitVersion(entry)) {
