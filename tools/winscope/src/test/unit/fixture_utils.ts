@@ -129,7 +129,7 @@ export class LegacyParserProvider {
         )
       : processedFiles.parsers;
 
-    this.timestampConverter.clearCreatedTimestampType();
+    this.timestampConverter.clear();
     createTimestamps(
       fileAndParsers,
       this.initializeRealToElapsedTimeOffsetNs,
@@ -258,7 +258,10 @@ export async function getPerfettoParsers(
 export async function getTracesParser(
   filenames: string[],
   withUTCOffset = false,
-): Promise<Parser<object>> {
+): Promise<{
+  tracesParser: Parser<object>;
+  constituentParsers: Array<Parser<object>>;
+}> {
   const converter = getTimestampConverter(withUTCOffset);
   const provider = new LegacyParserProvider();
   filenames.forEach((filename) => provider.addFilename(filename));
@@ -298,7 +301,7 @@ export async function getTracesParser(
     () =>
       `Should have been able to create a traces parser for [${filenames.join()}]`,
   );
-  return tracesParsers[0];
+  return {tracesParser: tracesParsers[0], constituentParsers: parsersArray};
 }
 
 export async function getWindowManagerState(

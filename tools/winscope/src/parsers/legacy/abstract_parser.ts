@@ -107,6 +107,9 @@ export abstract class AbstractParser<
   }
 
   protected processDecodedEntry(index: number, decodedEntry: U): T {
+    // Legacy parsers that implement convertToPerfettoPackets should not
+    // parser and provide individual trace entries, as they should be
+    // converted to perfetto using LegacyToPerfettoConverter
     throw NOT_IMPLEMENTED_ERROR;
   }
 
