@@ -54,7 +54,7 @@ export class LegacyParserProvider {
   private initializeRealToElapsedTimeOffsetNs = true;
   private metadata: TraceMetadata = {};
   private convertToPerfetto = false;
-  private preloadedParsers: Array<Parser<object>> = [];
+  private existingPerfettoFile: TraceFile | undefined;
 
   addFilename(value: string) {
     this.filenames.push(value);
@@ -81,8 +81,8 @@ export class LegacyParserProvider {
     return this;
   }
 
-  addPreloadedParser(parser: Parser<object>) {
-    this.preloadedParsers.push(parser);
+  setExistingPerfettoFile(value: TraceFile) {
+    this.existingPerfettoFile = value;
     return this;
   }
 
@@ -124,8 +124,8 @@ export class LegacyParserProvider {
     const fileAndParsers = this.convertToPerfetto
       ? await convertToPerfettoTrace(
           processedFiles.parsers,
-          this.preloadedParsers,
           this.timestampConverter,
+          this.existingPerfettoFile,
         )
       : processedFiles.parsers;
 
@@ -144,14 +144,15 @@ export class LegacyParserProvider {
 
 export async function convertToPerfettoTrace(
   fileAndParsers: FileAndParser[],
-  preloadedParsers: Array<Parser<object>>,
   timestampConverter: TimestampConverter,
+  existingPerfettoFile?: TraceFile,
 ): Promise<FileAndParser[]> {
   const parsers = fileAndParsers.map((p) => p.parser);
   const perfettoTrace =
     await LegacyToPerfettoConverter.convertToSinglePerfettoFile(
       parsers,
-      parsers.concat(preloadedParsers),
+      parsers,
+      existingPerfettoFile,
     );
   if (perfettoTrace) {
     const processed = await new PerfettoParserFactory().processFile(
@@ -310,12 +311,6 @@ export async function getWindowManagerState(
   return getTraceEntry(
     'traces/elapsed_and_real_timestamp/WindowManager.pb',
     index,
-  );
-}
-
-export async function getViewCaptureEntry(): Promise<HierarchyTreeNode> {
-  return await getTraceEntry<HierarchyTreeNode>(
-    'traces/elapsed_and_real_timestamp/com.google.android.apps.nexuslauncher_0.vc',
   );
 }
 

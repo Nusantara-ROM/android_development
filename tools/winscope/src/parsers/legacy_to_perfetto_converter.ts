@@ -218,7 +218,7 @@ export class LegacyToPerfettoConverter {
       },
       [0, 0],
     );
-    const [trustedUid, trustedPid] = [largestUid + 1, largestPid + 1];
+    let [trustedUid, trustedPid] = [largestUid + 1, largestPid + 1];
 
     const packets: perfetto.protos.TracePacket[] = [];
     let sequenceId =
@@ -237,6 +237,8 @@ export class LegacyToPerfettoConverter {
             legacyPackets[0].firstPacketOnSequence = true;
             packets.push(...legacyPackets);
             sequenceId++;
+            trustedUid++;
+            trustedPid++;
           }
         } catch (e) {
           // swallow

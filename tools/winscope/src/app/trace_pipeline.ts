@@ -116,7 +116,6 @@ export class TracePipeline
     if (!singlePerfettoTrace) {
       return;
     }
-
     const perfettoParsers = await this.processPerfettoFile(
       singlePerfettoTrace,
       FilesSource.APP,
@@ -301,7 +300,7 @@ export class TracePipeline
     progressListener: ProgressListener | undefined,
   ) {
     const startTimeMs = Date.now();
-    const processedLegacyTraces = await new LegacyParserFactory().processFiles(
+    const processedLegacyFiles = await new LegacyParserFactory().processFiles(
       filterResult.legacy,
       this.timestampConverter,
       filterResult.metadata,
@@ -314,7 +313,7 @@ export class TracePipeline
     );
     Analytics.Memory.logUsage('legacy_files_parsed');
 
-    return processedLegacyTraces;
+    return processedLegacyFiles;
   }
 
   private async processPerfettoFile(

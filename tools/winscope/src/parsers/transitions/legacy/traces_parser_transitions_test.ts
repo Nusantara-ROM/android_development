@@ -195,7 +195,6 @@ describe('TracesParserTransitions', () => {
     const perfettoParser = (
       await convertToPerfettoTrace(
         [new FileAndParser(new TraceFile(new File([], '')), parser)],
-        [],
         converter,
       )
     )[0].parser as Parser<PropertyTreeNode>;
