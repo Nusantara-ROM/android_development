@@ -40,6 +40,10 @@ import {FileAndParser} from 'parsers/file_and_parser';
 import {FileAndParsers} from 'parsers/file_and_parsers';
 import {ParserFactory as LegacyParserFactory} from 'parsers/legacy/parser_factory';
 import {LegacyToPerfettoConverter} from 'parsers/legacy_to_perfetto_converter';
+import {
+  getParserWithLatestRealToBootTimeOffset,
+  getParserWithLatestRealToMonotonicTimeOffset,
+} from 'parsers/parser_time_utils';
 import {ParserFactory as PerfettoParserFactory} from 'parsers/perfetto/parser_factory';
 import {ParserSearch} from 'parsers/search/parser_search';
 import {TracesParserFactory} from 'parsers/traces/traces_parser_factory';
@@ -368,10 +372,14 @@ export class TracePipeline
       .concat(perfettoParsers?.parsers ?? []);
 
     const monotonicTimeOffset =
-      this.loadedParsers.getLatestRealToMonotonicOffset(allParsers);
+      getParserWithLatestRealToMonotonicTimeOffset(
+        allParsers,
+      )?.getRealToMonotonicTimeOffsetNs();
 
     const realToBootTimeOffset =
-      this.loadedParsers.getLatestRealToBootTimeOffset(allParsers);
+      getParserWithLatestRealToBootTimeOffset(
+        allParsers,
+      )?.getRealToBootTimeOffsetNs();
 
     if (monotonicTimeOffset !== undefined) {
       this.timestampConverter.setRealToMonotonicTimeOffsetNs(

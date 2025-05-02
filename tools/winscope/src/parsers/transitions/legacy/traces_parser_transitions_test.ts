@@ -190,7 +190,6 @@ describe('TracesParserTransitions', () => {
   });
 
   it('converts to valid perfetto trace', async () => {
-    const offset = assertDefined(parser.getRealToBootTimeOffsetNs());
     const converter = getTimestampConverter();
     const perfettoParser = (
       await convertToPerfettoTrace(
@@ -199,7 +198,9 @@ describe('TracesParserTransitions', () => {
       )
     )[0].parser as Parser<PropertyTreeNode>;
 
-    converter.setRealToBootTimeOffsetNs(offset);
+    converter.setRealToBootTimeOffsetNs(
+      assertDefined(perfettoParser.getRealToBootTimeOffsetNs()),
+    );
     perfettoParser.createTimestamps();
     expect(perfettoParser.getTimestamps()).toEqual([
       TimestampConverterUtils.makeRealTimestamp(1683188477607285317n),

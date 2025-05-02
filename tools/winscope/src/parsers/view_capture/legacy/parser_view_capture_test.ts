@@ -141,7 +141,6 @@ describe('ParserViewCapture', () => {
       )
       .setConvertToPerfetto(true)
       .getParser<HierarchyTreeNode>();
-
     expect(perfettoParser.getTimestamps()?.slice(0, 3)).toEqual([
       TimestampConverterUtils.makeRealTimestamp(1691692936292808460n),
       TimestampConverterUtils.makeRealTimestamp(1691692936301385080n),

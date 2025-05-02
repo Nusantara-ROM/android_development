@@ -129,12 +129,14 @@ export class LegacyParserProvider {
         )
       : processedFiles.parsers;
 
-    this.timestampConverter.clear();
-    createTimestamps(
-      fileAndParsers,
-      this.initializeRealToElapsedTimeOffsetNs,
-      this.timestampConverter,
-    );
+    if (this.convertToPerfetto) {
+      this.timestampConverter.clear();
+      createTimestamps(
+        fileAndParsers,
+        this.initializeRealToElapsedTimeOffsetNs,
+        this.timestampConverter,
+      );
+    }
 
     return fileAndParsers.map((fileAndParser) => {
       return fileAndParser.parser;

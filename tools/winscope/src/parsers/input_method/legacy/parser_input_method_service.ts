@@ -17,7 +17,6 @@
 import {assertDefined} from 'common/assert_utils';
 import {Timestamp} from 'common/time/time';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
-import {TamperedMessageType} from 'parsers/tampered_message_type';
 import root from 'protos/ime/udc/json';
 import {android} from 'protos/ime/udc/static';
 import {perfetto} from 'protos/perfetto/trace/static';
@@ -33,12 +32,9 @@ export class ParserInputMethodService extends AbstractParser<
   private static readonly MAGIC_NUMBER = [
     0x09, 0x49, 0x4d, 0x53, 0x54, 0x52, 0x41, 0x43, 0x45,
   ]; // .IMSTRACE
-  private static readonly InputMethodServiceTraceFileProto =
-    TamperedMessageType.tamper(
-      root.lookupType(
-        'android.view.inputmethod.InputMethodServiceTraceFileProto',
-      ),
-    );
+  private static readonly InputMethodServiceTraceFileProto = root.lookupType(
+    'android.view.inputmethod.InputMethodServiceTraceFileProto',
+  );
 
   private realToBootTimeOffsetNs: bigint | undefined;
 

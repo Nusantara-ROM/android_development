@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {assertDefined} from 'common/assert_utils';
 import {Parser} from 'trace/parser';
 
 export function getParserWithLatestRealToBootTimeOffset(
@@ -23,8 +24,8 @@ export function getParserWithLatestRealToBootTimeOffset(
     .filter((parser) => parser.getRealToBootTimeOffsetNs() !== undefined)
     .sort((a, b) => {
       return Number(
-        (a.getRealToBootTimeOffsetNs() ?? 0n) -
-          (b.getRealToBootTimeOffsetNs() ?? 0n),
+        assertDefined(a.getRealToBootTimeOffsetNs()) -
+          assertDefined(b.getRealToBootTimeOffsetNs()),
       );
     })
     .at(-1);
@@ -37,8 +38,8 @@ export function getParserWithLatestRealToMonotonicTimeOffset(
     .filter((parser) => parser.getRealToMonotonicTimeOffsetNs() !== undefined)
     .sort((a, b) => {
       return Number(
-        (a.getRealToMonotonicTimeOffsetNs() ?? 0n) -
-          (b.getRealToMonotonicTimeOffsetNs() ?? 0n),
+        assertDefined(a.getRealToMonotonicTimeOffsetNs()) -
+          assertDefined(b.getRealToMonotonicTimeOffsetNs()),
       );
     })
     .at(-1);

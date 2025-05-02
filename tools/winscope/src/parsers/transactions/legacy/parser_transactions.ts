@@ -17,7 +17,6 @@
 import {assertDefined} from 'common/assert_utils';
 import {Timestamp} from 'common/time/time';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
-import {TamperedMessageType} from 'parsers/tampered_message_type';
 import {perfetto} from 'protos/perfetto/trace/static';
 import root from 'protos/transactions/udc/json';
 import {android} from 'protos/transactions/udc/static';
@@ -40,10 +39,9 @@ export class ParserTransactions extends AbstractParser<
     0x09, 0x54, 0x4e, 0x58, 0x54, 0x52, 0x41, 0x43, 0x45,
   ]; // .TNXTRACE
 
-  private static readonly TransactionsTraceFileProto =
-    TamperedMessageType.tamper(
-      root.lookupType('android.surfaceflinger.TransactionTraceFile'),
-    );
+  private static readonly TransactionsTraceFileProto = root.lookupType(
+    'android.surfaceflinger.TransactionTraceFile',
+  );
 
   private realToMonotonicTimeOffsetNs: bigint | undefined;
 
