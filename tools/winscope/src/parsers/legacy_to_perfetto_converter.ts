@@ -41,7 +41,6 @@ export class LegacyToPerfettoConverter {
       allParsers,
       perfettoFile,
     );
-
     const legacyPackets = LegacyToPerfettoConverter.makeTraceDataPackets(
       legacyParsers,
       trace,
@@ -91,61 +90,76 @@ export class LegacyToPerfettoConverter {
     const clockSnapshots: ClockSnapshot[] = [];
 
     const boottimeParser = getParserWithLatestRealToBootTimeOffset(parsers);
-    const boottimeOffset = boottimeParser?.getRealToBootTimeOffsetNs();
     const monotonicParser =
       getParserWithLatestRealToMonotonicTimeOffset(parsers);
-    const monotonicOffset = monotonicParser?.getRealToMonotonicTimeOffsetNs();
 
     const boottimeSnapshots: ClockSnapshot[] = [];
     const monotonicSnapshots: ClockSnapshot[] = [];
 
-    for (const parser of parsers) {
-      const ts = assertDefined(parser.getTimestamps());
-      const realtime = ts.at(ts.length - 1)?.getValueNs();
-      if (realtime === undefined) {
-        continue;
-      }
-
-      if (!boottimeParser && !monotonicParser) {
+    if (boottimeParser === undefined && monotonicParser === undefined) {
+      LegacyToPerfettoConverter.getRealTimestampsForClockSnapshots(
+        parsers[0],
+      ).forEach((realtime) => {
         clockSnapshots.push({
           realtime,
           boottime: realtime,
           monotonic: realtime,
         });
-      }
-
-      if (parser.getRealToBootTimeOffsetNs() !== undefined) {
-        const boottime = realtime - assertDefined(boottimeOffset);
-        boottimeSnapshots.push({realtime, boottime, monotonic: undefined});
-      }
-
-      if (parser.getRealToMonotonicTimeOffsetNs() !== undefined) {
-        const monotonic = realtime - assertDefined(monotonicOffset);
-        const boottime = boottimeParser ? undefined : monotonic;
-        monotonicSnapshots.push({realtime, boottime, monotonic});
-      }
+      });
     }
 
-    if (boottimeParser && monotonicParser) {
-      const snapshotB = assertDefined(boottimeSnapshots.at(0));
-      const snapshotM = assertDefined(monotonicSnapshots.at(0));
-
-      boottimeSnapshots.forEach((boottimeSnapshot) => {
-        const realtimeDiff = boottimeSnapshot.realtime - snapshotM.realtime;
-        boottimeSnapshot.monotonic =
-          assertDefined(snapshotM.monotonic) + realtimeDiff;
+    if (boottimeParser) {
+      const boottimeOffset = boottimeParser?.getRealToBootTimeOffsetNs();
+      LegacyToPerfettoConverter.getRealTimestampsForClockSnapshots(
+        boottimeParser,
+      ).forEach((realtime) => {
+        const boottime = realtime - assertDefined(boottimeOffset);
+        boottimeSnapshots.push({realtime, boottime, monotonic: undefined});
       });
+    }
 
-      monotonicSnapshots.forEach((monotonicSnapshot) => {
-        const realtimeDiff = snapshotB.realtime - monotonicSnapshot.realtime;
-        monotonicSnapshot.boottime =
-          assertDefined(snapshotB.boottime) - realtimeDiff;
+    if (monotonicParser) {
+      const monotonicOffset = monotonicParser?.getRealToMonotonicTimeOffsetNs();
+      LegacyToPerfettoConverter.getRealTimestampsForClockSnapshots(
+        monotonicParser,
+      ).forEach((realtime) => {
+        const monotonic = realtime - assertDefined(monotonicOffset);
+
+        // Monotonic snapshots must contain a boottime timestamp for TP to be able
+        // to convert monotonic timestamps to boottime
+        let boottime: bigint;
+        if (boottimeParser) {
+          const snapshotB = boottimeSnapshots[boottimeSnapshots.length - 1];
+          const realtimeDiff = snapshotB.realtime - realtime;
+          boottime = assertDefined(snapshotB.boottime) - realtimeDiff;
+        } else {
+          boottime = monotonic;
+        }
+
+        monotonicSnapshots.push({realtime, boottime, monotonic});
       });
     }
 
     clockSnapshots.push(...boottimeSnapshots);
     clockSnapshots.push(...monotonicSnapshots);
+
     return clockSnapshots;
+  }
+
+  private static getRealTimestampsForClockSnapshots(
+    parser: Parser<object>,
+  ): Array<bigint> {
+    const ts = assertDefined(parser.getTimestamps());
+    const realTs: Array<bigint> = [];
+    if (ts.length > 0) {
+      realTs.push(ts[0].getValueNs());
+    }
+    if (ts.length > 1) {
+      // to adjust against drift in TP, we add clock snapshots at the
+      // start and end of the trace
+      realTs.push(ts[parser.getLengthEntries() - 1].getValueNs());
+    }
+    return realTs;
   }
 
   private static makeTracePacketWithClockSnapshot(
