@@ -43,12 +43,32 @@ interface TransitionInfo {
 }
 
 export class EntryPropertiesTreeFactory {
-  static readonly TRANSITION_OPERATIONS = [
+  private static readonly SHELL_PROPERTIES = [
+    'dispatchTimeNs',
+    'mergeTimeNs',
+    'mergeRequestTimeNs',
+    'shellAbortTimeNs',
+    'handler',
+    'mergeTarget',
+  ];
+  private static readonly WM_PROPERTIES = [
+    'createTimeNs',
+    'sendTimeNs',
+    'wmAbortTimeNs',
+    'finishTimeNs',
+    'startTransactionId',
+    'finishTransactionId',
+    'type',
+    'targets',
+    'flags',
+    'startingWindowRemoveTimeNs',
+  ];
+
+  private static readonly TRANSITION_OPERATIONS = [
     new AddDuration(),
     new AddStatus(),
     new AddRootProperties(),
   ];
-
   private static readonly TransitionField =
     TAMPERED_TRACE_PACKET.fields['shellTransition'];
   private static readonly WM_ADD_DEFAULTS_OPERATION = new AddDefaults(
@@ -88,15 +108,12 @@ export class EntryPropertiesTreeFactory {
     return transitionTree;
   }
 
-  static makeWmPropertiesTree(
-    info?: TransitionInfo,
-    denylistProperties: string[] = [],
-  ): PropertyTreeNode {
+  static makeWmPropertiesTree(info?: TransitionInfo): PropertyTreeNode {
     const tree = new PropertyTreeBuilderFromProto()
       .setData({wmData: info?.entry ?? null})
       .setRootId('TransitionTraceEntry')
       .setRootName('Selected Transition')
-      .setDenyList(denylistProperties)
+      .setDenyList(EntryPropertiesTreeFactory.SHELL_PROPERTIES)
       .setVisitPrototype(false)
       .build();
 
@@ -136,15 +153,12 @@ export class EntryPropertiesTreeFactory {
     return tree;
   }
 
-  static makeShellPropertiesTree(
-    info?: TransitionInfo,
-    denylistProperties: string[] = [],
-  ): PropertyTreeNode {
+  static makeShellPropertiesTree(info?: TransitionInfo): PropertyTreeNode {
     const tree = new PropertyTreeBuilderFromProto()
       .setData({shellData: info?.entry ?? null})
       .setRootId('TransitionTraceEntry')
       .setRootName('Selected Transition')
-      .setDenyList(denylistProperties)
+      .setDenyList(EntryPropertiesTreeFactory.WM_PROPERTIES)
       .setVisitPrototype(false)
       .build();
 

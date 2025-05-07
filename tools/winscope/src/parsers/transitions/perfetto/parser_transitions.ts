@@ -113,29 +113,9 @@ export class ParserTransitions extends AbstractParser<PropertyTreeNode> {
 
     const shellEntryTree = EntryPropertiesTreeFactory.makeShellPropertiesTree(
       perfettoTransitionInfo,
-      [
-        'createTimeNs',
-        'sendTimeNs',
-        'wmAbortTimeNs',
-        'finishTimeNs',
-        'startTransactionId',
-        'finishTransactionId',
-        'type',
-        'targets',
-        'flags',
-        'startingWindowRemoveTimeNs',
-      ],
     );
     const wmEntryTree = EntryPropertiesTreeFactory.makeWmPropertiesTree(
       perfettoTransitionInfo,
-      [
-        'dispatchTimeNs',
-        'mergeTimeNs',
-        'mergeRequestTimeNs',
-        'shellAbortTimeNs',
-        'handler',
-        'mergeTarget',
-      ],
     );
 
     return EntryPropertiesTreeFactory.makeTransitionPropertiesTree(
