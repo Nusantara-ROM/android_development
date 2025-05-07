@@ -63,11 +63,21 @@ pub enum Error {
     #[error("Crate {0} not found in crates.io")]
     CrateNotFound(String),
     /// Feature not found for crate
-    #[error("Feature {0} not found for crate {1}")]
-    FeatureNotFound(String, String),
+    #[error("Feature {feature_name} not found for crate {crate_name}")]
+    FeatureNotFound {
+        /// The name of the crate.
+        crate_name: String,
+        /// The name of the feature.
+        feature_name: String,
+    },
     /// Dependency not found for crate
-    #[error("Dependency {0} not found for crate {1}")]
-    DepNotFound(String, String),
+    #[error("Dependency {dep_name} not found for crate {crate_name}")]
+    DepNotFound {
+        /// The name of the crate.
+        crate_name: String,
+        /// The name of the dependency.
+        dep_name: String,
+    },
     /// Failed to get HTTP headers
     #[error("Failed to get HTTP headers")]
     HttpHeader,

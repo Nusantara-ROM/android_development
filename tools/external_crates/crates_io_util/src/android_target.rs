@@ -32,11 +32,9 @@ impl AndroidTarget for Dependency {
 }
 
 fn is_android(target: &str) -> bool {
-    let expr = cfg_expr::Expression::parse(target);
-    if expr.is_err() {
+    let Ok(expr) = cfg_expr::Expression::parse(target) else {
         return false;
-    }
-    let expr = expr.unwrap();
+    };
     expr.eval(|pred| match pred {
         Predicate::Target(target_predicate) => match target_predicate {
             TargetPredicate::Family(family) => *family == Family::unix,
@@ -45,8 +43,10 @@ fn is_android(target: &str) -> bool {
                 [Arch::arm, Arch::aarch64, Arch::riscv32, Arch::riscv64, Arch::x86, Arch::x86_64]
                     .contains(arch)
             }
+            TargetPredicate::Env(env) => env.as_str() != "musl",
             _ => true,
         },
+        Predicate::Flag(flag) => *flag == "mls_build_async" || *flag == "rustix_use_libc",
         _ => true,
     })
 }
@@ -68,8 +68,19 @@ mod tests {
         assert!(!is_android(
             r#"cfg(all(target_arch = "wasm32", target_vendor = "unknown", target_os = "unknown"))"#
         ));
-        assert!(is_android("cfg(tracing_unstable)"));
+        assert!(!is_android("cfg(tracing_unstable)"));
         assert!(is_android(r#"cfg(any(unix, target_os = "wasi"))"#));
-        assert!(is_android(r#"cfg(not(all(target_arch = "arm", target_os = "none")))"#))
+        assert!(is_android(r#"cfg(not(all(target_arch = "arm", target_os = "none")))"#));
+        assert!(is_android(r#"cfg(all(target_os = "linux", not(target_env = "musl")))"#));
+        assert!(is_android("cfg(mls_build_async)"), "cfg that is enabled for mls-rs crates");
+        assert!(
+            is_android(
+                r#"cfg(any(all(target_arch = "arm", target_pointer_width = "32"), target_arch = "mips", target_arch = "powerpc"))"#
+            ),
+            "32-bit arm"
+        );
+        assert!(is_android(
+            "cfg(all(not(windows), any(rustix_use_libc, miri, not(all(target_os = \"linux\", target_endian = \"little\", any(target_arch = \"arm\", all(target_arch = \"aarch64\", target_pointer_width = \"64\"), target_arch = \"riscv64\", all(rustix_use_experimental_asm, target_arch = \"powerpc64\"), all(rustix_use_experimental_asm, target_arch = \"mips\"), all(rustix_use_experimental_asm, target_arch = \"mips32r6\"), all(rustix_use_experimental_asm, target_arch = \"mips64\"), all(rustix_use_experimental_asm, target_arch = \"mips64r6\"), target_arch = \"x86\", all(target_arch = \"x86_64\", target_pointer_width = \"64\")))))))"
+        ), "rustix 0.38.31");
     }
 }

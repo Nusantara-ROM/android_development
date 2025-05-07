@@ -131,7 +131,8 @@ impl ManagedRepo {
     fn new_cc(&self) -> CrateCollection {
         CrateCollection::new(self.path.root())
     }
-    fn managed_crate_for(
+    /// Returns the managed crate for the specified crate name.
+    pub fn managed_crate_for(
         &self,
         crate_name: &str,
     ) -> Result<ManagedCrate<crate::managed_crate::New>> {
