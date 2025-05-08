@@ -238,7 +238,7 @@ export class Presenter extends AbstractLogViewerPresenter<
     return uniqueFieldValues;
   }
 
-  protected override updateFiltersInHeaders(
+  protected override async updateFiltersInHeaders(
     headers: LogHeader[],
     entries: LogEntry[],
   ) {

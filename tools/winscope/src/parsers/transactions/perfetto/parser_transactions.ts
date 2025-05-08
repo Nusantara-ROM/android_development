@@ -21,7 +21,11 @@ import {AddDefaults} from 'parsers/operations/add_defaults';
 import {SetFormatters} from 'parsers/operations/set_formatters';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
-import {queryArgs, queryVsyncId} from 'parsers/perfetto/utils';
+import {
+  getDistinctValues,
+  queryArgs,
+  queryVsyncId,
+} from 'parsers/perfetto/utils';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
 import {
@@ -31,6 +35,7 @@ import {
 import {TransactionType} from 'parsers/transactions/transaction_type';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {
+  CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
   VisitableParserCustomQuery,
@@ -38,6 +43,7 @@ import {
 import {EntriesRange} from 'trace/index_types';
 import {TraceFile} from 'trace/trace_file';
 import {TraceType} from 'trace/trace_type';
+import {TransactionColumnType} from 'trace/transaction_column_type';
 import {
   EnumFormatter,
   FixedStringFormatter,
@@ -105,6 +111,7 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
   override async customQuery<Q extends CustomQueryType>(
     type: Q,
     entriesRange: EntriesRange,
+    param?: CustomQueryParamTypeMap[Q],
   ): Promise<CustomQueryParserResultTypeMap[Q]> {
     return new VisitableParserCustomQuery(type)
       .visit(CustomQueryType.VSYNCID, async () => {
@@ -115,6 +122,44 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
           entriesRange,
           ParserTransactions.createVsyncIdQuery,
         );
+      })
+      .visit(CustomQueryType.LOG_TABLE_FILTER_VALUES, async () => {
+        let tableName: string;
+        let columns: string[];
+        switch (param) {
+          case TransactionColumnType.TRANSACTION_ID:
+            tableName = '__intrinsic_surfaceflinger_transaction';
+            columns = ['transaction_id'];
+            break;
+          case TransactionColumnType.VSYNC_ID:
+            tableName = 'surfaceflinger_transactions';
+            columns = ['vsync_id'];
+            break;
+          case TransactionColumnType.PID:
+            tableName = '__intrinsic_surfaceflinger_transaction';
+            columns = ['pid'];
+            break;
+          case TransactionColumnType.UID:
+            tableName = '__intrinsic_surfaceflinger_transaction';
+            columns = ['uid'];
+            break;
+          case TransactionColumnType.TRANSACTION_TYPE:
+            tableName = '__intrinsic_surfaceflinger_transaction';
+            columns = ['transaction_type'];
+            break;
+          case TransactionColumnType.LAYER_OR_DISPLAY_ID:
+            tableName = '__intrinsic_surfaceflinger_transaction';
+            columns = ['layer_id', 'display_id'];
+            break;
+          case TransactionColumnType.FLAGS:
+            tableName = '__intrinsic_surfaceflinger_transaction_flag';
+            columns = ['flag'];
+            break;
+
+          default:
+            throw new Error('unexpected transaction column type requested');
+        }
+        return getDistinctValues(this.traceProcessor, tableName, columns);
       })
       .getResult();
   }
@@ -166,7 +211,9 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
     const argSetId = row.get('arg_set_id') ?? undefined;
 
     let field: TamperedProtoField | undefined;
-    const transactionType = assertDefined(row.get('transaction_type')) as string;
+    const transactionType = assertDefined(
+      row.get('transaction_type'),
+    ) as string;
     const entryProtoType = assertDefined(
       ParserTransactions.TransactionsTraceEntryField.tamperedMessageType,
     );

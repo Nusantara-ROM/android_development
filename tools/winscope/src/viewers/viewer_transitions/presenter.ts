@@ -141,7 +141,7 @@ export class Presenter extends AbstractLogViewerPresenter<
     return transitions;
   }
 
-  protected override updateFiltersInHeaders(headers: LogHeader[]) {
+  protected override async updateFiltersInHeaders(headers: LogHeader[]) {
     headers.forEach((header) => {
       if (!(header.filter instanceof LogSelectFilter)) return;
       header.filter.options = this.getUniqueUiDataEntryValues(header.spec);

@@ -172,3 +172,30 @@ function createDefaultVsyncIdQuery(
         ORDER BY tbl.id;
     `;
 }
+
+export async function getDistinctValues(
+  traceProcessor: TraceProcessor,
+  tableName: string,
+  columns: string[],
+): Promise<string[]> {
+  const uniqueValueCol = 'unique_value';
+  const sql =
+    columns
+      .map((col) => {
+        return `SELECT DISTINCT ${col} AS ${uniqueValueCol} FROM ${tableName}`;
+      })
+      .join(' UNION ') + ` ORDER BY ${uniqueValueCol}`;
+
+  const rows = await traceProcessor.query(sql);
+  if (rows.numRows() === 0) {
+    return [];
+  }
+
+  const options: string[] = [];
+  for (const it = rows.iter({}); it.valid(); it.next()) {
+    const val = it.get(uniqueValueCol);
+    const option = val !== null && val !== undefined ? val.toString() : 'N/A';
+    options.push(option);
+  }
+  return options;
+}

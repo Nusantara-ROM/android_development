@@ -16,6 +16,7 @@
 
 import {Timestamp} from 'common/time/time';
 import {TraceEntry} from 'trace/trace';
+import {LazyPropertiesStrategyType} from 'trace/tree_node/properties_provider';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {TextFilter} from 'viewers/common/text_filter';
 import {UserOptions} from 'viewers/common/user_options';
@@ -39,6 +40,7 @@ export interface UiDataLog {
 export interface ColumnSpec {
   name: string;
   cssClass: string;
+  columnType?: number;
   canCopy?: boolean;
 }
 
@@ -50,6 +52,7 @@ export interface LogEntry {
   traceEntry: TraceEntry<object>;
   fields: LogField[];
   propertiesTree?: undefined | PropertyTreeNode;
+  getPropertiesTree?: LazyPropertiesStrategyType | undefined;
 }
 
 export interface LogField {

@@ -135,10 +135,7 @@ the default for its data type.`,
     return headers;
   }
 
-  protected override updateFiltersInHeaders(
-    headers: LogHeader[],
-    allEntries: LogEntry[],
-  ) {
+  protected override async updateFiltersInHeaders(headers: LogHeader[]) {
     for (const header of headers) {
       if (header.spec === this.stringColumn) {
         (assertDefined(header.filter) as LogSelectFilter).options = [
