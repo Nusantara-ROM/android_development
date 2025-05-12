@@ -63,7 +63,7 @@ async function getAndConvertArgsToProto(
   traceProcessor: TraceProcessor,
   sql: string,
 ): Promise<FakeProto> {
-  const result = await traceProcessor.queryAllRows(sql);
+  const result = await traceProcessor.query(sql);
   const builder = new FakeProtoBuilder();
   for (const it = result.iter({}); it.valid(); it.next()) {
     builder.addArg(
@@ -102,7 +102,7 @@ export async function queryVsyncId(
   const numEntries = maxRowId - minRowId + 1;
 
   const sql = createVsyncIdQuery(tableName, minRowId, maxRowId);
-  const result = await traceProcessor.queryAllRows(sql);
+  const result = await traceProcessor.query(sql);
 
   const vsyncIdOrderedByRow: Array<bigint> = [];
   let curRowId = BigInt(minRowId);

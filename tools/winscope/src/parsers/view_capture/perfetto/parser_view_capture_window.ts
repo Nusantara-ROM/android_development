@@ -158,7 +158,7 @@ export class ParserViewCaptureWindow extends AbstractParser<HierarchyTreeNode> {
           args.string_value = '${this.windowName}'
         ORDER BY vc.ts;
     `;
-    const result = await this.traceProcessor.queryAllRows(sqlRowIdAndTimestamp);
+    const result = await this.traceProcessor.query(sqlRowIdAndTimestamp);
     const entryIndexToRowId: number[] = [];
     for (const it = result.iter({}); it.valid(); it.next()) {
       const rowId = Number(it.get('id') as bigint);
@@ -192,7 +192,7 @@ export class ParserViewCaptureWindow extends AbstractParser<HierarchyTreeNode> {
           INNER JOIN args ON vcv.arg_set_id = args.arg_set_id
       WHERE snapshot_id = ${this.entryIndexToRowIdMap[index]};
     `;
-    const result = await this.traceProcessor.queryAllRows(sql);
+    const result = await this.traceProcessor.query(sql);
 
     for (const it = result.iter({}); it.valid(); it.next()) {
       const builder = getBuilder(it.get('node_id') as number);

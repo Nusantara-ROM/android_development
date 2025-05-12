@@ -52,7 +52,7 @@ export abstract class AbstractLogViewerPresenterTest<UiData extends UiDataLog> {
         const presenter = await this.createPresenterWithEmptyTrace(
           (newData: UiData) => (uiData = newData),
         );
-        spyOn(TraceProcessor.prototype, 'queryAllRows').and.returnValue(
+        spyOn(TraceProcessor.prototype, 'query').and.returnValue(
           Promise.resolve(setNumRowsSpyQueryResult(0)),
         );
         await presenter.onAppEvent(

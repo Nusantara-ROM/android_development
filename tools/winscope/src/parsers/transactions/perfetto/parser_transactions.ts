@@ -92,7 +92,7 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
       ON sfs.id = ${this.entryIndexToRowIdMap[index]}
       AND sfs.id = sft.snapshot_id`;
 
-    const queryResult = await this.traceProcessor.queryAllRows(sql);
+    const queryResult = await this.traceProcessor.query(sql);
 
     if (this.flags === undefined) {
       const flags = await this.queryFlags();
@@ -372,7 +372,7 @@ LEFT JOIN ranked_process_matches AS rpm
   private async queryFlags(): Promise<Map<number, string>> {
     const sql =
       `SELECT flags_id, flag FROM ${this.getFlagTableName()};`;
-    const result = await this.traceProcessor.queryAllRows(sql);
+    const result = await this.traceProcessor.query(sql);
 
     const flags = new Map<number, string>();
     for (const it = result.iter({}); it.valid(); it.next()) {
