@@ -73,7 +73,7 @@ describe('HierarchyTreeBuilderLog', () => {
       .setIsRoot(true)
       .build();
 
-      const container2Provider = makePropertiesProvider(container2Props);
+    const container2Provider = makePropertiesProvider(container2Props);
 
     const rootNode = builder
       .setRoot(root)
