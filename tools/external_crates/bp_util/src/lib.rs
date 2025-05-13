@@ -21,10 +21,16 @@ use std::{
 
 use android_bp::{BluePrint, Value};
 
-use crate::Error;
+/// Error types for the 'bp_util' crate.
+#[derive(thiserror::Error, Debug)]
+pub enum Error {
+    /// Blueprint rule has no name
+    #[error("Blueprint rule has no name")]
+    RuleWithoutName(String),
+}
 
 /// Extract rust test rules from a blueprint file.
-pub(crate) trait RustTests {
+pub trait RustTests {
     /// Returns the names of all rust_test and rust_test_host rules.
     fn rust_tests(&self) -> Result<BTreeSet<String>, Error>;
 }
@@ -48,11 +54,11 @@ impl RustTests for BluePrint {
 }
 
 /// Finds all the rustlib dependencies mentioned in a blueprint file.
-pub(crate) trait RustDeps {
-    // Finds all the rustlibs mentioned in a blueprint file.
-    // This does a limited amount of evaluation, by doing concatenation and resolving
-    // identifiers. So you can have `common_rustlibs = ["foo", "bar"] and do
-    // rust_library { rustlibs = common_rustlibs + ["baz"] }`
+pub trait RustDeps {
+    /// Finds all the rustlibs mentioned in a blueprint file.
+    /// This does a limited amount of evaluation, by doing concatenation and resolving
+    /// identifiers. So you can have `common_rustlibs = ["foo", "bar"] and do
+    /// rust_library { rustlibs = common_rustlibs + ["baz"] }`
     fn rust_deps(&self) -> BTreeSet<String>;
 }
 
@@ -132,6 +138,32 @@ impl EvalConcat for Value {
     }
 }
 
+/// Find the names of Rust library targets
+pub trait RustLibs {
+    /// Returns the name of all Rust library targets in the blueprint.
+    fn rust_libs(&self) -> Result<Vec<&str>, Error>;
+}
+
+impl RustLibs for BluePrint {
+    fn rust_libs(&self) -> Result<Vec<&str>, Error> {
+        let mut libs = Vec::new();
+        for module in &self.modules {
+            if matches!(
+                module.typ.as_str(),
+                "rust_library" | "rust_library_rlib" | "rust_library_host" | "rust_proc_macro"
+            ) {
+                libs.push(
+                    module
+                        .get_string("name")
+                        .ok_or(Error::RuleWithoutName(module.typ.clone()))?
+                        .as_str(),
+                );
+            }
+        }
+        Ok(libs)
+    }
+}
+
 // Taken from update_crate_tests.py
 static EXCLUDED_TESTS: LazyLock<HashSet<&'static str>> = LazyLock::new(|| {
     HashSet::from([
@@ -198,5 +230,17 @@ rust_library { rustlibs: foo + ["bar"] }
         )
         .expect("Blueprint parse error");
         assert_eq!(bp.rust_deps(), BTreeSet::from(["foo".to_string(), "bar".to_string()]));
+    }
+
+    #[test]
+    fn rust_libs() -> Result<(), Error> {
+        let bp = BluePrint::parse(
+            r###"
+rust_library { name: "foo" }
+"###,
+        )
+        .expect("Blueprint parse error");
+        assert_eq!(bp.rust_libs()?, vec!["foo"]);
+        Ok(())
     }
 }

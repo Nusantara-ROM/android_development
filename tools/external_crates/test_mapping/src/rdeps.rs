@@ -24,8 +24,9 @@ use std::{
 };
 
 use android_bp::BluePrint;
+use bp_util::RustDeps;
 
-use crate::{blueprint::RustDeps, Error};
+use crate::Error;
 
 #[derive(Clone)]
 pub(crate) struct ReverseDeps {
