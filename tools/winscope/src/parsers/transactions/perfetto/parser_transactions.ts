@@ -16,13 +16,19 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
+import {HierarchyTreeBuilderLog} from 'parsers/hierarchy_tree_builder_log';
 import {AddDefaults} from 'parsers/operations/add_defaults';
 import {SetFormatters} from 'parsers/operations/set_formatters';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
-import {queryEntry, queryVsyncId} from 'parsers/perfetto/utils';
-import {TAMPERED_TRACE_PACKET} from 'parsers/tampered_message_type';
-import {TranslateChanges} from 'parsers/transactions/operations/translate_changes';
+import {queryArgs, queryVsyncId} from 'parsers/perfetto/utils';
+import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
+import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
+import {
+  TamperedProtoField,
+  TAMPERED_TRACE_PACKET,
+} from 'parsers/tampered_message_type';
+import {TransactionType} from 'parsers/transactions/transaction_type';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {
   CustomQueryParserResultTypeMap,
@@ -32,21 +38,24 @@ import {
 import {EntriesRange} from 'trace/index_types';
 import {TraceFile} from 'trace/trace_file';
 import {TraceType} from 'trace/trace_type';
-import {PropertyTreeBuilderFromProto} from 'trace/tree_node/property_tree_builder_from_proto';
+import {
+  EnumFormatter,
+  FixedStringFormatter,
+  PropertyFormatter,
+} from 'trace/tree_node/formatters';
+import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {Operation} from 'trace/tree_node/operations/operation';
+import {PropertiesProvider} from 'trace/tree_node/properties_provider';
+import {PropertiesProviderBuilder} from 'trace/tree_node/properties_provider_builder';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {QueryResult, Row, RowIteratorBase} from 'trace_processor/query_result';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 
-export class ParserTransactions extends AbstractParser<PropertyTreeNode> {
+export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
   private static readonly TransactionsTraceEntryField =
     TAMPERED_TRACE_PACKET.fields['surfaceflingerTransactions'];
 
-  private static readonly OPERATIONS = [
-    new AddDefaults(ParserTransactions.TransactionsTraceEntryField),
-    new SetFormatters(ParserTransactions.TransactionsTraceEntryField),
-    new TranslateChanges(),
-  ];
-
-  private protoTransformer: FakeProtoTransformer;
+  private flags: {[key: number]: string} | undefined;
 
   constructor(
     traceFile: TraceFile,
@@ -54,27 +63,39 @@ export class ParserTransactions extends AbstractParser<PropertyTreeNode> {
     timestampConverter: ParserTimestampConverter,
   ) {
     super(traceFile, traceProcessor, timestampConverter);
-
-    this.protoTransformer = new FakeProtoTransformer(
-      assertDefined(
-        ParserTransactions.TransactionsTraceEntryField.tamperedMessageType,
-      ),
-    );
   }
 
   override getTraceType(): TraceType {
     return TraceType.TRANSACTIONS;
   }
 
-  override async getEntry(index: number): Promise<PropertyTreeNode> {
-    let entryProto = await queryEntry(
-      this.traceProcessor,
-      this.getTableName(),
-      this.entryIndexToRowIdMap,
-      index,
-    );
-    entryProto = this.protoTransformer.transform(entryProto);
-    return this.makePropertiesTree(entryProto);
+  override async getEntry(index: number): Promise<HierarchyTreeNode> {
+    const sql = `
+      SELECT
+        sft.transaction_id,
+        sft.pid,
+        sft.uid,
+        sft.layer_id,
+        sft.display_id,
+        sft.flags_id,
+        sft.transaction_type,
+        sft.arg_set_id,
+        sfs.vsync_id
+      FROM __intrinsic_surfaceflinger_transaction AS sft
+      INNER JOIN surfaceflinger_transactions AS sfs
+        ON sfs.id = ${this.entryIndexToRowIdMap[index]}
+        AND sfs.id = sft.snapshot_id`;
+    const queryResult = await this.traceProcessor.queryAllRows(sql);
+
+    if (this.flags === undefined) {
+      const flags = await this.queryFlags();
+      this.flags = {};
+      flags.forEach(
+        (flags, flagId) => (assertDefined(this.flags)[flagId] = flags),
+      );
+    }
+
+    return this.makeHierarchyTree(queryResult);
   }
 
   protected override getTableName(): string {
@@ -92,23 +113,172 @@ export class ParserTransactions extends AbstractParser<PropertyTreeNode> {
           this.getTableName(),
           this.entryIndexToRowIdMap,
           entriesRange,
+          ParserTransactions.createVsyncIdQuery,
         );
       })
       .getResult();
   }
 
-  private makePropertiesTree(
-    entryProto: perfetto.protos.TransactionTraceEntry,
-  ): PropertyTreeNode {
-    const tree = new PropertyTreeBuilderFromProto()
-      .setData(entryProto)
+  private makeHierarchyTree(result: QueryResult): HierarchyTreeNode {
+    const vsyncId =
+      result.numRows() > 0 ? result.firstRow<Row>({})['vsync_id'] : undefined;
+    const entryProperties = new PropertyTreeBuilderFromProto()
+      .setData({vsyncId})
       .setRootId('TransactionsTraceEntry')
       .setRootName('entry')
       .build();
+    const entry = new PropertiesProviderBuilder()
+      .setEagerProperties(entryProperties)
+      .build();
 
-    ParserTransactions.OPERATIONS.forEach((operation) => {
-      operation.apply(tree);
-    });
-    return tree;
+    const transactions: PropertiesProvider[] = [];
+    const columns = [
+      'transaction_id',
+      'pid',
+      'uid',
+      'layer_id',
+      'display_id',
+      'flags_id',
+      'transaction_type',
+    ];
+
+    for (const it = result.iter({}); it.valid(); it.next()) {
+      transactions.push(
+        this.makeTransactionPropertiesProvider(
+          it,
+          columns,
+          transactions.length,
+        ),
+      );
+    }
+
+    return new HierarchyTreeBuilderLog()
+      .setRoot(entry)
+      .setChildren(transactions)
+      .build();
+  }
+
+  private makeTransactionPropertiesProvider(
+    row: RowIteratorBase,
+    columns: string[],
+    index: number,
+  ): PropertiesProvider {
+    const argSetId = row.get('arg_set_id') ?? undefined;
+
+    let field: TamperedProtoField | undefined;
+    const transactionType = assertDefined(row.get('transaction_type')) as string;
+    const entryProtoType = assertDefined(
+      ParserTransactions.TransactionsTraceEntryField.tamperedMessageType,
+    );
+    switch (transactionType) {
+      case TransactionType.DISPLAY_ADDED:
+      case TransactionType.DISPLAY_CHANGED:
+        field = entryProtoType.fields['addedDisplays'];
+        break;
+      case TransactionType.LAYER_ADDED:
+        field = entryProtoType.fields['addedLayers'];
+        break;
+      case TransactionType.LAYER_CHANGED:
+        field = assertDefined(
+          entryProtoType.fields['transactions']?.tamperedMessageType?.fields[
+            'layerChanges'
+          ],
+        );
+        break;
+      default:
+        if (argSetId !== undefined) {
+          throw new Error('unexpected transaction type found with arg set id');
+        }
+    }
+
+    const eagerProperties = new PropertyTreeBuilderFromQueryRow()
+      .setData(row)
+      .setColumns(columns)
+      .setRootId(index)
+      .setRootName(field?.type ?? transactionType)
+      .build();
+
+    const flagsIdFormatter = new EnumFormatter(assertDefined(this.flags));
+    const builder = new PropertiesProviderBuilder()
+      .setEagerProperties(eagerProperties)
+      .setEagerOperations([
+        new SetFormatters(
+          undefined,
+          new Map<string, PropertyFormatter>([['flagsId', flagsIdFormatter]]),
+        ),
+      ]);
+
+    if (argSetId !== undefined && field !== undefined) {
+      const customFormatters = new Map<string, PropertyFormatter>([
+        ['flags', new EnumFormatter(perfetto.protos.LayerState.Flags)],
+      ]);
+      const flagsId = eagerProperties.getChildByName('flagsId');
+      if (flagsId !== undefined) {
+        const whatTranslation = flagsIdFormatter.format(flagsId);
+        customFormatters.set('what', new FixedStringFormatter(whatTranslation));
+      }
+      const lazyOperations: Array<Operation<PropertyTreeNode>> = [
+        new AddDefaults(field),
+        new SetFormatters(field, customFormatters),
+      ];
+
+      const lazyPropertiesStrategy = async () => {
+        let data = await queryArgs(this.traceProcessor, Number(argSetId));
+        const transformer = new FakeProtoTransformer(
+          assertDefined(field?.tamperedMessageType),
+        );
+        data = transformer.transform(data);
+
+        return new PropertyTreeBuilderFromProto()
+          .setData(data)
+          .setRootId(index)
+          .setRootName(assertDefined(field).name)
+          .build();
+      };
+
+      builder
+        .setLazyOperations(lazyOperations)
+        .setLazyPropertiesStrategy(lazyPropertiesStrategy);
+    }
+
+    return builder.build();
+  }
+
+  private async queryFlags(): Promise<Map<number, string>> {
+    const sql =
+      'SELECT flags_id, flag FROM __intrinsic_surfaceflinger_transaction_flag;';
+    const result = await this.traceProcessor.queryAllRows(sql);
+
+    const flags = new Map<number, string>();
+    for (const it = result.iter({}); it.valid(); it.next()) {
+      const flagId = it.get('flags_id') as number;
+      const flag = it.get('flag') as string;
+      if (flags.has(flagId)) {
+        flags.set(flagId, flags.get(flagId) + ' | ' + flag);
+      } else {
+        flags.set(flagId, flag);
+      }
+    }
+    return flags;
+  }
+
+  // Use a custom sql query to get the vsync_id of the first dispatch
+  // entry associated with an input event, if any.
+  private static createVsyncIdQuery(
+    tableName: string,
+    minRowId: number,
+    maxRowId: number,
+  ): string {
+    return `
+      SELECT
+        tbl.id AS id,
+        vsync_id as int_value,
+        'uint' as value_type
+      FROM ${tableName} AS tbl
+      WHERE
+        tbl.id BETWEEN ${minRowId} AND ${maxRowId}
+      GROUP BY tbl.id
+      ORDER BY tbl.id;
+    `;
   }
 }
