@@ -23,7 +23,6 @@ export class PropertyTreeBuilderFromProto {
   private proto: object | undefined;
   private rootId: string | number = 'UnknownRootId';
   private rootName: string | undefined = 'UnknownRootName';
-  private visitProtoType = true;
 
   setData(value: object | undefined): this {
     this.proto = value;
@@ -50,11 +49,6 @@ export class PropertyTreeBuilderFromProto {
     return this;
   }
 
-  setVisitPrototype(value: boolean): this {
-    this.visitProtoType = value;
-    return this;
-  }
-
   build(): PropertyTreeNode {
     if (this.proto === undefined) {
       throw new Error('proto not set');
@@ -65,10 +59,7 @@ export class PropertyTreeBuilderFromProto {
     if (this.rootName === undefined) {
       throw new Error('rootName not set');
     }
-    const factory = new PropertyTreeNodeFactory(
-      this.denylistProperties,
-      this.visitProtoType,
-    );
+    const factory = new PropertyTreeNodeFactory(this.denylistProperties);
 
     return factory.makeProtoProperty(this.makeNodeId(), '', this.proto);
   }
