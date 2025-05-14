@@ -64,7 +64,6 @@ import com.android.mechanics.spec.SegmentData
 import com.android.mechanics.spec.SegmentKey
 import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 import com.android.mechanics.spec.builder.spatialDirectionalMotionSpec
-import com.android.mechanics.spring.SpringParameters
 
 object DirectionSpecDemo : Demo<Unit> {
     object Keys {
@@ -72,8 +71,6 @@ object DirectionSpecDemo : Demo<Unit> {
         val Detach = BreakpointKey("Detach")
         val End = Breakpoint.maxLimit.key
     }
-
-    data class Config(val defaultSpring: SpringParameters)
 
     var inputRange by mutableStateOf(0f..0f)
 
