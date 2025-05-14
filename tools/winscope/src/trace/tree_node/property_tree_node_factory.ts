@@ -67,6 +67,10 @@ export class PropertyTreeNodeFactory {
     );
   }
 
+  makeTpProperty(rootId: string, name: string, value: any): PropertyTreeNode {
+    return this.makeProperty(rootId, name, PropertySource.TP, value);
+  }
+
   private makeProperty(
     rootId: string,
     name: string,
