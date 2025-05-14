@@ -214,7 +214,7 @@ private fun ContentScope.ShadeLayout(
                 {
                     val flingBehavior = ScrollableDefaults.flingBehavior()
                     Box(
-                        Modifier.disableSwipesWhenScrolling(NestedScrollableBound.BottomRight)
+                        Modifier.disableSwipesWhenScrolling(NestedScrollableBound.BottomOrRight)
                             .nestedScroll(
                                 remember(
                                     scrimOffset,
