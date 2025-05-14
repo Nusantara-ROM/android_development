@@ -370,8 +370,7 @@ LEFT JOIN ranked_process_matches AS rpm
   }
 
   private async queryFlags(): Promise<Map<number, string>> {
-    const sql =
-      `SELECT flags_id, flag FROM ${this.getFlagTableName()};`;
+    const sql = `SELECT flags_id, flag FROM ${this.getFlagTableName()};`;
     const result = await this.traceProcessor.query(sql);
 
     const flags = new Map<number, string>();

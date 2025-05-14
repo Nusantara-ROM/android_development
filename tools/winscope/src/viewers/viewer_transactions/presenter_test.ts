@@ -21,6 +21,7 @@ import {TracePositionUpdate} from 'messaging/winscope_event';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
+import {CustomQueryType} from 'trace/custom_query';
 import {Trace} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
 import {TransactionColumnType} from 'trace/transaction_column_type';
@@ -251,7 +252,16 @@ class PresenterTransactionsTest extends AbstractLogViewerPresenterTest<UiData> {
   override async createPresenterWithEmptyTrace(
     callback: NotifyLogViewCallbackType<UiData>,
   ): Promise<Presenter> {
-    const trace = makeEmptyTrace(TraceType.TRANSACTIONS);
+    const trace = makeEmptyTrace(
+      TraceType.TRANSACTIONS,
+      [],
+      [
+        {
+          queryType: CustomQueryType.LOG_TABLE_FILTER_VALUES,
+          result: [],
+        },
+      ],
+    );
     return new Presenter(trace, new InMemoryStorage(), callback);
   }
 

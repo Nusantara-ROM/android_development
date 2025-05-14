@@ -371,17 +371,15 @@ export abstract class AbstractLogViewerPresenter<
     const currentIndex = this.logPresenter.getCurrentIndex();
     if (selectedIndex !== undefined) {
       const entry = entries.at(selectedIndex);
-      return (
-        entry?.propertiesTree ??
-        (entry?.getPropertiesTree ? await entry.getPropertiesTree() : undefined)
-      );
+      return entry?.getPropertiesTree
+        ? await entry.getPropertiesTree()
+        : undefined;
     }
     if (currentIndex !== undefined) {
       const entry = entries.at(currentIndex);
-      return (
-        entry?.propertiesTree ??
-        (entry?.getPropertiesTree ? await entry.getPropertiesTree() : undefined)
-      );
+      return entry?.getPropertiesTree
+        ? await entry.getPropertiesTree()
+        : undefined;
     }
     return undefined;
   }

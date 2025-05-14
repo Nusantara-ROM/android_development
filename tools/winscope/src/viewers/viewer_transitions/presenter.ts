@@ -254,7 +254,9 @@ export class Presenter extends AbstractLogViewerPresenter<
           iconColor: statusIconColor,
         },
       ];
-      transitions.push(new TransitionsEntry(entry, fields, transitionNode));
+      transitions.push(
+        new TransitionsEntry(entry, fields, async () => transitionNode),
+      );
     }
 
     return transitions;
