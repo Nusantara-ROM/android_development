@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertString} from 'common/assert_utils';
 import {ItemHeightPredictor} from 'viewers/common/item_height_predictor';
 import {ProtologEntry} from 'viewers/viewer_protolog/ui_data';
 
@@ -26,7 +26,7 @@ export class ProtologHeightPredictor extends ItemHeightPredictor {
 
   override predictHeight(entry: ProtologEntry): number {
     const textHeight = this.subItemHeight(
-      entry.fields[3].value as string,
+      assertString(entry.fields[3].value),
       this.textCharsPerRow,
     );
     const timestampHeight = this.subItemHeight(
@@ -34,7 +34,7 @@ export class ProtologHeightPredictor extends ItemHeightPredictor {
       this.timestampCharsPerRow,
     );
     const sourceFileHeight = this.subItemHeight(
-      assertDefined(entry.fields[2]).value as string,
+      assertString(entry.fields[2].value),
       this.sourceFileCharsPerRow,
     );
     return Math.max(textHeight, timestampHeight, sourceFileHeight);

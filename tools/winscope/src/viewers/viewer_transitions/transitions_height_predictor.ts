@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {assertString} from 'common/assert_utils';
 import {ItemHeightPredictor} from 'viewers/common/item_height_predictor';
 import {TransitionsEntry} from 'viewers/viewer_transitions/ui_data';
 
@@ -24,7 +25,7 @@ export class TransitionsHeightPredictor extends ItemHeightPredictor {
 
   override predictHeight(entry: TransitionsEntry): number {
     const participantsHeight = this.subItemHeight(
-      entry.fields[6].value as string,
+      assertString(entry.fields[6].value),
       this.participantsCharsPerRow,
     );
     const timestampHeight = this.subItemHeight(

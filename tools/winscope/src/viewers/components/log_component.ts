@@ -372,7 +372,9 @@ export class LogComponent {
   }
 
   isFixedSizeScrollViewport() {
-    return this.traceType === TraceType.CUJS || this.traceType === TraceType.SEARCH;
+    return (
+      this.traceType === TraceType.CUJS || this.traceType === TraceType.SEARCH
+    );
   }
 
   updateTableMarginEnd() {
