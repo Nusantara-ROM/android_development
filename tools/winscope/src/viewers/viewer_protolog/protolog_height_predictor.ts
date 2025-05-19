@@ -15,16 +15,16 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {VariableHeightScrollStrategy} from 'viewers/common/variable_height_scroll_strategy';
+import {ItemHeightPredictor} from 'viewers/common/item_height_predictor';
 import {ProtologEntry} from 'viewers/viewer_protolog/ui_data';
 
-export class ProtologScrollStrategy extends VariableHeightScrollStrategy {
-  protected readonly defaultRowSize = 16;
+export class ProtologHeightPredictor extends ItemHeightPredictor {
+  protected override readonly defaultRowSize = 16;
   private readonly textCharsPerRow = 150;
   private readonly timestampCharsPerRow = 20;
   private readonly sourceFileCharsPerRow = 50;
 
-  protected override predictScrollItemHeight(entry: ProtologEntry): number {
+  override predictHeight(entry: ProtologEntry): number {
     const textHeight = this.subItemHeight(
       entry.fields[3].value as string,
       this.textCharsPerRow,
