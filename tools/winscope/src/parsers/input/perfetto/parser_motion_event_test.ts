@@ -80,7 +80,7 @@ describe('PerfettoParserMotionEvent', () => {
       'SOURCE_TOUCHSCREEN',
     );
     expect(motionEvent?.getChildByName('flags')?.formattedValue()).toEqual(
-      'UNKNOWN (0x80)',
+      'FLAG_SUPPORTS_ORIENTATION',
     );
     expect(motionEvent?.getChildByName('deviceId')?.getValue()).toEqual(4);
     expect(motionEvent?.getChildByName('displayId')?.getValue()).toEqual(0);
