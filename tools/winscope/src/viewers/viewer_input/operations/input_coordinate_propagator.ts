@@ -135,7 +135,7 @@ export class InputCoordinatePropagator implements Operation<PropertyTreeNode> {
     motionEventTree
       .getChildByName('pointer')
       ?.getAllChildren()
-      ?.forEach((pointer) => {
+      .forEach((pointer) => {
         const pointerId = pointer.getChildByName('pointerId')?.getValue();
         if (pointerId === undefined) return;
 
