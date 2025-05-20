@@ -445,7 +445,7 @@ describe('UI_RECT_FACTORY', () => {
       .setY(0)
       .setWidth(1)
       .setHeight(1)
-      .setId('11 nodeupdateRays11')
+      .setId('11 node11')
       .setLabel('node11')
       .setCornerRadius(0)
       .setGroupId(0)
