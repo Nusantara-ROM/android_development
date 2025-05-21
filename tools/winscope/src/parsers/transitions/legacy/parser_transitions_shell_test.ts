@@ -32,9 +32,7 @@ describe('ParserTransitionsShell', () => {
   beforeAll(async () => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
     parser = await new LegacyParserProvider()
-      .addFilename(
-        'traces/elapsed_and_real_timestamp/shell_transition_trace.pb',
-      )
+      .addFile('traces/elapsed_and_real_timestamp/shell_transition_trace.pb')
       .getParser<com.android.wm.shell.Transition>();
   });
 

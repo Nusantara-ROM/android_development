@@ -38,6 +38,7 @@ class ParserScreenRecording extends AbstractParser<
   bigint
 > {
   private realToBootTimeOffsetNs: bigint | undefined;
+  private makeTimestampFromExactValue = false;
 
   constructor(
     trace: TraceFile,
@@ -77,12 +78,29 @@ class ParserScreenRecording extends AbstractParser<
         this.metadata.screenRecordingOffsets,
       );
     }
+    // try parse offset from filename
+    const filename = this.traceFile.file.name;
+    if (filename.endsWith('-screen.mp4')) {
+      const noSuffix = filename.slice(0, filename.lastIndexOf('-'));
+      const maybeOffset = noSuffix.slice(noSuffix.lastIndexOf('-') + 1);
+      try {
+        const offset = BigInt(maybeOffset);
+        return await this.parseTimestampsUsingFilenameOffset(videoData, offset);
+      } catch (e) {
+        console.error(e);
+      }
+    }
     throw new TypeError(
-      "video data doesn't contain winscope magic string and metadata json not provided",
+      'Cannot parse screen recording. Video data does not contain winscope magic string. ' +
+        'Metadata JSON not provided. ' +
+        'Filename does not contain offset.',
     );
   }
 
   protected override getTimestamp(decodedEntry: bigint): Timestamp {
+    if (this.makeTimestampFromExactValue) {
+      return this.timestampConverter.makeTimestampFromRealNs(decodedEntry);
+    }
     return this.timestampConverter.makeTimestampFromBootTimeNs(decodedEntry);
   }
 
@@ -231,6 +249,23 @@ class ParserScreenRecording extends AbstractParser<
         videoData.byteLength + videoData.byteOffset,
       ),
       metadata.elapsedRealTimeNanos,
+    );
+    return timestampsElapsedNs;
+  }
+
+  private async parseTimestampsUsingFilenameOffset(
+    videoData: Uint8Array,
+    offset: bigint,
+  ): Promise<Array<bigint>> {
+    // cannot set boot time offset as we only have the start time of the recording
+    this.realToBootTimeOffsetNs = 0n;
+    this.makeTimestampFromExactValue = true;
+    const timestampsElapsedNs = await this.parseTimestampsFromMp4(
+      videoData.buffer.slice(
+        videoData.byteOffset,
+        videoData.byteLength + videoData.byteOffset,
+      ),
+      offset,
     );
     return timestampsElapsedNs;
   }

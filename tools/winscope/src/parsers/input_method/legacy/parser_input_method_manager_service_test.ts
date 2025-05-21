@@ -32,7 +32,7 @@ describe('ParserInputMethodManagerService', () => {
     beforeAll(async () => {
       jasmine.addCustomEqualityTester(timestampEqualityTester);
       parser = await new LegacyParserProvider()
-        .addFilename(
+        .addFile(
           'traces/elapsed_and_real_timestamp/InputMethodManagerService.pb',
         )
         .getParser<HierarchyTreeNode>();
@@ -76,7 +76,7 @@ describe('ParserInputMethodManagerService', () => {
 
     it('converts to valid perfetto trace', async () => {
       const perfettoParser = await new LegacyParserProvider()
-        .addFilename(
+        .addFile(
           'traces/elapsed_and_real_timestamp/InputMethodManagerService.pb',
         )
         .setConvertToPerfetto(true)
@@ -99,7 +99,7 @@ describe('ParserInputMethodManagerService', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_timestamp/InputMethodManagerService.pb')
+        .addFile('traces/elapsed_timestamp/InputMethodManagerService.pb')
         .getParser<HierarchyTreeNode>();
     });
 

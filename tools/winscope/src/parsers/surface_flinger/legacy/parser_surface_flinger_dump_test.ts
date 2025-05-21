@@ -42,7 +42,7 @@ describe('ParserSurfaceFlingerDump', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_and_real_timestamp/dump_SurfaceFlinger.pb')
+        .addFile('traces/elapsed_and_real_timestamp/dump_SurfaceFlinger.pb')
         .getParser<HierarchyTreeNode>();
     });
 
@@ -66,7 +66,7 @@ describe('ParserSurfaceFlingerDump', () => {
 
     it('does not apply timezone info', async () => {
       const parserWithTimezoneInfo = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_and_real_timestamp/dump_SurfaceFlinger.pb')
+        .addFile('traces/elapsed_and_real_timestamp/dump_SurfaceFlinger.pb')
         .setTimestampConverter(getTimestampConverter(true))
         .getParser<HierarchyTreeNode>();
 
@@ -104,7 +104,7 @@ describe('ParserSurfaceFlingerDump', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_timestamp/dump_SurfaceFlinger.pb')
+        .addFile('traces/elapsed_timestamp/dump_SurfaceFlinger.pb')
         .getParser<HierarchyTreeNode>();
     });
 
@@ -151,7 +151,7 @@ describe('ParserSurfaceFlingerDump', () => {
     nodeCount: number,
   ) {
     const perfettoParser = await new LegacyParserProvider()
-      .addFilename(filename)
+      .addFile(filename)
       .setConvertToPerfetto(true)
       .getParser<HierarchyTreeNode>();
     const expected = [TimestampConverterUtils.makeZeroTimestamp()];

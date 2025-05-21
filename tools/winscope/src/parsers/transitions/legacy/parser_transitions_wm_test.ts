@@ -31,7 +31,7 @@ describe('ParserTransitionsWm', () => {
   beforeAll(async () => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
     parser = await new LegacyParserProvider()
-      .addFilename('traces/elapsed_and_real_timestamp/wm_transition_trace.pb')
+      .addFile('traces/elapsed_and_real_timestamp/wm_transition_trace.pb')
       .getParser<com.android.server.wm.shell.ITransition>();
   });
 
