@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 use cargo_toml::DependencyDetail;
-use crates_index::Version;
+use crates_index::{Dependency, Version};
 use itertools::Itertools;
 use log::debug;
 
-use crate::{AndroidTarget, DepSet, Error};
+use crate::{AndroidTarget, Error, RequiredAndroidDeps};
 
 /// Resolves a list of enabled features to a set of optional dependencies that these features switch on.
 pub struct FeatureResolver<'a> {
@@ -31,11 +31,18 @@ impl<'a> FeatureResolver<'a> {
     pub fn new(version: &'a Version) -> FeatureResolver<'a> {
         FeatureResolver { version }
     }
-    /// Resolves a list of enabled features into a set of optional dependencies.
+    /// Resolves a list of enabled features into a set of required and optional dependencies.
     pub fn resolve(
+        &'a self,
+        features: Option<impl Iterator<Item = impl AsRef<str>>>,
+    ) -> Result<impl Iterator<Item = &'a crates_index::Dependency>, Error> {
+        Ok(self.version.required_android_deps().chain(self.resolve_optional(features)?))
+    }
+    /// Resolves a list of enabled features into a set of optional dependencies.
+    pub fn resolve_optional(
         &self,
         features: Option<impl Iterator<Item = impl AsRef<str>>>,
-    ) -> Result<DepSet<'a>, Error> {
+    ) -> Result<HashSet<&Dependency>, Error> {
         debug!("Resolving {}", self.version.name());
         let resolver = cargo_toml::features::Resolver::new();
 
@@ -92,7 +99,7 @@ impl<'a> FeatureResolver<'a> {
         let parsed_features =
             resolver.parse_custom(self.version.features(), parse_deps.into_iter());
 
-        let mut resolved = DepSet::new();
+        let mut resolved = HashSet::new();
         let mut resolved_features = BTreeSet::new();
         let mut frontier = BTreeSet::new();
         if let Some(features) = features {
@@ -124,7 +131,7 @@ impl<'a> FeatureResolver<'a> {
                             && dep.is_optional()
                             && dep.is_android_target()
                         {
-                            resolved.insert(dep.crate_name(), dep);
+                            resolved.insert(*dep);
                         } else {
                             debug!("        skipping. is_conditional = {}, optional = {}, android_target = {}", dep_action.is_conditional, dep.is_optional(), dep.is_android_target());
                         }
@@ -161,15 +168,24 @@ mod tests {
             serde_json::from_str(include_str!("testdata/hashbrown-0.12.3"))
                 .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&hashbrown_0_12_3);
-        assert_equal(resolver.resolve(Some(["bumpalo"].iter()))?.keys(), ["bumpalo"].iter());
-        assert_equal(resolver.resolve(Some(["default"].iter()))?.keys(), ["ahash"].iter());
+        assert_equal(
+            resolver.resolve_optional(Some(["bumpalo"].iter()))?.into_iter().map(|d| d.name()),
+            ["bumpalo"],
+        );
+        assert_equal(
+            resolver.resolve_optional(Some(["default"].iter()))?.into_iter().map(|d| d.name()),
+            ["ahash"],
+        );
         // ahash-compile-time-rng depends on ahash/compile-time-rng
         assert_equal(
-            resolver.resolve(Some(["ahash-compile-time-rng"].iter()))?.keys(),
-            ["ahash"].iter(),
+            resolver
+                .resolve_optional(Some(["ahash-compile-time-rng"].iter()))?
+                .into_iter()
+                .map(|d| d.name()),
+            ["ahash"],
         );
         assert!(
-            resolver.resolve(Some(["inline-more"].iter()))?.is_empty(),
+            resolver.resolve_optional(Some(["inline-more"].iter()))?.is_empty(),
             "inline-more has no deps associated with it"
         );
 
@@ -178,12 +194,16 @@ mod tests {
                 .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&hashbrown_0_14_5);
         assert!(
-            resolver.resolve(Some(["bumpalo"].iter())).is_err(),
+            resolver.resolve_optional(Some(["bumpalo"].iter())).is_err(),
             "bumpalo is no longer an optional dep in hashbrown-0.14.5"
         );
         assert_equal(
-            resolver.resolve(Some(["default"].iter()))?.keys(),
-            ["ahash", "allocator-api2"].iter(),
+            resolver
+                .resolve_optional(Some(["default"].iter()))?
+                .into_iter()
+                .map(|d| d.name())
+                .sorted(),
+            ["ahash", "allocator-api2"],
         );
         Ok(())
     }
@@ -195,8 +215,11 @@ mod tests {
                 .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&hashbrown_0_12_3);
         assert_equal(
-            resolver.resolve(Some(["ahash", "default", "inline-more", "raw"].iter()))?.keys(),
-            ["ahash"].iter(),
+            resolver
+                .resolve_optional(Some(["ahash", "default", "inline-more", "raw"].iter()))?
+                .into_iter()
+                .map(|d| d.name()),
+            ["ahash"],
         );
         Ok(())
     }
@@ -208,28 +231,40 @@ mod tests {
                 .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&hashbrown_0_12_3);
         let empty: Option<Box<dyn Iterator<Item = &str>>> = None;
-        assert_equal(resolver.resolve(empty), resolver.resolve(Some(["default"].iter())));
+        assert_equal(
+            resolver.resolve_optional(empty),
+            resolver.resolve_optional(Some(["default"].iter())),
+        );
 
         let hashbrown_0_14_5: Version =
             serde_json::from_str(include_str!("testdata/hashbrown-0.14.5"))
                 .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&hashbrown_0_14_5);
         let empty: Option<Box<dyn Iterator<Item = &str>>> = None;
-        assert_equal(resolver.resolve(empty), resolver.resolve(Some(["default"].iter())));
+        assert_equal(
+            resolver.resolve_optional(empty),
+            resolver.resolve_optional(Some(["default"].iter())),
+        );
 
         let winnow_0_5_37: Version = serde_json::from_str(include_str!("testdata/winnow-0.5.37"))
             .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&winnow_0_5_37);
         let empty: Option<Box<dyn Iterator<Item = &str>>> = None;
-        assert_equal(resolver.resolve(empty), resolver.resolve(Some(["default"].iter())));
+        assert_equal(
+            resolver.resolve_optional(empty),
+            resolver.resolve_optional(Some(["default"].iter())),
+        );
 
         let cfg_if_1_0_0: Version = serde_json::from_str(include_str!("testdata/cfg-if-1.0.0"))
             .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&cfg_if_1_0_0);
         let empty: Option<Box<dyn Iterator<Item = &str>>> = None;
-        assert!(resolver.resolve(empty)?.is_empty(), "cfg-if has no explicit 'default' feature");
         assert!(
-            resolver.resolve(Some(["default"].iter())).is_err(),
+            resolver.resolve_optional(empty)?.is_empty(),
+            "cfg-if has no explicit 'default' feature"
+        );
+        assert!(
+            resolver.resolve_optional(Some(["default"].iter())).is_err(),
             "cfg-if has no explicit 'default' feature"
         );
 
@@ -242,9 +277,12 @@ mod tests {
             .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&winnow_0_5_37);
         // "simd" depends on "dep:memchr"
-        assert_equal(resolver.resolve(Some(["simd"].iter()))?.keys(), ["memchr"].iter());
+        assert_equal(
+            resolver.resolve_optional(Some(["simd"].iter()))?.into_iter().map(|d| d.name()),
+            ["memchr"],
+        );
         assert!(
-            resolver.resolve(Some(["std"].iter()))?.is_empty(),
+            resolver.resolve_optional(Some(["std"].iter()))?.is_empty(),
             "'std' depends on 'memchr?/std', which should be omitted since it's optional."
         );
 
@@ -258,7 +296,7 @@ mod tests {
                 .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&aarch64_paging_0_7_1);
         let empty: Option<Box<dyn Iterator<Item = &str>>> = None;
-        assert_equal(resolver.resolve(empty)?.keys(), ["zerocopy"].iter());
+        assert_equal(resolver.resolve_optional(empty)?.into_iter().map(|d| d.name()), ["zerocopy"]);
 
         Ok(())
     }
@@ -270,7 +308,7 @@ mod tests {
         let resolver = FeatureResolver::new(&axum_0_7_0);
         let empty: Option<Box<dyn Iterator<Item = &str>>> = None;
         assert_equal(
-            resolver.resolve(empty)?.keys(),
+            resolver.resolve_optional(empty)?.into_iter().map(|d| d.name()).sorted(),
             [
                 "hyper",
                 "hyper-util",
@@ -278,8 +316,7 @@ mod tests {
                 "serde_path_to_error",
                 "serde_urlencoded",
                 "tokio",
-            ]
-            .iter(),
+            ],
         );
 
         Ok(())
@@ -291,7 +328,7 @@ mod tests {
             .expect("Failed to parse JSON testdata");
         let resolver = FeatureResolver::new(&chrono_0_4_39);
         let empty: Option<Box<dyn Iterator<Item = &str>>> = None;
-        assert!(resolver.resolve(empty)?.contains_key("android-tzdata"));
+        assert!(resolver.resolve_optional(empty)?.iter().any(|d| d.name() == "android-tzdata"));
         Ok(())
     }
 }

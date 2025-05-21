@@ -22,7 +22,10 @@ use std::{
 
 use anyhow::{anyhow, bail, Context, Result};
 use crates_index::DependencyKind;
-use crates_io_util::{CratesIoIndex, GetVersion, SafeVersions};
+use crates_io_util::{
+    CratesIoIndex, DependencyDiffer, FeatureResolver, GetVersion, ParsedVersion, ParsedVersionReq,
+    SafeVersions,
+};
 use google_metadata::GoogleMetadata;
 use itertools::Itertools;
 use license_checker::find_licenses;
@@ -38,7 +41,6 @@ use crate::{
     copy_dir,
     crate_collection::CrateCollection,
     crate_type::Crate,
-    crates_io::{AndroidDependencies, DependencyChanges},
     managed_crate::ManagedCrate,
     pseudo_crate::{CargoVendorDirty, PseudoCrate},
     upgradable::{IsUpgradableTo, MatchesWithCompatibilityRule, SemverCompatibilityRule},
@@ -178,8 +180,10 @@ impl ManagedRepo {
 
         for version in cio_crate.safe_versions() {
             println!("Version {}", version.version());
+            let resolver = FeatureResolver::new(version);
             let mut found_problems = false;
-            for (dep, req) in version.android_deps_with_version_reqs() {
+            for dep in resolver.resolve(None as Option<Box<dyn Iterator<Item = &str>>>)? {
+                let req = dep.parsed_version_req()?;
                 let cc = if managed_crates.contains_crate(dep.crate_name()) {
                     &managed_crates
                 } else {
@@ -473,7 +477,7 @@ We apologize for the inconvenience."#,
             krate.name(),
             krate.android_version()
         ))?;
-        let base_deps = base_version.android_version_reqs_by_name();
+        let dep_differ = DependencyDiffer::new(base_version);
 
         let mut newer_versions = cio_crate.safe_versions_gt(krate.android_version()).peekable();
         if newer_versions.peek().is_none() {
@@ -482,7 +486,8 @@ We apologize for the inconvenience."#,
         for version in newer_versions {
             println!("Version {}", version.version());
             let mut found_problems = false;
-            let parsed_version = semver::Version::parse(version.version())?;
+            let parsed_version = version.parsed_version()?;
+            let resolver = FeatureResolver::new(version);
             if !krate
                 .android_version()
                 .is_upgradable_to(&parsed_version, SemverCompatibilityRule::Strict)
@@ -497,12 +502,13 @@ We apologize for the inconvenience."#,
                     println!("  Semver-compatible, but only by relaxed standards since major version is 0");
                 }
             }
+            let diff = dep_differ.diff(version);
             // Check to see if the update has any missing dependencies.
             // We try to be a little clever about this in the following ways:
             // * Only consider deps that are likely to be relevant to Android. For example, ignore Windows-only deps.
             // * If a dep is missing, but the same dep exists for the current version of the crate, it's probably not actually necessary.
             // * Use relaxed version requirements, treating 0.x and 0.y as compatible, even though they aren't according to semver rules.
-            for (dep, req) in version.android_deps_with_version_reqs() {
+            for dep in resolver.resolve(None as Option<Box<dyn Iterator<Item = &str>>>)? {
                 let cc = if managed_crates.contains_crate(dep.crate_name()) {
                     &managed_crates
                 } else {
@@ -515,14 +521,14 @@ We apologize for the inconvenience."#,
                         dep.crate_name(),
                         dep.requirement()
                     );
-                    if !dep.is_new_dep(&base_deps) {
+                    if !diff.is_added(dep) {
                         println!("    But the current version has the same dependency, and it seems to work");
                     } else {
                         continue;
                     }
                 }
                 for (_, dep_crate) in cc.get_versions(dep.crate_name()) {
-                    if !req.matches_with_compatibility_rule(
+                    if !dep.parsed_version_req()?.matches_with_compatibility_rule(
                         dep_crate.version(),
                         SemverCompatibilityRule::Loose,
                     ) {
@@ -534,7 +540,7 @@ We apologize for the inconvenience."#,
                             dep_crate.version(),
                             dep_crate.path()
                         );
-                        if !dep.is_changed_dep(&base_deps) {
+                        if !diff.is_changed(dep) {
                             println!("    But the current version has the same dependency and it seems to work.")
                         }
                     }
@@ -575,7 +581,7 @@ We apologize for the inconvenience."#,
                 continue;
             }
             let base_version = base_version.unwrap();
-            let base_deps = base_version.android_version_reqs_by_name();
+            let dep_differ = DependencyDiffer::new(base_version);
 
             let patch_dir = krate.path().join("patches").unwrap();
             if patch_dir.abs().exists() && !consider_patched_crates {
@@ -594,14 +600,19 @@ We apologize for the inconvenience."#,
                 if !krate.version().is_upgradable_to(&parsed_version, semver_compatibility) {
                     continue;
                 }
-                if !version.android_deps_with_version_reqs().any(|(dep, req)| {
-                    if !dep.is_changed_dep(&base_deps) {
+                let resolver = FeatureResolver::new(version);
+                if !resolver.resolve(None as Option<Box<dyn Iterator<Item = &str>>>)?.any(|dep| {
+                    let diff = dep_differ.diff(version);
+                    if !diff.is_changed(dep) {
                         return false;
                     }
                     let cc = if managed_crates.contains_crate(dep.crate_name()) {
                         &managed_crates
                     } else {
                         &legacy_crates
+                    };
+                    let Ok(req) = dep.parsed_version_req() else {
+                        return false;
                     };
                     for (_, dep_crate) in cc.get_versions(dep.crate_name()) {
                         if req.matches_with_compatibility_rule(

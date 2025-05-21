@@ -16,7 +16,7 @@ use cfg_expr::{
     targets::{Arch, Family, Os},
     Predicate, TargetPredicate,
 };
-use crates_index::Dependency;
+use crates_index::{Dependency, Version};
 
 /// Parse cfg expressions in dependencies and determine if they refer to a target relevant to Android.
 /// Dependencies are relevant if they are for Unix, Android, or Linux, and for an architecture we care about (Arm, RISC-V, or X86)
@@ -51,9 +51,32 @@ fn is_android(target: &str) -> bool {
     })
 }
 
+/// Get the required Android dependencies of a crate.
+pub trait RequiredAndroidDeps {
+    /// Returns the required Android dependencies of a crate.
+    /// That is, dependencies that are:
+    /// * Non-optional
+    /// * Normal (not Build or Dev)
+    /// * If they have a target cfg expression, it applies to Android.
+    fn required_android_deps(&self) -> impl DoubleEndedIterator<Item = &crates_index::Dependency>;
+}
+
+impl RequiredAndroidDeps for Version {
+    fn required_android_deps(&self) -> impl DoubleEndedIterator<Item = &crates_index::Dependency> {
+        self.dependencies().iter().filter(|dep| {
+            dep.kind() == crates_index::DependencyKind::Normal
+                && !dep.is_optional()
+                && dep.is_android_target()
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    use itertools::assert_equal;
+
     use super::*;
+
     #[test]
     fn test_android_cfgs() {
         assert!(!is_android("asmjs-unknown-emscripten"), "Parse error");
@@ -82,5 +105,20 @@ mod tests {
         assert!(is_android(
             "cfg(all(not(windows), any(rustix_use_libc, miri, not(all(target_os = \"linux\", target_endian = \"little\", any(target_arch = \"arm\", all(target_arch = \"aarch64\", target_pointer_width = \"64\"), target_arch = \"riscv64\", all(rustix_use_experimental_asm, target_arch = \"powerpc64\"), all(rustix_use_experimental_asm, target_arch = \"mips\"), all(rustix_use_experimental_asm, target_arch = \"mips32r6\"), all(rustix_use_experimental_asm, target_arch = \"mips64\"), all(rustix_use_experimental_asm, target_arch = \"mips64r6\"), target_arch = \"x86\", all(target_arch = \"x86_64\", target_pointer_width = \"64\")))))))"
         ), "rustix 0.38.31");
+    }
+
+    #[test]
+    fn test_required_android_deps() {
+        let aarch64_paging_0_7_1: Version =
+            serde_json::from_str(include_str!("testdata/aarch64-paging-0.7.1"))
+                .expect("Failed to parse JSON testdata");
+        assert_equal(
+            aarch64_paging_0_7_1.required_android_deps(),
+            [aarch64_paging_0_7_1
+                .dependencies()
+                .iter()
+                .find(|dep| dep.name() == "bitflags")
+                .unwrap()],
+        );
     }
 }

@@ -177,10 +177,9 @@ impl CratesIoResolver {
             .collect::<BTreeSet<String>>();
         let resolver = FeatureResolver::new(version);
         let optional = resolver
-            // .resolve(None as Option<Box<dyn Iterator<Item = &str>>>)?
-            .resolve(features.as_ref().map(|f| f.iter()))?
-            .into_keys()
-            .map(String::from)
+            .resolve_optional(features.as_ref().map(|f| f.iter()))?
+            .into_iter()
+            .map(|d| d.name().to_string())
             .collect::<BTreeSet<String>>();
         Ok(Deps { required, optional })
     }
