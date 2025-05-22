@@ -92,18 +92,18 @@ export class GraphComponent implements AfterViewInit, OnChanges {
   }
 
   private updateData(): void {
+    if(!this.featureName) {
+      console.log("No feature name provided")
+      return
+    }
     this.data = [];
-    const actualFeature =
-      this.featureName && this.actualData
-        ? this.actualData.features.find((f) => f.name === this.featureName)
-        : undefined;
-    const expectedFeature =
-      this.featureName && this.expectedData
-        ? this.expectedData.features.find((f) => f.name === this.featureName)
-        : undefined;
-
+    const actualFeature = this.actualData?.features?.find(
+      (f) => f.name === this.featureName
+    )
+    const expectedFeature = this.expectedData?.features?.find(
+      (f) => f.name === this.featureName
+    )
     this.visualization = this.createVisualization(actualFeature);
-
     if (this.visualization instanceof LineGraphVisualization) {
       this.createLineChartData(actualFeature, expectedFeature);
     } else {
@@ -141,7 +141,6 @@ export class GraphComponent implements AfterViewInit, OnChanges {
       if (expectedDataPoint && typeof expectedDataPoint === 'number') {
         newPoint.expectedValue = expectedDataPoint;
       }
-
       this.data.push(newPoint);
     }
   }

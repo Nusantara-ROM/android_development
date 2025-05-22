@@ -45,7 +45,7 @@
       &#17;
     </button>
   </div>
-  <div class="mt-4 flex justify-center space-x-2">
+  <div *ngIf="showUpdateButton" class="mt-4 flex justify-center space-x-2">
     <button
       class="px-3 py-1 rounded bg-red-500 hover:bg-red-700 text-white"
       (click)="updateGolden()"

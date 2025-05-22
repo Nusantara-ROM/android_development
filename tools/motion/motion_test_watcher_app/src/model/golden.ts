@@ -20,13 +20,16 @@ export interface MotionGolden {
   goldenRepoPath: string;
   id: string;
   label: string;
-  result: 'PASSED' | 'FAILED' | 'MISSING_REFERENCE';
+  result: 'PASSED' | 'FAILED' | 'MISSING_REFERENCE' | 'NONE';
   testClassName: string;
   testMethodName: string;
   testTime: string;
   updated: boolean;
   videoUrl: string | undefined;
   goldenName: string | undefined;
+  isLocalData: boolean;
+  expectedData: MotionGoldenData;
+  actualData: MotionGoldenData;
 }
 
 export interface MotionGoldenData {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, filter, map, tap } from 'rxjs/operators';
@@ -158,6 +158,22 @@ export class GoldensService {
           golden.updated = true;
         }),
         catchError(this.handleError<void>('update'))
+      );
+  }
+
+  getGerritData(leftLink: string, rightLink: string){
+    let params = new HttpParams()
+    params = params.set('leftLink', leftLink)
+    params = params.set('rightLink', rightLink)
+    console.log(`GERRIT: Setting params as ${params.toString()}`)
+    return this.http
+      .get<string[]>(`${this.serverRoot}/getGerrit`, {
+        headers: this.defaultHeaders,
+        params: params
+      })
+      .pipe(
+        tap((x) => console.log(`Got response as ${x.toString()}`)),
+        catchError(this.handleError<string[]>('e'))
       );
   }
 

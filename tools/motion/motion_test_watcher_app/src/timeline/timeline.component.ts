@@ -44,6 +44,7 @@ export class TimelineComponent implements OnChanges {
   loading: boolean = false;
   featureCount = 0;
   expandedGraphIdx: number = -1;
+  showUpdateButton: boolean = true;
   availableOptions: SelectOption[] = [];
   displayedData: SelectOption[] = [];
 
@@ -61,7 +62,16 @@ export class TimelineComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedGolden']) {
       this.receivedSelectedOptions = [];
-      this.updatePage();
+      if(this.selectedGolden?.isLocalData){
+        this.showUpdateButton = false
+        this.updatePageFromData(
+          this.selectedGolden.actualData,
+          this.selectedGolden.expectedData
+        );
+      } else {
+        this.showUpdateButton = true
+        this.updatePage();
+      }
     }
     if (changes['displayedData']) {
       this.updatePage();
@@ -89,11 +99,7 @@ export class TimelineComponent implements OnChanges {
     ]).subscribe({
       next: ([actualData, expectedData]) => {
         this.loading = false;
-        this.expectedData = expectedData;
-        this.actualData = actualData;
-        this.preivewService.updateFrames(this.actualData.frame_ids);
-        this.buildUi();
-        this.populateFeatureOptions();
+        this.updatePageFromData(actualData, expectedData)
       },
       error: (err) => {
         this.loading = false;
@@ -103,12 +109,24 @@ export class TimelineComponent implements OnChanges {
     });
   }
 
+  updatePageFromData(actualData: MotionGoldenData, expectedData: MotionGoldenData){
+    this.expectedData = expectedData
+    this.actualData = actualData
+    this.preivewService.updateFrames(this.actualData.frame_ids)
+    this.buildUi();
+  }
+
   buildUi() {
     if (!this.selectedGolden) return;
-    if (!this.actualData || !this.expectedData) return;
-    this.processData(this.actualData);
-    this.processData(this.expectedData);
-    this.featureCount = this.actualData.features.length;
+    if(this.actualData
+      && Object.keys(this.actualData).length > 0) {
+        this.processData(this.actualData)
+      }
+    if(this.expectedData
+      && Object.keys(this.expectedData).length > 0) {
+        this.processData(this.expectedData)
+      }
+    this.featureCount = this.actualData?.features.length ?? this.expectedData?.features?.length ?? 0
   }
 
   processData(data: MotionGoldenData) {
@@ -146,7 +164,6 @@ export class TimelineComponent implements OnChanges {
         newFeatures.push(feature);
       }
     });
-
     data.features = newFeatures;
   }
 

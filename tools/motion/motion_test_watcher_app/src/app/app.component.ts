@@ -7,7 +7,7 @@ import { PreviewComponent } from '../preview/preview.component';
 import { TimelineComponent } from '../timeline/timeline.component';
 import { MotionGolden } from '../model/golden';
 import { finalize } from 'rxjs';
-import { NgIf, NgStyle } from '@angular/common';
+import { JsonPipe, NgIf, NgStyle } from '@angular/common';
 import {
   trigger,
   state,
@@ -146,7 +146,27 @@ export class AppComponent implements DoCheck, OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchGoldens();
+    const searchParams = new URLSearchParams(window.location.search);
+    const leftLink = searchParams.get('leftLink') ?? ""
+    const rightLink = searchParams.get('rightLink') ?? ""
+
+    if(leftLink || rightLink){
+      this.fetchGerritData(leftLink, rightLink)
+    } else {
+      console.log("GERRIT: left and right is null")
+      this.fetchGoldens();
+    }
+  }
+
+  fetchGerritData(leftLink: string, rightLink: string){
+    this.showLoaderBar()
+    this.goldenService
+      .getGerritData(leftLink, rightLink)
+      .pipe(finalize(() => this.hideLoaderBar()))
+      .subscribe((goldens) => {
+        this.goldens = JSON.parse(JSON.stringify(goldens)) as MotionGolden[]
+        this.setSelectedGolden(JSON.parse(JSON.stringify(goldens[0])) as MotionGolden)
+      })
   }
 
   fetchGoldens(): void {
