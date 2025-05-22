@@ -109,8 +109,9 @@ export class ParserTransitions extends AbstractParser<HierarchyTreeNode> {
     const columns = ParserTransitions.EAGER_COLUMNS.map(
       (column) => `transitions.${column}`,
     ).join(', ');
-    const sql = `SELECT ${columns} FROM ${this.getTableName()} as transitions`
-      + ` WHERE transitions.id = ${this.entryIndexToRowIdMap[index]};`;
+    const sql =
+      `SELECT ${columns} FROM ${this.getTableName()} as transitions` +
+      ` WHERE transitions.id = ${this.entryIndexToRowIdMap[index]};`;
     const queryResult = await this.traceProcessor.query(sql);
 
     if (this.handlerIdToName === undefined) {

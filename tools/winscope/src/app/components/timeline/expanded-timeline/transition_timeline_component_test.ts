@@ -398,7 +398,6 @@ describe('TransitionTimelineComponent', () => {
     expect(drawRectSpy).not.toHaveBeenCalled();
   });
 
-
   it('handles missing trace entries', async () => {
     const transition0 = makeTransition(time10, time30);
     const transition1 = makeTransition(time60, time110);
