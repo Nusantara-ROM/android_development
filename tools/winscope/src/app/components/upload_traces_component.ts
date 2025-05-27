@@ -87,6 +87,7 @@ import {LoadProgressComponent} from './load_progress_component';
               color="primary"
               [checked]="!isDiscardLegacyTracesBoxDisabled() && discardLegacyTraces"
               [disabled]="isDiscardLegacyTracesBoxDisabled()"
+              matTooltip="Discard legacy traces instead of converting to Perfetto to reduce loading time"
               (change)="updateDiscardLegacyTraces()">
               Discard legacy traces
             </mat-checkbox>
