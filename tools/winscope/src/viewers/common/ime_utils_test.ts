@@ -106,7 +106,7 @@ describe('ImeUtils', () => {
       undefined,
     );
     const layers = assertDefined(
-      ImeUtils.getImeLayers(
+      await ImeUtils.getImeLayers(
         assertDefined(entries.get(TraceType.SURFACE_FLINGER)),
         processedWindowManagerState,
         undefined,

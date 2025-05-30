@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertBigInt, assertDefined, assertString} from 'common/assert_utils';
 import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {
@@ -280,9 +280,11 @@ the default for its data type.`,
       if (selectedHierarchyTree.tree.isRoot()) {
         this.curatedProperties = undefined;
       } else {
+        const layerIdToNodeId = this.makeLayerIdToNodeIdMap();
         this.curatedProperties = this.getCuratedProperties(
           selectedHierarchyTree.tree,
           propertiesTree,
+          layerIdToNodeId,
         );
       }
     } else {
@@ -290,9 +292,26 @@ the default for its data type.`,
     }
   }
 
+  private makeLayerIdToNodeIdMap() {
+    const layerIdToNodeId = new Map<bigint, string>();
+    const tree =
+      this.hierarchyPresenter.getAllCurrentHierarchyTrees()?.[0].trees[0];
+    tree?.forEachNodeDfs((node) => {
+      if (node.isRoot()) {
+        return;
+      }
+      layerIdToNodeId.set(
+        assertBigInt(node.getEagerPropertyByName('layerId')?.getValue()),
+        node.id,
+      );
+    });
+    return layerIdToNodeId;
+  }
+
   private getCuratedProperties(
     hTree: HierarchyTreeNode,
     pTree: PropertyTreeNode,
+    layerIdToNodeId: Map<bigint, string>,
   ): SfCuratedProperties {
     const inputWindowInfo = pTree.getChildByName('inputWindowInfo');
     const hasInputChannel =
@@ -332,7 +351,7 @@ the default for its data type.`,
     }
 
     const curated: SfCuratedProperties = {
-      summary: this.getSummaryOfVisibility(pTree),
+      summary: this.getSummaryOfVisibility(layerIdToNodeId, pTree),
       flags: curatedFlags,
       calcTransform: pTree.getChildByName('transform'),
       calcCrop: this.getRectPropertyValue(pTree, 'bounds'),
@@ -398,9 +417,12 @@ the default for its data type.`,
     return curated;
   }
 
-  private getSummaryOfVisibility(tree: PropertyTreeNode): SfSummaryProperty[] {
+  private getSummaryOfVisibility(
+    layerIdToNodeId: Map<bigint, string>,
+    pTree: PropertyTreeNode,
+  ): SfSummaryProperty[] {
     const summary: SfSummaryProperty[] = [];
-    const visibilityReason = tree.getChildByName('visibilityReason');
+    const visibilityReason = pTree.getChildByName('visibilityReason');
     if (visibilityReason && visibilityReason.getAllChildren().length > 0) {
       const reason = this.mapNodeArrayToString(
         visibilityReason.getAllChildren(),
@@ -408,37 +430,40 @@ the default for its data type.`,
       summary.push({key: 'Invisible due to', simpleValue: reason});
     }
 
-    const occludedBy = tree.getChildByName('occludedBy')?.getAllChildren();
+    const occludedBy = pTree.getChildByName('occludedBy')?.getAllChildren();
     if (occludedBy && occludedBy.length > 0) {
       summary.push({
         key: 'Occluded by',
-        layerValues: occludedBy.map((layer) =>
-          this.getLayerSummary(layer.formattedValue()),
-        ),
+        layerValues: occludedBy.map((layer) => {
+          const nodeId = layerIdToNodeId.get(assertBigInt(layer.getValue()));
+          return this.getLayerSummary(assertString(nodeId));
+        }),
         desc: 'Fully occluded by these opaque layers',
       });
     }
 
-    const partiallyOccludedBy = tree
+    const partiallyOccludedBy = pTree
       .getChildByName('partiallyOccludedBy')
       ?.getAllChildren();
     if (partiallyOccludedBy && partiallyOccludedBy.length > 0) {
       summary.push({
         key: 'Partially occluded by',
-        layerValues: partiallyOccludedBy.map((layer) =>
-          this.getLayerSummary(layer.formattedValue()),
-        ),
+        layerValues: partiallyOccludedBy.map((layer) => {
+          const nodeId = layerIdToNodeId.get(assertBigInt(layer.getValue()));
+          return this.getLayerSummary(assertString(nodeId));
+        }),
         desc: 'Partially occluded by these opaque layers',
       });
     }
 
-    const coveredBy = tree.getChildByName('coveredBy')?.getAllChildren();
+    const coveredBy = pTree.getChildByName('coveredBy')?.getAllChildren();
     if (coveredBy && coveredBy.length > 0) {
       summary.push({
         key: 'Covered by',
-        layerValues: coveredBy.map((layer) =>
-          this.getLayerSummary(layer.formattedValue()),
-        ),
+        layerValues: coveredBy.map((layer) => {
+          const nodeId = layerIdToNodeId.get(assertBigInt(layer.getValue()));
+          return this.getLayerSummary(assertString(nodeId));
+        }),
         desc: 'Partially or fully covered by these likely translucent layers',
       });
     }
