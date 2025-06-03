@@ -7,6 +7,21 @@
         Get Presubmit Artifacts
       </button>
     </div>
+<div class="button-dropdown-container">
+  <button mat-raised-button color="primary" [matMenuTriggerFor]="appMenu">
+     <span *ngIf="selectedMode && selectedMode.trim().length > 0">
+    Test Mode: {{ selectedMode }}
+  </span>
+  <span *ngIf="!selectedMode || selectedMode.trim().length === 0">
+    Select Mode
+  </span>
+  </button>
+
+  <mat-menu #appMenu="matMenu"> <button mat-menu-item *ngFor="let testMode of testModes" (click)="onTestModeSelected(testMode)">
+      <span>{{ testMode }}</span>
+    </button>
+  </mat-menu>
+</div>
 </mat-toolbar>
 
 <div class="flex h-screen p-4 bg-gray-100">
