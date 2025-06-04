@@ -220,14 +220,47 @@ describe('PerfettoSessionModerator', () => {
   });
 
   describe('createTracingSession', () => {
+    const mockConfigDataSources = [
+      `data_sources {
+  config {
+    name: "ds1"
+    extra_config_1 {
+      config_param_1: false
+    }
+  }
+}`,
+      `data_sources {
+  config {
+    name: "ds2"
+    extra_config_2 {
+      config_param_2: 1
+    }
+  }
+}`,
+    ];
     it('trace', () => {
       const moderator = new PerfettoSessionModerator(mockDevice, false);
-      const session = moderator.createTracingSession(['setup1']);
+      const session = moderator.createTracingSession(mockConfigDataSources);
       const expectedTarget = new TraceTarget(
         'PerfettoTrace',
         [],
         `cat << EOF > ${PERFETTO_TRACE_CONFIG_FILE}
-setup1
+data_sources {
+  config {
+    name: "ds1"
+    extra_config_1 {
+      config_param_1: false
+    }
+  }
+}
+data_sources {
+  config {
+    name: "ds2"
+    extra_config_2 {
+      config_param_2: 1
+    }
+  }
+}
 data_sources {
   config {
     name: "linux.process_stats"
@@ -276,12 +309,27 @@ echo 'Perfetto trace stopped.'`,
 
     it('dump', () => {
       const moderator = new PerfettoSessionModerator(mockDevice, true);
-      const session = moderator.createTracingSession(['setup1']);
+      const session = moderator.createTracingSession(mockConfigDataSources);
       const expectedTarget = new TraceTarget(
         'PerfettoDump',
         [],
         `cat << EOF > ${PERFETTO_DUMP_CONFIG_FILE}
-setup1
+data_sources {
+  config {
+    name: "ds1"
+    extra_config_1 {
+      config_param_1: false
+    }
+  }
+}
+data_sources {
+  config {
+    name: "ds2"
+    extra_config_2 {
+      config_param_2: 1
+    }
+  }
+}
 buffers: {
   size_kb: 500000
   fill_policy: RING_BUFFER
