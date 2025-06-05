@@ -28,9 +28,10 @@ import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
 import android.provider.MediaStore
+import android.service.chooser.ChooserManager
 import android.service.chooser.ChooserSession
-import android.service.chooser.ChooserSession.ChooserController
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
@@ -82,6 +83,7 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
     private var chooserWindowTopOffset = MutableStateFlow(-1)
     private val isInMultiWindowMode = MutableStateFlow<Boolean>(false)
     private val viewModel: InteractiveShareTestViewModel by viewModels()
+    private lateinit var chooserManager: ChooserManager
     private val chooserSession: MutableStateFlow<ChooserSession?>
         get() = viewModel.chooserSession
 
@@ -99,17 +101,17 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
         }
 
     private val sessionStateListener =
-        object : ChooserSession.UpdateListener {
-            override fun onChooserConnected(chooserController: ChooserController) {
-                Log.d(TAG, "onChooserConnected")
+        object : ChooserSession.StateListener {
+            override fun onStateChanged(state: Int) {
+                if (state == ChooserSession.STATE_STARTED) {
+                    Log.d(TAG, "onChooserConnected")
+                } else if (state == ChooserSession.STATE_CLOSED) {
+                    Log.d(TAG, "onSessionClosed")
+                    chooserSession.value = null
+                }
             }
 
-            override fun onClosed() {
-                Log.d(TAG, "onSessionClosed")
-                chooserSession.value = null
-            }
-
-            override fun onSizeChanged(size: Rect) {
+            override fun onBoundsChanged(size: Rect) {
                 Log.d(TAG, "onSizeChanged")
                 chooserWindowTopOffset.value = size.top
             }
@@ -119,6 +121,14 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val cm = getSystemService(ChooserManager::class.java)
+        if (cm == null) {
+            Toast.makeText(this, "ChooserManager is not available", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+        chooserManager = cm
+
         isInMultiWindowMode.value = isInMultiWindowMode()
 
         lifecycleScope.launch {
@@ -126,7 +136,7 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
                 chooserSession
                     .scan<ChooserSession?, ChooserSession?>(null) { prevSession, newSession ->
                         prevSession?.close()
-                        newSession?.addUpdateListener(mainExecutor, sessionStateListener)
+                        newSession?.addStateListener(mainExecutor, sessionStateListener)
                         newSession
                     }
                     .collect {}
@@ -279,7 +289,7 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
         if (useRefinementFlow.value) {
             unregisterReceiver(refinementReceiver)
         }
-        chooserSession.value?.removeUpdateListener(sessionStateListener)
+        chooserSession.value?.removeStateListener(sessionStateListener)
         super.onDestroy()
     }
 
@@ -373,7 +383,7 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
     }
 
     private fun startOrUpdate(chooserIntent: Intent) {
-        val chooserController = chooserSession.value?.takeIf { it.isActive }?.chooserController
+        val session = chooserSession.value?.takeIf { it.isActive }
         if (useRefinementFlow.value) {
             chooserIntent.putExtra(
                 Intent.EXTRA_CHOOSER_REFINEMENT_INTENT_SENDER,
@@ -381,13 +391,16 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
             )
         }
         chooserIntent.putExtra(EXTRA_CHOOSER_RESULT_INTENT_SENDER, createResultIntentSender(this))
-        if (chooserController == null) {
-            ChooserSession().also { chooserSession.value = it }.start(this, chooserIntent)
+        if (session == null) {
+            chooserManager.startSession(this, chooserIntent).also { chooserSession.value = it }
         } else {
-            chooserController.updateIntent(chooserIntent)
+            session.updateIntent(chooserIntent)
         }
     }
 }
+
+private val ChooserSession.isActive: Boolean
+    get() = state != ChooserSession.STATE_CLOSED
 
 private fun Intent.setColorScheme(colorScheme: Int) {
     putExtra("com.android.extra.CHOOSER_COLOR_SCHEME", colorScheme)
