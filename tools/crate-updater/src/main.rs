@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use std::{
+    env,
     path::{Path, PathBuf},
     process::{Command, ExitStatus, Output},
     str::from_utf8,
@@ -266,6 +267,22 @@ fn try_update(
     Ok(())
 }
 
+fn send_email(updates_tried_string: Vec<String>) -> Result<()> {
+    let username = env::var("USER")?;
+    Command::new("/google/bin/releases/gws-sre/files/sendgmr/sendgmr")
+        .args([
+            "--subject",
+            "Automated crate updates",
+            "--to",
+            username.as_str(),
+            "--inline_body",
+            updates_tried_string.join("\n").as_str(),
+        ])
+        .run_and_stream_output()?;
+
+    Ok(())
+}
+
 fn main() -> Result<()> {
     let args = Cli::parse();
     if !args.android_root.is_absolute() {
@@ -290,6 +307,7 @@ fn main() -> Result<()> {
         .run_and_stream_output()?;
 
     let mut updates_tried = UpdatesTried::read()?;
+    let mut updates_tried_string = Vec::new();
     for suggestion in get_suggestions(&monorepo_path)? {
         let crate_name = suggestion.name.as_str();
         let version = suggestion.version.as_str();
@@ -300,9 +318,17 @@ fn main() -> Result<()> {
         cleanup_and_sync_monorepo(&monorepo_path)?;
         let res = try_update(&args.android_root, &monorepo_path, crate_name, version)
             .inspect_err(|e| println!("Update failed: {}", e));
+        updates_tried_string.push(format!(
+            "{} {}{}",
+            suggestion.name,
+            suggestion.version,
+            if res.is_ok() { "" } else { " failed" }
+        ));
         updates_tried.record(suggestion.name, suggestion.version, res.is_ok())?;
     }
     cleanup_and_sync_monorepo(&monorepo_path)?;
+
+    send_email(updates_tried_string)?;
 
     Ok(())
 }
