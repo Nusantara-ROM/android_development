@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
 import {convertSnakeToCamelCase} from 'common/string_utils';
 import {
   PropertySource,
   PropertyTreeNode,
 } from 'trace/tree_node/property_tree_node';
 import {PropertyTreeNodeFactory} from 'trace/tree_node/property_tree_node_factory';
-import {RowIterator} from 'trace_processor/query_result';
+import {ColumnType, RowIterator} from 'trace_processor/query_result';
 import {AbstractPropertyTreeBuilder} from './abstract_property_tree_builder';
 
 export class PropertyTreeBuilderFromQueryRow extends AbstractPropertyTreeBuilder<RowIterator> {
   private columns: string[] | undefined;
+  private booleanColumns: string[] = [];
 
   setColumns(value: string[]): this {
     this.columns = value;
+    return this;
+  }
+
+  setConvertColumnToBoolean(column: string): this {
+    this.booleanColumns.push(column);
     return this;
   }
 
@@ -40,15 +45,19 @@ export class PropertyTreeBuilderFromQueryRow extends AbstractPropertyTreeBuilder
 
     const rootNode = factory.makePropertyRoot(
       rootNodeId,
-      assertDefined(this.rootName),
+      rootNodeId.split(' ').slice(1).join(' '),
       PropertySource.TP,
       undefined,
     );
 
     for (const col of this.columns) {
-      const val = this.data?.get(col) ?? undefined;
+      let val: ColumnType | boolean | undefined =
+        this.data?.get(col) ?? undefined;
       if (val !== undefined) {
         const colCamelCase = convertSnakeToCamelCase(col);
+        if (this.booleanColumns.includes(col)) {
+          val = Boolean(val);
+        }
         const node = factory.makeTpProperty(rootNodeId, colCamelCase, val);
         rootNode.addOrReplaceChild(node);
       }

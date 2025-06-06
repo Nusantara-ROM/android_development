@@ -90,26 +90,33 @@ export class PropertyTreeNodeFactory {
     source: PropertySource,
     value: object | any[],
   ): PropertyTreeNode {
-    const rootName = rootId.split(' ');
-
+    const {nodeId, nodeName} = this.makeNodeIdAndName(rootId, name);
     const innerRoot = this.makePropertyRoot(
-      name.length > 0 ? `${rootId}.${name}` : rootId,
-      name.length > 0 ? name : rootName.slice(1, rootName.length).join(' '),
+      nodeId,
+      nodeName,
       source,
       undefined,
     );
     this.addInnerProperties(innerRoot, value, source);
-
     return innerRoot;
   }
 
   private makeSimpleChildProperty(
     rootId: string,
-    key: string,
+    name: string,
     value: any,
     source: PropertySource,
   ): PropertyTreeNode {
-    return new PropertyTreeNode(`${rootId}.${key}`, key, source, value);
+    const {nodeId, nodeName} = this.makeNodeIdAndName(rootId, name);
+    return new PropertyTreeNode(nodeId, nodeName, source, value);
+  }
+
+  private makeNodeIdAndName(rootId: string, name: string) {
+    const rootName = rootId.split(' ');
+    const nodeId = name.length > 0 ? `${rootId}.${name}` : rootId;
+    const nodeName =
+      name.length > 0 ? name : rootName.slice(1, rootName.length).join(' ');
+    return {nodeId, nodeName};
   }
 
   private hasInnerProperties(value: any): boolean {

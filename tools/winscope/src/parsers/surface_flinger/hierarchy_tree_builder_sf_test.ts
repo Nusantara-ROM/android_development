@@ -64,7 +64,7 @@ describe('HierarchyTreeBuilderSf', () => {
       .setRootId('1')
       .setName('layer1')
       .setChildren([
-        {name: 'id', value: 1},
+        {name: 'layerId', value: 1},
         {name: 'name', value: 'layer1'},
         {name: 'parent', value: -1},
         {name: 'children', value: []},
@@ -88,7 +88,7 @@ describe('HierarchyTreeBuilderSf', () => {
       .setRootId('1')
       .setName('layer1')
       .setChildren([
-        {name: 'id', value: 1},
+        {name: 'layerId', value: 1},
         {name: 'name', value: 'layer1'},
         {name: 'parent', value: -1},
         {
@@ -111,7 +111,7 @@ describe('HierarchyTreeBuilderSf', () => {
       .setRootId('2')
       .setName('layer2')
       .setChildren([
-        {name: 'id', value: 2},
+        {name: 'layerId', value: 2},
         {name: 'name', value: 'layer2'},
         {name: 'parent', value: 1},
         {name: 'children', value: []},
@@ -147,7 +147,7 @@ describe('HierarchyTreeBuilderSf', () => {
       .setRootId('1')
       .setName('layer1')
       .setChildren([
-        {name: 'id', value: 1},
+        {name: 'layerId', value: 1},
         {name: 'name', value: 'layer1'},
         {name: 'parent', value: -1},
         {
@@ -170,7 +170,7 @@ describe('HierarchyTreeBuilderSf', () => {
       .setRootId('2')
       .setName('layer2')
       .setChildren([
-        {name: 'id', value: 2},
+        {name: 'layerId', value: 2},
         {name: 'name', value: 'layer2'},
         {name: 'parent', value: 1},
         {name: 'children', value: []},
@@ -184,7 +184,7 @@ describe('HierarchyTreeBuilderSf', () => {
       .setRootId('2')
       .setName('layer2 duplicate(1)')
       .setChildren([
-        {name: 'id', value: 2},
+        {name: 'layerId', value: 2},
         {name: 'name', value: 'layer2'},
         {name: 'parent', value: 1},
         {name: 'children', value: []},
@@ -226,7 +226,7 @@ describe('HierarchyTreeBuilderSf', () => {
       .setRootId('1')
       .setName('layer1')
       .setChildren([
-        {name: 'id', value: 1},
+        {name: 'layerId', value: 1},
         {name: 'name', value: 'layer1'},
         {name: 'parent', value: -1},
         {
@@ -249,7 +249,7 @@ describe('HierarchyTreeBuilderSf', () => {
       .setRootId('2')
       .setName('layer2')
       .setChildren([
-        {name: 'id', value: 2},
+        {name: 'layerId', value: 2},
         {name: 'name', value: 'layer2'},
         {name: 'parent', value: 1, source: PropertySource.DEFAULT},
         {name: 'children', value: []},

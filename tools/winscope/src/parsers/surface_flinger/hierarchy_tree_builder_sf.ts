@@ -35,9 +35,9 @@ export class HierarchyTreeBuilderSf extends HierarchyTreeBuilder {
         layerProperties.name,
         layer,
       );
-      const layerId = assertDefined(
-        layerProperties.getChildByName('id'),
-      ).getValue();
+      const layerId = this.getIdentifierValue(
+        assertDefined(layerProperties.getChildByName('layerId')),
+      );
 
       const curr = map.get(layerId);
       if (curr) {
@@ -70,6 +70,7 @@ export class HierarchyTreeBuilderSf extends HierarchyTreeBuilder {
         const isDefault = parentIdNode.source === PropertySource.DEFAULT;
         const parentId = this.getIdentifierValue(parentIdNode);
         const parent = identifierToChildren.get(parentId)?.at(0);
+
         if (!isDefault && parent) {
           this.setParentChildRelationship(parent, child);
         } else {

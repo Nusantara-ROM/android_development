@@ -24,9 +24,15 @@ export class AddCompositionType extends AddOperation<PropertyTreeNode> {
   protected override makeProperties(
     value: PropertyTreeNode,
   ): PropertyTreeNode[] {
-    const hwcCompositionType = value
+    let hwcCompositionType = value
       .getChildByName('hwcCompositionType')
       ?.getValue();
+    if (hwcCompositionType === undefined) {
+      return [];
+    }
+    if (typeof hwcCompositionType === 'bigint') {
+      hwcCompositionType = Number(hwcCompositionType);
+    }
     let compositionType: LayerCompositionType | undefined;
 
     // must check both enum and string values due to SF perfetto dumps giving translated proto values

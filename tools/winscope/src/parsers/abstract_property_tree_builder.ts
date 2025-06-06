@@ -19,7 +19,7 @@ import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 export abstract class AbstractPropertyTreeBuilder<T> {
   protected data: T | undefined;
   private rootId: string | number = 'UnknownRootId';
-  protected rootName: string | undefined = 'UnknownRootName';
+  private rootName: string | undefined = 'UnknownRootName';
   private duplicateCount = 0;
 
   setData(value: T | undefined): this {

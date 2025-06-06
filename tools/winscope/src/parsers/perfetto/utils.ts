@@ -66,7 +66,7 @@ export async function queryEntry(
   return getAndConvertArgsToProto(traceProcessor, sql);
 }
 
-async function getAndConvertArgsToProto(
+export async function getAndConvertArgsToProto(
   traceProcessor: TraceProcessor,
   sql: string,
 ): Promise<FakeProto> {

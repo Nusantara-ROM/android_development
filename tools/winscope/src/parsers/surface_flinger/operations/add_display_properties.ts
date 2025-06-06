@@ -15,7 +15,7 @@
  */
 
 import {assertDefined, assertTrue} from 'common/assert_utils';
-import {DisplayLayerStack} from 'parsers/surface_flinger/operations/display_layer_stack';
+import {UINT32_MAX} from 'common/math_utils';
 import {Operation} from 'trace/tree_node/operations/operation';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
@@ -48,12 +48,12 @@ export class AddDisplayProperties implements Operation<PropertyTreeNode> {
         ),
       );
 
-      const layerStack = assertDefined(
-        display.getChildByName('layerStack'),
-      ).getValue();
+      const layerStack = Number(
+        assertDefined(display.getChildByName('layerStack')).getValue(),
+      );
 
       assertTrue(
-        layerStack !== -1 && layerStack !== -1n,
+        layerStack !== -1,
         () =>
           'layerStack = -1; false assumption that layerStack is always unsigned',
       );
@@ -62,7 +62,7 @@ export class AddDisplayProperties implements Operation<PropertyTreeNode> {
         DEFAULT_PROPERTY_TREE_NODE_FACTORY.makeCalculatedProperty(
           display.id,
           'isOn',
-          layerStack !== DisplayLayerStack.INVALID_LAYER_STACK,
+          layerStack !== UINT32_MAX,
         ),
       );
     }

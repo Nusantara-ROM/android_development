@@ -17,7 +17,6 @@
 import {assertDefined} from 'common/assert_utils';
 import {Computation} from 'trace/tree_node/computation';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
 
 export class ZOrderPathsComputation implements Computation {
   private root: HierarchyTreeNode | undefined;
@@ -40,7 +39,7 @@ export class ZOrderPathsComputation implements Computation {
     assertDefined(this.root).forEachNodeDfs((node) => {
       if (node.isRoot()) return;
       layerIdToTreeNode.set(
-        assertDefined(node.getEagerPropertyByName('id')).getValue(),
+        assertDefined(node.getEagerPropertyByName('layerId')).getValue(),
         node,
       );
     });
@@ -54,16 +53,9 @@ export class ZOrderPathsComputation implements Computation {
       const zOrderRelativeOf = node
         .getEagerPropertyByName('zOrderRelativeOf')
         ?.getValue();
-      if (zOrderRelativeOf && zOrderRelativeOf !== -1) {
+      if (zOrderRelativeOf && zOrderRelativeOf > 0) {
         const zParent = layerIdToTreeNode.get(zOrderRelativeOf);
         if (!zParent) {
-          node.addEagerProperty(
-            DEFAULT_PROPERTY_TREE_NODE_FACTORY.makeCalculatedProperty(
-              node.id,
-              'isMissingZParent',
-              true,
-            ),
-          );
           return;
         }
         node.setZParent(zParent);
