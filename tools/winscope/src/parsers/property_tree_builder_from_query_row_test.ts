@@ -16,7 +16,7 @@
 
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {PropertySource} from 'trace/tree_node/property_tree_node';
-import {RowIterator} from 'trace_processor/query_result';
+import {makeSpyRowIterator} from 'trace_processor/test_utils';
 import {PropertyTreeBuilderFromQueryRow} from './property_tree_builder_from_query_row';
 
 describe('PropertyTreeBuilderFromQueryRow', () => {
@@ -30,11 +30,11 @@ describe('PropertyTreeBuilderFromQueryRow', () => {
   });
 
   it('throws error if columns not set', () => {
-    expect(builder.setData(getSpyRow()).build).toThrowError();
+    expect(builder.setData(makeSpyRowIterator()).build).toThrowError();
   });
 
   it('converts column name from snake to camel case', () => {
-    const spyRow = getSpyRow();
+    const spyRow = makeSpyRowIterator();
     spyRow.get.withArgs(columns[0]).and.returnValue(1);
     spyRow.get.withArgs(columns[1]).and.returnValue('test_value');
 
@@ -52,8 +52,4 @@ describe('PropertyTreeBuilderFromQueryRow', () => {
     const tree = builder.setColumns(columns).setData(spyRow).build();
     expect(tree).toEqual(expectedRoot);
   });
-
-  function getSpyRow() {
-    return jasmine.createSpyObj<RowIterator>('row', ['get']);
-  }
 });

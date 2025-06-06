@@ -75,3 +75,7 @@ export function setNumRowsSpyQueryResult(
   spy.numRows.and.returnValue(rows);
   return spy;
 }
+
+export function makeSpyRowIterator() {
+  return jasmine.createSpyObj<RowIterator>('row', ['get']);
+}
