@@ -74,7 +74,11 @@ export class WdpHostConnection extends AdbHostConnection<WdpDeviceConnection> {
       this.setState(ConnectionState.UNAUTH);
       return;
     } else if (resp.error !== undefined) {
-      console.error(`Invalid WebDeviceProxy response ${data} : ${resp.error}`);
+      console.error(
+        `Invalid WebDeviceProxy response ${data} : ${JSON.stringify(
+          resp.error,
+        )}`,
+      );
       this.listener.onError(resp.error.message ?? 'Unknown WDP Error');
       return;
     }

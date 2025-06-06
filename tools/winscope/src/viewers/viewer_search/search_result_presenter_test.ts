@@ -21,7 +21,7 @@ import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {Trace} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
-import {QueryResult, Row, RowIterator} from 'trace_processor/query_result';
+import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {makeSearchTraceSpies} from 'trace_processor/test_utils';
 import {NotifyLogViewCallbackType} from 'viewers/common/abstract_log_viewer_presenter';
 import {AbstractLogViewerPresenterTest} from 'viewers/common/abstract_log_viewer_presenter_test';
@@ -52,7 +52,7 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
   ];
   private trace: Trace<QueryResult> | undefined;
   private positionUpdate: TracePositionUpdate | undefined;
-  private spyIter: jasmine.SpyObj<RowIterator<Row>> | undefined;
+  private spyIter: jasmine.SpyObj<RowIterator> | undefined;
 
   override async setUpTestEnvironment(): Promise<void> {
     const time100 = TimestampConverterUtils.makeRealTimestamp(100n);

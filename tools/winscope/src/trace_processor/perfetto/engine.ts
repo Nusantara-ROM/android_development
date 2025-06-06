@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {perfetto} from '../../deps_build/trace_processor/ui/tsc/gen/protos';
+import {perfetto} from '../../../deps_build/trace_processor/ui/tsc/gen/protos';
 import {defer, Deferred} from './deferred';
 import {assertExists, assertTrue} from './logging';
 import {ProtoRingBuffer} from './proto_ring_buffer';

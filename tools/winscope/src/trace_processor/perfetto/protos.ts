@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import protos from '../../deps_build/trace_processor/ui/tsc/gen/protos';
+import protos from '../../../deps_build/trace_processor/ui/tsc/gen/protos';
 
 // Aliases protos to avoid the super nested namespaces.
 // See https://www.typescriptlang.org/docs/handbook/namespaces.html#aliases

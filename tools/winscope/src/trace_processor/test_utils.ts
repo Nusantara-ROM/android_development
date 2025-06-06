@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-import {assertDefined,} from 'common/assert_utils';
+import {assertDefined} from 'common/assert_utils';
 import {Timestamp} from 'common/time/time';
-import {
-  ColumnType,
-  QueryResult,
-  Row,
-  RowIterator,
-} from 'trace_processor/query_result';
-import {TraceProcessorFactory} from 'trace_processor/trace_processor_factory';
+import {ColumnType, QueryResult, RowIterator} from './query_result';
+import {TraceProcessorFactory} from './trace_processor_factory';
 
 export function makeSearchTraceSpies(
-    ts?: Timestamp,
-    value?: ColumnType,
-  ): [jasmine.SpyObj<QueryResult>, jasmine.SpyObj<RowIterator<Row>>] {
+  ts?: Timestamp,
+  value?: ColumnType,
+): [jasmine.SpyObj<QueryResult>, jasmine.SpyObj<RowIterator>] {
   const spyQueryResult = jasmine.createSpyObj<QueryResult>('result', [
     'numRows',
     'columns',
@@ -40,7 +35,7 @@ export function makeSearchTraceSpies(
   if (value !== undefined) columns.push('value');
   spyQueryResult.columns.and.returnValue(columns);
 
-  const spyIter = jasmine.createSpyObj<RowIterator<Row>>('iter', [
+  const spyIter = jasmine.createSpyObj<RowIterator>('iter', [
     'valid',
     'next',
     'get',
@@ -61,16 +56,15 @@ export function makeSearchTraceSpies(
   return [spyQueryResult, spyIter];
 }
 
-export async function runQueryAndGetResult(query: string): Promise<QueryResult> {
+export async function runQueryAndGetResult(
+  query: string,
+): Promise<QueryResult> {
   const tp = TraceProcessorFactory.getSingleInstance();
   return tp.query(query);
 }
 
 function makeSpyQueryResult(): jasmine.SpyObj<QueryResult> {
-  return jasmine.createSpyObj<QueryResult>('result', [
-    'numRows',
-    'firstRow',
-  ]);
+  return jasmine.createSpyObj<QueryResult>('result', ['numRows']);
 }
 
 export function setNumRowsSpyQueryResult(
@@ -79,17 +73,5 @@ export function setNumRowsSpyQueryResult(
 ): jasmine.SpyObj<QueryResult> {
   const spy = spyQueryResult ?? makeSpyQueryResult();
   spy.numRows.and.returnValue(rows);
-  return spy;
-}
-
-export function setFirstRowSpyQueryResult(
-  query: string,
-  tpSpy: jasmine.Spy,
-  result: Row,
-  spyQueryResult?: jasmine.SpyObj<QueryResult>,
-): jasmine.SpyObj<QueryResult> {
-  const spy = spyQueryResult ?? makeSpyQueryResult();
-  spy.firstRow.and.returnValue(result);
-  tpSpy.withArgs(query).and.returnValue(Promise.resolve(spy));
   return spy;
 }
