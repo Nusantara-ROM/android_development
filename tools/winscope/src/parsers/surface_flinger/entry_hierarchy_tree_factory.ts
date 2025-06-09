@@ -14,10 +14,24 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {
+  assertBigInt,
+  assertBigIntOrUndefined,
+  assertDefined,
+  assertString,
+} from 'common/assert_utils';
+import {UserWarning} from 'messaging/user_warning';
 import {DuplicateLayerIds, MissingLayerIds} from 'messaging/user_warnings';
+import {AddDefaults} from 'parsers/operations/add_defaults';
+import {SetFormatters} from 'parsers/operations/set_formatters';
+import {TranslateIntDef} from 'parsers/operations/translate_intdef';
+import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
+import {queryArgs} from 'parsers/perfetto/utils';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
+import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
+import {TAMPERED_TRACE_PACKET} from 'parsers/tampered_message_type';
 import {perfetto} from 'protos/perfetto/trace/static';
+import {EnumFormatter, LAYER_ID_FORMATTER} from 'trace/tree_node/formatters';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {
   LazyPropertiesStrategyType,
@@ -25,175 +39,301 @@ import {
 } from 'trace/tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'trace/tree_node/properties_provider_builder';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {COMMON_OPERATIONS} from './common_operations';
-import {RectsComputation} from './computations/rects_computation';
-import {VisibilityPropertiesComputation} from './computations/visibility_properties_computation';
+import {QueryResult, RowIterator} from 'trace_processor/query_result';
+import {TraceProcessor} from 'trace_processor/trace_processor';
 import {ZOrderPathsComputation} from './computations/z_order_paths_computation';
 import {DENYLIST_PROPERTIES} from './denylist_properties';
-import {EAGER_PROPERTIES} from './eager_properties';
 import {HierarchyTreeBuilderSf} from './hierarchy_tree_builder_sf';
-import {ParserSurfaceFlinger} from './perfetto/parser_surface_flinger';
+import {AddCompositionType} from './operations/add_composition_type';
+import {AddDisplayProperties} from './operations/add_display_properties';
+import {AddVerboseFlags} from './operations/add_verbose_flags';
+import {UpdateTransforms} from './operations/update_transforms';
+import {LayerRects, RectExtractor} from './rect_extractor';
 
 export class EntryHierarchyTreeFactory {
+  private static readonly ENTRY_FIELD =
+    TAMPERED_TRACE_PACKET.fields['surfaceflingerLayersSnapshot'];
+  private static readonly LAYER_FIELD = assertDefined(
+    EntryHierarchyTreeFactory.ENTRY_FIELD.tamperedMessageType?.fields['layers']
+      .tamperedMessageType,
+  ).fields['layers'];
+  private static readonly SNAPSHOT_TRANSFORMER = new FakeProtoTransformer(
+    assertDefined(EntryHierarchyTreeFactory.ENTRY_FIELD.tamperedMessageType),
+  );
+  private static readonly LAYER_TRANSFORMER = new FakeProtoTransformer(
+    assertDefined(EntryHierarchyTreeFactory.LAYER_FIELD.tamperedMessageType),
+  );
+
+  private static readonly CUSTOM_FORMATTERS = new Map([
+    ['cropLayerId', LAYER_ID_FORMATTER],
+    ['zOrderRelativeOf', LAYER_ID_FORMATTER],
+    [
+      'hwcCompositionType',
+      new EnumFormatter(perfetto.protos.HwcCompositionType),
+    ],
+  ]);
+
+  static readonly Operations = {
+    SetFormattersLayer: new SetFormatters(
+      EntryHierarchyTreeFactory.LAYER_FIELD,
+      EntryHierarchyTreeFactory.CUSTOM_FORMATTERS,
+    ),
+    TranslateIntDefLayer: new TranslateIntDef(
+      EntryHierarchyTreeFactory.LAYER_FIELD,
+    ),
+    AddDefaultsLayer: new AddDefaults(
+      EntryHierarchyTreeFactory.LAYER_FIELD,
+      undefined,
+      DENYLIST_PROPERTIES,
+    ),
+    SetFormattersEntry: new SetFormatters(
+      EntryHierarchyTreeFactory.ENTRY_FIELD,
+      EntryHierarchyTreeFactory.CUSTOM_FORMATTERS,
+    ),
+    TranslateIntDefEntry: new TranslateIntDef(
+      EntryHierarchyTreeFactory.ENTRY_FIELD,
+    ),
+    AddDefaultsEntry: new AddDefaults(
+      EntryHierarchyTreeFactory.ENTRY_FIELD,
+      undefined,
+      DENYLIST_PROPERTIES,
+    ),
+    UpdateTransforms: new UpdateTransforms(),
+    AddVerboseFlags: new AddVerboseFlags(),
+    AddDisplayProperties: new AddDisplayProperties(),
+    AddCompositionType: new AddCompositionType(),
+  };
+
   makeEntryHierarchyTree(
-    entryProto: perfetto.protos.ILayersSnapshotProto,
-    layerProtos: perfetto.protos.ILayerProto[],
+    snapshotResult: QueryResult,
+    layersResult: QueryResult,
+    traceProcessor: TraceProcessor,
   ): HierarchyTreeNode {
-    const excludesCompositionState =
-      entryProto?.excludesCompositionState ?? true;
-    const addExcludesCompositionState = excludesCompositionState
-      ? COMMON_OPERATIONS.AddExcludesCompositionStateTrue
-      : COMMON_OPERATIONS.AddExcludesCompositionStateFalse;
+    const entry = this.makeEntryProperties(snapshotResult, traceProcessor);
 
-    const processed = new Map<number, number>();
-    let missingLayerIds = false;
-
-    const layers = layerProtos.reduce(
-      (
-        allLayerProps: PropertiesProvider[],
-        layer: perfetto.protos.ILayerProto,
-      ) => {
-        if (layer.id === null || layer.id === undefined) {
-          missingLayerIds = true;
-          return allLayerProps;
-        }
-        const duplicateCount = processed.get(assertDefined(layer.id)) ?? 0;
-        processed.set(assertDefined(layer.id), duplicateCount + 1);
-        const eagerProperties = this.makeEagerPropertiesTree(
-          layer,
-          duplicateCount,
-        );
-        const lazyPropertiesStrategy = this.makeLayerLazyPropertiesStrategy(
-          layer,
-          duplicateCount,
-        );
-
-        const layerProps = new PropertiesProviderBuilder()
-          .setEagerProperties(eagerProperties)
-          .setLazyPropertiesStrategy(lazyPropertiesStrategy)
-          .setCommonOperations([
-            ParserSurfaceFlinger.Operations.SetFormattersLayer,
-            ParserSurfaceFlinger.Operations.TranslateIntDefLayer,
-          ])
-          .setEagerOperations([
-            ParserSurfaceFlinger.Operations.AddDefaultsLayerEager,
-            COMMON_OPERATIONS.AddCompositionType,
-            COMMON_OPERATIONS.UpdateTransforms,
-            COMMON_OPERATIONS.AddVerboseFlags,
-            addExcludesCompositionState,
-          ])
-          .setLazyOperations([
-            ParserSurfaceFlinger.Operations.AddDefaultsLayerLazy,
-          ])
-          .build();
-        allLayerProps.push(layerProps);
-        return allLayerProps;
-      },
-      [] as PropertiesProvider[],
+    const {layers, rects, warnings} = this.makeLayerPropertiesAndRects(
+      layersResult,
+      traceProcessor,
     );
-
-    const entry = new PropertiesProviderBuilder()
-      .setEagerProperties(this.makeEntryEagerPropertiesTree(entryProto))
-      .setLazyPropertiesStrategy(
-        this.makeEntryLazyPropertiesStrategy(entryProto),
-      )
-      .setCommonOperations([
-        COMMON_OPERATIONS.AddDisplayProperties,
-        ParserSurfaceFlinger.Operations.SetFormattersEntry,
-        ParserSurfaceFlinger.Operations.TranslateIntDefEntry,
-      ])
-      .setEagerOperations([
-        ParserSurfaceFlinger.Operations.AddDefaultsEntryEager,
-      ])
-      .setLazyOperations([ParserSurfaceFlinger.Operations.AddDefaultsEntryLazy])
-      .build();
 
     const tree = new HierarchyTreeBuilderSf()
       .setRoot(entry)
       .setChildren(layers)
-      .setComputations([
-        new ZOrderPathsComputation(),
-        new VisibilityPropertiesComputation(),
-        new RectsComputation(),
+      .setComputations([new ZOrderPathsComputation()])
+      .build();
+
+    warnings.forEach((warning) => tree.addWarning(warning));
+
+    tree.forEachNodeDfs((node) => {
+      if (node.isRoot()) {
+        const displays = RectExtractor.extractDisplayRects(snapshotResult);
+        node.setRects(displays);
+        return;
+      }
+      const layerRects = rects.get(
+        assertBigInt(node.getEagerPropertyByName('layerId')?.getValue()),
+      );
+      if (layerRects?.bounds) {
+        node.setRects([layerRects.bounds]);
+      }
+      if (layerRects?.input) {
+        node.setSecondaryRects([layerRects.input]);
+      }
+    });
+
+    return tree;
+  }
+
+  private makeEntryProperties(
+    snapshotResult: QueryResult,
+    traceProcessor: TraceProcessor,
+  ): PropertiesProvider {
+    const eagerProperties = new PropertyTreeBuilderFromProto()
+      .setData({})
+      .setRootId('LayerTraceEntry')
+      .setRootName('root')
+      .build();
+    const argSetId = assertDefined(snapshotResult.iter({}).get('arg_set_id'));
+    const entryProps = new PropertiesProviderBuilder()
+      .setEagerProperties(eagerProperties)
+      .setLazyPropertiesStrategy(
+        this.makeEntryLazyPropertiesStrategy(Number(argSetId), traceProcessor),
+      )
+      .setLazyOperations([
+        EntryHierarchyTreeFactory.Operations.AddDisplayProperties,
+        EntryHierarchyTreeFactory.Operations.AddDefaultsEntry,
+        EntryHierarchyTreeFactory.Operations.SetFormattersEntry,
+        EntryHierarchyTreeFactory.Operations.TranslateIntDefEntry,
       ])
       .build();
 
+    return entryProps;
+  }
+
+  private makeLayerPropertiesAndRects(
+    layersResult: QueryResult,
+    traceProcessor: TraceProcessor,
+  ): {
+    layers: PropertiesProvider[];
+    rects: Map<bigint, LayerRects>;
+    warnings: UserWarning[];
+  } {
+    const processed = new Map<number, number>();
+    let missingLayerIds = false;
+    const layers: PropertiesProvider[] = [];
+    const rects = new Map<bigint, LayerRects>();
+    let prevUniqueRowId: bigint | undefined;
+
+    for (const it = layersResult.iter({}); it.valid(); it.next()) {
+      const layerIdBigint = assertBigIntOrUndefined(
+        it.get('layer_id') ?? undefined,
+      );
+      if (layerIdBigint === undefined) {
+        missingLayerIds = true;
+        continue;
+      }
+      const layerId = Number(layerIdBigint);
+
+      const uniqueRowId = assertBigInt(it.get('id'));
+      if (prevUniqueRowId !== undefined && uniqueRowId === prevUniqueRowId) {
+        // some row ids will be repeated due querying multiple fill region rects
+        const inputRect = assertDefined(rects.get(layerIdBigint)?.input);
+        const fillRegionRect = RectExtractor.extractFillRegionRect(it);
+        if (fillRegionRect) {
+          assertDefined(inputRect.fillRegion).rects.push(fillRegionRect);
+        }
+        continue;
+      }
+      prevUniqueRowId = uniqueRowId;
+
+      const duplicateCount = processed.get(layerId) ?? 0;
+      processed.set(assertDefined(layerId), duplicateCount + 1);
+
+      const layerName = assertString(it.get('layer_name'));
+
+      const layerProps = this.makeLayerPropertiesProvider(
+        it,
+        layerId,
+        layerName,
+        duplicateCount,
+        traceProcessor,
+      );
+      layers.push(layerProps);
+
+      const nodeId = layerProps.getEagerProperties().id;
+      const layerRects = RectExtractor.extractLayerRects(it, nodeId, layerName);
+      if (layerRects) {
+        rects.set(layerIdBigint, layerRects);
+      }
+    }
+
+    const warnings = [];
     if (missingLayerIds) {
-      tree.addWarning(new MissingLayerIds());
+      warnings.push(new MissingLayerIds());
     }
     const duplicateIds = Array.from(processed.keys()).filter(
       (layerId) => assertDefined(processed.get(layerId)) > 1,
     );
     if (duplicateIds.length > 0) {
-      tree.addWarning(new DuplicateLayerIds(duplicateIds));
+      warnings.push(new DuplicateLayerIds(duplicateIds));
     }
 
-    return tree;
+    return {layers, rects, warnings};
   }
 
-  private makeEagerPropertiesTree(
-    layer: perfetto.protos.ILayerProto,
+  private makeLayerPropertiesProvider(
+    row: RowIterator,
+    layerId: number,
+    layerName: string,
     duplicateCount: number,
-  ): PropertyTreeNode {
-    const denyList: string[] = [];
-    let obj = layer;
-    do {
-      Object.getOwnPropertyNames(obj).forEach((it) => {
-        if (!EAGER_PROPERTIES.includes(it)) denyList.push(it);
-      });
-      obj = Object.getPrototypeOf(obj);
-    } while (obj);
+    traceProcessor: TraceProcessor,
+  ): PropertiesProvider {
+    const eagerProperties = this.makeLayerEagerPropertiesTree(
+      row,
+      layerId,
+      layerName,
+      duplicateCount,
+    );
 
-    return new PropertyTreeBuilderFromProto()
-      .setData(layer)
-      .setRootId(assertDefined(layer.id))
-      .setRootName(assertDefined(layer.name))
-      .setDenyList(denyList)
-      .setDuplicateCount(duplicateCount)
+    const argSetId = assertBigInt(row.get('arg_set_id'));
+    const lazyPropertiesStrategy = this.makeLayerLazyPropertiesStrategy(
+      Number(argSetId),
+      layerId,
+      layerName,
+      traceProcessor,
+      duplicateCount,
+    );
+
+    return new PropertiesProviderBuilder()
+      .setEagerProperties(eagerProperties)
+      .setCommonOperations([
+        EntryHierarchyTreeFactory.Operations.AddCompositionType,
+      ])
+      .setLazyPropertiesStrategy(lazyPropertiesStrategy)
+      .setLazyOperations([
+        EntryHierarchyTreeFactory.Operations.AddDefaultsLayer,
+        EntryHierarchyTreeFactory.Operations.UpdateTransforms,
+        EntryHierarchyTreeFactory.Operations.AddVerboseFlags,
+        EntryHierarchyTreeFactory.Operations.SetFormattersLayer,
+        EntryHierarchyTreeFactory.Operations.TranslateIntDefLayer,
+      ])
       .build();
   }
 
-  private makeEntryEagerPropertiesTree(
-    entry: perfetto.protos.ILayersSnapshotProto,
+  private makeLayerEagerPropertiesTree(
+    layerRow: RowIterator,
+    layerId: number,
+    layerName: string,
+    duplicateCount: number,
   ): PropertyTreeNode {
-    const denyList: string[] = [];
-    let obj = entry;
-    do {
-      Object.getOwnPropertyNames(obj).forEach((it) => {
-        if (it !== 'displays') denyList.push(it);
-      });
-      obj = Object.getPrototypeOf(obj);
-    } while (obj);
-
-    return new PropertyTreeBuilderFromProto()
-      .setData(entry)
-      .setRootId('LayerTraceEntry')
-      .setRootName('root')
-      .setDenyList(denyList)
+    return new PropertyTreeBuilderFromQueryRow()
+      .setData(layerRow)
+      .setRootId(layerId)
+      .setRootName(layerName)
+      .setDuplicateCount(duplicateCount)
+      .setColumns([
+        'layer_id',
+        'layer_name',
+        'is_visible',
+        'parent',
+        'hwc_composition_type',
+        'is_hidden_by_policy',
+        'z_order_relative_of',
+        'is_missing_z_parent',
+      ])
+      .setConvertColumnToBoolean('is_visible')
+      .setConvertColumnToBoolean('is_hidden_by_policy')
+      .setConvertColumnToBoolean('is_missing_z_parent')
       .build();
   }
 
   private makeLayerLazyPropertiesStrategy(
-    layer: perfetto.protos.ILayerProto,
+    argSetId: number,
+    layerId: number,
+    layerName: string,
+    traceProcessor: TraceProcessor,
     duplicateCount: number,
   ): LazyPropertiesStrategyType {
     return async () => {
+      const data = await queryArgs(traceProcessor, argSetId);
       return new PropertyTreeBuilderFromProto()
-        .setData(layer)
-        .setRootId(assertDefined(layer.id))
-        .setRootName(assertDefined(layer.name))
-        .setDenyList(EAGER_PROPERTIES.concat(DENYLIST_PROPERTIES))
+        .setData(EntryHierarchyTreeFactory.LAYER_TRANSFORMER.transform(data))
+        .setRootId(layerId)
+        .setRootName(layerName)
+        .setDenyList(DENYLIST_PROPERTIES)
         .setDuplicateCount(duplicateCount)
         .build();
     };
   }
 
   private makeEntryLazyPropertiesStrategy(
-    entry: perfetto.protos.ILayersSnapshotProto,
+    argSetId: number,
+    traceProcessor: TraceProcessor,
   ): LazyPropertiesStrategyType {
     return async () => {
+      const data = await queryArgs(traceProcessor, argSetId);
       return new PropertyTreeBuilderFromProto()
-        .setData(entry)
+        .setData(EntryHierarchyTreeFactory.SNAPSHOT_TRANSFORMER.transform(data))
         .setRootId('LayerTraceEntry')
         .setRootName('root')
         .setDenyList(DENYLIST_PROPERTIES)

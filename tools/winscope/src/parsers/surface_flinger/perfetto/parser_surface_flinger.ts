@@ -14,123 +14,36 @@
  * limitations under the License.
  */
 
-import {
-  assertBigInt,
-  assertBigIntOrUndefined,
-  assertDefined,
-  assertNumberOrUndefined,
-  assertString,
-  assertStringOrUndefined,
-  assertTrue,
-} from 'common/assert_utils';
-import {ParserTimestampConverter} from 'common/time/timestamp_converter';
-import {AddDefaults} from 'parsers/operations/add_defaults';
-import {SetFormatters} from 'parsers/operations/set_formatters';
-import {TranslateIntDef} from 'parsers/operations/translate_intdef';
+import {assertBigInt, assertString} from 'common/assert_utils';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
-import {FakeProtoBuilder} from 'parsers/perfetto/fake_proto_builder';
-import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
-import {queryEntry, queryVsyncId} from 'parsers/perfetto/utils';
-import {DENYLIST_PROPERTIES} from 'parsers/surface_flinger/denylist_properties';
-import {EAGER_PROPERTIES} from 'parsers/surface_flinger/eager_properties';
+import {queryVsyncId} from 'parsers/perfetto/utils';
 import {EntryHierarchyTreeFactory} from 'parsers/surface_flinger/entry_hierarchy_tree_factory';
-import {TAMPERED_TRACE_PACKET} from 'parsers/tampered_message_type';
-import {perfetto} from 'protos/perfetto/trace/static';
 import {
   CustomQueryParserResultTypeMap,
   CustomQueryType,
   VisitableParserCustomQuery,
 } from 'trace/custom_query';
 import {EntriesRange} from 'trace/trace';
-import {TraceFile} from 'trace/trace_file';
 import {TraceType} from 'trace/trace_type';
-import {EnumFormatter, LAYER_ID_FORMATTER} from 'trace/tree_node/formatters';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {TraceProcessor} from 'trace_processor/trace_processor';
+import {QueryResult} from 'trace_processor/query_result';
 
 export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
-  private static readonly CUSTOM_FORMATTERS = new Map([
-    ['cropLayerId', LAYER_ID_FORMATTER],
-    ['zOrderRelativeOf', LAYER_ID_FORMATTER],
-    [
-      'hwcCompositionType',
-      new EnumFormatter(perfetto.protos.HwcCompositionType),
-    ],
-  ]);
-  private static readonly entryField =
-    TAMPERED_TRACE_PACKET.fields['surfaceflingerLayersSnapshot'];
-  private static readonly layerField = assertDefined(
-    ParserSurfaceFlinger.entryField.tamperedMessageType?.fields['layers']
-      .tamperedMessageType,
-  ).fields['layers'];
-
-  static readonly Operations = {
-    SetFormattersLayer: new SetFormatters(
-      ParserSurfaceFlinger.layerField,
-      ParserSurfaceFlinger.CUSTOM_FORMATTERS,
-    ),
-    TranslateIntDefLayer: new TranslateIntDef(ParserSurfaceFlinger.layerField),
-    AddDefaultsLayerEager: new AddDefaults(
-      ParserSurfaceFlinger.layerField,
-      EAGER_PROPERTIES,
-    ),
-    AddDefaultsLayerLazy: new AddDefaults(
-      ParserSurfaceFlinger.layerField,
-      undefined,
-      EAGER_PROPERTIES.concat(DENYLIST_PROPERTIES),
-    ),
-    SetFormattersEntry: new SetFormatters(
-      ParserSurfaceFlinger.entryField,
-      ParserSurfaceFlinger.CUSTOM_FORMATTERS,
-    ),
-    TranslateIntDefEntry: new TranslateIntDef(ParserSurfaceFlinger.entryField),
-    AddDefaultsEntryEager: new AddDefaults(ParserSurfaceFlinger.entryField, [
-      'displays',
-    ]),
-    AddDefaultsEntryLazy: new AddDefaults(
-      ParserSurfaceFlinger.entryField,
-      undefined,
-      DENYLIST_PROPERTIES,
-    ),
-  };
-
   private readonly factory = new EntryHierarchyTreeFactory();
-  private layersSnapshotProtoTransformer: FakeProtoTransformer;
-  private layerProtoTransformer: FakeProtoTransformer;
-
-  constructor(
-    traceFile: TraceFile,
-    traceProcessor: TraceProcessor,
-    timestampConverter: ParserTimestampConverter,
-  ) {
-    super(traceFile, traceProcessor, timestampConverter);
-    this.layersSnapshotProtoTransformer = new FakeProtoTransformer(
-      assertDefined(ParserSurfaceFlinger.entryField.tamperedMessageType),
-    );
-    this.layerProtoTransformer = new FakeProtoTransformer(
-      assertDefined(ParserSurfaceFlinger.layerField.tamperedMessageType),
-    );
-  }
 
   override getTraceType(): TraceType {
     return TraceType.SURFACE_FLINGER;
   }
 
   override async getEntry(index: number): Promise<HierarchyTreeNode> {
-    let snapshotProto = await queryEntry(
+    const snapshotId = this.entryIndexToRowIdMap[index];
+    const snapshotResult = await this.querySnapshot(snapshotId);
+    const layersResult = await this.queryLayers(snapshotId);
+    return this.factory.makeEntryHierarchyTree(
+      snapshotResult,
+      layersResult,
       this.traceProcessor,
-      this.getTableName(),
-      this.entryIndexToRowIdMap,
-      index,
     );
-    snapshotProto =
-      this.layersSnapshotProtoTransformer.transform(snapshotProto);
-
-    const layerProtos = (await this.querySnapshotLayers(index)).map(
-      (layerProto) => this.layerProtoTransformer.transform(layerProto),
-    );
-
-    return this.factory.makeEntryHierarchyTree(snapshotProto, layerProtos);
   }
 
   override async customQuery<Q extends CustomQueryType>(
@@ -148,27 +61,14 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
       })
       .visit(CustomQueryType.SF_LAYERS_ID_AND_NAME, async () => {
         const sql = `
-        SELECT DISTINCT group_concat(value) AS id_and_name FROM (
-          SELECT sfl.id AS id, args.key AS key, args.display_value AS value
-          FROM surfaceflinger_layer AS sfl
-          INNER JOIN args ON sfl.arg_set_id = args.arg_set_id
-          WHERE (args.key = 'id' OR args.key = 'name')
-          ORDER BY key
-        )
-        GROUP BY id;
+        SELECT DISTINCT layer_id, layer_name FROM surfaceflinger_layer;
       `;
         const queryResult = await this.traceProcessor.query(sql);
         const result: CustomQueryParserResultTypeMap[CustomQueryType.SF_LAYERS_ID_AND_NAME] =
           [];
         for (const it = queryResult.iter({}); it.valid(); it.next()) {
-          const idAndName = assertString(it.get('id_and_name'));
-          const indexDelimiter = idAndName.indexOf(',');
-          assertTrue(
-            indexDelimiter > 0,
-            () => `Unexpected value in query result: ${idAndName}`,
-          );
-          const id = Number(idAndName.slice(0, indexDelimiter));
-          const name = idAndName.slice(indexDelimiter + 1);
+          const id = Number(assertBigInt(it.get('layer_id')));
+          const name = assertString(it.get('layer_name'));
           result.push({id, name});
         }
         return result;
@@ -180,49 +80,92 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
     return 'surfaceflinger_layers_snapshot';
   }
 
-  private async querySnapshotLayers(
-    index: number,
-  ): Promise<perfetto.protos.ILayerProto[]> {
-    const layerIdToBuilder = new Map<number, FakeProtoBuilder>();
-    const getBuilder = (layerId: number) => {
-      if (!layerIdToBuilder.has(layerId)) {
-        layerIdToBuilder.set(layerId, new FakeProtoBuilder());
-      }
-      return assertDefined(layerIdToBuilder.get(layerId));
-    };
+  protected override getStdLibModuleName(): string {
+    return 'android.winscope.surfaceflinger';
+  }
 
-    const sql = `
-      SELECT
-          sfl.snapshot_id,
-          sfl.id as layer_id,
-          args.key,
-          args.value_type,
-          args.int_value,
-          args.string_value,
-          args.real_value
-      FROM
-          surfaceflinger_layer as sfl
-          INNER JOIN args ON sfl.arg_set_id = args.arg_set_id
-      WHERE snapshot_id = ${this.entryIndexToRowIdMap[index]};
-    `;
-    const result = await this.traceProcessor.query(sql);
+  private async querySnapshot(snapshotId: number): Promise<QueryResult> {
+    const snapshotQuery = `
+        SELECT
+          sfs.arg_set_id,
+          display.is_on,
+          display.is_virtual,
+          display.display_id,
+          display.display_name,
+          trace_rect.group_id,
+          trace_rect.depth,
+          rect.x,
+          rect.y,
+          rect.w,
+          rect.h
+        FROM  surfaceflinger_layers_snapshot AS sfs
+        LEFT JOIN android_surfaceflinger_display AS display
+          ON sfs.id = display.snapshot_id
+        LEFT JOIN android_winscope_trace_rect AS trace_rect
+          ON display.trace_rect_id = trace_rect.id
+        LEFT JOIN android_winscope_rect AS rect
+          ON trace_rect.rect_id = rect.id
+        WHERE sfs.id = ${snapshotId}
+        ORDER BY display.id;`;
+    return await this.traceProcessor.query(snapshotQuery);
+  }
 
-    for (const it = result.iter({}); it.valid(); it.next()) {
-      const builder = getBuilder(Number(assertBigInt(it.get('layer_id'))));
-      builder.addArg(
-        assertString(it.get('key')),
-        assertString(it.get('value_type')),
-        assertBigIntOrUndefined(it.get('int_value')),
-        assertNumberOrUndefined(it.get('real_value')),
-        assertStringOrUndefined(it.get('string_value')),
-      );
-    }
-
-    const layerProtos: perfetto.protos.ILayerProto[] = [];
-    layerIdToBuilder.forEach((builder) => {
-      layerProtos.push(builder.build());
-    });
-
-    return layerProtos;
+  private async queryLayers(snapshotId: number): Promise<QueryResult> {
+    const layersQuery = `
+        SELECT
+          sfl.id,
+          sfl.arg_set_id,
+          sfl.layer_id,
+          sfl.layer_name,
+          sfl.is_visible,
+          sfl.parent,
+          sfl.corner_radius,
+          sfl.hwc_composition_type,
+          sfl.is_hidden_by_policy,
+          sfl.z_order_relative_of,
+          sfl.is_missing_z_parent,
+          sfl.input_rect_id,
+          ltr.group_id,
+          ltr.depth,
+          ltr.opacity,
+          lr.x,
+          lr.y,
+          lr.w,
+          lr.h,
+          lt.dsdx,
+          lt.dtdx,
+          lt.dsdy,
+          lt.dtdy,
+          lt.tx,
+          lt.ty,
+          itr.group_id AS input_group_id,
+          itr.depth AS input_depth,
+          itr.is_visible AS input_is_visible,
+          itr.is_spy,
+          ir.x AS input_x,
+          ir.y AS input_y,
+          ir.w AS input_w,
+          ir.h AS input_h,
+          frr.x AS fr_x,
+          frr.y AS fr_y,
+          frr.w AS fr_w,
+          frr.h AS fr_h
+        FROM surfaceflinger_layer AS sfl
+        LEFT JOIN android_winscope_trace_rect AS ltr
+          ON sfl.layer_rect_id = ltr.id
+        LEFT JOIN android_winscope_rect AS lr
+          ON ltr.rect_id = lr.id
+        LEFT JOIN android_winscope_transform AS lt
+          ON ltr.transform_id = lt.id
+        LEFT JOIN android_winscope_trace_rect AS itr
+          ON sfl.input_rect_id = itr.id
+        LEFT JOIN android_winscope_rect AS ir
+          ON itr.rect_id = ir.id
+        LEFT JOIN android_winscope_fill_region AS fr
+          ON sfl.input_rect_id = fr.trace_rect_id
+        LEFT JOIN android_winscope_rect AS frr
+          ON fr.rect_id = frr.id
+        WHERE sfl.snapshot_id = ${snapshotId};`;
+    return await this.traceProcessor.query(layersQuery);
   }
 }
