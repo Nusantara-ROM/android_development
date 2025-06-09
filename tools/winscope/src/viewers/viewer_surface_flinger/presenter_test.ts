@@ -595,7 +595,7 @@ the default for its data type.`,
                 cornerRadius: null,
                 cornerRadiusCrop: null,
                 backgroundBlurRadius: null,
-                requestedColor: null,
+                crop: {x: 0, y: 0, w: 1, h: 2},
                 requestedCornerRadius: null,
               },
             },
@@ -650,6 +650,7 @@ the default for its data type.`,
           '(0, 0) - (1, 1)',
         );
         expect(uiData.curatedProperties?.calcCrop).toEqual(EMPTY_OBJ_STRING);
+        expect(uiData.curatedProperties?.reqCrop).toEqual('(0, 0) - (1, 2)');
       });
 
       it('draws input windows', async () => {

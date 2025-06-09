@@ -50,6 +50,7 @@ export interface SfCuratedProperties {
   backgroundBlurRadius: string;
   reqColor: string;
   reqCornerRadius: string;
+  reqCrop: string;
   inputTransform: PropertyTreeNode | undefined;
   inputRegion: string | undefined;
   focusable: string;

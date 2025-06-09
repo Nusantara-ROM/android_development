@@ -113,6 +113,13 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
             *ngIf="properties.reqTransform?.getAllChildren().length > 0"
             [matTooltip]="getTransformType(properties.reqTransform)"
             [matrix]="getTransformMatrix(properties.reqTransform)"></transform-matrix>
+          <p class="mat-body-2 crop">
+            <span
+              class="mat-body-1"
+              matTooltip="Requested crop">Crop:</span>
+            &ngsp;
+            {{ properties.reqCrop }}
+          </p>
         </div>
       </div>
 
