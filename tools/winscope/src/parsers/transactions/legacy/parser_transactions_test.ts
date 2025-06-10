@@ -35,7 +35,7 @@ describe('ParserTransactions', () => {
     beforeAll(async () => {
       jasmine.addCustomEqualityTester(timestampEqualityTester);
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_and_real_timestamp/Transactions.pb')
+        .addFile('traces/elapsed_and_real_timestamp/Transactions.pb')
         .getParser<HierarchyTreeNode>();
     });
 
@@ -84,7 +84,7 @@ describe('ParserTransactions', () => {
 
       beforeAll(async () => {
         perfettoParser = await new LegacyParserProvider()
-          .addFilename('traces/elapsed_and_real_timestamp/Transactions.pb')
+          .addFile('traces/elapsed_and_real_timestamp/Transactions.pb')
           .setConvertToPerfetto(true)
           .getParser<HierarchyTreeNode>();
       });
@@ -150,7 +150,7 @@ describe('ParserTransactions', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_timestamp/Transactions.pb')
+        .addFile('traces/elapsed_timestamp/Transactions.pb')
         .getParser<HierarchyTreeNode>();
     });
 

@@ -297,7 +297,7 @@ the default for its data type.`,
         );
         const sfTrace = Trace.fromParser(
           await new LegacyParserProvider()
-            .addFilename('traces/elapsed_timestamp/SurfaceFlinger.pb')
+            .addFile('traces/elapsed_timestamp/SurfaceFlinger.pb')
             .setExistingPerfettoFile(perfettoFile)
             .setConvertToPerfetto(true)
             .getParser<HierarchyTreeNode>(),

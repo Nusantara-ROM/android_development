@@ -27,7 +27,7 @@ describe('ParserScreenRecordingLegacy', () => {
 
   beforeAll(async () => {
     parser = await new LegacyParserProvider()
-      .addFilename('traces/elapsed_timestamp/screen_recording.mp4')
+      .addFile('traces/elapsed_timestamp/screen_recording.mp4')
       .getParser<MediaBasedTraceEntry>();
   });
 

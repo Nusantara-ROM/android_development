@@ -35,7 +35,7 @@ describe('ParserViewCapture', () => {
   beforeAll(async () => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
     parser = await new LegacyParserProvider()
-      .addFilename(
+      .addFile(
         'traces/elapsed_and_real_timestamp/com.google.android.apps.nexuslauncher_0.vc',
       )
       .getParser<HierarchyTreeNode>();
@@ -136,7 +136,7 @@ describe('ParserViewCapture', () => {
 
   it('converts to valid perfetto trace', async () => {
     const perfettoParser = await new LegacyParserProvider()
-      .addFilename(
+      .addFile(
         'traces/elapsed_and_real_timestamp/com.google.android.apps.nexuslauncher_0.vc',
       )
       .setConvertToPerfetto(true)

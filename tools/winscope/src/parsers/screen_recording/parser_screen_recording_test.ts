@@ -31,7 +31,7 @@ describe('ParserScreenRecording', () => {
     beforeAll(async () => {
       jasmine.addCustomEqualityTester(timestampEqualityTester);
       parser = await new LegacyParserProvider()
-        .addFilename(
+        .addFile(
           'traces/elapsed_and_real_timestamp/screen_recording_metadata_v2.mp4',
         )
         .getParser<MediaBasedTraceEntry>();
@@ -73,16 +73,18 @@ describe('ParserScreenRecording', () => {
   });
 
   describe('separate metadata file', () => {
+    const elapsedNs = 5n;
+    const realtoElapsedNs = 10n;
     beforeAll(async () => {
       jasmine.addCustomEqualityTester(timestampEqualityTester);
       parser = await new LegacyParserProvider()
-        .addFilename(
+        .addFile(
           'traces/elapsed_and_real_timestamp/screen_recording_no_metadata.mp4',
         )
         .setMetadata({
           screenRecordingOffsets: {
-            elapsedRealTimeNanos: 5n,
-            realToElapsedTimeOffsetNanos: 10n,
+            elapsedRealTimeNanos: elapsedNs,
+            realToElapsedTimeOffsetNanos: realtoElapsedNs,
           },
         })
         .getParser<MediaBasedTraceEntry>();
@@ -90,7 +92,7 @@ describe('ParserScreenRecording', () => {
 
     it('throws error if metadata not provided', async () => {
       const parsers = await new LegacyParserProvider()
-        .addFilename(
+        .addFile(
           'traces/elapsed_and_real_timestamp/screen_recording_no_metadata.mp4',
         )
         .getParsers();
@@ -105,10 +107,53 @@ describe('ParserScreenRecording', () => {
       const timestamps = assertDefined(parser.getTimestamps());
       expect(timestamps.length).toEqual(158);
 
+      const totalOffset = elapsedNs + realtoElapsedNs;
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(599300015n),
-        TimestampConverterUtils.makeRealTimestamp(599400015n),
-        TimestampConverterUtils.makeRealTimestamp(1066066681n),
+        TimestampConverterUtils.makeRealTimestamp(599300000n + totalOffset),
+        TimestampConverterUtils.makeRealTimestamp(599400000n + totalOffset),
+        TimestampConverterUtils.makeRealTimestamp(1066066666n + totalOffset),
+      ];
+      expect(timestamps.slice(0, 3)).toEqual(expected);
+    });
+
+    it('retrieves trace entry', async () => {
+      {
+        const entry = await parser.getEntry(0);
+        expect(entry).toBeInstanceOf(MediaBasedTraceEntry);
+        expect(Number(entry.videoTimeSeconds)).toBeCloseTo(0);
+      }
+      {
+        const entry = await parser.getEntry(parser.getLengthEntries() - 1);
+        expect(entry).toBeInstanceOf(MediaBasedTraceEntry);
+        expect(Number(entry.videoTimeSeconds)).toBeCloseTo(4.192109, 0.001);
+      }
+    });
+  });
+
+  describe('start time in filename', () => {
+    const startTime = 1732721670187419777n;
+    beforeAll(async () => {
+      jasmine.addCustomEqualityTester(timestampEqualityTester);
+      parser = await new LegacyParserProvider()
+        .addFile(
+          'traces/elapsed_and_real_timestamp/screen_recording_no_metadata.mp4',
+          `traces/elapsed_and_real_timestamp/screen_recording-${startTime.toString()}-screen.mp4`,
+        )
+        .getParser<MediaBasedTraceEntry>();
+    });
+
+    it('sets real to boot time offset', () => {
+      expect(parser.getRealToBootTimeOffsetNs()).toEqual(0n);
+    });
+
+    it('provides timestamps', () => {
+      const timestamps = assertDefined(parser.getTimestamps());
+      expect(timestamps.length).toEqual(158);
+
+      const expected = [
+        TimestampConverterUtils.makeRealTimestamp(599300000n + startTime),
+        TimestampConverterUtils.makeRealTimestamp(599400000n + startTime),
+        TimestampConverterUtils.makeRealTimestamp(1066066666n + startTime),
       ];
       expect(timestamps.slice(0, 3)).toEqual(expected);
     });

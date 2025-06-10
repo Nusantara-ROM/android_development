@@ -59,7 +59,7 @@ describe('Parser', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_and_real_timestamp/WindowManager.pb')
+        .addFile('traces/elapsed_and_real_timestamp/WindowManager.pb')
         .getParser<HierarchyTreeNode>();
     });
 
@@ -96,7 +96,7 @@ describe('Parser', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_timestamp/WindowManager.pb')
+        .addFile('traces/elapsed_timestamp/WindowManager.pb')
         .getParser<HierarchyTreeNode>();
     });
 

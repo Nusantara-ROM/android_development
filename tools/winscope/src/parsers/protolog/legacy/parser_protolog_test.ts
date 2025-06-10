@@ -74,7 +74,7 @@ abstract class ParserProtologTest {
       beforeAll(async () => {
         jasmine.addCustomEqualityTester(timestampEqualityTester);
         parser = await new LegacyParserProvider()
-          .addFilename(this.traceFile)
+          .addFile(this.traceFile)
           .getParser<PropertyTreeNode>();
       });
 
@@ -147,7 +147,7 @@ abstract class ParserProtologTest {
 
       it('converts to valid perfetto trace', async () => {
         const perfettoParser = await new LegacyParserProvider()
-          .addFilename(this.traceFile)
+          .addFile(this.traceFile)
           .setConvertToPerfetto(true)
           .getParser<PropertyTreeNode>();
 

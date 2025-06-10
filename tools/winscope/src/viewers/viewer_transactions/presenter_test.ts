@@ -237,7 +237,7 @@ class PresenterTransactionsTest extends AbstractLogViewerPresenterTest<UiData> {
 
   override async setUpTestEnvironment(): Promise<void> {
     const parser = await new LegacyParserProvider()
-      .addFilename('traces/elapsed_and_real_timestamp/Transactions.pb')
+      .addFile('traces/elapsed_and_real_timestamp/Transactions.pb')
       .setConvertToPerfetto(true)
       .getParser<HierarchyTreeNode>();
     this.trace = new TraceBuilder<HierarchyTreeNode>()

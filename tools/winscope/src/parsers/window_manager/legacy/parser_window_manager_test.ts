@@ -35,7 +35,7 @@ describe('ParserWindowManager', () => {
     beforeAll(async () => {
       jasmine.addCustomEqualityTester(timestampEqualityTester);
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_and_real_timestamp/WindowManager.pb')
+        .addFile('traces/elapsed_and_real_timestamp/WindowManager.pb')
         .getParser<HierarchyTreeNode>();
       trace = new TraceBuilder<HierarchyTreeNode>()
         .setType(TraceType.WINDOW_MANAGER)
@@ -82,7 +82,7 @@ describe('ParserWindowManager', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_timestamp/WindowManager.pb')
+        .addFile('traces/elapsed_timestamp/WindowManager.pb')
         .getParser<HierarchyTreeNode>();
     });
 
@@ -111,7 +111,7 @@ describe('ParserWindowManager', () => {
 
     beforeAll(async () => {
       parser = await new LegacyParserProvider()
-        .addFilename(
+        .addFile(
           'traces/elapsed_and_real_timestamp/window_trace_critical.winscope',
         )
         .getParser<HierarchyTreeNode>();

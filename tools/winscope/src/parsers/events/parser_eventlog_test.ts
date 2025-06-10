@@ -34,7 +34,7 @@ describe('ParserEventLog', () => {
     beforeAll(async () => {
       jasmine.addCustomEqualityTester(timestampEqualityTester);
       parser = await new LegacyParserProvider()
-        .addFilename('traces/elapsed_and_real_timestamp/eventlog.winscope')
+        .addFile('traces/elapsed_and_real_timestamp/eventlog.winscope')
         .getParser<PropertyTreeNode>();
     });
 
@@ -89,7 +89,7 @@ describe('ParserEventLog', () => {
     beforeAll(async () => {
       jasmine.addCustomEqualityTester(timestampEqualityTester);
       parser = await new LegacyParserProvider()
-        .addFilename(
+        .addFile(
           'traces/elapsed_and_real_timestamp/eventlog_timestamps_not_monotonically_increasing.winscope',
         )
         .getParser<PropertyTreeNode>();
