@@ -67,7 +67,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.android.sharetest.ui.ColorSchemeSelector
 import com.android.sharetest.ui.theme.ActivityTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -228,13 +227,6 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
                                 modifier = Modifier.align(Alignment.CenterVertically),
                             )
                         }
-                        Text(text = "Chooser Color Scheme")
-                        ColorSchemeSelector(
-                            values = colorSchemes,
-                            selected = selectedColorSchemeIdx,
-                            spacing = spacing,
-                            onValueSelected = { selectedColorSchemeIdx = it },
-                        )
                         if (isChooserRunning) {
                             Button(onClick = { closeChooser() }) { Text("Close Chooser") }
                         }
