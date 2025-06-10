@@ -7,7 +7,7 @@ import { PreviewComponent } from '../preview/preview.component';
 import { TimelineComponent } from '../timeline/timeline.component';
 import { MotionGolden } from '../model/golden';
 import { finalize } from 'rxjs';
-import { NgIf } from '@angular/common';
+import { NgIf, NgStyle } from '@angular/common';
 import {
   trigger,
   state,
@@ -29,7 +29,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     TimelineComponent,
     NgIf,
     MatButton,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    NgStyle,
 ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -47,13 +48,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
       transition(':leave', [
         style({
           width: '*',
-          'min-width': '25%',
           marginRight: '*',
           opacity: 1,
           paddingLeft: '*',
           paddingRight: '*'
         }),
-        animate('300ms ease-in')
+        animate('250ms ease-in')
       ]),
       transition(':enter', [
         style({
@@ -66,7 +66,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         }),
         animate('300ms ease-out', style({
           width: '*',
-          'min-width': '25%',
           marginRight: '*',
           opacity: 1,
           paddingLeft: '*',

@@ -26,6 +26,7 @@ export class TimelineComponent implements OnChanges {
   ) {}
 
   @Input() selectedGolden: MotionGolden | null = null;
+  @Input() showTestList: boolean = false;
 
   actualData: MotionGoldenData | undefined;
   expectedData: MotionGoldenData | undefined;
