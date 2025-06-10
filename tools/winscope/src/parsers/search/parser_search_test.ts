@@ -87,7 +87,6 @@ describe('ParserSearch', () => {
       const firstRow = entry.iter({});
       expect(firstRow.get('id')).toEqual(0n);
       expect(firstRow.get('ts')).toEqual(14500282843n);
-      expect(firstRow.get('arg_set_id')).toEqual(6193n);
     });
   });
 

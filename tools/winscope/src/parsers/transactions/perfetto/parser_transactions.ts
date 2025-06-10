@@ -54,7 +54,7 @@ import {Operation} from 'trace/tree_node/operations/operation';
 import {PropertiesProvider} from 'trace/tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'trace/tree_node/properties_provider_builder';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {QueryResult, Row, RowIteratorBase} from 'trace_processor/query_result';
+import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 
 export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
@@ -243,7 +243,9 @@ LEFT JOIN ranked_process_matches AS rpm
 
   private makeHierarchyTree(result: QueryResult): HierarchyTreeNode {
     const vsyncId =
-      result.numRows() > 0 ? result.firstRow<Row>({})['vsync_id'] : undefined;
+      result.numRows() > 0
+        ? result.iter({}).get('vsync_id') ?? undefined
+        : undefined;
     const entryProperties = new PropertyTreeBuilderFromProto()
       .setData({vsyncId})
       .setRootId('TransactionsTraceEntry')
@@ -282,7 +284,7 @@ LEFT JOIN ranked_process_matches AS rpm
   }
 
   private makeTransactionPropertiesProvider(
-    row: RowIteratorBase,
+    row: RowIterator,
     columns: string[],
     index: number,
   ): PropertiesProvider {

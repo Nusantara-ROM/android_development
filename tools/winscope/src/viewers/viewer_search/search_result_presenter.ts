@@ -20,7 +20,7 @@ import {Trace, TraceEntry} from 'trace/trace';
 import {
   ColumnType,
   QueryResult,
-  RowIteratorBase,
+  RowIterator,
 } from 'trace_processor/query_result';
 import {
   AbstractLogViewerPresenter,
@@ -89,7 +89,7 @@ export class SearchResultPresenter extends AbstractLogViewerPresenter<
 
   private makeLogEntry(
     headers: LogHeader[],
-    it: RowIteratorBase,
+    it: RowIterator,
     i: number,
     traceEntry: TraceEntry<QueryResult>,
   ): LogEntry {
@@ -130,9 +130,9 @@ export class SearchResultPresenter extends AbstractLogViewerPresenter<
 
   private tryMakeTsFieldValue(
     headers: LogHeader[],
-    it: RowIteratorBase,
+    it: RowIterator,
     header: LogHeader,
-    value: ColumnType | null,
+    value: ColumnType | undefined,
   ): LogFieldValue | undefined {
     if (
       header.spec.name === 'value' &&
@@ -150,17 +150,16 @@ export class SearchResultPresenter extends AbstractLogViewerPresenter<
     return undefined;
   }
 
-  private convertToLogFieldValue(value: ColumnType | null): LogFieldValue {
-    let displayValue: LogFieldValue;
+  private convertToLogFieldValue(value: ColumnType): LogFieldValue {
     if (value === null) {
-      displayValue = 'NULL';
-    } else if (typeof value === 'bigint') {
-      displayValue = Number(value);
-    } else if (value instanceof Uint8Array) {
-      displayValue = '[]';
-    } else {
-      displayValue = value;
+      return 'NULL';
     }
-    return displayValue;
+    if (typeof value === 'bigint') {
+      return Number(value);
+    }
+    if (value instanceof Uint8Array) {
+      return '[]';
+    }
+    return value;
   }
 }

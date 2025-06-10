@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {SCM_REVISION, VERSION} from '../../deps_build/trace_processor/ui/tsc/gen/perfetto_version';
+import {SCM_REVISION, VERSION} from '../../../deps_build/trace_processor/ui/tsc/gen/perfetto_version';
 
 export type ErrorHandler = (err: string) => void;
 

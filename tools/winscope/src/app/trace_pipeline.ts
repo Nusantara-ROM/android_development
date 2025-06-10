@@ -53,7 +53,7 @@ import {Trace} from 'trace/trace';
 import {Traces} from 'trace/traces';
 import {TraceFile} from 'trace/trace_file';
 import {TraceEntryTypeMap, TraceType, TraceTypeUtils} from 'trace/trace_type';
-import {QueryResult, Row} from 'trace_processor/query_result';
+import {QueryResult} from 'trace_processor/query_result';
 import {TraceProcessorFactory} from 'trace_processor/trace_processor_factory';
 import {FilesSource} from './files_source';
 import {LoadedParsers} from './loaded_parsers';
@@ -376,8 +376,7 @@ export class TracePipeline
       'SELECT name, value FROM stats ' +
       "WHERE name = 'traced_buf_trace_writer_packet_loss'";
     const res = await tp.query(packetLossQuery);
-    const value =
-      res.numRows() > 0 ? res.firstRow<Row>({})['value'] : undefined;
+    const value = res.numRows() > 0 ? res.iter({}).get('value') : undefined;
     if (typeof value === 'bigint' && value > 0n) {
       this.lostPerfettoPackets = Number(value);
     } else {

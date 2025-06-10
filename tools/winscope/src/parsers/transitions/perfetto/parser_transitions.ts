@@ -47,9 +47,9 @@ import {PropertiesProvider} from 'trace/tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'trace/tree_node/properties_provider_builder';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {
+  ColumnType,
   QueryResult,
-  RowIteratorBase,
-  SqlValue,
+  RowIterator,
 } from 'trace_processor/query_result';
 
 export class ParserTransitions extends AbstractParser<HierarchyTreeNode> {
@@ -164,7 +164,7 @@ export class ParserTransitions extends AbstractParser<HierarchyTreeNode> {
   }
 
   private async makeTransitionsPropertiesProvider(
-    transitionRow: RowIteratorBase,
+    transitionRow: RowIterator,
   ): Promise<PropertiesProvider> {
     const eagerProperties = await this.makeEagerPropertiesTree(transitionRow);
 
@@ -183,7 +183,7 @@ export class ParserTransitions extends AbstractParser<HierarchyTreeNode> {
   }
 
   private async makeEagerPropertiesTree(
-    transitionRow: RowIteratorBase,
+    transitionRow: RowIterator,
   ): Promise<PropertyTreeNode> {
     const eagerProperties = new PropertyTreeBuilderFromQueryRow()
       .setData(transitionRow)
@@ -203,7 +203,7 @@ export class ParserTransitions extends AbstractParser<HierarchyTreeNode> {
   }
 
   private async makeParticipants(
-    transitionRow: RowIteratorBase,
+    transitionRow: RowIterator,
   ): Promise<PropertyTreeNode> {
     const transitionId = assertDefined(
       transitionRow.get('transition_id'),
@@ -278,7 +278,7 @@ export class ParserTransitions extends AbstractParser<HierarchyTreeNode> {
     ];
   }
 
-  private makeLazyPropertiesStrategy(argSetId: SqlValue) {
+  private makeLazyPropertiesStrategy(argSetId: ColumnType) {
     return async () => {
       const data = await queryArgs(this.traceProcessor, Number(argSetId));
       return new PropertyTreeBuilderFromProto()

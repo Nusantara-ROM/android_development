@@ -37,7 +37,7 @@ import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
 import {TraceType} from 'trace/trace_type';
-import {QueryResult} from 'trace_processor/query_result';
+import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {FilesSource} from './files_source';
 import {TraceFileFilter} from './trace_file_filter';
@@ -309,10 +309,16 @@ describe('TracePipeline', () => {
 
     const queryResultObj = jasmine.createSpyObj<QueryResult>('result', [
       'numRows',
-      'firstRow',
+      'iter',
     ]);
     queryResultObj.numRows.and.returnValue(1);
-    queryResultObj.firstRow.and.returnValue({value: 2n});
+    const spyIter = jasmine.createSpyObj<RowIterator>('iter', [
+      'valid',
+      'next',
+      'get',
+    ]);
+    spyIter.get.withArgs('value').and.returnValue(2n);
+    queryResultObj.iter.and.returnValue(spyIter);
 
     const spy = spyOn(TraceProcessor.prototype, 'query').and.callThrough();
     spy

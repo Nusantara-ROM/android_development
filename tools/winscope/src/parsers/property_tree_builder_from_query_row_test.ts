@@ -16,7 +16,7 @@
 
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {PropertySource} from 'trace/tree_node/property_tree_node';
-import {RowIteratorBase} from 'trace_processor/query_result';
+import {RowIterator} from 'trace_processor/query_result';
 import {PropertyTreeBuilderFromQueryRow} from './property_tree_builder_from_query_row';
 
 describe('PropertyTreeBuilderFromQueryRow', () => {
@@ -54,6 +54,6 @@ describe('PropertyTreeBuilderFromQueryRow', () => {
   });
 
   function getSpyRow() {
-    return jasmine.createSpyObj<RowIteratorBase>('row', ['get']);
+    return jasmine.createSpyObj<RowIterator>('row', ['get']);
   }
 });

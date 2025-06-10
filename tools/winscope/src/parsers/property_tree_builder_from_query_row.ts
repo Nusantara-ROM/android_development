@@ -21,10 +21,10 @@ import {
   PropertyTreeNode,
 } from 'trace/tree_node/property_tree_node';
 import {PropertyTreeNodeFactory} from 'trace/tree_node/property_tree_node_factory';
-import {RowIteratorBase} from 'trace_processor/query_result';
+import {RowIterator} from 'trace_processor/query_result';
 import {AbstractPropertyTreeBuilder} from './abstract_property_tree_builder';
 
-export class PropertyTreeBuilderFromQueryRow extends AbstractPropertyTreeBuilder<RowIteratorBase> {
+export class PropertyTreeBuilderFromQueryRow extends AbstractPropertyTreeBuilder<RowIterator> {
   private columns: string[] | undefined;
 
   setColumns(value: string[]): this {
