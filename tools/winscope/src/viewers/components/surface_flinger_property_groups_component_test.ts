@@ -87,6 +87,7 @@ describe('SurfaceFlingerPropertyGroupsComponent', () => {
   it('displays requested geometry', () => {
     const requestedDiv = dom.get('.geometry .right-column');
     expect(requestedDiv.find('transform-matrix')).toBeDefined();
+    requestedDiv.get('.crop').checkTextExact('Crop: (0, 0) - (1, 2)');
   });
 
   it('displays buffer info', () => {
@@ -250,6 +251,7 @@ describe('SurfaceFlingerPropertyGroupsComponent', () => {
       backgroundBlurRadius: '1 px',
       reqColor: `${EMPTY_OBJ_STRING}, alpha: 1`,
       reqCornerRadius: '1 px',
+      reqCrop: '(0, 0) - (1, 2)',
       inputTransform: this.transformNode,
       inputRegion: 'null',
       focusable: 'false',

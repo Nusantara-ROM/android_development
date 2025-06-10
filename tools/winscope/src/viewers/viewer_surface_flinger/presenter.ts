@@ -335,7 +335,7 @@ the default for its data type.`,
       summary: this.getSummaryOfVisibility(pTree),
       flags: curatedFlags,
       calcTransform: pTree.getChildByName('transform'),
-      calcCrop: this.getCropPropertyValue(pTree, 'bounds'),
+      calcCrop: this.getRectPropertyValue(pTree, 'bounds'),
       finalBounds: assertDefined(
         pTree.getChildByName('screenBounds'),
       ).formattedValue(),
@@ -358,7 +358,7 @@ the default for its data type.`,
       calcColor: this.getColorPropertyValue(pTree, 'color'),
       calcShadowRadius: this.getPixelPropertyValue(pTree, 'shadowRadius'),
       calcCornerRadius: this.getPixelPropertyValue(pTree, 'cornerRadius'),
-      calcCornerRadiusCrop: this.getCropPropertyValue(
+      calcCornerRadiusCrop: this.getRectPropertyValue(
         pTree,
         'cornerRadiusCrop',
       ),
@@ -371,6 +371,7 @@ the default for its data type.`,
         pTree,
         'requestedCornerRadius',
       ),
+      reqCrop: this.getRectPropertyValue(pTree, 'crop'),
       inputTransform: inputWindowInfo?.getChildByName('transform'),
       inputRegion: inputWindowInfo
         ?.getChildByName('touchableRegion')
@@ -462,7 +463,7 @@ the default for its data type.`,
     return propVal !== 'null' ? `${propVal} px` : '0 px';
   }
 
-  private getCropPropertyValue(tree: PropertyTreeNode, label: string): string {
+  private getRectPropertyValue(tree: PropertyTreeNode, label: string): string {
     const propVal = assertDefined(tree.getChildByName(label)).formattedValue();
     return propVal !== 'null' ? propVal : EMPTY_OBJ_STRING;
   }
