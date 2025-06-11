@@ -216,7 +216,7 @@ export class Trace<T> {
     });
   }
 
-  async getAllEntryValues(): Promise<T[]> {
+  async getAllEntryValues(): Promise<Array<T | undefined>> {
     try {
       return await this.parser.getAllEntries();
     } catch (e) {

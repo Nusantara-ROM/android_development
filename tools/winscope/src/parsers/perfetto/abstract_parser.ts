@@ -132,7 +132,7 @@ export abstract class AbstractParser<T> implements Parser<T> {
     return false;
   }
 
-  getAllEntries(): Promise<T[]> {
+  getAllEntries(): Promise<Array<T | undefined>> {
     throw NOT_IMPLEMENTED_ERROR;
   }
 

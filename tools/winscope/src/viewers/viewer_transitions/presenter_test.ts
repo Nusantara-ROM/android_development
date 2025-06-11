@@ -20,7 +20,6 @@ import {TimestampConverterUtils} from 'common/time/test_utils';
 import {TimeUtils} from 'common/time/time_utils';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
-import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {ParserBuilder} from 'test/unit/parser_builder';
 import {TracesBuilder} from 'test/unit/traces_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
@@ -200,17 +199,11 @@ class PresenterTransitionsTest extends AbstractLogViewerPresenterTest<UiData> {
     describe('Specialized tests', () => {
       it('robust to corrupted transitions trace', async () => {
         const timestamp10 = TimestampConverterUtils.makeRealTimestamp(10n);
-        const trace = new TraceBuilder<HierarchyTreeNode>()
+        const trace = new TraceBuilder<HierarchyTreeNode | undefined>()
           .setType(TraceType.TRANSITION)
           .setParser(
-            new ParserBuilder<HierarchyTreeNode>()
-              .setIsCorrupted(true)
-              .setEntries([
-                new HierarchyTreeBuilder()
-                  .setId('TransitionsTraceEntry')
-                  .setName('transition0')
-                  .build(),
-              ])
+            new ParserBuilder<HierarchyTreeNode | undefined>()
+              .setEntries([undefined])
               .setTimestamps([timestamp10])
               .build(),
           )
@@ -221,7 +214,7 @@ class PresenterTransitionsTest extends AbstractLogViewerPresenterTest<UiData> {
           (newData) => {
             uiData = newData;
           },
-          trace,
+          trace as Trace<HierarchyTreeNode>,
           positionUpdate,
         );
         await presenter.onAppEvent(positionUpdate);
