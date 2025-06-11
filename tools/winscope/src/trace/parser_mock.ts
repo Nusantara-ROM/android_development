@@ -71,6 +71,10 @@ export class ParserMock<T> implements Parser<T> {
     return Promise.resolve(this.entries[index]);
   }
 
+  getAllEntries(): Promise<T[]> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   customQuery<Q extends CustomQueryType>(
     type: Q,
     entriesRange: EntriesRange,

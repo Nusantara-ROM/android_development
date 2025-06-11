@@ -66,6 +66,10 @@ export class ParserSearch implements Parser<QueryResult> {
     return this.validateQueryResult();
   }
 
+  getAllEntries(): Promise<QueryResult[]> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   customQuery<Q extends CustomQueryType>(
     type: Q,
     entriesRange: EntriesRange,

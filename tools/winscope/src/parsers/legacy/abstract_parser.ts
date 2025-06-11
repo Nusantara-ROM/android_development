@@ -73,6 +73,10 @@ export abstract class AbstractParser<
     return this.decodedEntries.length;
   }
 
+  getAllEntries(): Promise<T[]> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   createTimestamps() {
     this.timestamps = this.decodeTimestamps();
   }

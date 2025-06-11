@@ -132,6 +132,10 @@ export abstract class AbstractParser<T> implements Parser<T> {
     return false;
   }
 
+  getAllEntries(): Promise<T[]> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   protected async buildEntryIndexToRowIdMap(): Promise<AbsoluteEntryIndex[]> {
     const sqlRowIdAndTimestamp = `
      SELECT DISTINCT tbl.id AS id, tbl.ts
