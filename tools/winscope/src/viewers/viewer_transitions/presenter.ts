@@ -51,7 +51,6 @@ export class Presenter extends AbstractLogViewerPresenter<
     flags: {name: 'Flags', cssClass: 'flags'},
     status: {name: 'Status', cssClass: 'status right-align'},
   };
-  private transitionTrace: Trace<HierarchyTreeNode>;
   private surfaceFlingerTrace: Trace<HierarchyTreeNode> | undefined;
   private windowManagerTrace: Trace<HierarchyTreeNode> | undefined;
   private layerIdToName = new Map<number, string>();
@@ -81,7 +80,6 @@ export class Presenter extends AbstractLogViewerPresenter<
     notifyViewCallback: NotifyLogViewCallbackType<UiData>,
   ) {
     super(trace, notifyViewCallback, UiData.createEmpty());
-    this.transitionTrace = trace;
     this.surfaceFlingerTrace = traces.getTrace(TraceType.SURFACE_FLINGER);
     this.windowManagerTrace = traces.getTrace(TraceType.WINDOW_MANAGER);
   }
@@ -195,17 +193,17 @@ export class Presenter extends AbstractLogViewerPresenter<
     headers: LogHeader[],
   ): Promise<TransitionsEntry[]> {
     const transitions: TransitionsEntry[] = [];
+    const entryNodes = await this.trace.getAllEntryValues();
+
     for (
       let traceIndex = 0;
-      traceIndex < this.transitionTrace.lengthEntries;
+      traceIndex < this.trace.lengthEntries;
       ++traceIndex
     ) {
       const entry = assertDefined(this.trace.getEntry(traceIndex));
-      let transitionNode: HierarchyTreeNode;
-      try {
-        transitionNode = await entry.getValue();
-      } catch (e) {
-        console.error(e);
+      const transitionNode = entryNodes.at(traceIndex);
+      if (!transitionNode) {
+        // some transitions may be corrupted
         continue;
       }
       this.updateTransitionParticipants.apply(transitionNode);

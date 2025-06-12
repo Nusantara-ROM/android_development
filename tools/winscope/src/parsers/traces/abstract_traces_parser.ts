@@ -49,6 +49,10 @@ export abstract class AbstractTracesParser<T> implements Parser<T> {
     return false;
   }
 
+  getAllEntries(): Promise<T[]> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   abstract getCoarseVersion(): CoarseVersion;
   abstract parse(): Promise<void>;
   abstract createTimestamps(): Promise<void>;

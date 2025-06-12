@@ -66,19 +66,8 @@ export class TimelineData {
 
     const transitionTrace = this.traces.getTrace(TraceType.TRANSITION);
     if (transitionTrace) {
-      let someCorrupted = false;
-      await Promise.all(
-        transitionTrace.mapEntry(async (entry) => {
-          let transition: HierarchyTreeNode | undefined;
-          try {
-            transition = await entry.getValue();
-          } catch (e) {
-            someCorrupted = true;
-          }
-          this.transitionEntries.push(transition);
-        }),
-      );
-      if (someCorrupted) {
+      this.transitionEntries = await transitionTrace.getAllEntryValues();
+      if (this.transitionEntries.includes(undefined)) {
         UserNotifier.add(new CannotParseAllTransitions());
       }
     }

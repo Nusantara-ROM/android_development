@@ -216,6 +216,14 @@ export class Trace<T> {
     });
   }
 
+  async getAllEntryValues(): Promise<Array<T | undefined>> {
+    try {
+      return await this.parser.getAllEntries();
+    } catch (e) {
+      return await Promise.all(this.mapEntry((entry) => entry.getValue()));
+    }
+  }
+
   async customQuery<Q extends CustomQueryType>(
     type: Q,
     param?: CustomQueryParamTypeMap[Q],

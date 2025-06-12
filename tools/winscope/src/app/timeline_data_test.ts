@@ -18,16 +18,17 @@ import {assertDefined} from 'common/assert_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {TimeRange} from 'common/time/time';
 import {CannotParseAllTransitions} from 'messaging/user_warnings';
+import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {ParserBuilder} from 'test/unit/parser_builder';
-import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {TracesBuilder} from 'test/unit/traces_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
+import {Trace} from 'trace/trace';
 import {Traces} from 'trace/traces';
 import {TracePosition} from 'trace/trace_position';
 import {TraceType} from 'trace/trace_type';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {TimelineData} from './timeline_data';
 
 describe('TimelineData', () => {
@@ -410,23 +411,22 @@ describe('TimelineData', () => {
   it('handles partially corrupted transitions trace', async () => {
     const userNotifierChecker = new UserNotifierChecker();
 
+    const transition = new HierarchyTreeBuilder()
+      .setId('TransitionsTraceEntry')
+      .setName('transition')
+      .build();
+
     const traces = new Traces();
-    const trace = new TraceBuilder<PropertyTreeNode>()
+    const trace = new TraceBuilder<HierarchyTreeNode | undefined>()
       .setType(TraceType.TRANSITION)
       .setParser(
-        new ParserBuilder<PropertyTreeNode>()
-          .setIsCorrupted(true)
-          .setEntries([
-            new PropertyTreeBuilder()
-              .setRootId('TransitionsTraceEntry')
-              .setName('transition')
-              .build(),
-          ])
-          .setTimestamps([timestamp9])
+        new ParserBuilder<HierarchyTreeNode | undefined>()
+          .setEntries([transition, undefined])
+          .setTimestamps([timestamp9, timestamp9])
           .build(),
       )
       .build();
-    traces.addTrace(trace);
+    traces.addTrace(trace as Trace<{}>);
 
     await timelineData.initialize(
       traces,
@@ -434,6 +434,9 @@ describe('TimelineData', () => {
       TimestampConverterUtils.TIMESTAMP_CONVERTER,
     );
     userNotifierChecker.expectAdded([new CannotParseAllTransitions()]);
-    expect(timelineData.getTransitionEntries()).toEqual([undefined]);
+    expect(timelineData.getTransitionEntries()).toEqual([
+      transition,
+      undefined,
+    ]);
   });
 });

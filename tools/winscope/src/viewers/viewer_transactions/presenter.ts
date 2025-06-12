@@ -167,12 +167,7 @@ export class Presenter extends AbstractLogViewerPresenter<
 
   protected override async makeUiDataEntries(): Promise<TransactionsEntry[]> {
     const entries: TransactionsEntry[] = [];
-
-    const entryProtos = await Promise.all(
-      this.trace.mapEntry(async (entry) => {
-        return await entry.getValue();
-      }),
-    );
+    const entryNodes = await this.trace.getAllEntryValues();
 
     for (
       let traceIndex = 0;
@@ -180,7 +175,7 @@ export class Presenter extends AbstractLogViewerPresenter<
       ++traceIndex
     ) {
       const entry = this.trace.getEntry(traceIndex);
-      const entryNode = entryProtos[traceIndex];
+      const entryNode = assertDefined(entryNodes.at(traceIndex));
       const vsyncId = entryNode.getEagerPropertyByName('vsyncId')?.getValue();
 
       for (const transactionNode of entryNode.getAllChildren()) {

@@ -130,6 +130,10 @@ export class ParserViewCaptureWindow implements Parser<HierarchyTreeNode> {
     return [this.windowName, ...this.descriptors];
   }
 
+  getAllEntries(): Promise<HierarchyTreeNode[]> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   private decodeTimestamps(): Timestamp[] {
     return this.frameData.map((entry) =>
       this.timestampConverter.makeTimestampFromBootTimeNs(
