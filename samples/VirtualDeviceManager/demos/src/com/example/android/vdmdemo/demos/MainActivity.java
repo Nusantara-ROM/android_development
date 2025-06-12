@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
                     new Intent(this, ActivityPolicyDemoActivity.class));
             case R.id.home_demo -> startActivity(new Intent(this, HomeDemoActivity.class));
             case R.id.sensor_demo -> startActivity(new Intent(this, SensorDemoActivity.class));
+            case R.id.ui_mode_demo -> startActivity(new Intent(this, UiModeDemoActivity.class));
             case R.id.pip_demo -> startActivity(new Intent(this, PipDemoActivity.class));
             case R.id.display_power_demo -> startActivity(
                     new Intent(this, DisplayPowerDemoActivity.class));

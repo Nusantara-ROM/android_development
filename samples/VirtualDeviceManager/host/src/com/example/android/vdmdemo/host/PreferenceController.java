@@ -109,6 +109,13 @@ final class PreferenceController {
             new StringRule(R.string.pref_enable_client_brightness, BAKLAVA,
                     Flags::deviceAwareDisplayPower),
 
+            new BoolRule(R.string.pref_custom_ui_mode, BAKLAVA, Flags::deviceAwareUiMode)
+                    .withRequiredPermissions(ADD_TRUSTED_DISPLAY),
+
+            new StringRule(R.string.pref_night_mode, BAKLAVA, Flags::deviceAwareUiMode)
+                    .withRequiredPermissions(ADD_TRUSTED_DISPLAY)
+                    .withDefaultValue("0x00"),  // UI_MODE_NIGHT_UNDEFINED
+
             new StringRule(R.string.pref_display_ime_policy, VANILLA_ICE_CREAM)
                     .withRequiredPermissions(ADD_TRUSTED_DISPLAY)
                     .withDefaultValue(String.valueOf(0)),

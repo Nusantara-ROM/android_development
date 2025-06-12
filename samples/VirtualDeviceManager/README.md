@@ -287,6 +287,22 @@ Each input screen has a "Back", "Home" and "Forward" buttons.
     adb shell aflags enable android.companion.virtual.flags.device_aware_display_power && adb reboot
     ```
 
+-   **Custom UI mode**: Whether to override the UI mode on all virtual displays.
+    Run the commands below to enable this functionality. \
+    *This can be changed dynamically.*
+
+    ```shell
+    adb shell aflags enable android.companion.virtual.flags.device_aware_ui_mode && adb reboot
+    ```
+
+-   **Night mode**: Whether to override the night mode on all virtual displays.
+    Run the commands below to enable this functionality. \
+    *This can be changed dynamically.*
+
+    ```shell
+    adb shell aflags enable android.companion.virtual.flags.device_aware_ui_mode && adb reboot
+    ```
+
 #### Camera
 
 -   **Camera policy**: Choose the cameras to be used on the virtual device:
@@ -438,6 +454,9 @@ adb shell aflags enable android.companion.virtual.flags.device_aware_display_pow
 
 -   **Picture in Picture**: A simple activity with PiP support showing the
     behavior of pinned windowing mode on the virtual display.
+
+-   **UI mode**: A simple activity showing the UI mode type and night mode on
+    the display to showcase the dynamic UI mode override in VDM.
 
 -   **Display Power**: A simple activity showcasing the behavior of proximity
     locks, screen brightness override and requesting the screen to be kept on or

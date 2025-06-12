@@ -51,6 +51,7 @@ import android.content.IntentSender;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.graphics.drawable.Icon;
 import android.hardware.display.DisplayManager;
 import android.media.AudioManager;
@@ -801,6 +802,20 @@ public final class VdmService extends Hilt_VdmService {
         }
     }
 
+    private void updateUiMode() {
+        if (mVirtualDevice != null) {
+            int uiMode = Configuration.UI_MODE_TYPE_UNDEFINED;
+            if (mPreferenceController.getBoolean(R.string.pref_custom_ui_mode)) {
+                uiMode |= (Configuration.UI_MODE_TYPE_MASK & Configuration.UI_MODE_TYPE_APPLIANCE);
+            }
+            int nightMode = Integer.decode(
+                    mPreferenceController.getString(R.string.pref_night_mode));
+            final int finalUiMode = uiMode | (Configuration.UI_MODE_NIGHT_MASK & nightMode);
+            Arrays.stream(mDisplayRepository.getDisplayIds()).forEach(
+                    displayId -> mVirtualDevice.setDisplayUiMode(displayId, finalUiMode));
+        }
+    }
+
     private Map<Integer, Consumer<Object>> createPreferenceObservers() {
         HashMap<Integer, Consumer<Object>> observers = new HashMap<>();
 
@@ -810,6 +825,8 @@ public final class VdmService extends Hilt_VdmService {
                 b -> updateDevicePolicy(POLICY_TYPE_CLIPBOARD, (Boolean) b));
         observers.put(R.string.pref_enable_custom_activity_policy,
                 b -> updateDevicePolicy(POLICY_TYPE_BLOCKED_ACTIVITY, (Boolean) b));
+        observers.put(R.string.pref_custom_ui_mode, b -> updateUiMode());
+        observers.put(R.string.pref_night_mode, b -> updateUiMode());
         observers.put(R.string.pref_show_pointer_icon,
                 b -> {
                     if (mVirtualDevice != null) mVirtualDevice.setShowPointerIcon((Boolean) b);

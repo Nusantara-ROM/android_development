@@ -97,6 +97,20 @@
             android:summary="Propagate the virtual display brightness changes to the client display"
             android:defaultValue="false"
             app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
+            android:key="@string/pref_custom_ui_mode"
+            android:title="Custom UI mode"
+            android:summary="Set APPLIANCE UI mode on the virtual displays. If unset, use the host's UI mode."
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+        <ListPreference
+            android:key="@string/pref_night_mode"
+            android:title="Night mode"
+            android:entries="@array/night_mode_labels"
+            android:entryValues="@array/night_modes"
+            android:defaultValue="@string/night_mode_undefined"
+            app:useSimpleSummaryProvider="true"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory
