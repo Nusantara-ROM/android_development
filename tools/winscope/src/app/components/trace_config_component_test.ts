@@ -68,6 +68,7 @@ describe('TraceConfigComponent', () => {
 
   it('displays config alphabetically by name', () => {
     expect(dom.findAll('.trace-checkbox').map((box) => box.getText())).toEqual([
+      'disabled_checkbox_trace',
       'layers_trace',
       'multiple_selection_trace',
       'optional_multiple_selection_trace',
@@ -79,6 +80,7 @@ describe('TraceConfigComponent', () => {
 
   it('displays advanced config alphabetically by name', () => {
     expect(dom.findAll('.config-heading').map((box) => box.getText())).toEqual([
+      'disabled_checkbox_trace configuration',
       'layers_trace configuration',
       'multiple_selection_trace configuration',
       'optional_multiple_selection_trace configuration',
@@ -88,7 +90,7 @@ describe('TraceConfigComponent', () => {
   });
 
   it('applies stored config and emits event on init', async () => {
-    dom.findAndClick('.enable-config-opt input');
+    getCheckboxConfigSectionForKey('layers_trace').findAndClick('input');
     expect(
       assertDefined(component.traceConfig)['layers_trace'].config
         .checkboxConfigs,
@@ -181,6 +183,11 @@ describe('TraceConfigComponent', () => {
     expect(configChangeSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('disables config section if trace not enabled', () => {
+    const configSection = getConfigSectionForKey('window_trace');
+    configSection.checkClassName('disabled-component');
+  });
+
   it('disables checkbox for unavailable trace', () => {
     const traceKey = 'unavailable_trace';
     const box = getTraceBoxForKey(traceKey);
@@ -188,19 +195,27 @@ describe('TraceConfigComponent', () => {
     box.checkText(traceKey);
   });
 
-  it('checkbox and select configs show', () => {
-    const enable_config_opt = dom.get('.enable-config-opt');
-    enable_config_opt.checkInnerHTML('trace buffers');
-    enable_config_opt.checkInnerHTML('tracing level', false);
+  it('disables checkbox for disabled checkbox config', () => {
+    const traceKey = 'disabled_checkbox_trace';
+    const box = getTraceBoxForKey(traceKey);
+    box.get('input').checkDisabled(true);
+    box.checkText(traceKey);
+  });
 
-    const selection_config_opt = dom.get('.selection-config-opt');
-    selection_config_opt.checkInnerHTML('trace buffers', false);
-    selection_config_opt.checkInnerHTML('tracing level');
+  it('checkbox and select configs show', () => {
+    const checkboxConfigSection =
+      getCheckboxConfigSectionForKey('layers_trace');
+    checkboxConfigSection.checkInnerHTML('trace buffers');
+    checkboxConfigSection.checkInnerHTML('tracing level', false);
+
+    const selectionConfigSection = dom.get('.selection-config-opt');
+    selectionConfigSection.checkInnerHTML('trace buffers', false);
+    selectionConfigSection.checkInnerHTML('tracing level');
   });
 
   it('changing checkbox config model value causes box to change', async () => {
-    const inputElement = dom
-      .get('.enable-config input')
+    const inputElement = getCheckboxConfigSectionForKey('layers_trace')
+      .get('input')
       .getHTMLElement<HTMLInputElement>();
     assertDefined(
       assertDefined(component.traceConfig)['layers_trace'].config,
@@ -219,7 +234,7 @@ describe('TraceConfigComponent', () => {
 
   it('changing checkbox config by DOM interaction emits event', async () => {
     configChangeSpy.calls.reset();
-    dom.findAndClick('.enable-config input');
+    getTraceBoxForKey('layers_trace').findAndClick('input');
     expect(configChangeSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -234,7 +249,9 @@ describe('TraceConfigComponent', () => {
 
   it('clicking None button clears optional single selection config value', async () => {
     configChangeSpy.calls.reset();
-    await dom.openMatSelect(getIndexForConfigKey('optional_selection_trace'));
+    await dom.openMatSelect(
+      getIndexForSectionWithSelectConfigs('optional_selection_trace'),
+    );
 
     dom.clickMatOption();
     expect(configChangeSpy).toHaveBeenCalledTimes(1);
@@ -254,7 +271,9 @@ describe('TraceConfigComponent', () => {
 
   it('clicking All button selects or clears all options for multiple selection config', async () => {
     configChangeSpy.calls.reset();
-    await dom.openMatSelect(getIndexForConfigKey('multiple_selection_trace'));
+    await dom.openMatSelect(
+      getIndexForSectionWithSelectConfigs('multiple_selection_trace'),
+    );
 
     const panel = dom.getMatSelectPanel();
     const allButton = panel.findAndClick('.user-option');
@@ -273,7 +292,9 @@ describe('TraceConfigComponent', () => {
   });
 
   it('stabilizes tooltip position', async () => {
-    await dom.openMatSelect(getIndexForConfigKey('optional_selection_trace'));
+    await dom.openMatSelect(
+      getIndexForSectionWithSelectConfigs('optional_selection_trace'),
+    );
 
     const panel = dom.getMatSelectPanel();
     const options = panel.findAll('mat-option');
@@ -286,6 +307,25 @@ describe('TraceConfigComponent', () => {
     const tooltipPanel = dom.findMatTooltipPanel()?.getHTMLElement();
     expect(tooltipPanel?.style.top.length).toBeGreaterThan(0);
     expect(tooltipPanel?.style.left.length).toBeGreaterThan(0);
+  });
+
+  it('disables selection field if no options', async () => {
+    assertDefined(
+      component.traceConfig?.['optional_selection_trace'].config,
+    ).selectionConfigs[0].options = [];
+    await detectNgModelChanges();
+
+    const index = getIndexForSectionWithSelectConfigs(
+      'optional_selection_trace',
+    );
+    await dom.openMatSelect(index);
+    expect(dom.isMatSelectOpen()).toBeFalse();
+  });
+
+ it('shows config desc', () => {
+    const configDescs = dom.findAll('.config-desc');
+    expect(configDescs[0].getText()).toEqual('Layers trace config description');
+    expect(configDescs.length).toEqual(1);
   });
 
   async function setComponentInputs(
@@ -316,6 +356,7 @@ describe('TraceConfigComponent', () => {
               value: 'debug',
             },
           ],
+          desc: 'Layers trace config description'
         },
       },
       window_trace: {
@@ -341,6 +382,23 @@ describe('TraceConfigComponent', () => {
         config: {
           enabled: false,
           checkboxConfigs: [],
+          selectionConfigs: [],
+        },
+      },
+      disabled_checkbox_trace: {
+        name: 'disabled_checkbox_trace',
+        available: true,
+        types: [TraceType.TEST_TRACE_STRING],
+        config: {
+          enabled: true,
+          checkboxConfigs: [
+            {
+              name: 'extra',
+              key: 'extra',
+              enabled: true,
+              disabled: true,
+            },
+          ],
           selectionConfigs: [],
         },
       },
@@ -420,9 +478,38 @@ describe('TraceConfigComponent', () => {
     return dom.findAll('.trace-checkbox')[index];
   }
 
-  function getIndexForConfigKey(configKey: string): number {
+  function getConfigSectionForKey(
+    traceKey: string,
+  ): DOMTestHelper<TraceConfigComponent> {
+    const index = component
+      .getSortedConfigKeys()
+      .findIndex((key) => key === traceKey);
+    return dom.findAll('.config-section')[index];
+  }
+
+  function getCheckboxConfigSectionForKey(
+    configKey: string,
+  ): DOMTestHelper<TraceConfigComponent> {
+    const index = component
+      .getSortedConfigKeys()
+      .filter(
+        (key) =>
+          assertDefined(component.traceConfig)[key].config.checkboxConfigs
+            .length > 0,
+      )
+      .findIndex((key) => key === configKey);
+
+    return dom.findAll('.enable-config-opt')[index];
+  }
+
+  function getIndexForSectionWithSelectConfigs(configKey: string): number {
     return component
       .getSortedConfigKeys()
+      .filter(
+        (key) =>
+          assertDefined(component.traceConfig)[key].config.selectionConfigs
+            .length > 0,
+      )
       .findIndex((key) => key === configKey);
   }
 });

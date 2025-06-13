@@ -939,7 +939,7 @@ export class CollectTracesComponent
     const trace = configMap[target];
     assertTrue(trace?.config.enabled ?? false);
     trace.config.checkboxConfigs.forEach((con: CheckboxConfiguration) => {
-      if (con.enabled) {
+      if (con.enabled && !con.disabled) {
         req.push({key: con.key});
       }
     });
