@@ -190,10 +190,22 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
               <span
                 class="mat-body-1 accordion-item-header"
                 (click)="onHeaderClick(accordionItem)">
-                <mat-icon>
-                  {{ accordionItem.expanded ? 'arrow_drop_down' : 'chevron_right' }}
-                </mat-icon>
-                <code>{{searchView.name}}</code>
+                <span class="view-title">
+                  <mat-icon>
+                    {{ accordionItem.expanded ? 'arrow_drop_down' : 'chevron_right' }}
+                  </mat-icon>
+                  <code>{{searchView.name}}</code>
+                  </span>
+                <a
+                  [href]="searchView.docsUrl"
+                  target="_blank"
+                  (click)="$event.stopPropagation()">
+                  <mat-icon
+                    class="open-docs-icon"
+                    [matTooltipShowDelay]="500"
+                    matTooltipPosition="left"
+                    matTooltip="Open full documentation">open_in_new</mat-icon>
+                </a>
               </span>
               <div *ngIf="accordionItem.expanded" class="accordion-item-body">
                 <span class="mat-body-1">
@@ -285,9 +297,20 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
       .how-to-search .accordion-item-header {
         width: 100%;
         display: flex;
-        flex-direction: row;
         align-items: center;
         cursor: pointer;
+        justify-content: space-between;
+      }
+      .how-to-search .view-title {
+        display: flex;
+        align-items: center;
+      }
+      .how-to-search a {
+        height: 24px;
+      }
+      .how-to-search .open-docs-icon {
+        transform: scale(0.8);
+        color: var(--default-text-color);
       }
       .how-to-search .accordion-item-body {
         padding: 8px;

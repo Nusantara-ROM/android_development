@@ -29,6 +29,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {SEARCH_VIEWS} from 'app/trace_search/trace_search_initializer';
 import {assertDefined} from 'common/assert_utils';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {VariableHeightScrollDirective} from 'viewers/common/variable_height_scroll_directive';
@@ -358,6 +359,14 @@ describe('ViewerSearchComponent', () => {
     checkAccordionItemExpanded(accordionItems[1]);
   });
 
+  it('can open documentation for each SQL view', async () => {
+    const links = dom.findAll('.how-to-search .accordion-item-header a');
+    expect(links.length).toEqual(6);
+    for (const [i, link] of links.entries()) {
+      await checkDocsLink(link, i);
+    }
+  });
+
   function clickGlobalSearchAndCheckMessage(
     globalSearch: DOMTestHelper<TestHostComponent>,
   ) {
@@ -480,6 +489,16 @@ describe('ViewerSearchComponent', () => {
   function checkAccordionItemExpanded(item: DOMTestHelper<TestHostComponent>) {
     item.get(accordionItemSelector).checkText('arrow_drop_down');
     expect(item.find('.accordion-item-body')).toBeDefined();
+  }
+
+  async function checkDocsLink(
+    link: DOMTestHelper<TestHostComponent>,
+    index: number,
+  ) {
+    expect(link.getHTMLElement().getAttribute('href')).toEqual(
+      SEARCH_VIEWS[index].docsUrl,
+    );
+    await link.get('.open-docs-icon').checkTooltip('Open full documentation');
   }
 
   function updateInputDataAndDetectChanges(data: UiData) {

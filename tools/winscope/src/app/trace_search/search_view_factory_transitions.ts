@@ -23,6 +23,7 @@ export class SearchViewFactoryTransitions extends AbstractSearchViewFactory {
   static readonly VIEW: SearchView = {
     name: 'transitions_search',
     dataType: 'Transitions',
+    docsUrl: AbstractSearchViewFactory.BASE_DOCS_URL + 'transitions-sql-view',
     columns: [
       {
         name: 'ts',
