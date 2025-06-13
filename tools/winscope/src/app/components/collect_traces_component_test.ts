@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {ClipboardModule} from '@angular/cdk/clipboard';
+import {OverlayModule} from '@angular/cdk/overlay';
 import {CommonModule} from '@angular/common';
 import {
   Component,
@@ -56,6 +57,7 @@ import {
 import {AdbConnectionType} from 'trace_collection/adb_connection_type';
 import {ConnectionState} from 'trace_collection/connection_state';
 import {MockAdbDeviceConnection} from 'trace_collection/mock/mock_adb_device_connection';
+import {makeProtologGroupOptions} from 'trace_collection/ui/ui_trace_configuration';
 import {UiTraceTarget} from 'trace_collection/ui/ui_trace_target';
 import {WdpDeviceConnection} from 'trace_collection/wdp/wdp_device_connection';
 import {WdpHostConnection} from 'trace_collection/wdp/wdp_host_connection';
@@ -99,6 +101,7 @@ describe('CollectTracesComponent', () => {
         MatFormFieldModule,
         MatInputModule,
         ClipboardModule,
+        OverlayModule,
       ],
       providers: [MatSnackBar],
       declarations: [
@@ -583,6 +586,44 @@ describe('CollectTracesComponent', () => {
     checkMediaBasedConfigUpdates(true);
   });
 
+  it('updates options in protolog config on devices change from host', () => {
+    const groups = ['group1', 'group2'];
+
+    checkProtologConfig([]);
+    const device1 = new MockAdbDeviceConnection(
+      '35562',
+      'Pixel 6',
+      AdbDeviceState.AVAILABLE,
+      component,
+      undefined,
+      undefined,
+      groups,
+    );
+    // does not update if no selected device
+    component.onDevicesChange([device1]);
+    dom.detectChanges();
+    checkProtologConfig([]);
+
+    goToConfigSection();
+    // does not update if selected device not in new devices
+    const device2 = new MockAdbDeviceConnection(
+      '99',
+      'Pixel 6',
+      AdbDeviceState.AVAILABLE,
+      component,
+      undefined,
+      undefined,
+      groups,
+    );
+    component.onDevicesChange([device2]);
+    dom.detectChanges();
+    checkProtologConfig([]);
+
+    component.onDevicesChange([device1]);
+    dom.detectChanges();
+    checkProtologConfig(groups);
+  });
+
   it('changes host type on mat select change', async () => {
     await changeConnection(1);
     expect(component.controller?.getConnectionType()).toEqual(
@@ -869,11 +910,22 @@ describe('CollectTracesComponent', () => {
     const screenshotConfig = assertDefined(
       component.dumpConfig[UiTraceTarget.SCREENSHOT].config,
     ).selectionConfigs[0];
-    expect(screenRecordingConfig.options).toEqual(displays);
-    expect(screenshotConfig.options).toEqual(displays);
+    const displayOptions = displays.map((d) => {
+      return {value: d};
+    });
+    expect(screenRecordingConfig.options).toEqual(displayOptions);
+    expect(screenshotConfig.options).toEqual(displayOptions);
     expect(screenRecordingConfig.value).toEqual(
       multiDisplayScreenRecording ? [] : '',
     );
+  }
+
+  function checkProtologConfig(groups: string[]) {
+    const config = assertDefined(
+      component.traceConfig[UiTraceTarget.PROTO_LOG].config,
+    ).selectionConfigs[0];
+    expect(config.options).toEqual(makeProtologGroupOptions(groups));
+    expect(config.value).toEqual([]);
   }
 
   async function changeConnection(index: number) {

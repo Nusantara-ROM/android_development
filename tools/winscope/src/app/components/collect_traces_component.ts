@@ -26,6 +26,7 @@ import {
 } from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSelectChange} from '@angular/material/select';
+import {equal} from 'common/array_utils';
 import {
   assertDefined,
   assertTrue,
@@ -60,6 +61,7 @@ import {
   CheckboxConfiguration,
   makeDefaultDumpConfigMap,
   makeDefaultTraceConfigMap,
+  makeProtologGroupOptions,
   makeScreenRecordingSelectionConfigs,
   SelectionConfiguration,
   TraceConfigurationMap,
@@ -802,31 +804,8 @@ export class CollectTracesComponent
     if (!device) {
       return;
     }
-    const screenRecordingConfig = assertDefined(this.traceConfig)[
-      UiTraceTarget.SCREEN_RECORDING
-    ].config;
-    const displaysConfig = assertDefined(
-      screenRecordingConfig.selectionConfigs.find((c) => c.key === 'displays'),
-    );
-    const multiDisplay = device.hasMultiDisplayScreenRecording();
-    const displays = device.getDisplays();
-
-    if (multiDisplay && !Array.isArray(displaysConfig.value)) {
-      screenRecordingConfig.selectionConfigs =
-        makeScreenRecordingSelectionConfigs(displays, []);
-    } else if (!multiDisplay && Array.isArray(displaysConfig.value)) {
-      screenRecordingConfig.selectionConfigs =
-        makeScreenRecordingSelectionConfigs(displays, '');
-    } else {
-      screenRecordingConfig.selectionConfigs[0].options = displays;
-    }
-
-    const screenshotConfig = assertDefined(this.dumpConfig)[
-      UiTraceTarget.SCREENSHOT
-    ].config;
-    assertDefined(
-      screenshotConfig.selectionConfigs.find((c) => c.key === 'displays'),
-    ).options = displays;
+    this.updateMediaBasedConfig(device);
+    this.updateProtologConfig(device);
     this.changeDetectorRef.detectChanges();
   }
 
@@ -935,9 +914,9 @@ export class CollectTracesComponent
     target: UiTraceTarget,
     configMap: TraceConfigurationMap,
   ): UserRequestConfig[] {
-    const req: UserRequestConfig[] = [];
     const trace = configMap[target];
     assertTrue(trace?.config.enabled ?? false);
+    const req: UserRequestConfig[] = [];
     trace.config.checkboxConfigs.forEach((con: CheckboxConfiguration) => {
       if (con.enabled && !con.disabled) {
         req.push({key: con.key});
@@ -952,9 +931,73 @@ export class CollectTracesComponent
   ): UserRequestConfig[] {
     const trace = configMap[target];
     assertTrue(trace?.config.enabled ?? false);
-    return trace.config.selectionConfigs.map((con: SelectionConfiguration) => {
-      return {key: con.key, value: con.value};
+    return trace.config.selectionConfigs.flatMap(
+      (con: SelectionConfiguration) => {
+        if (
+          !Array.isArray(con.value) ||
+          con.options.every((opt) => opt.chip === undefined)
+        ) {
+          return {key: con.key, value: con.value};
+        }
+
+        const subRequests = con.value.map((val) => {
+          const config: UserRequestConfig = {
+            key: val,
+            value: undefined,
+          };
+          const chip = assertDefined(
+            con.options.find((o) => o.value === val),
+          ).chip;
+          if (chip?.enabled) {
+            config.value = chip.key;
+          }
+          return config;
+        });
+        return {key: con.key, subRequests};
+      },
+    );
+  }
+
+  private updateMediaBasedConfig(device: AdbDeviceConnection) {
+    const screenRecordingConfig = assertDefined(this.traceConfig)[
+      UiTraceTarget.SCREEN_RECORDING
+    ].config;
+    const displaysConfig = assertDefined(
+      screenRecordingConfig.selectionConfigs.find((c) => c.key === 'displays'),
+    );
+    const multiDisplay = device.hasMultiDisplayScreenRecording();
+    const displayOptions = device.getDisplays().map((d) => {
+      return {value: d};
     });
+
+    if (multiDisplay && !Array.isArray(displaysConfig.value)) {
+      screenRecordingConfig.selectionConfigs =
+        makeScreenRecordingSelectionConfigs(displayOptions, []);
+    } else if (!multiDisplay && Array.isArray(displaysConfig.value)) {
+      screenRecordingConfig.selectionConfigs =
+        makeScreenRecordingSelectionConfigs(displayOptions, '');
+    } else {
+      screenRecordingConfig.selectionConfigs[0].options = displayOptions;
+    }
+
+    const screenshotConfig = assertDefined(this.dumpConfig)[
+      UiTraceTarget.SCREENSHOT
+    ].config;
+    assertDefined(
+      screenshotConfig.selectionConfigs.find((c) => c.key === 'displays'),
+    ).options = displayOptions;
+  }
+
+  private updateProtologConfig(device: AdbDeviceConnection) {
+    const config = assertDefined(this.traceConfig)[UiTraceTarget.PROTO_LOG]
+      .config.selectionConfigs;
+    const groupsConfig = assertDefined(config?.find((c) => c.key === 'groups'));
+    const groups = device.getProtologGroups();
+    const currentOptions = groupsConfig.options.map((opt) => opt.value);
+    if (equal(currentOptions, groups)) {
+      return;
+    }
+    groupsConfig.options = makeProtologGroupOptions(groups);
   }
 
   private async setState(newState: ConnectionState, errorText = '') {

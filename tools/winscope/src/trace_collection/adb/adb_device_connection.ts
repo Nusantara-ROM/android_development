@@ -33,7 +33,7 @@ export abstract class AdbDeviceConnection {
   protected model = '';
   protected displays: string[] = [];
   protected multiDisplayScreenRecording = false;
-  private protologGroups: string[] = [];
+  protected protologGroups: string[] = [];
 
   constructor(
     readonly id: string,
