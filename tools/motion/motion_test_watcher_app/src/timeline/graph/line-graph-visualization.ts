@@ -97,7 +97,9 @@ export class LineGraphVisualization implements Visualization {
     const expectedLine = d3
       .line<DataPoint>()
       .x((d) => this.xScale(d.x))
-      .y((d) => this.yScale(d.expectedValue || 0));
+      .y((d) => this.yScale(d.expectedValue as number))
+      .defined(d => d.expectedValue != null && typeof d.expectedValue === 'number')
+      .curve(d3.curveMonotoneX);
 
     g.append('path')
       .datum(data)
@@ -114,8 +116,10 @@ export class LineGraphVisualization implements Visualization {
       .attr('class', 'dot-expected')
       .attr('cx', (d) => this.xScale(d.x))
       .attr('cy', (d) => this.yScale(d.expectedValue || 0))
-      .attr('r', 3)
-      .attr('fill', COLORS.green);
+      .attr('r', 5)
+      .attr('fill', 'none')
+      .attr('stroke', COLORS.green)
+      .attr('stroke-width', 2);
   }
 
   private drawActual(
@@ -125,7 +129,9 @@ export class LineGraphVisualization implements Visualization {
     const actualLine = d3
       .line<DataPoint>()
       .x((d) => this.xScale(d.x))
-      .y((d) => this.yScale(d.actualValue || 0));
+      .y((d) => this.yScale(d.actualValue as number))
+      .defined(d => d.actualValue != null && typeof d.actualValue === 'number')
+      .curve(d3.curveMonotoneX);
 
     g.append('path')
       .datum(data)
