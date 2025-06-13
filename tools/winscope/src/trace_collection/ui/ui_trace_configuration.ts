@@ -46,6 +46,7 @@ export interface TraceConfigurationMap {
  */
 export interface ConfigurationOptions {
   enabled: boolean;
+  desc?: string;
   checkboxConfigs: CheckboxConfiguration[];
   selectionConfigs: SelectionConfiguration[];
 }
@@ -57,12 +58,12 @@ interface AdvancedConfiguration {
 
 export interface CheckboxConfiguration extends AdvancedConfiguration {
   enabled: boolean;
+  disabled?: boolean;
 }
 
 export interface SelectionConfiguration extends AdvancedConfiguration {
   options: string[];
   value: string | string[];
-  desc?: string;
   optional?: boolean;
   wideField?: boolean;
 }
@@ -125,6 +126,45 @@ const sfTraceCheckboxConfigs: CheckboxConfiguration[] = [
   },
 ];
 
+const sfDumpConfigs: CheckboxConfiguration[] = [
+  {
+    name: 'input',
+    key: 'input',
+    enabled: true,
+    disabled: true,
+  },
+  {
+    name: 'composition',
+    key: 'composition',
+    enabled: true,
+    disabled: true,
+  },
+  {
+    name: 'metadata (with offscreen layers)',
+    key: 'metadata',
+    enabled: true,
+    disabled: true,
+  },
+  {
+    name: 'hwc',
+    key: 'hwc',
+    enabled: true,
+    disabled: true,
+  },
+  {
+    name: 'trace buffers',
+    key: 'tracebuffers',
+    enabled: true,
+    disabled: true,
+  },
+  {
+    name: 'virtual displays',
+    key: 'virtualdisplays',
+    enabled: true,
+    disabled: true,
+  },
+];
+
 const sfTraceSelectionConfigs: SelectionConfiguration[] = [
   {
     key: 'sfbuffersize',
@@ -139,7 +179,6 @@ const screenshotConfigs: SelectionConfiguration[] = [
     name: 'displays',
     options: [],
     value: [],
-    desc: 'Leave empty to capture active display',
     wideField: true,
   },
 ];
@@ -155,7 +194,6 @@ export function makeScreenRecordingSelectionConfigs(
       options,
       value: initialValue,
       optional: true,
-      desc: 'Leave empty to track and capture display that is on',
       wideField: true,
     },
   ];
@@ -202,6 +240,7 @@ const traceDefaultConfig = new Map([
           },
         ],
         selectionConfigs: makeScreenRecordingSelectionConfigs([], ''),
+        desc: 'Leave empty to track and capture display that is on',
       },
       available: true,
       types: [TraceType.SCREEN_RECORDING],
@@ -353,8 +392,9 @@ const dumpDefaultConfig = new Map([
       name: 'Surface Flinger',
       config: {
         enabled: true,
-        checkboxConfigs: [],
+        checkboxConfigs: sfDumpConfigs,
         selectionConfigs: [],
+        desc: 'All flags enabled - minimal performance implications',
       },
       available: true,
       types: [TraceType.SURFACE_FLINGER],
@@ -368,6 +408,7 @@ const dumpDefaultConfig = new Map([
         enabled: true,
         checkboxConfigs: [],
         selectionConfigs: screenshotConfigs,
+        desc: 'Leave empty to capture active display',
       },
       available: true,
       types: [TraceType.SCREENSHOT],

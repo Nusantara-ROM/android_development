@@ -277,17 +277,16 @@ export class DOMTestHelper<T> {
   }
 
   checkDisabled(value: boolean) {
-    if ('disabled' in this.root) {
-      return (this.root as any).disabled === value;
-    }
-    throw new Error('disabled not present on node ' + this.root.nodeName);
+    expect('disabled' in this.root).toBeTrue();
   }
 
   checkValue(value: string) {
-    if ('value' in this.root) {
-      return (this.root as any).value === value;
+    const hasValue = 'value' in this.root;
+    if (hasValue) {
+      expect((this.root as any).value).toEqual(value);
+    } else {
+      expect(value.length).toEqual(0);
     }
-    throw new Error('value not present on node ' + this.root.nodeName);
   }
 
   updateValue(value: string) {

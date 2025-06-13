@@ -53,29 +53,27 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
     <ng-container *ngFor="let traceKey of getSortedConfigKeys()">
       <mat-divider></mat-divider>
 
-      <h3 class="config-heading mat-subheading-2">{{ this.traceConfig[traceKey].name }} configuration</h3>
+      <div class="config-section" [class.disabled-component]="!this.traceConfig[traceKey].config.enabled">
+        <h3 class="config-heading mat-subheading-2">{{ this.traceConfig[traceKey].name }} configuration</h3>
 
-      <div
-        *ngIf="this.traceConfig[traceKey].config.checkboxConfigs.length > 0"
-        class="enable-config-opt">
-        <mat-checkbox
-          *ngFor="let checkboxConfig of getSortedConfigs(this.traceConfig[traceKey].config.checkboxConfigs)"
-          color="primary"
-          class="enable-config"
-          [disabled]="!this.traceConfig[traceKey].config.enabled"
-          [(ngModel)]="checkboxConfig.enabled"
-          (ngModelChange)="onTraceConfigChange()"
-          >{{ checkboxConfig.name }}</mat-checkbox
-        >
-      </div>
+        <div
+          *ngIf="this.traceConfig[traceKey].config.checkboxConfigs.length > 0"
+          class="enable-config-opt">
+          <mat-checkbox
+            *ngFor="let checkboxConfig of getSortedConfigs(this.traceConfig[traceKey].config.checkboxConfigs)"
+            color="primary"
+            class="enable-config"
+            [disabled]="checkboxConfig.disabled"
+            [(ngModel)]="checkboxConfig.enabled"
+            (ngModelChange)="onTraceConfigChange()">{{ checkboxConfig.name }}</mat-checkbox>
+        </div>
 
-      <div
-        *ngIf="this.traceConfig[traceKey].config.selectionConfigs.length > 0"
-        class="selection-config-opt">
-        <ng-container *ngFor="let selectionConfig of getSortedConfigs(this.traceConfig[traceKey].config.selectionConfigs)">
-          <div class="config-selection-with-desc" [class.wide-field]="selectionConfig.wideField">
+        <div
+          *ngIf="this.traceConfig[traceKey].config.selectionConfigs.length > 0"
+          class="selection-config-opt">
+          <ng-container *ngFor="let selectionConfig of getSortedConfigs(this.traceConfig[traceKey].config.selectionConfigs)">
             <mat-form-field
-              class="config-selection"
+              class="config-selection no-bottom-padding-field"
               [class.wide-field]="selectionConfig.wideField"
               appearance="fill">
               <mat-label>{{ selectionConfig.name }}</mat-label>
@@ -87,7 +85,7 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
                 class="selected-value"
                 [attr.label]="traceKey + selectionConfig.name"
                 [value]="selectionConfig.value"
-                [disabled]="!this.traceConfig[traceKey].config.enabled || selectionConfig.options.length === 0"
+                [disabled]="selectionConfig.options.length === 0"
                 (selectionChange)="onSelectChange($event, selectionConfig)">
                 <span class="mat-option" *ngIf="matSelect.multiple || selectionConfig.optional">
                   <button
@@ -117,9 +115,9 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
                 </mat-option>
               </mat-select>
             </mat-form-field>
-            <span class="config-desc" *ngIf="selectionConfig.desc"> {{selectionConfig.desc}} </span>
-          </div>
-        </ng-container>
+          </ng-container>
+        </div>
+        <span class="config-desc" *ngIf="traceConfig[traceKey].config.desc"> {{traceConfig[traceKey].config.desc}} </span>
       </div>
     </ng-container>
   `,
@@ -130,16 +128,17 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
         flex-direction: column;
         flex-wrap: wrap;
       }
+      .config-section {
+        gap: 10px;
+        display: flex;
+        flex-direction: column;
+      }
       .enable-config-opt,
       .selection-config-opt {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         gap: 10px;
-      }
-      .config-selection-with-desc {
-        display: flex;
-        flex-direction: column;
       }
       .wide-field {
         width: 100%;

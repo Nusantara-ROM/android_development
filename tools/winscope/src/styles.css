@@ -140,8 +140,12 @@ body.dark-mode button.mat-flat-button.mat-primary {
     display: none;
 }
 
-.no-padding-field .mat-form-field-wrapper {
+.no-padding-field .mat-form-field-wrapper, .no-bottom-padding-field .mat-form-field-wrapper {
     padding-bottom: 0px;
+}
+
+.no-bottom-padding-field .mat-form-field-underline {
+    bottom: 0px;
 }
 
 .no-padding-field .mat-form-field-infix {

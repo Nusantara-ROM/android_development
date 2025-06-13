@@ -314,6 +314,7 @@ describe('UserRequestParser', () => {
       mode: MODE_DUMP
       trace_flags: TRACE_FLAG_INPUT
       trace_flags: TRACE_FLAG_COMPOSITION
+      trace_flags: TRACE_FLAG_EXTRA
       trace_flags: TRACE_FLAG_HWC
       trace_flags: TRACE_FLAG_BUFFERS
       trace_flags: TRACE_FLAG_VIRTUAL_DISPLAYS
