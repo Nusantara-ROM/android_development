@@ -444,7 +444,7 @@ def _get_change_lists_from_args(args):
     """Query the change lists by args."""
     url_opener = create_url_opener_from_args(args)
     return query_change_lists(url_opener, args.gerrit, args.query, args.start,
-                              args.limits)
+                              args.limits, args.exact_commit)
 
 
 def _get_local_branch_name_from_args(args):
