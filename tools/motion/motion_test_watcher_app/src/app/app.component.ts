@@ -23,8 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { TestModes } from '../model/test_mode';
-
+import { TestModeComponent } from '../testMode/test-mode.component';
 @Component({
   selector: 'app-root',
   imports: [
@@ -38,8 +37,8 @@ import { TestModes } from '../model/test_mode';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    NgFor,
     NgStyle,
+    TestModeComponent
 ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -94,22 +93,16 @@ export class AppComponent implements DoCheck, OnInit {
   isNullOrEmpty(obj : any) : Boolean {
     return (obj == null || obj.length == 0)
   }
+  testModes: String[] =  []
 
-  selectedMode = ""
-  testModes = Object.values(TestModes)
-
-  onTestModeSelected(testMode: string): void {
-    this.selectedMode = testMode
-    this.switchMode(testMode)
-  }
-
- switchMode(mode : string) {
-    this.progressTracker.beginProgress;
+ switchMode(mode : String) {
+    this.showLoaderBar()
     this.goldenService.switchMode(mode).
-    pipe(finalize(() => this.progressTracker.endProgress))
+    pipe(finalize(() => this.hideLoaderBar()))
     .subscribe((goldens) => {
       this.testNames = []
       this.selectedTest = null
+      this.selectedGolden = null
       this.goldens = goldens || []
     });
   }
@@ -182,8 +175,11 @@ export class AppComponent implements DoCheck, OnInit {
       this.fetchGerritData(leftLink, rightLink)
     } else {
       console.log("GERRIT: left and right is null")
-      this.fetchGoldens();
     }
+    this.goldenService.getTestModes().subscribe((modes)=> {
+      this.testModes = modes
+      console.log(modes)
+    })
   }
 
   fetchGerritData(leftLink: string, rightLink: string){
