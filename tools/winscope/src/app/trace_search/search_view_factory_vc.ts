@@ -23,6 +23,7 @@ export class SearchViewFactoryVc extends AbstractSearchViewFactory {
   private static readonly VIEW: SearchView = {
     name: 'viewcapture_search',
     dataType: 'ViewCapture',
+    docsUrl: AbstractSearchViewFactory.BASE_DOCS_URL + 'viewcapture-sql-view',
     columns: [
       {
         name: 'state_id',

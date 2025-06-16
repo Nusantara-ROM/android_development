@@ -23,6 +23,7 @@ export class SearchViewFactoryProtoLog extends AbstractSearchViewFactory {
   private static readonly VIEW: SearchView = {
     name: 'protolog',
     dataType: 'ProtoLog',
+    docsUrl: AbstractSearchViewFactory.BASE_DOCS_URL + 'protolog-sql-table',
     columns: [
       {
         name: 'ts',

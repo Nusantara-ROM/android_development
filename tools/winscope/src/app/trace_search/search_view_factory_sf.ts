@@ -20,9 +20,12 @@ import {SearchView} from './trace_search_initializer';
 
 export class SearchViewFactorySf extends AbstractSearchViewFactory {
   override readonly traceType = TraceType.SURFACE_FLINGER;
+  private static readonly URL =
+    AbstractSearchViewFactory.BASE_DOCS_URL + 'surfaceflinger-sql-views';
   private static readonly LAYER_VIEW: SearchView = {
     name: 'sf_layer_search',
     dataType: 'SurfaceFlinger layer',
+    docsUrl: SearchViewFactorySf.URL,
     columns: [
       {
         name: 'state_id',
@@ -66,6 +69,7 @@ AND cast_int!(value) <= 2400`,
   private static readonly ROOT_VIEW: SearchView = {
     name: 'sf_hierarchy_root_search',
     dataType: 'SurfaceFlinger root',
+    docsUrl: SearchViewFactorySf.URL,
     columns: [
       {
         name: 'state_id',

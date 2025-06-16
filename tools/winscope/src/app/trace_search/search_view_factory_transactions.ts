@@ -24,6 +24,7 @@ export class SearchViewFactoryTransactions extends AbstractSearchViewFactory {
     name: 'transactions_search',
     dataType:
       'the Transactions trace, including transactions, added/destroyed layers and added/removed/changed displays',
+    docsUrl: AbstractSearchViewFactory.BASE_DOCS_URL + 'transactions-sql-view',
     columns: [
       {
         name: 'state_id',

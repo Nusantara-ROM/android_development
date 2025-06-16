@@ -18,6 +18,9 @@ import {TraceType} from 'trace/trace_type';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 
 export abstract class AbstractSearchViewFactory {
+  protected static readonly BASE_DOCS_URL =
+    'https://source.android.com/docs/core/graphics/winscope/analyze/search#';
+
   abstract readonly traceType: TraceType;
 
   constructor(protected traceProcessor: TraceProcessor) {}
