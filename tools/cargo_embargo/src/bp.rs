@@ -131,7 +131,7 @@ impl BpProperties {
             "target",
             "ld_flags",
             "compile_multilib",
-            "include_dirs",
+            "export_include_dirs",
             "apex_available",
             "prefer_rlib",
             "no_stdlibs",
