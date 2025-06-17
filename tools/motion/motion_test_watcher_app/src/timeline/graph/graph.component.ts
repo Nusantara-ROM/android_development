@@ -103,7 +103,7 @@ export class GraphComponent implements AfterViewInit, OnChanges {
     const expectedFeature = this.expectedData?.features?.find(
       (f) => f.name === this.featureName
     )
-    this.visualization = this.createVisualization(actualFeature);
+    this.visualization = this.createVisualization(actualFeature, expectedFeature);
     if (this.visualization instanceof LineGraphVisualization) {
       this.createLineChartData(actualFeature, expectedFeature);
     } else {
