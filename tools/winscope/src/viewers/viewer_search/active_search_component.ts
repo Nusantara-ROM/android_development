@@ -176,7 +176,7 @@ export class ActiveSearchComponent {
     event.stopPropagation();
     if (
       event.key === KeyboardEventKey.ENTER &&
-      !event.shiftKey &&
+      event.ctrlKey &&
       !this.searchQueryDisabled()
     ) {
       event.preventDefault();

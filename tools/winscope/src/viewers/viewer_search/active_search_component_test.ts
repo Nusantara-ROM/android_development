@@ -72,16 +72,16 @@ describe('ActiveSearchComponent', () => {
     runSearchAndCheckHandled(runSearchByQueryButton);
   });
 
-  it('handles search via enter key', () => {
+  it('handles search via enter key + ctrl key', () => {
     const runSearch = () => {
       const textInput = getTextInput();
       textInput.dispatchInput(testQuery);
-      textInput.keydownEnter();
+      textInput.keydownEnter({ctrlKey: true});
     };
     runSearchAndCheckHandled(runSearch);
   });
 
-  it('does not handle search on enter key + shift key', () => {
+  it('does not handle search on enter key without ctrl key', () => {
     let query: string | undefined;
     dom.addEventListener(ViewerEvents.SearchQueryClick, (event) => {
       const detail: SearchQueryClickDetail = (event as CustomEvent).detail;
@@ -89,7 +89,7 @@ describe('ActiveSearchComponent', () => {
     });
     const textInput = getTextInput();
     textInput.dispatchInput(testQuery);
-    textInput.keydownEnter(true);
+    textInput.keydownEnter();
     expect(query).toBeUndefined();
   });
 

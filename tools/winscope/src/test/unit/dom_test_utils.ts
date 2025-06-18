@@ -178,11 +178,10 @@ export class DOMTestHelper<T> {
     this.root.addEventListener(event, listener);
   }
 
-  keydownEnter(shiftKey = false) {
-    const event = new KeyboardEvent('keydown', {
-      key: KeyboardEventKey.ENTER,
-      shiftKey,
-    });
+  keydownEnter(init?: KeyboardEventInit) {
+    const params = {key: KeyboardEventKey.ENTER};
+    Object.assign(params, init);
+    const event = new KeyboardEvent('keydown', params);
     this.dispatchEvent(event);
   }
 
