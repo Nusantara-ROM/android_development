@@ -104,8 +104,8 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
       sft.flags_id,
       sft.transaction_type,
       sft.arg_set_id
-      FROM surfaceflinger_transactions AS sfs
-      LEFT JOIN  __transaction_with_process AS sft
+      FROM ${this.getTableName()} AS sfs
+      LEFT JOIN  ${this.getProcessedTransactionTableName()} AS sft
         ON sfs.id = sft.snapshot_id
       WHERE sfs.id = ${this.entryIndexToRowIdMap[index]}`;
 
@@ -125,8 +125,8 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
       sft.flags_id,
       sft.transaction_type,
       sft.arg_set_id
-      FROM surfaceflinger_transactions AS sfs
-      LEFT JOIN  __transaction_with_process AS sft
+      FROM ${this.getTableName()} AS sfs
+      LEFT JOIN  ${this.getProcessedTransactionTableName()} AS sft
         ON sfs.id = sft.snapshot_id
       ORDER BY sfs.id`;
 
@@ -149,7 +149,7 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
         );
       })
       .visit(CustomQueryType.LOG_TABLE_FILTER_VALUES, async () => {
-        let tableName = this.getTransactionTableName();
+        let tableName = this.getProcessedTransactionTableName();
         let columns: string[];
         switch (param) {
           case TransactionColumnType.TRANSACTION_ID:
@@ -188,14 +188,15 @@ export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
   }
 
   protected override async preProcessTrace(): Promise<void> {
+    const transactionTable = this.getTransactionTableName();
     const sql = `
-CREATE PERFETTO TABLE ${this.getTransactionTableName()} AS
+CREATE PERFETTO TABLE ${this.getProcessedTransactionTableName()} AS
   WITH process_matches AS (
   SELECT
       sft.id as row_id,
       processes.name AS process_name,
       0 AS match_priority
-  FROM __intrinsic_surfaceflinger_transaction AS sft
+  FROM ${transactionTable} AS sft
   INNER JOIN process AS processes
       ON sft.pid = processes.pid AND sft.uid = processes.uid
   WHERE
@@ -208,7 +209,7 @@ CREATE PERFETTO TABLE ${this.getTransactionTableName()} AS
       sft.id as row_id,
       processes.name AS process_name,
       1 AS match_priority
-  FROM __intrinsic_surfaceflinger_transaction AS sft
+  FROM ${transactionTable} AS sft
   INNER JOIN process AS processes
       ON sft.pid = processes.pid
   WHERE
@@ -221,7 +222,7 @@ CREATE PERFETTO TABLE ${this.getTransactionTableName()} AS
       sft.id as row_id,
       processes.name AS process_name,
       2 AS match_priority
-  FROM __intrinsic_surfaceflinger_transaction AS sft
+  FROM ${transactionTable} AS sft
   INNER JOIN process AS processes
       ON sft.uid = processes.uid
   WHERE
@@ -251,7 +252,7 @@ SELECT
     sft.flags_id,
     sft.transaction_type,
     sft.arg_set_id
-FROM __intrinsic_surfaceflinger_transaction AS sft
+FROM ${transactionTable} AS sft
 LEFT JOIN ranked_process_matches AS rpm
     ON sft.id = rpm.row_id AND rpm.row_number = 1;`;
     await this.traceProcessor.query(sql);
@@ -261,12 +262,20 @@ LEFT JOIN ranked_process_matches AS rpm
     return 'surfaceflinger_transactions';
   }
 
-  private getTransactionTableName(): string {
+  protected override getStdLibModuleName(): string | undefined {
+    return 'android.winscope.surfaceflinger';
+  }
+
+  private getProcessedTransactionTableName(): string {
     return '__transaction_with_process';
   }
 
   private getFlagTableName(): string {
-    return '__intrinsic_surfaceflinger_transaction_flag';
+    return 'android_surfaceflinger_transaction_flag';
+  }
+
+  private getTransactionTableName() {
+    return 'android_surfaceflinger_transaction';
   }
 
   private async makeHierarchyTrees(sql: string): Promise<HierarchyTreeNode[]> {

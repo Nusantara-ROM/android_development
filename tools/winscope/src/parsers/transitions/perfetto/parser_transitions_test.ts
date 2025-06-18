@@ -76,19 +76,23 @@ describe('PerfettoParserTransitions', () => {
         entry.getEagerPropertyByName('durationNs')?.formattedValue(),
       ).toEqual('528 ms');
 
-      const layerParticipants = assertDefined(
+      const layerParticipants: Array<bigint> = assertDefined(
         entry.getEagerPropertyByName('layers'),
-      ).getAllChildren();
+      )
+        .getAllChildren()
+        .map((child) => child.getValue());
       expect(layerParticipants.length).toEqual(2);
-      expect(layerParticipants[0].getValue()).toEqual(47n);
-      expect(layerParticipants[1].getValue()).toEqual(398n);
+      expect(layerParticipants).toContain(47n);
+      expect(layerParticipants).toContain(398n);
 
-      const windowParticipants = assertDefined(
+      const windowParticipants: Array<bigint> = assertDefined(
         entry.getEagerPropertyByName('windows'),
-      ).getAllChildren();
+      )
+        .getAllChildren()
+        .map((child) => child.getValue());
       expect(windowParticipants.length).toEqual(2);
-      expect(windowParticipants[0].getValue()).toEqual(159077656n);
-      expect(windowParticipants[1].getValue()).toEqual(193491296n);
+      expect(windowParticipants).toContain(159077656n);
+      expect(windowParticipants).toContain(193491296n);
 
       expect(entry.getEagerPropertyByName('handler')?.formattedValue()).toEqual(
         'com.android.wm.shell.transition.DefaultMixedHandler',

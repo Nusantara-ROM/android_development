@@ -322,7 +322,7 @@ describe('TraceConfigComponent', () => {
     expect(dom.isMatSelectOpen()).toBeFalse();
   });
 
- it('shows config desc', () => {
+  it('shows config desc', () => {
     const configDescs = dom.findAll('.config-desc');
     expect(configDescs[0].getText()).toEqual('Layers trace config description');
     expect(configDescs.length).toEqual(1);
@@ -356,7 +356,7 @@ describe('TraceConfigComponent', () => {
               value: 'debug',
             },
           ],
-          desc: 'Layers trace config description'
+          desc: 'Layers trace config description',
         },
       },
       window_trace: {
