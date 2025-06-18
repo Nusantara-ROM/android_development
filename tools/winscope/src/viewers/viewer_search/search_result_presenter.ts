@@ -96,13 +96,10 @@ export class SearchResultPresenter extends AbstractLogViewerPresenter<
     const fields: LogField[] = [];
     for (const header of headers) {
       const value = it.get(header.spec.name);
-      let fieldValue = this.tryMakeEntryTsFieldValue(header, i);
-      if (fieldValue === undefined) {
-        fieldValue = this.tryMakeTsFieldValue(headers, it, header, value);
-      }
-      if (fieldValue === undefined) {
-        fieldValue = this.convertToLogFieldValue(value);
-      }
+      const fieldValue =
+        this.tryMakeEntryTsFieldValue(header, i) ??
+        this.tryMakeTsFieldValue(headers, it, header, value) ??
+        this.convertToLogFieldValue(value);
       fields.push({
         spec: header.spec,
         value: fieldValue,
@@ -146,6 +143,13 @@ export class SearchResultPresenter extends AbstractLogViewerPresenter<
           return this.makeTimestampStrategy(BigInt(value));
         }
       }
+    }
+    if (
+      header.spec.name.startsWith('ts') &&
+      (typeof value === 'number' || typeof value === 'bigint') &&
+      value > 0
+    ) {
+      return this.makeTimestampStrategy(BigInt(value));
     }
     return undefined;
   }

@@ -181,9 +181,11 @@ describe('PresenterSearch', () => {
     );
     expect(uiData.currentSearches.length).toEqual(1);
     expect(uiData.currentSearches[0].result?.currentIndex).toEqual(0);
-    expect(uiData.currentSearches[0].result?.headers.length).toEqual(3);
+    expect(uiData.currentSearches[0].result?.headers.length).toEqual(4);
     expect(uiData.currentSearches[0].result?.entries.length).toEqual(1);
-    expect(spyTimestamp).toHaveBeenCalledOnceWith(123n);
+    expect(spyTimestamp).toHaveBeenCalledTimes(2);
+    expect(spyTimestamp).toHaveBeenCalledWith(200n);
+    expect(spyTimestamp).toHaveBeenCalledWith(123n);
     expect(uiData.lastTraceFailed).toEqual(false);
     expect(uiData.recentSearches).toEqual([new ListedSearch(testQuery)]);
 

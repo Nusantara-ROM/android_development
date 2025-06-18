@@ -30,7 +30,7 @@ export function makeSearchTraceSpies(
   ]);
   spyQueryResult.numRows.and.returnValue(1);
   const columns: string[] = [];
-  if (ts !== undefined) columns.push('ts');
+  if (ts !== undefined) columns.push('ts', 'ts_other');
   columns.push('property');
   if (value !== undefined) columns.push('value');
   spyQueryResult.columns.and.returnValue(columns);
@@ -42,6 +42,7 @@ export function makeSearchTraceSpies(
   ]);
   if (ts !== undefined) {
     spyIter.get.withArgs('ts').and.returnValue(ts.getValueNs());
+    spyIter.get.withArgs('ts_other').and.returnValue(ts.getValueNs() + 100n);
   }
   spyIter.get.withArgs('property').and.returnValue('test_property');
   if (value !== undefined) {
