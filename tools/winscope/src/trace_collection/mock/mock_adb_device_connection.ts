@@ -42,6 +42,10 @@ export class MockAdbDeviceConnection extends AdbDeviceConnection {
     this.multiDisplayScreenRecording = multiDisplayScreenRecording;
   }
 
+  updateState(value: AdbDeviceState) {
+    this.state = value;
+  }
+
   override async startTrace(target: TraceTarget) {}
 
   override async endTrace(target: TraceTarget): Promise<void> {}

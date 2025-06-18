@@ -178,7 +178,7 @@ export class DOMTestHelper<T> {
     this.root.addEventListener(event, listener);
   }
 
-  keydownEnter(init?: KeyboardEventInit) {
+  keydownEnter(init?: KeyboardEventInit) {  // eslint-disable-line no-undef
     const params = {key: KeyboardEventKey.ENTER};
     Object.assign(params, init);
     const event = new KeyboardEvent('keydown', params);

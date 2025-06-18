@@ -194,6 +194,7 @@ describe('WdpDeviceConnection', () => {
           'service check Wayland',
           'screenrecord --version',
           'dumpsys SurfaceFlinger --display-id',
+          'cmd protolog_configuration groups list',
         ],
         [],
       );
