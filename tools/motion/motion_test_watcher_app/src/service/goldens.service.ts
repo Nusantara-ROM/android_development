@@ -105,6 +105,25 @@ export class GoldensService {
     );
   }
 
+  switchMode(mode : String) : Observable<MotionGolden[]> {
+    return this.http
+    .post<MotionGolden[]>(
+      `${this.serverRoot}/service/mode`,
+      { mode },
+      {
+        headers: {
+          ...this.defaultHeaders,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    .pipe(
+      tap((artifacts) => console.log(`fetched ${artifacts.length} goldens for testMode : ${mode}`)),
+      catchError(this.handleError<MotionGolden[]>('e'))
+    );
+
+  }
+
   getActualGoldenData(golden: MotionGolden): Observable<MotionGoldenData> {
     return this.http
       .get<MotionGoldenData>(`${golden.actualUrl}`, {

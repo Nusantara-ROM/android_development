@@ -7,6 +7,7 @@ import { PreviewComponent } from '../preview/preview.component';
 import { TimelineComponent } from '../timeline/timeline.component';
 import { MotionGolden } from '../model/golden';
 import { finalize } from 'rxjs';
+import { NgFor } from '@angular/common';
 import { JsonPipe, NgIf, NgStyle } from '@angular/common';
 import {
   trigger,
@@ -17,9 +18,13 @@ import {
 } from '@angular/animations';
 
 import { DialogContentComponent } from '../dialog/dialog.component';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { TestModes } from '../model/test_mode';
+
 @Component({
   selector: 'app-root',
   imports: [
@@ -30,6 +35,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     NgIf,
     MatButton,
     MatProgressSpinnerModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    NgFor,
     NgStyle,
 ],
   templateUrl: './app.component.html',
@@ -84,6 +93,25 @@ export class AppComponent implements DoCheck, OnInit {
 
   isNullOrEmpty(obj : any) : Boolean {
     return (obj == null || obj.length == 0)
+  }
+
+  selectedMode = ""
+  testModes = Object.values(TestModes)
+
+  onTestModeSelected(testMode: string): void {
+    this.selectedMode = testMode
+    this.switchMode(testMode)
+  }
+
+ switchMode(mode : string) {
+    this.progressTracker.beginProgress;
+    this.goldenService.switchMode(mode).
+    pipe(finalize(() => this.progressTracker.endProgress))
+    .subscribe((goldens) => {
+      this.testNames = []
+      this.selectedTest = null
+      this.goldens = goldens || []
+    });
   }
 
   openDialog(): void {
