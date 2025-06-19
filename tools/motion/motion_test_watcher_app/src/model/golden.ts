@@ -27,9 +27,14 @@ export interface MotionGolden {
   updated: boolean;
   videoUrl: string | undefined;
   goldenName: string | undefined;
+  dataSource: DataSource;
   isLocalData: boolean;
   expectedData: MotionGoldenData;
   actualData: MotionGoldenData;
+}
+
+export enum DataSource{
+  GERRIT = 'gerrit',
 }
 
 export interface MotionGoldenData {

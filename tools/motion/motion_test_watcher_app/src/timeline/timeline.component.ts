@@ -4,6 +4,7 @@ import {
   MotionGoldenData,
   MotionGoldenFeature,
   isNotFound,
+  DataSource,
 } from '../model/golden';
 import { GoldensService } from '../service/goldens.service';
 import { PreviewService } from '../service/preview.service';
@@ -62,7 +63,7 @@ export class TimelineComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedGolden']) {
       this.receivedSelectedOptions = [];
-      if(this.selectedGolden?.isLocalData){
+      if(this.selectedGolden?.dataSource === DataSource.GERRIT){
         this.showUpdateButton = false
         this.updatePageFromData(
           this.selectedGolden.actualData,
