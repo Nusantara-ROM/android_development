@@ -248,8 +248,8 @@ describe('UserRequestParser', () => {
     );
   });
 
-  it('makes protolog perfetto session', async () => {
-    const configDs = `data_sources: {
+  describe('makes protolog perfetto session', () => {
+    const defaultConfigDs = `data_sources: {
   config {
     name: "android.protolog"
     protolog_config: {
@@ -257,11 +257,56 @@ describe('UserRequestParser', () => {
     }
   }
 }`;
-    await checkPerfettoSessionCreated(
-      configDs,
-      'android.protolog',
-      UiTraceTarget.PROTO_LOG,
-    );
+
+    it('without config', async () => {
+      await checkPerfettoSessionCreated(
+        defaultConfigDs,
+        'android.protolog',
+        UiTraceTarget.PROTO_LOG,
+      );
+    });
+
+    it('with invalid config', async () => {
+      await checkPerfettoSessionCreated(
+        defaultConfigDs,
+        'android.protolog',
+        UiTraceTarget.PROTO_LOG,
+        [{key: 'invalid', value: '123'}],
+      );
+    });
+
+    it('with groups', async () => {
+      const dataSource = `data_sources: {
+  config {
+    name: "android.protolog"
+    protolog_config: {
+      tracing_mode: DEFAULT
+      group_overrides {
+        group_name: "GROUP_1"
+        collect_stacktrace: false
+      }
+      group_overrides {
+        group_name: "GROUP_2"
+        collect_stacktrace: true
+      }
+    }
+  }
+}`;
+      await checkPerfettoSessionCreated(
+        dataSource,
+        'android.protolog',
+        UiTraceTarget.PROTO_LOG,
+        [
+          {
+            key: 'groups',
+            subRequests: [
+              {key: 'GROUP_1'},
+              {key: 'GROUP_2', value: 'stacktrace'},
+            ],
+          },
+        ],
+      );
+    });
   });
 
   it('makes IME perfetto session', async () => {

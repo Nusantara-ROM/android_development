@@ -105,7 +105,7 @@ export class UserRequestParser {
       case UiTraceTarget.TRANSACTIONS:
         return this.getTransactionsPerfettoConfigDataSource();
       case UiTraceTarget.PROTO_LOG:
-        return this.getProtologPerfettoConfigDataSource();
+        return this.getProtologPerfettoConfigDataSource(req);
       case UiTraceTarget.IME:
         return this.getImePerfettoConfigDataSource();
       case UiTraceTarget.TRANSITIONS:
@@ -121,7 +121,7 @@ export class UserRequestParser {
     }
   }
 
-  private getNonPerfettoTargets(req: UserRequest) {
+  private getNonPerfettoTargets(req: UserRequest): TraceTarget[] | undefined {
     switch (req.target) {
       case UiTraceTarget.SURFACE_FLINGER_TRACE:
         return [this.getSfTraceLegacyTarget(req)];
@@ -154,7 +154,7 @@ export class UserRequestParser {
     }
   }
 
-  private getSfTracePerfettoConfigDataSource(req: UserRequest) {
+  private getSfTracePerfettoConfigDataSource(req: UserRequest): string {
     const flagsMap: {[key: string]: string} = {
       'input': 'TRACE_FLAG_INPUT',
       'composition': 'TRACE_FLAG_COMPOSITION',
@@ -171,7 +171,7 @@ export class UserRequestParser {
         return `trace_flags: ${flagsMap[flag]}`;
       })
       .join(spacer);
-    return this.perfettoModerator?.makeConfigDataSource(
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
       'android.surfaceflinger.layers',
       `surfaceflinger_layers_config: {
       mode: MODE_ACTIVE${flagsCmd.length === 0 ? '' : spacer + flagsCmd}
@@ -179,7 +179,7 @@ export class UserRequestParser {
     );
   }
 
-  private getSfTraceLegacyTarget(req: UserRequest) {
+  private getSfTraceLegacyTarget(req: UserRequest): TraceTarget {
     const flagsMap: {[key: string]: number} = {
       'input': 1 << 1,
       'composition': 1 << 2,
@@ -217,7 +217,7 @@ export class UserRequestParser {
     );
   }
 
-  private getWmTracePerfettoConfigDataSource(req: UserRequest) {
+  private getWmTracePerfettoConfigDataSource(req: UserRequest): string {
     const selectedConfigs = new WmRequestConfigParser().parse(req.config);
 
     const logLevelMap: {[key: string]: string} = {
@@ -233,7 +233,7 @@ export class UserRequestParser {
 
     const logLevel = logLevelMap[selectedConfigs['tracinglevel']];
     const logFrequency = frequencyMap[selectedConfigs['tracingtype']];
-    return this.perfettoModerator?.makeConfigDataSource(
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
       'android.windowmanager',
       `windowmanager_config: {
       log_level: ${logLevel}
@@ -242,7 +242,7 @@ export class UserRequestParser {
     );
   }
 
-  private getWmTraceLegacyTarget(req: UserRequest) {
+  private getWmTraceLegacyTarget(req: UserRequest): TraceTarget {
     const selectedConfigs = new WmRequestConfigParser().parse(req.config);
 
     const setupCmds = [
@@ -267,11 +267,13 @@ export class UserRequestParser {
     );
   }
 
-  private getVcPerfettoConfigDataSource() {
-    return this.perfettoModerator?.makeConfigDataSource('android.viewcapture');
+  private getVcPerfettoConfigDataSource(): string {
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
+      'android.viewcapture',
+    );
   }
 
-  private getVcLegacyTarget() {
+  private getVcLegacyTarget(): TraceTarget {
     return new TraceTarget(
       'VcLegacy',
       [],
@@ -290,8 +292,8 @@ export class UserRequestParser {
     );
   }
 
-  private getTransactionsPerfettoConfigDataSource() {
-    return this.perfettoModerator?.makeConfigDataSource(
+  private getTransactionsPerfettoConfigDataSource(): string {
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
       'android.surfaceflinger.transactions',
       `surfaceflinger_transactions_config: {
       mode: MODE_ACTIVE
@@ -299,7 +301,7 @@ export class UserRequestParser {
     );
   }
 
-  private getTransactionsLegacyTarget() {
+  private getTransactionsLegacyTarget(): TraceTarget {
     return new TraceTarget(
       'TransactionsLegacy',
       [],
@@ -317,16 +319,29 @@ export class UserRequestParser {
     );
   }
 
-  private getProtologPerfettoConfigDataSource() {
-    return this.perfettoModerator?.makeConfigDataSource(
+  private getProtologPerfettoConfigDataSource(req: UserRequest): string {
+    const groups = new ProtologConfigParser().parse(req.config);
+
+    const tracingMode = groups.length === 0 ? 'ENABLE_ALL' : 'DEFAULT';
+    const groupOverrides = groups
+      .map((group) => {
+        return `
+      group_overrides {
+        group_name: "${group.name}"
+        collect_stacktrace: ${group.stacktrace}
+      }`;
+      })
+      .join('');
+
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
       'android.protolog',
       `protolog_config: {
-      tracing_mode: ENABLE_ALL
+      tracing_mode: ${tracingMode}${groupOverrides}
     }`,
     );
   }
 
-  private getProtologLegacyTarget() {
+  private getProtologLegacyTarget(): TraceTarget {
     return new TraceTarget(
       'ProtologLegacy',
       [],
@@ -344,11 +359,13 @@ export class UserRequestParser {
     );
   }
 
-  private getImePerfettoConfigDataSource() {
-    return this.perfettoModerator?.makeConfigDataSource('android.inputmethod');
+  private getImePerfettoConfigDataSource(): string {
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
+      'android.inputmethod',
+    );
   }
 
-  private getImeLegacyTarget() {
+  private getImeLegacyTarget(): TraceTarget {
     return new TraceTarget(
       'ImeLegacy',
       [],
@@ -374,13 +391,13 @@ export class UserRequestParser {
     );
   }
 
-  private getTransitionsPerfettoConfigDataSource() {
-    return this.perfettoModerator?.makeConfigDataSource(
+  private getTransitionsPerfettoConfigDataSource(): string {
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
       'com.android.wm.shell.transition',
     );
   }
 
-  private getTransitionsLegacyTarget() {
+  private getTransitionsLegacyTarget(): TraceTarget {
     return new TraceTarget(
       'TransitionsLegacy',
       [],
@@ -405,8 +422,8 @@ export class UserRequestParser {
     );
   }
 
-  private getInputPerfettoConfigDataSource() {
-    return this.perfettoModerator?.makeConfigDataSource(
+  private getInputPerfettoConfigDataSource(): string {
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
       'android.input.inputevent',
       `android_input_event_config {
       mode: TRACE_MODE_TRACE_ALL
@@ -414,7 +431,7 @@ export class UserRequestParser {
     );
   }
 
-  private getScreenRecordingTargets(req: UserRequest) {
+  private getScreenRecordingTargets(req: UserRequest): TraceTarget[] {
     const {identifiers, showPointerAndTouches} =
       new ScreenRecordingConfigParser().parse(req.config);
 
@@ -448,7 +465,7 @@ export class UserRequestParser {
     });
   }
 
-  private getScreenshotTargets(req: UserRequest) {
+  private getScreenshotTargets(req: UserRequest): TraceTarget[] {
     const identifiers = new ScreenshotConfigParser().parse(req.config);
 
     return identifiers.map((id) => {
@@ -465,7 +482,7 @@ export class UserRequestParser {
     });
   }
 
-  private getWaylandTarget() {
+  private getWaylandTarget(): TraceTarget {
     return new TraceTarget(
       'Wayland',
       [],
@@ -481,7 +498,7 @@ export class UserRequestParser {
     );
   }
 
-  private getEventlogTarget() {
+  private getEventlogTarget(): TraceTarget {
     const startTimeSeconds = (Date.now() / 1000).toString();
     return new TraceTarget(
       'Eventlog',
@@ -499,8 +516,8 @@ export class UserRequestParser {
     );
   }
 
-  private getSfDumpPerfettoConfigDataSource() {
-    return this.perfettoModerator?.makeConfigDataSource(
+  private getSfDumpPerfettoConfigDataSource(): string {
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
       'android.surfaceflinger.layers',
       `surfaceflinger_layers_config: {
       mode: MODE_DUMP
@@ -514,7 +531,7 @@ export class UserRequestParser {
     );
   }
 
-  private getSfDumpLegacyTarget() {
+  private getSfDumpLegacyTarget(): TraceTarget {
     return new TraceTarget(
       'SfDumpLegacy',
       [],
@@ -530,8 +547,8 @@ export class UserRequestParser {
     );
   }
 
-  private getWmDumpPerfettoConfigDataSource() {
-    return this.perfettoModerator?.makeConfigDataSource(
+  private getWmDumpPerfettoConfigDataSource(): string {
+    return assertDefined(this.perfettoModerator).makeConfigDataSource(
       'android.windowmanager',
       `windowmanager_config: {
       log_level: LOG_LEVEL_VERBOSE
@@ -540,7 +557,7 @@ export class UserRequestParser {
     );
   }
 
-  private getWmDumpLegacyTarget() {
+  private getWmDumpLegacyTarget(): TraceTarget {
     return new TraceTarget(
       'WmDumpLegacy',
       [],
@@ -635,5 +652,19 @@ class ScreenRecordingConfigParser extends MediaBasedConfigParser {
       identifiers: this.getIdentifiers(req),
       showPointerAndTouches: req.find((c) => c.key === 'pointer_and_touches'),
     };
+  }
+}
+
+class ProtologConfigParser {
+  parse(req: UserRequestConfig[]): Array<{name: string; stacktrace: boolean}> {
+    const groupsReq = req.find((r) => r.key === 'groups');
+    if (!groupsReq?.subRequests) {
+      return [];
+    }
+    return groupsReq.subRequests.map((config: UserRequestConfig) => {
+      const name = config.key;
+      const stacktrace = config.value === 'stacktrace';
+      return {name, stacktrace};
+    });
   }
 }
