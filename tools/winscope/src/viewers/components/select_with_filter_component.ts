@@ -22,8 +22,7 @@ import {
 } from '@angular/core';
 import {MatOption} from '@angular/material/core';
 import {MatSelect, MatSelectChange} from '@angular/material/select';
-import {KeyboardEventCode} from 'common/dom_utils';
-import {AbstractFormFieldComponent} from './abstract_form_field_component';
+import {AbstractSelectComponent} from './abstract_select_component';
 
 @Component({
   selector: 'select-with-filter',
@@ -36,7 +35,7 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
       [class]="formFieldClass"
       [matTooltip]="label"
       matTooltipPosition="above"
-      [matTooltipDisabled]="disableTooltip(formField)"
+      [matTooltipDisabled]="disableFormFieldTooltip(formField)"
       [class.mat-body-2]="!select.value || select.value.length === 0"  #formField>
       <mat-label>{{ label }}</mat-label>
       <mat-select
@@ -67,7 +66,7 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
           *ngFor="let option of options; index as i"
           [value]="option"
           class="option no-focus"
-          [class.hidden-option]="hideOption(option)"
+          [class.hidden-option]="hideOption(option, filterString)"
           (click)="onOptClick($event, i, select, matOption)"
           #matOption>{{ option }}</mat-option>
       </mat-select>
@@ -90,7 +89,7 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
     `,
   ],
 })
-export class SelectWithFilterComponent extends AbstractFormFieldComponent {
+export class SelectWithFilterComponent extends AbstractSelectComponent<HTMLInputElement> {
   @Input() options: string[] = [];
   @Input() outerFilterWidth = '100px';
   @Input() innerFilterWidth = '100';
@@ -124,16 +123,7 @@ export class SelectWithFilterComponent extends AbstractFormFieldComponent {
   }
 
   onSelectOpened(select: MatSelect, filter: HTMLInputElement) {
-    const defaultHandleKeydown = select._handleKeydown.bind(select);
-    select._handleKeydown = (event) => {
-      if (event.code === KeyboardEventCode.A && event.ctrlKey) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.handleKeydownCtrlA(select);
-        return;
-      }
-      defaultHandleKeydown(event);
-    };
+    this.handleSelectOpened(select, filter);
     filter.focus();
   }
 
@@ -141,36 +131,20 @@ export class SelectWithFilterComponent extends AbstractFormFieldComponent {
     this.filterString = '';
   }
 
-  hideOption(option: string) {
-    return !option.toLowerCase().includes(this.filterString.toLowerCase());
-  }
-
   onOptClick(e: MouseEvent, i: number, select: MatSelect, option: MatOption) {
-    if (
-      !e.shiftKey ||
-      !select.value ||
-      this.lastClickedIndex === undefined ||
-      Math.abs(i - this.lastClickedIndex) <= 1
-    ) {
-      this.lastClickedIndex = i;
-      return;
+    const selectValueChanged = this.handleOptionClick({
+      event: e,
+      i,
+      select,
+      option,
+      lastClickedIndex: this.lastClickedIndex,
+      options: this.options,
+      filterString: this.filterString,
+    });
+    if (selectValueChanged) {
+      this.selectChange.emit(new MatSelectChange(select, select.value));
     }
-
-    const optionsToToggle =
-      this.lastClickedIndex < i
-        ? this.options.slice(this.lastClickedIndex, i)
-        : this.options.slice(i + 1, this.lastClickedIndex + 1);
-
-    const filteredOptions = optionsToToggle.filter((o) => !this.hideOption(o));
-
-    if (option.selected) {
-      this.addValuesToSelect(select, filteredOptions);
-    } else {
-      this.removeValuesFromSelect(select, filteredOptions);
-    }
-
     this.lastClickedIndex = i;
-    this.selectChange.emit(new MatSelectChange(select, select.value));
   }
 
   selectedOptions(select: MatSelect) {
@@ -182,22 +156,8 @@ export class SelectWithFilterComponent extends AbstractFormFieldComponent {
     this.selectChange.emit(new MatSelectChange(select, select.value));
   }
 
-  private handleKeydownCtrlA(select: MatSelect) {
-    const allOpts = this.options.filter((o) => !this.hideOption(o));
-    if (allOpts.every((o) => select.value?.includes(o))) {
-      this.removeValuesFromSelect(select, allOpts);
-    } else {
-      this.addValuesToSelect(select, allOpts);
-    }
+  protected override onKeydownCtrlA(select: MatSelect) {
+    this.handleKeydownCtrlA(select, this.options, this.filterString);
     this.selectChange.emit(new MatSelectChange(select, select.value));
-  }
-
-  private addValuesToSelect(select: MatSelect, opts: string[]) {
-    const newValues = new Set((select.value ?? []).concat(opts));
-    select.value = Array.from(newValues);
-  }
-
-  private removeValuesFromSelect(select: MatSelect, opts: string[]) {
-    select.value = select.value.filter((o: string) => !opts.includes(o));
   }
 }

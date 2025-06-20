@@ -23,7 +23,7 @@ export abstract class AbstractFormFieldComponent {
   @Input() appearance = '';
   @Input() formFieldClass = '';
 
-  disableTooltip(formField: MatFormField) {
+  disableFormFieldTooltip(formField: MatFormField) {
     const el = formField._elementRef.nativeElement;
     const label = el.querySelector('label');
     if (label) {
