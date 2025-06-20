@@ -46,12 +46,12 @@ export interface TraceConfigurationMap {
  */
 export interface ConfigurationOptions {
   enabled: boolean;
-  desc?: string;
   checkboxConfigs: CheckboxConfiguration[];
   selectionConfigs: SelectionConfiguration[];
+  desc?: string;
 }
 
-interface AdvancedConfiguration {
+export interface AdvancedConfiguration {
   name: string;
   key: string;
 }
@@ -61,34 +61,68 @@ export interface CheckboxConfiguration extends AdvancedConfiguration {
   disabled?: boolean;
 }
 
+type ChipConfiguration = CheckboxConfiguration;
+
 export interface SelectionConfiguration extends AdvancedConfiguration {
-  options: string[];
+  options: SelectionOption[];
   value: string | string[];
   optional?: boolean;
   wideField?: boolean;
+  optionsFilterString?: string;
+}
+
+export interface SelectionOption {
+  value: string;
+  chip?: ChipConfiguration;
 }
 
 export interface ConfigMap {
   [key: string]: string[] | string;
 }
 
+const protologSelectionConfigs: SelectionConfiguration[] = [
+  {
+    name: 'groups',
+    key: 'groups',
+    options: [],
+    value: [],
+    optional: true,
+    optionsFilterString: '',
+    wideField: true,
+  },
+];
+
+export function makeProtologGroupOptions(groups: string[]): SelectionOption[] {
+  return groups.map((groupName) => {
+    return {
+      value: groupName,
+      chip: {name: 'collect stacktrace', key: 'stacktrace', enabled: false},
+    };
+  });
+}
+
 const wmTraceSelectionConfigs: SelectionConfiguration[] = [
   {
     key: 'wmbuffersize',
     name: 'buffer size (KB)',
-    options: ['4000', '8000', '16000', '32000'],
+    options: [
+      {value: '4000'},
+      {value: '8000'},
+      {value: '16000'},
+      {value: '32000'},
+    ],
     value: '32000',
   },
   {
     key: 'tracingtype',
     name: 'tracing type',
-    options: ['frame', 'transaction'],
+    options: [{value: 'frame'}, {value: 'transaction'}],
     value: 'frame',
   },
   {
     key: 'tracinglevel',
     name: 'tracing level',
-    options: ['verbose', 'debug', 'critical'],
+    options: [{value: 'verbose'}, {value: 'debug'}, {value: 'critical'}],
     value: 'verbose',
   },
 ];
@@ -169,7 +203,12 @@ const sfTraceSelectionConfigs: SelectionConfiguration[] = [
   {
     key: 'sfbuffersize',
     name: 'buffer size (KB)',
-    options: ['4000', '8000', '16000', '32000'],
+    options: [
+      {value: '4000'},
+      {value: '8000'},
+      {value: '16000'},
+      {value: '32000'},
+    ],
     value: '32000',
   },
 ];
@@ -184,7 +223,7 @@ const screenshotConfigs: SelectionConfiguration[] = [
 ];
 
 export function makeScreenRecordingSelectionConfigs(
-  options: string[],
+  options: SelectionOption[],
   initialValue: string | string[],
 ): SelectionConfiguration[] {
   return [
@@ -199,7 +238,7 @@ export function makeScreenRecordingSelectionConfigs(
   ];
 }
 
-const traceDefaultConfig = new Map([
+const traceDefaultConfig = new Map<UiTraceTarget, TraceConfiguration>([
   [
     UiTraceTarget.SURFACE_FLINGER_TRACE,
     {
@@ -283,7 +322,8 @@ const traceDefaultConfig = new Map([
       config: {
         enabled: false,
         checkboxConfigs: [],
-        selectionConfigs: [],
+        selectionConfigs: protologSelectionConfigs,
+        desc: 'Leave empty to capture all log groups without stacktrace',
       },
       available: true,
       types: [TraceType.PROTO_LOG],
@@ -462,7 +502,7 @@ export function updateConfigsFromStore(
         // liveConfig contains all currently available config options - stored
         // values are valid if their config option is still available, and only
         // if valid should be used to update the values in liveConfig
-        const availableOptions = liveConfig.options;
+        const availableOptions = liveConfig.options.map((o) => o.value);
         const validArr =
           Array.isArray(storedConfig.value) &&
           storedConfig.value.every((v) => availableOptions.includes(v));

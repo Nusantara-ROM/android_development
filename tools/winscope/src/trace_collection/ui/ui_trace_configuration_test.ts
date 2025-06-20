@@ -77,8 +77,18 @@ describe('updateConfigsFromStore', () => {
       enabled: true,
       checkboxConfigs: [{name: 'test1', key: 'test1', enabled: true}],
       selectionConfigs: [
-        {name: 'test2', key: 'test2', options: ['1', '2'], value: '1'},
-        {name: 'test3', key: 'test3', options: ['1', '2'], value: ['1']},
+        {
+          name: 'test2',
+          key: 'test2',
+          options: [{value: '1'}, {value: '2'}],
+          value: '1',
+        },
+        {
+          name: 'test3',
+          key: 'test3',
+          options: [{value: '1'}, {value: '2'}],
+          value: ['1'],
+        },
       ],
     });
   });
@@ -93,8 +103,18 @@ describe('updateConfigsFromStore', () => {
     };
     updateConfigs(sourceConfig);
     expect(target[traceKey].config.selectionConfigs).toEqual([
-      {name: 'test2', key: 'test2', options: ['1', '2'], value: '2'},
-      {name: 'test3', key: 'test3', options: ['1', '2'], value: ['1', '2']},
+      {
+        name: 'test2',
+        key: 'test2',
+        options: [{value: '1'}, {value: '2'}],
+        value: '2',
+      },
+      {
+        name: 'test3',
+        key: 'test3',
+        options: [{value: '1'}, {value: '2'}],
+        value: ['1', '2'],
+      },
     ]);
   });
 
@@ -122,14 +142,30 @@ describe('updateConfigsFromStore', () => {
     };
     updateConfigs(sourceConfig);
     expect(target[traceKey].config.selectionConfigs).toEqual([
-      {name: 'test2', key: 'test2', options: ['1', '2'], value: '1'},
-      {name: 'test3', key: 'test3', options: ['1', '2'], value: ['1']},
+      {
+        name: 'test2',
+        key: 'test2',
+        options: [{value: '1'}, {value: '2'}],
+        value: '1',
+      },
+      {
+        name: 'test3',
+        key: 'test3',
+        options: [{value: '1'}, {value: '2'}],
+        value: ['1'],
+      },
     ]);
   });
 
   function updateSelectionConfigOptions() {
-    target[traceKey].config.selectionConfigs[0].options = ['1', '2'];
-    target[traceKey].config.selectionConfigs[1].options = ['1', '2'];
+    target[traceKey].config.selectionConfigs[0].options = [
+      {value: '1'},
+      {value: '2'},
+    ];
+    target[traceKey].config.selectionConfigs[1].options = [
+      {value: '1'},
+      {value: '2'},
+    ];
   }
 
   function updateConfigs(sourceConfig: object) {
