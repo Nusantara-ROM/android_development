@@ -68,7 +68,7 @@ export interface SelectionConfiguration extends AdvancedConfiguration {
   value: string | string[];
   optional?: boolean;
   wideField?: boolean;
-  optionsFilterString?: string;
+  filterString?: string;
 }
 
 export interface SelectionOption {
@@ -87,7 +87,7 @@ const protologSelectionConfigs: SelectionConfiguration[] = [
     options: [],
     value: [],
     optional: true,
-    optionsFilterString: '',
+    filterString: '',
     wideField: true,
   },
 ];
