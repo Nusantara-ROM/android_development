@@ -16,6 +16,7 @@
 
 import {Timestamp} from 'common/time/time';
 import {
+  CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
 } from 'trace/custom_query';
@@ -55,6 +56,7 @@ export function makeEmptyTrace<T extends TraceType>(
   parserCustomQueryResult: Array<{
     queryType: CustomQueryType;
     result: CustomQueryParserResultTypeMap[CustomQueryType];
+    param?: CustomQueryParamTypeMap[CustomQueryType];
   }> = [],
 ): Trace<TraceEntryTypeMap[T]> {
   const builder = new TraceBuilder<TraceEntryTypeMap[T]>()
@@ -63,8 +65,8 @@ export function makeEmptyTrace<T extends TraceType>(
     .setDescriptors(descriptors)
     .setType(traceType);
 
-  for (const {queryType, result} of parserCustomQueryResult) {
-    builder.setParserCustomQueryResult(queryType, result);
+  for (const {queryType, result, param} of parserCustomQueryResult) {
+    builder.setParserCustomQueryResult(queryType, result, param);
   }
 
   return builder.build();

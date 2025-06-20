@@ -19,12 +19,15 @@ import {
   timestampEqualityTester,
 } from 'common/time/test_utils';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
+import {TraceBuilder} from 'test/unit/trace_builder';
+import {CustomQueryType} from 'trace/custom_query';
 import {Parser} from 'trace/parser';
+import {ProtologColumnType} from 'trace/protolog/protolog_column_type';
 import {TraceType} from 'trace/trace_type';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 
 describe('PerfettoParserProtolog', () => {
-  let parser: Parser<PropertyTreeNode>;
+  let parser: Parser<HierarchyTreeNode>;
 
   beforeAll(async () => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
@@ -55,29 +58,34 @@ describe('PerfettoParserProtolog', () => {
     const message = await parser.getEntry(0);
 
     expect(
-      assertDefined(message.getChildByName('text')).formattedValue(),
+      assertDefined(message.getEagerPropertyByName('message')).formattedValue(),
     ).toEqual(
       'Test message with different int formats: 888, 0o1570, 0x378, 888.000000, 8.880000e+02.',
     );
     expect(
-      assertDefined(message.getChildByName('timestamp')).formattedValue(),
+      assertDefined(message.getEagerPropertyByName('ts')).formattedValue(),
     ).toEqual('2024-04-23, 10:06:57.780');
     expect(
-      assertDefined(message.getChildByName('tag')).formattedValue(),
+      assertDefined(message.getEagerPropertyByName('tag')).formattedValue(),
     ).toEqual('MySecondGroup');
     expect(
-      assertDefined(message.getChildByName('level')).formattedValue(),
+      assertDefined(message.getEagerPropertyByName('level')).formattedValue(),
     ).toEqual('WARN');
     expect(
-      assertDefined(message.getChildByName('at')).formattedValue(),
-    ).toEqual('<NO_LOC>');
+      assertDefined(
+        message.getEagerPropertyByName('location'),
+      ).formattedValue(),
+    ).toEqual('file1');
+
+    const message2 = await parser.getEntry(1);
+    expect(message2.getEagerPropertyByName('location')).toBeUndefined();
   });
 
   it('messages are ordered by timestamp', async () => {
     let prevEntryTs = 0n;
     for (let i = 0; i < parser.getLengthEntries(); i++) {
       const ts = (await parser.getEntry(i))
-        .getChildByName('timestamp')
+        .getEagerPropertyByName('ts')
         ?.getValue();
       expect(ts >= prevEntryTs).toBeTrue();
       prevEntryTs = ts;
@@ -90,5 +98,31 @@ describe('PerfettoParserProtolog', () => {
       expect(ts.getValueNs() >= prevEntryTs).toBeTrue();
       prevEntryTs = ts.getValueNs();
     }
+  });
+
+  it('supports LOG_TABLE_FILTER_VALUES custom query', async () => {
+    const trace = new TraceBuilder()
+      .setType(TraceType.TRANSACTIONS)
+      .setParser(parser)
+      .build();
+    const traceEntries = trace.sliceEntries(0, 3);
+
+    const tags = await traceEntries.customQuery(
+      CustomQueryType.LOG_TABLE_FILTER_VALUES,
+      ProtologColumnType.TAG,
+    );
+    expect(tags).toEqual(['MyFirstGroup', 'MySecondGroup', 'MyThirdGroup']);
+
+    const levels = await traceEntries.customQuery(
+      CustomQueryType.LOG_TABLE_FILTER_VALUES,
+      ProtologColumnType.LEVEL,
+    );
+    expect(levels).toEqual(['DEBUG', 'ERROR', 'WARN']);
+
+    const locations = await traceEntries.customQuery(
+      CustomQueryType.LOG_TABLE_FILTER_VALUES,
+      ProtologColumnType.LOCATION,
+    );
+    expect(locations).toEqual(['<NO_LOC>', 'file1']);
   });
 });

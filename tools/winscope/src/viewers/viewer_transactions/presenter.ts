@@ -257,9 +257,9 @@ export class Presenter extends AbstractLogViewerPresenter<
   }
 
   protected override async updateFiltersInHeaders(headers: LogHeader[]) {
-    for (const header of headers) {
-      this.updateFilterByCustomQuery(header);
-    }
+    Promise.all(
+      headers.map((header) => this.updateFilterByCustomQuery(header)),
+    );
   }
 }
 

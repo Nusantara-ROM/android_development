@@ -17,9 +17,10 @@
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
-import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
+import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {ProtologColumnType} from 'trace/protolog/protolog_column_type';
+import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {AbstractLogViewerComponentTest} from 'viewers/common/abstract_log_viewer_component_test';
 import {LogSelectFilter} from 'viewers/common/log_filters';
 import {LogHeader} from 'viewers/common/ui_data_log';
@@ -45,14 +46,13 @@ class ViewerProtologComponentTest extends AbstractLogViewerComponentTest<ViewerP
       ViewerProtologComponent,
     ]
   > {
-    const propertiesTree = new PropertyTreeBuilder()
-      .setRootId('Protolog')
+    const tree = new HierarchyTreeBuilder()
+      .setId('Protolog')
       .setName('tree')
-      .setValue(null)
       .build();
     const ts = TimestampConverterUtils.makeElapsedTimestamp(10n);
-    const trace = new TraceBuilder<PropertyTreeNode>()
-      .setEntries([propertiesTree, propertiesTree])
+    const trace = new TraceBuilder<HierarchyTreeNode>()
+      .setEntries([tree, tree])
       .setTimestamps([ts, ts])
       .build();
 
@@ -67,8 +67,20 @@ class ViewerProtologComponentTest extends AbstractLogViewerComponentTest<ViewerP
           this.testField,
           this.testField,
           {
-            spec: {name: 'Test Column Text', cssClass: 'test-class-text'},
+            spec: {
+              name: 'Test Column Text',
+              cssClass: 'test-class-text',
+              columnType: ProtologColumnType.MESSAGE,
+            },
             value: i % 2 === 0 ? shortMessage : longMessage,
+          },
+          {
+            spec: {
+              name: 'Test Column Location',
+              cssClass: 'test-class-location',
+              columnType: ProtologColumnType.LOCATION,
+            },
+            value: 'file1',
           },
         ]),
       );

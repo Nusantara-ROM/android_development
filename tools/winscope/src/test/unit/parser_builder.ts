@@ -17,6 +17,7 @@
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {Timestamp} from 'common/time/time';
 import {
+  CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
 } from 'trace/custom_query';
@@ -28,7 +29,13 @@ export class ParserBuilder<T> {
   private type = TraceType.SURFACE_FLINGER;
   private entries?: T[];
   private timestamps?: Timestamp[];
-  private customQueryResult = new Map<CustomQueryType, {}>();
+  private customQueryResult = new Map<
+    CustomQueryType,
+    Map<
+      CustomQueryParamTypeMap[CustomQueryType],
+      CustomQueryParserResultTypeMap[CustomQueryType]
+    >
+  >();
   private descriptors = ['file descriptor'];
   private noOffsets = false;
   private isCorrupted = false;
@@ -58,11 +65,16 @@ export class ParserBuilder<T> {
     return this;
   }
 
-  setCustomQueryResult<Q extends CustomQueryType>(
-    type: Q,
-    result: CustomQueryParserResultTypeMap[Q],
+  setCustomQueryResult(
+    queryResult: Map<
+      CustomQueryType,
+      Map<
+        CustomQueryParamTypeMap[CustomQueryType],
+        CustomQueryParserResultTypeMap[CustomQueryType]
+      >
+    >,
   ): this {
-    this.customQueryResult.set(type, result ?? {});
+    this.customQueryResult = queryResult;
     return this;
   }
 

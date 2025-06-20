@@ -184,6 +184,7 @@ export async function getDistinctValues(
   traceProcessor: TraceProcessor,
   tableName: string,
   columns: string[],
+  nullString = 'N/A',
 ): Promise<string[]> {
   const uniqueValueCol = 'unique_value';
   const sql =
@@ -201,7 +202,8 @@ export async function getDistinctValues(
   const options: string[] = [];
   for (const it = rows.iter({}); it.valid(); it.next()) {
     const val = it.get(uniqueValueCol);
-    const option = val !== null && val !== undefined ? val.toString() : 'N/A';
+    const option =
+      val !== null && val !== undefined ? val.toString() : nullString;
     options.push(option);
   }
   return options;

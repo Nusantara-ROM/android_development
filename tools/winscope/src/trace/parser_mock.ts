@@ -18,7 +18,11 @@ import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {Timestamp} from 'common/time/time';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {CoarseVersion} from './coarse_version';
-import {CustomQueryParserResultTypeMap, CustomQueryType} from './custom_query';
+import {
+  CustomQueryParamTypeMap,
+  CustomQueryParserResultTypeMap,
+  CustomQueryType,
+} from './custom_query';
 import {AbsoluteEntryIndex, EntriesRange} from './index_types';
 import {Parser} from './parser';
 import {TraceType} from './trace_type';
@@ -28,7 +32,10 @@ export class ParserMock<T> implements Parser<T> {
     private readonly type: TraceType,
     private readonly timestamps: Timestamp[],
     private readonly entries: T[],
-    private readonly customQueryResult: Map<CustomQueryType, object>,
+    private readonly customQueryResult: Map<
+      CustomQueryType,
+      Map<CustomQueryParamTypeMap[CustomQueryType], object>
+    >,
     private readonly descriptors: string[],
     private readonly noOffsets: boolean,
     private readonly isCorrupted: boolean,
@@ -78,11 +85,15 @@ export class ParserMock<T> implements Parser<T> {
   customQuery<Q extends CustomQueryType>(
     type: Q,
     entriesRange: EntriesRange,
+    param?: CustomQueryParamTypeMap[Q],
   ): Promise<CustomQueryParserResultTypeMap[Q]> {
-    let result = this.customQueryResult.get(type);
+    const resultMap = this.customQueryResult.get(type);
+    let result =
+      (param ? resultMap?.get(param) : undefined) ??
+      resultMap?.values().next().value;
     if (result === undefined) {
       throw new Error(
-        `This mock was not configured to support custom query type '${type}'. Something missing in your test set up?`,
+        `This mock was not configured to support custom query type '${type}' with param ${param}. Something missing in your test set up?`,
       );
     }
     if (

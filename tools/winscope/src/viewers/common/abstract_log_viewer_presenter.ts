@@ -352,7 +352,7 @@ export abstract class AbstractLogViewerPresenter<
     const headers = this.makeHeaders();
     const allEntries = await this.makeUiDataEntries(headers);
     if (this.updateFiltersInHeaders) {
-      this.updateFiltersInHeaders(headers, allEntries);
+      await this.updateFiltersInHeaders(headers, allEntries);
     }
     this.logPresenter.setAllEntries(allEntries);
     this.logPresenter.setHeaders(headers);

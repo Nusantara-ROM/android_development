@@ -15,7 +15,7 @@
  */
 
 import {TraceEntry} from 'trace/trace';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {
   LogEntry,
   LogField,
@@ -42,7 +42,7 @@ export class UiData implements UiDataLog {
 export class ProtologEntry implements LogEntry {
   readonly getPropertiesTree = undefined;
   constructor(
-    public traceEntry: TraceEntry<PropertyTreeNode>,
+    public traceEntry: TraceEntry<HierarchyTreeNode>,
     public fields: LogField[],
   ) {}
 }

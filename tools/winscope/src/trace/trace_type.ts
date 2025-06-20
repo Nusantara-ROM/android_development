@@ -53,7 +53,7 @@ export type ImeTraceType =
   | TraceType.INPUT_METHOD_SERVICE;
 
 export interface TraceEntryTypeMap {
-  [TraceType.PROTO_LOG]: PropertyTreeNode;
+  [TraceType.PROTO_LOG]: HierarchyTreeNode;
   [TraceType.SURFACE_FLINGER]: HierarchyTreeNode;
   [TraceType.SCREEN_RECORDING]: MediaBasedTraceEntry;
   [TraceType.SCREENSHOT]: MediaBasedTraceEntry;

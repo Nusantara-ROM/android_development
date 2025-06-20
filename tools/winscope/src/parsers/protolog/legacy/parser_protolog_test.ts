@@ -27,6 +27,7 @@ import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {CoarseVersion} from 'trace/coarse_version';
 import {Parser} from 'trace/parser';
 import {TraceType} from 'trace/trace_type';
+import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {CONFIG_32, CONFIG_64} from './legacy_to_perfetto_configs';
 
@@ -50,7 +51,7 @@ interface ExpectedMessagePacket {
 interface ExpectedMessage {
   message: string;
   ts: string;
-  at: string;
+  location: string;
   level: string;
   tag: string;
 }
@@ -149,7 +150,7 @@ abstract class ParserProtologTest {
         const perfettoParser = await new LegacyParserProvider()
           .addFile(this.traceFile)
           .setConvertToPerfetto(true)
-          .getParser<PropertyTreeNode>();
+          .getParser<HierarchyTreeNode>();
 
         expect(perfettoParser.getTimestamps()?.slice(0, 3)).toEqual(
           this.first3ExpectedRealTimestamps,
@@ -158,20 +159,26 @@ abstract class ParserProtologTest {
         const message = await perfettoParser.getEntry(0);
 
         expect(
-          assertDefined(message.getChildByName('text')).formattedValue(),
+          assertDefined(
+            message.getEagerPropertyByName('message'),
+          ).formattedValue(),
         ).toEqual(this.expectedFirstMessage.message);
         expect(
-          assertDefined(message.getChildByName('timestamp')).formattedValue(),
+          assertDefined(message.getEagerPropertyByName('ts')).formattedValue(),
         ).toEqual(this.expectedFirstMessage.ts);
         expect(
-          assertDefined(message.getChildByName('tag')).formattedValue(),
+          assertDefined(message.getEagerPropertyByName('tag')).formattedValue(),
         ).toEqual(this.expectedFirstMessage.tag);
         expect(
-          assertDefined(message.getChildByName('level')).formattedValue(),
+          assertDefined(
+            message.getEagerPropertyByName('level'),
+          ).formattedValue(),
         ).toEqual(this.expectedFirstMessage.level);
         expect(
-          assertDefined(message.getChildByName('at')).formattedValue(),
-        ).toEqual(this.expectedFirstMessage.at);
+          assertDefined(
+            message.getEagerPropertyByName('location'),
+          ).formattedValue(),
+        ).toEqual(this.expectedFirstMessage.location);
       });
 
       function checkMessagePacket(
@@ -276,7 +283,7 @@ class ParserProtolog32Test extends ParserProtologTest {
     ts: '2022-06-20, 12:12:05.377',
     tag: 'WindowManager',
     level: 'DEBUG',
-    at: 'com/android/server/wm/InsetsSourceProvider.java',
+    location: 'com/android/server/wm/InsetsSourceProvider.java',
   };
 }
 
@@ -326,7 +333,7 @@ class ParserProtolog64Test extends ParserProtologTest {
     ts: '2024-02-29, 08:53:26.400',
     tag: 'WindowManager',
     level: 'VERBOSE',
-    at: 'com/android/server/wm/ActivityStarter.java',
+    location: 'com/android/server/wm/ActivityStarter.java',
   };
 }
 
@@ -376,7 +383,7 @@ class ParserProtologMissingConfigTest extends ParserProtologTest {
     ts: '2022-11-21, 18:05:09.777',
     tag: 'WindowManager',
     level: 'INFO',
-    at: 'com/android/server/wm/WindowSurfaceController.java',
+    location: 'com/android/server/wm/WindowSurfaceController.java',
   };
 }
 
