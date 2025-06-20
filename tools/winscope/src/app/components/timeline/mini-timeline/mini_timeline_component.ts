@@ -65,8 +65,7 @@ import {Transformer} from './transformer';
           (mouseleave)="onMouseLeave($event)"
           (contextmenu)="recordClickPosition($event)"
           [cdkContextMenuTriggerFor]="timeline_context_menu"
-          #menuTrigger = "cdkContextMenuTriggerFor"
-          ></canvas>
+          #menuTrigger="cdkContextMenuTriggerFor"></canvas>
         <div class="zoom-control">
           <slider
             [fullRange]="timelineData.getFullTimeRange()"

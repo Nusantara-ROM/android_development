@@ -86,6 +86,11 @@ export class DOMTestHelper<T> {
     this.fixture.detectChanges();
   }
 
+  shiftAndClick() {
+    const shiftAndClick = new MouseEvent('click', {shiftKey: true});
+    this.dispatchEvent(shiftAndClick);
+  }
+
   doubleClick() {
     this.root.dispatchEvent(new MouseEvent('dblclick'));
     this.fixture.detectChanges();
@@ -128,6 +133,10 @@ export class DOMTestHelper<T> {
     await this.whenStable();
   }
 
+  clickBackdrop() {
+    this.findAndClickInDocument('.cdk-overlay-backdrop');
+  }
+
   findAndDispatchInput(field: string, value: string): DOMTestHelper<T> {
     const input = this.get(field + ' input');
     input.dispatchInput(value);
@@ -152,9 +161,8 @@ export class DOMTestHelper<T> {
     return this.findInDocument('.mat-select-panel') !== undefined;
   }
 
-  async openMatSelect(index = 0) {
-    const trigger = '.mat-select-trigger';
-    await this.clickByIndexAndWaitStable(trigger, index);
+  async openMatSelect() {
+    await this.clickAndWaitStable('.mat-select-trigger');
   }
 
   clickMatOption() {
@@ -178,7 +186,8 @@ export class DOMTestHelper<T> {
     this.root.addEventListener(event, listener);
   }
 
-  keydownEnter(init?: KeyboardEventInit) {  // eslint-disable-line no-undef
+  // eslint-disable-next-line no-undef
+  keydownEnter(init?: KeyboardEventInit) {
     const params = {key: KeyboardEventKey.ENTER};
     Object.assign(params, init);
     const event = new KeyboardEvent('keydown', params);

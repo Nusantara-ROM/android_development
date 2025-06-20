@@ -30,7 +30,7 @@ export function assertDefined<A>(
     throw new Error(
       lazyErrorMessage
         ? lazyErrorMessage()
-        : `Expected value, but found '${value}'`,
+        : `Expected value, but found ${value?.toString()}`,
     );
   }
   return value;
@@ -79,7 +79,7 @@ export function assertString<A>(
     throw new Error(
       lazyErrorMessage
         ? lazyErrorMessage()
-        : `Expected string, but found ${value}`,
+        : `Expected string, but found ${value?.toString()}`,
     );
   }
   return value;
@@ -111,7 +111,7 @@ export function assertNumber<A>(
     throw new Error(
       lazyErrorMessage
         ? lazyErrorMessage()
-        : `Expected number, but found ${value}`,
+        : `Expected number, but found ${value?.toString()}`,
     );
   }
   return value;
@@ -143,7 +143,7 @@ export function assertBigInt<A>(
     throw new Error(
       lazyErrorMessage
         ? lazyErrorMessage()
-        : `Expected bigint, but found ${value}`,
+        : `Expected bigint, but found ${value?.toString()}`,
     );
   }
   return value;

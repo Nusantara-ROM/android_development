@@ -297,7 +297,7 @@ describe('TraceViewComponent', () => {
 
   it('does not show presets for different trace', () => {
     savePresetByButton('Test Preset');
-    dom.findAndClickInDocument('.cdk-overlay-backdrop');
+    dom.clickBackdrop();
     const tabs = getTabs();
     tabs[1].click();
 

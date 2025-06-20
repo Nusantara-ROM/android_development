@@ -32,7 +32,6 @@ import {SelectWithFilterComponent} from './select_with_filter_component';
 
 describe('SelectWithFilterComponent', () => {
   const filterInputField = '.select-filter';
-  const shiftAndClick = new MouseEvent('click', {shiftKey: true});
   let component: TestHostComponent;
   let dom: DOMTestHelper<TestHostComponent>;
   let selectChangeSpy: jasmine.Spy;
@@ -143,7 +142,7 @@ describe('SelectWithFilterComponent', () => {
     dom.getMatSelectPanel().findAndDispatchInput(filterInputField, 'A');
     checkHiddenOptions(options, [0, 1, 2]);
 
-    dom.getInDocument('.cdk-overlay-backdrop').click();
+    dom.clickBackdrop();
     await dom.whenStable();
     await dom.whenRenderingDone();
 
@@ -195,13 +194,13 @@ describe('SelectWithFilterComponent', () => {
     dom.openMatSelect();
     const options = getOptions();
 
-    options[0].dispatchEvent(shiftAndClick);
+    options[0].shiftAndClick();
     expect(selectChangeSpy).toHaveBeenCalledTimes(1);
 
-    options[1].dispatchEvent(shiftAndClick);
+    options[1].shiftAndClick();
     expect(selectChangeSpy).toHaveBeenCalledTimes(2);
 
-    options[0].dispatchEvent(shiftAndClick);
+    options[0].shiftAndClick();
     expect(selectChangeSpy).toHaveBeenCalledTimes(3);
 
     options[1].click();
@@ -215,12 +214,12 @@ describe('SelectWithFilterComponent', () => {
     options[0].click();
     selectChangeSpy.calls.reset();
 
-    options[2].dispatchEvent(shiftAndClick);
+    options[2].shiftAndClick();
     expect(selectChangeSpy).toHaveBeenCalledTimes(2);
     checkSelectValue(['0', '2', '1'], ['0', '1', '2']);
     selectChangeSpy.calls.reset();
 
-    options[0].dispatchEvent(shiftAndClick);
+    options[0].shiftAndClick();
     expect(selectChangeSpy).toHaveBeenCalledTimes(2);
     checkSelectValue([]);
   });
@@ -235,7 +234,7 @@ describe('SelectWithFilterComponent', () => {
     checkSelectValue(['2', '3']);
     selectChangeSpy.calls.reset();
 
-    options[0].dispatchEvent(shiftAndClick);
+    options[0].shiftAndClick();
     expect(selectChangeSpy).toHaveBeenCalledTimes(2);
     checkSelectValue(['0', '2', '3', '1'], ['0', '1', '2', '3']);
 
@@ -244,7 +243,7 @@ describe('SelectWithFilterComponent', () => {
     checkSelectValue(['0', '1']);
     selectChangeSpy.calls.reset();
 
-    options[0].dispatchEvent(shiftAndClick);
+    options[0].shiftAndClick();
     expect(selectChangeSpy).toHaveBeenCalledTimes(2);
     checkSelectValue([]);
   });
@@ -257,7 +256,7 @@ describe('SelectWithFilterComponent', () => {
 
     options[1].click();
     selectChangeSpy.calls.reset();
-    options[3].dispatchEvent(shiftAndClick);
+    options[3].shiftAndClick();
     checkSelectValue(['1', '10']);
     expect(selectChangeSpy).toHaveBeenCalledTimes(2);
   });

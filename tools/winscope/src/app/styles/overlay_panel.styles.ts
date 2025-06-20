@@ -35,6 +35,7 @@ export const overlayPanelStyles = `
     margin: 15px;
     font-size: 20px;
   }
+
   .overlay-panel-content {
     margin: 15px;
     display: flex;
@@ -48,5 +49,9 @@ export const overlayPanelStyles = `
   .overlay-panel-section-title {
     display: block;
     width: 100%;
+  }
+
+  .overlay-panel-item {
+    padding: 8px 0px;
   }
 `;

@@ -106,8 +106,7 @@ interface Tab {
           [cdkConnectedOverlayOpen]="isFilterPresetsPanelOpen"
           [cdkConnectedOverlayHasBackdrop]="true"
           cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-          (backdropClick)="onFilterPresetsClick()"
-        >
+          (backdropClick)="onFilterPresetsClick()">
           <div class="overlay-panel filter-presets-panel">
             <h2 class="overlay-panel-title">
               <span> FILTER PRESETS </span>
