@@ -73,6 +73,13 @@ export async function areMessagesEmitted(
 }
 
 export async function clickViewTracesButton() {
+  const discardTracesBox = element(by.css('.discard-legacy-traces'));
+  if (
+    (await discardTracesBox.isPresent()) &&
+    (await discardTracesBox.isEnabled())
+  ) {
+    await discardTracesBox.click();
+  }
   const button = element(by.css('.load-btn'));
   await button.click();
 }
@@ -240,16 +247,11 @@ export async function checkItemInPropertiesTree(
   itemName: string,
   expectedText: string,
 ) {
-  const nodes = await element.all(by.css(`${viewer} .properties-view .node`));
-  for (const node of nodes) {
-    const id: string = await node.getAttribute('id');
-    if (id === 'node' + itemName) {
-      const text = await node.getText();
-      expect(text).toEqual(expectedText);
-      return;
-    }
-  }
-  throw new Error(`could not find item ${itemName} in properties tree`);
+  const node = element(
+    by.css(`${viewer} .properties-view #node${itemName} .node-property`),
+  );
+  const text = await node.getText();
+  expect(text).toEqual(expectedText);
 }
 
 export async function checkRectLabel(viewer: string, expectedLabel: string) {
