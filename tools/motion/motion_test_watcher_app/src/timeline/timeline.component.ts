@@ -74,9 +74,6 @@ export class TimelineComponent implements OnChanges {
         this.updatePage();
       }
     }
-    if (changes['displayedData']) {
-      this.updatePage();
-    }
   }
 
   applyReceivedFilter(options: SelectOption[]): void {
@@ -115,6 +112,7 @@ export class TimelineComponent implements OnChanges {
     this.actualData = actualData
     this.preivewService.updateFrames(this.actualData.frame_ids)
     this.buildUi();
+    this.populateFeatureOptions();
   }
 
   buildUi() {
