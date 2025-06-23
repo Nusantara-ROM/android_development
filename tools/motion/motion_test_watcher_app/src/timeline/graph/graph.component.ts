@@ -10,7 +10,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { MotionGoldenData, MotionGoldenFeature } from '../../model/golden';
+import { MotionGoldenData, MotionGoldenFeature, DataSource } from '../../model/golden';
 import { Visualization, DataPoint } from './visualization';
 import { LineGraphVisualization } from './line-graph-visualization';
 import * as d3 from 'd3';
@@ -31,6 +31,7 @@ export class GraphComponent implements AfterViewInit, OnChanges {
   @Input() featureName: string | undefined;
   @Input() isExpanded: boolean = false;
   @Input() showTestList: boolean = false;
+  @Input() dataSource: DataSource | null = null;
   @Output() expand = new EventEmitter<string>();
 
   @ViewChild('chartContainer', { static: true })
@@ -178,7 +179,8 @@ export class GraphComponent implements AfterViewInit, OnChanges {
       minValue,
       maxValue,
       this.graphId,
-      this.previewService
+      this.previewService,
+      this.dataSource
     );
   }
 

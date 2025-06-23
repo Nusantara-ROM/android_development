@@ -4,7 +4,7 @@
 
 <div *ngIf="selectedGolden" class="w-full h-full p-4 relative overflow-y-auto">
   <div class="flex flex-col flex-grow items-stretch bg-white rounded shadow-md p-4">
-      <app-graph [showTestList]="showTestList"
+      <app-graph [showTestList]="showTestList" [dataSource]="selectedGolden.dataSource"
         class="flex flex-grow w-full h-96"
         *ngIf="expandedGraphIdx !== -1 && !loading"
         [expectedData]="expectedData"
@@ -16,7 +16,7 @@
 
        <div class="flex flex-col gap-4" *ngIf="expandedGraphIdx === -1 && !loading && actualData && actualData.features">
         <ng-container *ngFor="let feature of actualData.features; let i = index">
-          <app-graph [showTestList]="showTestList"
+          <app-graph [showTestList]="showTestList" [dataSource]="selectedGolden.dataSource"
             *ngIf="shouldDisplayGraph(feature.name)"
             class="h-48 w-full"
             [expectedData]="expectedData"

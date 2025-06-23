@@ -1,11 +1,13 @@
 import { Visualization, DataPoint, COLORS } from './visualization';
 import * as d3 from 'd3';
 import { PreviewService } from '../../service/preview.service';
+import { MotionGolden, DataSource } from '../../model/golden';
 
 export class LineGraphVisualization implements Visualization {
   minValue: number;
   maxValue: number;
   graphId: string;
+  dataSource: DataSource | null = null;
   viewSelectedCurrentFrame: number = 0;
   // TODO Can't seem to select the graph with id while updating the marker.
   // Using a global variable of type `any` is ofc a bad idea for this. Using this
@@ -17,16 +19,20 @@ export class LineGraphVisualization implements Visualization {
   chartHeight = 0;
   xScale = d3.scaleLinear();
   yScale = d3.scaleLinear();
+  solidLineLegend: string = '';
+  dottedLineLegend: string ='';
 
   constructor(
     minValue: number,
     maxValue: number,
     graphId: string,
-    private previewService: PreviewService
+    private previewService: PreviewService,
+    dataSource: DataSource | null = null
   ) {
     this.minValue = minValue;
     this.maxValue = maxValue;
     this.graphId = graphId;
+    this.dataSource= dataSource;
     this.previewService.currentFrameFromView$.subscribe((frame) => {
       if (this.viewSelectedCurrentFrame === frame) return;
       this.viewSelectedCurrentFrame = frame ? frame : 0;
@@ -152,6 +158,7 @@ export class LineGraphVisualization implements Visualization {
   }
 
   private drawLegend(g: d3.Selection<SVGGElement, unknown, null, undefined>) {
+    this.updateLegend();
     const legend = g
       .append('g')
       .attr('class', 'legend')
@@ -173,7 +180,7 @@ export class LineGraphVisualization implements Visualization {
       .append('text')
       .attr('x', 25)
       .attr('y', 0)
-      .text('Actual')
+      .text(this.solidLineLegend)
       .attr('alignment-baseline', 'middle');
 
     legend
@@ -190,7 +197,7 @@ export class LineGraphVisualization implements Visualization {
       .append('text')
       .attr('x', 25)
       .attr('y', 20)
-      .text('Expected')
+      .text(this.dottedLineLegend)
       .attr('alignment-baseline', 'middle');
   }
 
@@ -322,6 +329,19 @@ export class LineGraphVisualization implements Visualization {
     const xPos = this.xScale(this.viewSelectedCurrentFrame);
     if (xPos >= 0 && xPos <= this.chartWidth) {
       this.addMarker(this.graph, xPos);
+    }
+  }
+
+  private updateLegend(): void{
+    switch(this.dataSource){
+      case DataSource.GERRIT:
+        this.solidLineLegend = 'Right';
+        this.dottedLineLegend = 'Left';
+        break;
+      default:
+        this.solidLineLegend = 'Actual';
+        this.dottedLineLegend = 'Expected';
+        break;
     }
   }
 }
