@@ -99,15 +99,15 @@ export class Presenter extends AbstractLogViewerPresenter<
       const fields: LogField[] = [
         {
           spec: Presenter.COLUMNS.logLevel,
-          value: assertDefined(
-            messageNode.getEagerPropertyByName('level'),
-          ).formattedValue(),
+          value:
+            messageNode.getEagerPropertyByName('level')?.formattedValue() ??
+            Presenter.VALUE_NA,
         },
         {
           spec: Presenter.COLUMNS.tag,
-          value: assertDefined(
-            messageNode.getEagerPropertyByName('tag'),
-          ).formattedValue(),
+          value:
+            messageNode.getEagerPropertyByName('tag')?.formattedValue() ??
+            Presenter.VALUE_NA,
         },
         {
           spec: Presenter.COLUMNS.sourceFile,
@@ -117,9 +117,9 @@ export class Presenter extends AbstractLogViewerPresenter<
         },
         {
           spec: Presenter.COLUMNS.text,
-          value: assertDefined(
-            messageNode.getEagerPropertyByName('message'),
-          ).formattedValue(),
+          value:
+            messageNode.getEagerPropertyByName('message')?.formattedValue() ??
+            Presenter.VALUE_NA,
         },
       ];
       messages.push(new ProtologEntry(entry, fields));

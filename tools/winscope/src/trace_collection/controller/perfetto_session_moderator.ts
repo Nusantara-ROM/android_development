@@ -53,8 +53,12 @@ export class PerfettoSessionModerator {
 
   async clearPreviousConfigFiles() {
     console.debug('Clearing perfetto config file for previous tracing session');
-    await this.device.runShellCommand(`rm -f ${this.configFilepath}`);
-    console.debug('Cleared perfetto config file for previous tracing session');
+    const output = await this.device.runShellCommand(
+      `rm -f ${this.configFilepath}`,
+    );
+    console.debug(
+      `Cleared perfetto config file for previous tracing session. Output: ${output}`,
+    );
   }
 
   async isTooManySessions() {
@@ -78,11 +82,13 @@ export class PerfettoSessionModerator {
       return;
     }
     console.debug('Stopping already-running winscope perfetto session.');
-    await this.device?.runShellCommand(
+    const output = await this.device?.runShellCommand(
       'perfetto --attach=WINSCOPE-PROXY-TRACING-SESSION --stop',
     );
     this.prevSessionActive = false;
-    console.debug('Stopped already-running winscope perfetto session.');
+    console.debug(
+      `Stopped already-running winscope perfetto session. Output: ${output}`,
+    );
   }
 
   async isDataSourceAvailable(ds: string): Promise<boolean> {
