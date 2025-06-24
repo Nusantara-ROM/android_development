@@ -84,6 +84,20 @@ impl BpProperties {
         self.map.insert(k.to_string(), v.into());
     }
 
+    pub fn set_or_extend<T: Into<BpValue>>(&mut self, k: &str, v: Vec<T>) {
+        match self.map.get_mut(k) {
+            Some(i) => match i {
+                BpValue::List(l) => {
+                    l.extend(v.into_iter().map(Into::into));
+                }
+                _ => panic!("key {k:?} cannot be extended as it is not a list"),
+            },
+            None => {
+                self.set(k, v);
+            }
+        }
+    }
+
     pub fn set_if_nonempty<T: Into<BpValue>>(&mut self, k: &str, v: Vec<T>) {
         if !v.is_empty() {
             self.set(k, v);

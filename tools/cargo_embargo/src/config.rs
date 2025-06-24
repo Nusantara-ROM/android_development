@@ -440,6 +440,9 @@ pub struct PackageVariantConfig {
     /// Directories with headers to export for C usage.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub exported_c_header_dir: Vec<PathBuf>,
+    /// Additional sources that should be listed as inputs in `srcs`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub extra_srcs: Vec<PathBuf>,
 }
 
 impl Default for PackageVariantConfig {
@@ -459,6 +462,7 @@ impl Default for PackageVariantConfig {
             test_data: Default::default(),
             whole_static_libs: Default::default(),
             exported_c_header_dir: Default::default(),
+            extra_srcs: Default::default(),
         }
     }
 }
