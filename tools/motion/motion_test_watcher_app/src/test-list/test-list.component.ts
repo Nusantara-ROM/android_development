@@ -11,6 +11,11 @@ import { MotionGolden } from '../model/golden';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms';
+import { GoldensService } from '../service/goldens.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-test-list',
@@ -21,6 +26,9 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     MatIconModule,
     MatExpansionModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
   ],
   templateUrl: './test-list.component.html',
   styleUrl: './test-list.component.css',
@@ -28,11 +36,20 @@ import { FormsModule } from '@angular/forms';
 export class TestListComponent implements OnChanges{
   @Input() goldens: MotionGolden[] = [];
   @Input() testNames: String[] = [];
+  @Input() showCheckBoxes: boolean = false;
+  @Output() showCheckBoxesChange = new EventEmitter<boolean>();
   @Output() selectedTestNameChange = new EventEmitter<String>();
   @Output() refreshRequest = new EventEmitter<boolean>();
   @Output() selectedGoldenChange = new EventEmitter<MotionGolden>();
   selectedGolden: MotionGolden | null = null;
   selectedTest: String | null = null;
+  selectedGoldenIds: Set<string> =new Set<string>();
+  isUpdating: boolean = false;
+
+  constructor(
+    private goldenService: GoldensService,
+    private snackBar: MatSnackBar,
+  ){}
 
 
   filterStatus: 'all' | 'pass' | 'fail' = 'all';
@@ -90,6 +107,175 @@ export class TestListComponent implements OnChanges{
       return 'border-l-4 border-green-500';
     } else {
       return '';
+    }
+  }
+
+  isGoldenSelected(golden: MotionGolden): boolean {
+    return this.selectedGoldenIds.has(golden.id);
+  }
+
+  toggleGoldenSelection(golden: MotionGolden, event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (isChecked) {
+      if (!this.isGoldenSelected(golden)) {
+        this.selectedGoldenIds.add(golden.id);
+      }
+    }
+    else {
+      this.selectedGoldenIds.delete(golden.id)
+    }
+  }
+
+  areAllBoxesSelected(filteredGoldens: MotionGolden[]): boolean {
+    if (filteredGoldens.length === 0) {
+      return false;
+    }
+    return filteredGoldens.every(golden => this.isGoldenSelected(golden));
+  }
+
+  toggleAllBoxesSelection(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (isChecked) {
+      this.selectedGoldenIds = new Set(this.filteredGoldens.map(golden => golden.id));
+    } else {
+      this.selectedGoldenIds.clear();
+    }
+  }
+
+  updateSelectedGoldens(): void {
+    if (this.selectedGoldenIds.size === 0) {
+      this.snackBar.open(
+        'Please select at least one option!',
+        'Dismiss',
+        {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['snackbar-error-message']
+        }
+      );
+      return;
+    }
+    this.isUpdating = true;
+    const idsToUpdate = [...this.selectedGoldenIds];
+    idsToUpdate.forEach(id => {
+      const golden = this.goldens.find(g => g.id === id);
+      if (golden) {
+        golden.status = 'UPDATING';
+      }
+    });
+    this.goldenService.updateSelectedGoldens(idsToUpdate).subscribe({
+      next: (rawResults: Record<string, string>) => {
+        const { passedCount, failedCount } = this.updateGoldenStatuses(rawResults);
+        const totalCount = passedCount + failedCount;
+        if (failedCount > 0) {
+          let message = `${passedCount} golden(s) updated successfully.`;
+          message += ` ${failedCount} golden(s) failed to update.`;
+          this.snackBar.open(message, 'Close', {
+            duration: 8000,
+            panelClass: 'warning-snackbar',
+          });
+        } else {
+          this.snackBar.open(
+            `${totalCount} golden(s) updated successfully!`,
+            'Close',
+            {
+              duration: 3000,
+              panelClass: 'success-snackbar',
+            }
+          );
+        }
+      },
+      error: (err) => {
+        console.error('Error updating goldens:', err);
+        idsToUpdate.forEach(id => {
+          const golden = this.goldens.find(g => g.id === id);
+          if (golden) {
+            golden.status = 'IDLE';
+          }
+        });
+        this.snackBar.open(
+          'Error updating golden. See console for details.',
+          'Close',
+          {
+            duration: 5000,
+            panelClass: 'error-snackbar',
+          }
+        );
+      },
+      complete: () => {
+        this.isUpdating = false;
+        this.selectedGoldenIds.clear();
+        this.showCheckBoxes = false;
+        this.showCheckBoxesChange.emit(this.showCheckBoxes);
+      }
+    });
+  }
+
+  private updateGoldenStatuses(results: Record<string, string>): { passedCount: number, failedCount: number } {
+    let passedCount = 0;
+    let failedCount = 0;
+    Object.entries(results).forEach(([goldenId, statusString]) => {
+      const golden = this.goldens.find(g => g.id === goldenId);
+      if (golden) {
+        if (statusString == 'Updated') {
+          golden.status = 'PASSED_UPDATE';
+          golden.error = undefined;
+          passedCount++;
+        }
+        else {
+          golden.status = 'FAILED_UPDATE';
+          const match = statusString.match(/Failed with exception: (.+)/);
+          golden.error = match ? match[1] : statusString;
+          failedCount++
+        }
+      }
+    });
+    return { passedCount, failedCount };
+  }
+
+  retryGolden(goldenId: string): void {
+    const goldenToRetry = this.goldens.find(g => g.id === goldenId);
+    if (goldenToRetry) {
+      goldenToRetry.status = 'UPDATING';
+      this.goldenService.updateGolden(goldenToRetry).subscribe({
+        next: (rawResult: Record<string, string>) => {
+          const statusString = Object.values(rawResult)[0];
+          if (goldenToRetry) {
+            if (statusString == 'Updated') {
+              goldenToRetry.status = 'PASSED_UPDATE';
+              goldenToRetry.error = undefined;
+              this.snackBar.open(`Golden updated successfully!`, 'Close', {
+                duration: 3000,
+                panelClass: 'success-snackbar'
+              });
+            }
+            else {
+              goldenToRetry.status = 'FAILED_UPDATE';
+              const match = statusString.match(/Failed with exception: (.+)/);
+              goldenToRetry.error = match ? match[1] : statusString;
+              this.snackBar.open(`Retry failed. Error: ${goldenToRetry.error || ''}`, 'Close', {
+                duration: 5000,
+                panelClass: 'error-snackbar'
+              });
+            }
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          if (goldenToRetry) {
+            goldenToRetry.status = 'FAILED_UPDATE';
+          }
+          this.snackBar.open(
+            'Error updating golden. See console for details.',
+            'Close',
+            {
+              duration: 5000,
+              panelClass: 'error-snackbar',
+            }
+          );
+        },
+      });
     }
   }
 }

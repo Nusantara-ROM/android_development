@@ -145,6 +145,7 @@ export class AppComponent implements DoCheck, OnInit {
   selectedTest: String | null = null;
   selectedGolden: MotionGolden | null = null;
   showTestList: boolean = true;
+  showCheckBoxes: boolean =false;
 
   toggleTestListVisibility() {
     this.showTestList = !this.showTestList;
@@ -226,5 +227,9 @@ export class AppComponent implements DoCheck, OnInit {
         this.showErrorAlert(err)
       }
     })
+  }
+
+  toggleCheckBoxes(): void {
+    this.showCheckBoxes = !this.showCheckBoxes;
   }
 }

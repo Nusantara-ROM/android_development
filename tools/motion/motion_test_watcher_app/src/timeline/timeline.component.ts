@@ -189,12 +189,29 @@ export class TimelineComponent implements OnChanges {
 
   updateGolden() {
     if (!this.selectedGolden) return;
+    this.selectedGolden.status = 'UPDATING';
     this.goldenService.updateGolden(this.selectedGolden).subscribe({
-      next: () => {
-        this.snackBar.open('Golden updated successfully!', 'Close', {
-          duration: 3000,
-          panelClass: 'success-snackbar',
-        });
+      next: (rawResult: Record<string, string>) => {
+        const statusString = Object.values(rawResult)[0];
+        if (this.selectedGolden) {
+          if (statusString == 'Updated') {
+            this.selectedGolden.status = 'PASSED_UPDATE';
+            this.selectedGolden.error = undefined;
+            this.snackBar.open(`Golden updated successfully!`, 'Close', {
+              duration: 3000,
+              panelClass: 'success-snackbar'
+            });
+          }
+          else {
+            this.selectedGolden.status = 'FAILED_UPDATE';
+            const match = statusString.match(/Failed with exception: (.+)/);
+            this.selectedGolden.error = match ? match[1] : statusString;
+            this.snackBar.open(`Retry failed. Error: ${this.selectedGolden.error || ''}`, 'Close', {
+              duration: 5000,
+              panelClass: 'error-snackbar'
+            });
+          }
+        }
       },
       error: (err) => {
         console.error(err);
