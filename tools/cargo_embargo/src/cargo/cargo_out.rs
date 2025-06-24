@@ -423,18 +423,12 @@ impl Crate {
                 _ if arg.starts_with("--emit=") => {}
                 _ if arg.starts_with("--edition=") => {}
                 _ if arg.starts_with("--json=") => {}
-                _ if arg.starts_with("-Aclippy") => {}
-                _ if arg.starts_with("--allow=clippy") => {}
-                _ if arg.starts_with("-Wclippy") => {}
-                _ if arg.starts_with("--warn=clippy") => {}
-                _ if arg.starts_with("-A=rustdoc") => {}
-                _ if arg.starts_with("--allow=rustdoc") => {}
-                _ if arg.starts_with("-D") => {}
-                _ if arg.starts_with("--deny=") => {}
+                _ if arg.starts_with("-A") => {}
+                _ if arg.starts_with("--allow=") => {}
                 _ if arg.starts_with("-W") => {}
                 _ if arg.starts_with("--warn=") => {}
-                _ if arg.starts_with("--allow=deprecated") => {}
-                _ if arg.starts_with("--allow=unexpected_cfgs") => {}
+                _ if arg.starts_with("-D") => {}
+                _ if arg.starts_with("--deny=") => {}
 
                 arg => bail!("unsupported rustc argument: {arg:?}"),
             }
