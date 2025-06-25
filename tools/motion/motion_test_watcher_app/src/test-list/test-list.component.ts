@@ -48,7 +48,12 @@ export class TestListComponent implements OnChanges{
         (golden) => golden.result !== 'PASSED'
       ).length;
       this.passingTestCount = this.totalTestCount - this.failingTestCount;
+      this.updateAndGroupGoldens()
     }
+  }
+
+  onFilterStatusChange(): void {
+    this.updateAndGroupGoldens();
   }
 
   triggerRefresh(clear: boolean): void {
@@ -64,20 +69,66 @@ export class TestListComponent implements OnChanges{
   return path.split('/').pop() || '';
 }
 
+ calculateGoldenFetchedTime(timestamp: string): string {
+  const fetchedDate = new Date(timestamp)
+  const millisecondsDiff = new Date().getTime() - fetchedDate.getTime();
+  const minutesDiff = Math.round(millisecondsDiff / (60 * 1000));
+  if (minutesDiff == 0){
+    return "Fetched just now"
+  }
+  const hrs = Math.floor(minutesDiff/60)
+  if (hrs > 0) {
+    return `Fetched ${hrs} hour ${minutesDiff%60} mins ago`
+  }else{
+  return `Fetched ${minutesDiff} mins ago`;
+  }
+}
+
   testOpened(testName: String): void {
     console.log(`testName clicked : ${testName}`)
     this.selectedTest = testName;
     this.selectedTestNameChange.emit(testName);
   }
 
-  get filteredGoldens(): MotionGolden[] {
+  private updateAndGroupGoldens(): void {
+    let filteredGoldens: MotionGolden[];
     if (this.filterStatus === 'all') {
-      return this.goldens;
+      filteredGoldens = this.goldens;
     } else if (this.filterStatus === 'pass') {
-      return this.goldens.filter((golden) => golden.result === 'PASSED');
+      filteredGoldens = this.goldens.filter((golden) => golden.result === 'PASSED');
     } else {
-      return this.goldens.filter((golden) => golden.result !== 'PASSED');
+      filteredGoldens = this.goldens.filter((golden) => golden.result !== 'PASSED');
     }
+    this.sortGoldensBasedOnFetchTime(filteredGoldens)
+    this.filteredGoldens = this.groupGoldensByTime(filteredGoldens);
+  }
+
+  ngOnInit(): void {
+    this.updateAndGroupGoldens();
+  }
+
+  private sortGoldensBasedOnFetchTime(goldens : MotionGolden[]) : void {
+      goldens.sort((a, b) => {
+      const dateA = new Date(a.testTime);
+      const dateB = new Date(b.testTime);
+      return dateB.getTime() - dateA.getTime();
+      })
+  }
+
+  // Goldens grouped by their test fetch time
+  filteredGoldens : { key: string; value: MotionGolden[] }[] = []
+
+  private groupGoldensByTime(objectsList: MotionGolden[]): { key: string; value: MotionGolden[] }[] {
+    const groupedDataMap = new Map<string, MotionGolden[]>();
+    for (const obj of objectsList) {
+      const timeKey = this.calculateGoldenFetchedTime(obj.testTime);
+      if (groupedDataMap.has(timeKey)) {
+        groupedDataMap.get(timeKey)!.push(obj);
+      } else {
+        groupedDataMap.set(timeKey, [obj]);
+      }
+    }
+    return Array.from(groupedDataMap.entries()).map(([key, value]) => ({ key, value }));
   }
 
   getResultClass(golden: MotionGolden): string {

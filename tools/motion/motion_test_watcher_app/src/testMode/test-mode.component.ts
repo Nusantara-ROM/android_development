@@ -31,8 +31,11 @@ export class TestModeComponent implements OnChanges{
 
 
   selectedMode : String= ""
+  showDropdown = false
 
-
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown
+  }
   ngOnChanges(changes: SimpleChanges): void {
 
   }
@@ -40,6 +43,7 @@ export class TestModeComponent implements OnChanges{
   onActionSelected(action: String): void {
     this.selectedMode = action
     this.switchMode(action)
+    this.toggleDropdown()
   }
 
 

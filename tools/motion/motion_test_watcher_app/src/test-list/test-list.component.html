@@ -20,6 +20,7 @@
         id="statusFilter"
         class="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
         [(ngModel)]="filterStatus"
+        (change)="onFilterStatusChange()"
       >
         <option value="all">All Tests ({{ totalTestCount }})</option>
         <option value="pass">Passing Tests ({{ passingTestCount }})</option>
@@ -45,8 +46,10 @@
       </div>
     </div>
     <mat-accordion class="mt-4" displayMode="flat">
-      <mat-expansion-panel
-        *ngFor="let golden of filteredGoldens"
+      <div *ngFor="let goldenEntry of filteredGoldens">
+        <p class="mt-2 mb-2 font-medium text-gray-400">{{ goldenEntry.key }}</p>
+         <mat-expansion-panel
+        *ngFor="let golden of goldenEntry.value"
         (opened)="panelOpened(golden)"
         [ngClass]="getResultClass(golden)"
       >
@@ -67,6 +70,8 @@
           </div>
         </div>
       </mat-expansion-panel>
+      </div>
+
     </mat-accordion>
   </div>
 </div>
