@@ -31,6 +31,7 @@ class ViewerProtologComponentTest extends AbstractLogViewerComponentTest<ViewerP
   protected override readonly testProperties = false;
   protected override readonly hasCurrentTimeButton = true;
   protected override readonly testScroll = true;
+  protected override readonly initialEntries = 23;
 
   protected override checkTimestampInTable(
     dom: DOMTestHelper<ViewerProtologComponent>,

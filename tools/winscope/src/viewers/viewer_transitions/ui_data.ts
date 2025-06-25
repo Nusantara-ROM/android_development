@@ -37,6 +37,7 @@ export class UiData implements UiDataLog {
   ) {}
 
   isFetchingData = false;
+  checkScrollViewport = false;
   propertiesFilter = new TextFilter();
 
   static createEmpty(): UiData {

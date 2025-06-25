@@ -134,7 +134,9 @@ export class SliderComponent {
   viewInitialized = false;
   cursorOffset = 0;
 
-  @ViewChild('sliderBox', {static: false}) sliderBox!: ElementRef;
+  @ViewChild('sliderBox', {static: false}) sliderBox:
+    | ElementRef<HTMLElement>
+    | undefined;
 
   constructor(@Inject(ChangeDetectorRef) private cdr: ChangeDetectorRef) {}
 
@@ -172,7 +174,7 @@ export class SliderComponent {
 
   getTransformer(): Transformer {
     const width = this.viewInitialized
-      ? this.sliderBox.nativeElement.offsetWidth
+      ? assertDefined(this.sliderBox).nativeElement.offsetWidth
       : 0;
     return new Transformer(
       assertDefined(this.fullRange),

@@ -163,7 +163,8 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
                   [showTraceEntryTimes]="false"
                   [showCurrentTimeButton]="false"
                   [padEntries]="false"
-                  [isFetchingData]="curr.result.isFetchingData"></log-view>
+                  [isFetchingData]="curr.result.isFetchingData"
+                  [checkScrollViewport]="curr.result.checkScrollViewport"></log-view>
               </div>
             </div>
           </mat-tab>

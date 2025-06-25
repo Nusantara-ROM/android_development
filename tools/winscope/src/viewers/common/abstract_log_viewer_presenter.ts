@@ -164,6 +164,11 @@ export abstract class AbstractLogViewerPresenter<
     });
     await event.visit(WinscopeEventType.ACTIVE_TRACE_CHANGED, async (event) => {
       this.activeTrace = event.trace;
+      if (this.activeTrace === this.trace) {
+        this.uiData.checkScrollViewport = true;
+        this.notifyViewChanged();
+        this.uiData.checkScrollViewport = false;
+      }
     });
   }
 

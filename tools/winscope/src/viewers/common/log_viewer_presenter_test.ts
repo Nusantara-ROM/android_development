@@ -559,6 +559,25 @@ describe('AbstractLogViewerPresenter', () => {
     expect(uiData.propertiesFilter).toBeDefined();
   });
 
+  it('changes checkScrollViewport flag on active trace change', async () => {
+    let copiedUiData: UiDataLog | undefined;
+    const presenterWithCopyCallback = new MockPresenter(
+      trace,
+      new InMemoryStorage(),
+      (newData) => {
+        copiedUiData = Object.assign({}, newData);
+      },
+    );
+    expect(copiedUiData?.checkScrollViewport).toBeFalse();
+    await presenterWithCopyCallback.onAppEvent(new ActiveTraceChanged(trace));
+    expect(copiedUiData?.checkScrollViewport).toBeTrue();
+
+    // changes flag back to false on original data
+    expect(uiData.checkScrollViewport).toBeFalse();
+    await presenterWithCopyCallback.onAppEvent(new ActiveTraceChanged(trace));
+    expect(uiData.checkScrollViewport).toBeFalse();
+  });
+
   function makeElement(): HTMLElement {
     const element = document.createElement('div');
     element.style.height = '5px';

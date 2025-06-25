@@ -44,6 +44,7 @@ export class UiData implements UiDataLog {
   ) {}
 
   isFetchingData = false;
+  checkScrollViewport = false;
 
   highlightedProperty: string = '';
   dispatchPropertiesTree: UiPropertyTreeNode | undefined;

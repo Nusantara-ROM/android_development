@@ -68,6 +68,7 @@ import {UiData} from './ui_data';
           [showTraceEntryTimes]="false"
           [showCurrentTimeButton]="false"
           [isFetchingData]="inputData?.isFetchingData"
+          [checkScrollViewport]="inputData?.checkScrollViewport"
           (collapseButtonClicked)="sections.onCollapseStateChange(CollapsibleSectionType.LOG, true)"></log-view>
 
       <div class="properties" *ngIf="!arePropertiesCollapsed()">

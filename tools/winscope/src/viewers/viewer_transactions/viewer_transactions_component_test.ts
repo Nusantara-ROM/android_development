@@ -34,6 +34,7 @@ class ViewerTransactionsComponentTest extends AbstractLogViewerComponentTest<Vie
   protected override readonly testProperties = true;
   protected override readonly hasCurrentTimeButton = true;
   protected override readonly testScroll = true;
+  protected override readonly initialEntries = 6;
   protected override readonly propertiesSectionTitle =
     'PROPERTIES - PROTO DUMP';
   protected override readonly propertiesPlaceholder =
@@ -73,14 +74,18 @@ class ViewerTransactionsComponentTest extends AbstractLogViewerComponentTest<Vie
 
     const entry1 = new TransactionsEntry(
       trace.getEntry(0),
-      Array.from({length: 8}, () => this.testField),
+      Array.from({length: 7}, () => this.testField).concat([
+        {
+          spec: {
+            name: 'Test Column',
+            cssClass: 'test-class-flags',
+            columnType: TransactionColumnType.FLAGS,
+          },
+          value: 'VALUE',
+        },
+      ]),
       async () => propertiesTree,
     );
-    entry1.fields[7].spec = {
-      name: 'Test Column',
-      cssClass: 'test-class',
-      columnType: TransactionColumnType.FLAGS,
-    };
 
     const uiData = new UiData(
       [new LogHeader(this.testSpec, new LogSelectFilter([]))],
@@ -125,6 +130,7 @@ class ViewerTransactionsComponentTest extends AbstractLogViewerComponentTest<Vie
       UiPropertyTreeNode.from(propertiesTree),
       {},
     );
+
     const shortMessage = 'flag1 | flag2';
     const longMessage = shortMessage.repeat(20);
     const traceEntry = trace.getEntry(0);
