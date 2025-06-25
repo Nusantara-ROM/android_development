@@ -105,25 +105,6 @@ export class GoldensService {
     );
   }
 
-  switchMode(mode : String) : Observable<MotionGolden[]> {
-    return this.http
-    .post<MotionGolden[]>(
-      `${this.serverRoot}/service/mode`,
-      { mode },
-      {
-        headers: {
-          ...this.defaultHeaders,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    .pipe(
-      tap((artifacts) => console.log(`fetched ${artifacts.length} goldens for testMode : ${mode}`)),
-      catchError(this.handleError<MotionGolden[]>('e'))
-    );
-
-  }
-
   getActualGoldenData(golden: MotionGolden): Observable<MotionGoldenData> {
     return this.http
       .get<MotionGoldenData>(`${golden.actualUrl}`, {
@@ -164,6 +145,25 @@ export class GoldensService {
       );
   }
 
+  switchMode(mode : String) : Observable<MotionGolden[]> {
+      return this.http
+      .post<MotionGolden[]>(
+        `${this.serverRoot}/service/mode`,
+        { mode },
+        {
+          headers: {
+            ...this.defaultHeaders,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .pipe(
+        tap((artifacts) => console.log(`fetched ${artifacts.length} goldens for testMode : ${mode}`)),
+        catchError(this.handleError<MotionGolden[]>('e'))
+      );
+
+    }
+
   updateGolden(golden: MotionGolden): Observable<void> {
     return this.http
       .put<void>(
@@ -177,6 +177,23 @@ export class GoldensService {
           golden.updated = true;
         }),
         catchError(this.handleError<void>('update'))
+      );
+  }
+
+  getTestModes() : Observable<string[]>{
+    return this.http
+      .get<string[]>(
+        `${this.serverRoot}/service/testModes/list`,
+       {
+          headers: {
+            ...this.defaultHeaders,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .pipe(
+        tap((x) => console.log(`Got response as ${x.toString()}`)),
+        catchError(this.handleError<string[]>('e'))
       );
   }
 

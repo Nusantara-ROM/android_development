@@ -8,19 +8,12 @@
       </button>
     </div>
 <div class="button-dropdown-container">
-  <button mat-raised-button color="primary" [matMenuTriggerFor]="appMenu">
-     <span *ngIf="selectedMode && selectedMode.trim().length > 0">
-    Test Mode: {{ selectedMode }}
-  </span>
-  <span *ngIf="!selectedMode || selectedMode.trim().length === 0">
-    Select Mode
-  </span>
-  </button>
+  <test-mode-list
+    [testModes]="testModes"
+    (selectedTestMode)="switchMode($event)"
+   >
 
-  <mat-menu #appMenu="matMenu"> <button mat-menu-item *ngFor="let testMode of testModes" (click)="onTestModeSelected(testMode)">
-      <span>{{ testMode }}</span>
-    </button>
-  </mat-menu>
+  </test-mode-list>
 </div>
 </mat-toolbar>
 

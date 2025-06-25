@@ -1,0 +1,34 @@
+<div class="mt-6 relative w-full max-w-sm mx-auto mb-6">
+  <button mat-button type="button" [matMenuTriggerFor]="appMenu"
+    class="relative flex justify-between items-center w-full min-h-[40px] px-4 py-2 text-left bg-white border border-blue-500 rounded-lg shadow-sm
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer
+           transition-all duration-200 ease-in-out text-gray-700">
+
+    <span class="block truncate pr-4">
+      <span class="text-blue-600 text-sm font-medium uppercase" *ngIf="selectedMode && selectedMode.trim().length > 0">
+        Test Mode: {{ selectedMode }}
+      </span>
+      <span class="text-blue-700 text-sm font-medium uppercase" *ngIf="!selectedMode || selectedMode.trim().length === 0">
+        Select Mode
+      </span>
+    </span>
+
+    <span class="ml-2 flex items-center pr-2 pointer-events-none">
+      <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+        aria-hidden="true">
+        <path fill-rule="evenodd"
+          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+          clip-rule="evenodd" />
+      </svg>
+    </span>
+  </button>
+
+  <mat-menu #appMenu="matMenu"
+    class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200
+           py-1 max-h-60 overflow-y-auto focus:outline-none">
+    <button mat-menu-item *ngFor="let action of testModes" (click)="onActionSelected(action)"
+      class="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center text-gray-800">
+      <span class="text-xs">{{ action.toUpperCase() }}</span>
+    </button>
+  </mat-menu>
+</div>
