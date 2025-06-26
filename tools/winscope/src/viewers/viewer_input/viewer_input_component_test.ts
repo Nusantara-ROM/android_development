@@ -32,7 +32,8 @@ import {ViewerInputComponent} from './viewer_input_component';
 
 class ViewerInputComponentTest extends AbstractLogViewerComponentTest<ViewerInputComponent> {
   protected override readonly testProperties = true;
-  protected override readonly testScroll = false;
+  protected override readonly testScroll = true;
+  protected override readonly initialEntries = 30;
   protected override readonly hasCurrentTimeButton = false;
   protected override readonly propertiesSectionTitle = 'EVENT DETAILS';
   protected override readonly propertiesPlaceholder = 'No selected entry.';
@@ -124,6 +125,23 @@ class ViewerInputComponentTest extends AbstractLogViewerComponentTest<ViewerInpu
       RectsComponent,
       UserOptionsComponent,
     ]);
+  }
+
+  protected override async setUpTestEnvironmentForScroll(): Promise<
+    [DOMTestHelper<ViewerInputComponent>, CdkVirtualScrollViewport]
+  > {
+    const uiData = UiData.createEmpty();
+    uiData.headers = [new LogHeader(this.testSpec, new LogSelectFilter([]))];
+    uiData.selectedIndex = 0;
+    uiData.rectsToDraw = [];
+    uiData.entries = Array.from({length: 200}, () => this.createInputEntry());
+
+    const [dom, viewport] = await this.initializeTestEnvironment(
+      uiData,
+      ViewerInputComponent,
+      [RectsComponent, UserOptionsComponent],
+    );
+    return [dom, viewport];
   }
 
   private createInputEntry(): InputEntry {

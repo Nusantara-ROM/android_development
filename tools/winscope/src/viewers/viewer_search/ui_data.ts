@@ -42,6 +42,7 @@ export class SearchResult {
   scrollToIndex: undefined | number;
   currentIndex: undefined | number;
   isFetchingData = false;
+  checkScrollViewport = false;
 
   constructor(readonly headers: LogHeader[], readonly entries: LogEntry[]) {}
 }

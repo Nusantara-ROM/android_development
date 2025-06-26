@@ -28,6 +28,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -70,11 +71,11 @@ export abstract class AbstractLogViewerComponentTest<
 
   execute() {
     describe('Log viewer component', () => {
-      let dom: DOMTestHelper<T>;
-      let viewport: CdkVirtualScrollViewport;
-      let component: T;
-
       describe('common', () => {
+        let dom: DOMTestHelper<T>;
+        let viewport: CdkVirtualScrollViewport;
+        let component: T;
+
         beforeEach(async () => {
           [dom, viewport, component] = await this.setUpTestEnvironment();
         });
@@ -95,7 +96,6 @@ export abstract class AbstractLogViewerComponentTest<
         });
 
         it('renders entries with field values', () => {
-          expect(dom.find('.scroll')).toBeDefined();
           const entry = dom.get(
             `.scroll .entry .${this.testSpec.cssClass.split(' ')[0]}`,
           );
@@ -107,6 +107,29 @@ export abstract class AbstractLogViewerComponentTest<
           expect(dom.find('.go-to-current-time') !== undefined).toEqual(
             this.hasCurrentTimeButton,
           );
+        });
+
+        it('passes data to log component', () => {
+          const logComponent = assertDefined(component.logComponent);
+          expect(logComponent.isFetchingData).toBeFalse();
+          expect(logComponent.checkScrollViewport).toBeFalse();
+          expect(logComponent.selectedIndex).not.toEqual(10);
+          expect(logComponent.scrollToIndex).not.toEqual(20);
+          expect(logComponent.currentIndex).not.toEqual(30);
+
+          const inputData = assertDefined(component.inputData);
+          inputData.checkScrollViewport = true;
+          inputData.isFetchingData = true;
+          inputData.selectedIndex = 10;
+          inputData.scrollToIndex = 20;
+          inputData.currentIndex = 30;
+          dom.detectChanges();
+
+          expect(logComponent.isFetchingData).toBeTrue();
+          expect(logComponent.checkScrollViewport).toBeTrue();
+          expect(logComponent.selectedIndex).toEqual(10);
+          expect(logComponent.scrollToIndex).toEqual(20);
+          expect(logComponent.currentIndex).toEqual(30);
         });
 
         if (this.testProperties) {
@@ -138,6 +161,9 @@ export abstract class AbstractLogViewerComponentTest<
 
       if (this.testScroll) {
         describe('scroll', () => {
+          let dom: DOMTestHelper<T>;
+          let viewport: CdkVirtualScrollViewport;
+
           beforeEach(async () => {
             [dom, viewport] = this.setUpTestEnvironmentForScroll
               ? await this.setUpTestEnvironmentForScroll()
@@ -145,7 +171,9 @@ export abstract class AbstractLogViewerComponentTest<
           });
 
           it('renders initial state', () => {
-            expect(dom.findAll('.entry').length).toEqual(20);
+            expect(dom.findAll('.entry').length).toEqual(
+              assertDefined(this.initialEntries),
+            );
           });
 
           it('gets data length', () => {
@@ -153,7 +181,10 @@ export abstract class AbstractLogViewerComponentTest<
           });
 
           it('should get the rendered range', () => {
-            expect(viewport.getRenderedRange()).toEqual({start: 0, end: 20});
+            expect(viewport.getRenderedRange()).toEqual({
+              start: 0,
+              end: assertDefined(this.initialEntries),
+            });
           });
 
           it('should scroll to index in large jumps', () => {
@@ -233,6 +264,7 @@ export abstract class AbstractLogViewerComponentTest<
         MatTooltipModule,
         HttpClientModule,
         MatSliderModule,
+        MatProgressSpinnerModule,
       ],
       declarations,
     }).compileComponents();
@@ -241,6 +273,12 @@ export abstract class AbstractLogViewerComponentTest<
     const component = fixture.componentInstance;
     const dom = new DOMTestHelper(fixture, fixture.nativeElement);
     (component as any).inputData = initialUiData;
+    dom.detectChanges();
+    const scrollElement = dom.get('.scroll').getHTMLElement();
+    scrollElement.style.minHeight = '720px';
+    scrollElement.style.maxHeight = '720px';
+    scrollElement.style.minWidth = '1440px';
+    scrollElement.style.maxWidth = '1440px';
     dom.detectChanges();
     const viewport = assertDefined(component.logComponent?.scrollComponent);
     return [dom, viewport, component];
@@ -252,6 +290,7 @@ export abstract class AbstractLogViewerComponentTest<
   protected readonly hasFilters: boolean = true;
   protected readonly propertiesSectionTitle?: string;
   protected readonly propertiesPlaceholder?: string;
+  protected readonly initialEntries?: number;
 
   protected abstract setUpTestEnvironment(): Promise<
     [DOMTestHelper<T>, CdkVirtualScrollViewport, T]

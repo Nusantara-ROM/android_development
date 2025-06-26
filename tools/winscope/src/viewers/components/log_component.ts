@@ -197,7 +197,7 @@ import {
       .view-header {
         display: flex;
         flex-direction: column;
-        flex: 0 0 auto
+        flex: 0 0 auto;
       }
       .message-with-spinner {
         display: flex;
@@ -230,6 +230,7 @@ export class LogComponent {
   @Input() showTraceEntryTimes = true;
   @Input() padEntries = true;
   @Input() isFetchingData = false;
+  @Input() checkScrollViewport = false;
 
   @Output() collapseButtonClicked = new EventEmitter();
 
@@ -275,11 +276,16 @@ export class LogComponent {
   }
 
   ngOnChanges() {
+    if (this.checkScrollViewport) {
+      this.scrollComponent?.checkViewportSize();
+    }
     if (
       this.scrollToIndex !== undefined &&
       this.lastClickedTimestamp !==
         this.entries.at(this.scrollToIndex)?.traceEntry.getTimestamp()
     ) {
+      // scroll previous index to top, so when previous index is partially
+      // rendered the target index is still fully rendered
       this.scrollComponent?.scrollToIndex(Math.max(0, this.scrollToIndex - 1));
     }
   }
@@ -292,6 +298,7 @@ export class LogComponent {
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
     this.updateTableMarginEnd();
+    this.scrollComponent?.checkViewportSize();
   }
 
   onFilterChange(event: MatSelectChange, header: LogHeader) {

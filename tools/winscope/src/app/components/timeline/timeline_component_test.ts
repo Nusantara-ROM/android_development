@@ -1079,6 +1079,8 @@ describe('TimelineComponent', () => {
     spyOnProperty(wheelEvent, 'deltaY').and.returnValue(-200);
     spyOnProperty(wheelEvent, 'deltaX').and.returnValue(0);
     spyOnProperty(wheelEvent, 'y').and.returnValue(10);
+    dom.get('single-timeline').getHTMLElement().style.maxWidth = '500px';
+    dom.detectChanges();
     dom.get('single-timeline').dispatchEvent(wheelEvent);
     expect(expandedDrawSpy).toHaveBeenCalledTimes(5); // 3 entries total + 2 selected
     expect(miniDrawSpy).toHaveBeenCalledTimes(1); // all on one canvas so spy called once

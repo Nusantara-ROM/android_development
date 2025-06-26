@@ -16,6 +16,7 @@
 
 import {Clipboard, ClipboardModule} from '@angular/cdk/clipboard';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import {Component, ViewChild} from '@angular/core';
 import {ComponentFixtureAutoDetect, TestBed} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -64,8 +65,8 @@ describe('LogComponent', () => {
   const testColumn2: ColumnSpec = {name: 'test2', cssClass: 'test-2'};
   const testColumn3: ColumnSpec = {name: 'test3', cssClass: 'test-3'};
 
-  let component: LogComponent;
-  let dom: DOMTestHelper<LogComponent>;
+  let component: TestHostComponent;
+  let dom: DOMTestHelper<TestHostComponent>;
   let mockCopyText: jasmine.Spy;
 
   beforeEach(async () => {
@@ -91,6 +92,7 @@ describe('LogComponent', () => {
         ClipboardModule,
       ],
       declarations: [
+        TestHostComponent,
         LogComponent,
         SelectWithFilterComponent,
         CollapsedSectionsComponent,
@@ -100,7 +102,7 @@ describe('LogComponent', () => {
         VariableHeightScrollDirective,
       ],
     }).compileComponents();
-    const fixture = TestBed.createComponent(LogComponent);
+    const fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
     dom = new DOMTestHelper(fixture, fixture.nativeElement);
     setComponentInputData();
@@ -127,7 +129,7 @@ describe('LogComponent', () => {
     component.currentIndex = 1;
     dom.detectChanges();
     const spy = spyOn(
-      assertDefined(component.scrollComponent),
+      assertDefined(component.logComponent?.scrollComponent),
       'scrollToIndex',
     );
     dom.findAndClick('.go-to-current-time');
@@ -263,7 +265,7 @@ describe('LogComponent', () => {
     const entry = dom.get('.entry[item-id="1"]');
     entry.checkClassName('selected', false);
     const spy = spyOn(
-      assertDefined(component.scrollComponent),
+      assertDefined(component.logComponent?.scrollComponent),
       'scrollToIndex',
     );
     entry.click();
@@ -292,9 +294,10 @@ describe('LogComponent', () => {
     const entry = dom.get('.scroll .entry');
     entry.checkTextExact('1ns Test tag 1123 2ns');
 
-    const spy = spyOn(component, 'areMultipleDatesPresent').and.returnValue(
-      true,
-    );
+    const spy = spyOn(
+      assertDefined(component.logComponent),
+      'areMultipleDatesPresent',
+    ).and.returnValue(true);
     dom.detectChanges();
     entry.checkTextExact('1ns Test tag 1123 2ns');
 
@@ -339,6 +342,41 @@ describe('LogComponent', () => {
     dom.detectChanges();
     dom.dispatchEventInDocument(keydownEnter);
     expect(entry).toEqual(component.entries[1].traceEntry);
+  });
+
+  it('checks scroll viewport size if flag set', () => {
+    const spy = spyOn(
+      assertDefined(component.logComponent?.scrollComponent),
+      'checkViewportSize',
+    ).and.callThrough();
+
+    component.checkScrollViewport = true;
+    dom.detectChanges();
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    component.checkScrollViewport = false;
+    dom.detectChanges();
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('checks scroll viewport size on window resize', () => {
+    const spy = spyOn(
+      assertDefined(component.logComponent?.scrollComponent),
+      'checkViewportSize',
+    ).and.callThrough();
+    window.dispatchEvent(new Event('resize'));
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('scrolls to scrollToIndex - 1', () => {
+    const spy = spyOn(
+      assertDefined(component.logComponent?.scrollComponent),
+      'scrollToIndex',
+    ).and.callThrough();
+
+    component.scrollToIndex = 1;
+    dom.detectChanges();
+    expect(spy).toHaveBeenCalledOnceWith(0);
   });
 
   function setComponentInputData(elapsed = true) {
@@ -395,7 +433,7 @@ describe('LogComponent', () => {
   }
 
   function checkEntryPropagatedOnTimestampClick(
-    button: DOMTestHelper<LogComponent>,
+    button: DOMTestHelper<TestHostComponent>,
   ) {
     let entry: TraceEntry<object> | undefined;
     dom.addEventListener(ViewerEvents.TimestampClick, (event) => {
@@ -404,5 +442,33 @@ describe('LogComponent', () => {
     });
     button.click();
     expect(entry).toBeDefined();
+  }
+
+  @Component({
+    selector: 'host-component',
+    template: `
+        <log-view
+          [entries]="entries"
+          [headers]="headers"
+          [currentIndex]="currentIndex"
+          [selectedIndex]="selectedIndex"
+          [scrollToIndex]="scrollToIndex"
+          [traceType]="traceType"
+          [isFetchingData]="isFetchingData"
+          [checkScrollViewport]="checkScrollViewport"
+        ></log-view>
+      `,
+  })
+  class TestHostComponent {
+    currentIndex: number | undefined;
+    selectedIndex: number | undefined;
+    scrollToIndex: number | undefined;
+    entries: LogEntry[] = [];
+    headers: LogHeader[] = [];
+    traceType: TraceType | undefined;
+    isFetchingData = false;
+    checkScrollViewport = false;
+
+    @ViewChild(LogComponent) logComponent: LogComponent | undefined;
   }
 });

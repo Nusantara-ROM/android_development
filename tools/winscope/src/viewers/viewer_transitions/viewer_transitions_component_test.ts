@@ -32,6 +32,7 @@ class ViewerTransitionsComponentTest extends AbstractLogViewerComponentTest<View
   protected override readonly testProperties = true;
   protected override readonly hasCurrentTimeButton = false;
   protected override readonly testScroll = true;
+  protected override readonly initialEntries = 6;
   protected override readonly propertiesSectionTitle = 'SELECTED TRANSITION';
   protected override readonly propertiesPlaceholder =
     'No current or selected transition.';

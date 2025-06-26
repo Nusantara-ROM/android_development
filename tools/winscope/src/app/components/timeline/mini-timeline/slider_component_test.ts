@@ -90,12 +90,14 @@ describe('SliderComponent', () => {
     });
     dom.detectChanges();
 
-    const sliderWidth = component.sliderBox.nativeElement.offsetWidth;
+    const sliderWidth = assertDefined(component.sliderBox).nativeElement
+      .offsetWidth;
     expect(component.sliderWidth).toEqual(sliderWidth / 2);
     expect(component.dragPosition.x).toEqual(sliderWidth / 4);
   });
 
   it('has min width', () => {
+    dom.getHTMLElement().style.width = '1600px';
     component.fullRange = new TimeRange(time100, time200);
     component.zoomRange = new TimeRange(time125, time126);
 
@@ -110,7 +112,8 @@ describe('SliderComponent', () => {
     });
     dom.detectChanges();
 
-    const sliderWidth = component.sliderBox.nativeElement.offsetWidth;
+    const sliderWidth = assertDefined(component.sliderBox).nativeElement
+      .offsetWidth;
     expect(component.sliderWidth).toEqual(MIN_SLIDER_WIDTH);
     expect(component.dragPosition.x).toEqual(
       sliderWidth / 4 - MIN_SLIDER_WIDTH / 2,
@@ -124,12 +127,9 @@ describe('SliderComponent', () => {
     const initialSliderXPos = slider.getBoundingClientRect().left;
     const initialCursorXPos = cursor.getBoundingClientRect().left;
 
-    spyOnProperty(
-      component.sliderBox.nativeElement,
-      'offsetWidth',
-      'get',
-    ).and.returnValue(100);
-    expect(component.sliderBox.nativeElement.offsetWidth).toEqual(100);
+    const box = assertDefined(component.sliderBox);
+    spyOnProperty(box.nativeElement, 'offsetWidth', 'get').and.returnValue(100);
+    expect(box.nativeElement.offsetWidth).toEqual(100);
 
     slider.style.width = '587px';
     window.dispatchEvent(new Event('resize'));
