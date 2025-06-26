@@ -117,6 +117,7 @@ specified outside of a package.
 | `test_data`             | string => list of strings | `{}`    | yes         | Add the given files to the given tests' `data` property. The key is the test source filename relative to the crate |
 | `whole_static_libs`     | list of strings           | `[]`    | yes         | Static libraries in this list will instead be added as whole_static_libs.                                          |
 | `exported_c_header_dir` | list of paths             | `[]`    | yes         | Directories with headers to export for C usage.                                                                    |
+| `extra_srcs`            | list of paths             | `[]`    | yes         | Additional sources that should be listed as inputs in `srcs`.                                                      |
 
 ## Auto-config
 

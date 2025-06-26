@@ -1137,7 +1137,11 @@ fn crate_to_bp_modules(
         }
 
         m.props.set("crate_root", crate_.main_src.clone());
+
         m.props.set_if_nonempty("srcs", extra_srcs.to_owned());
+        if !package_cfg.extra_srcs.is_empty() {
+            m.props.set_or_extend("srcs", package_cfg.extra_srcs.clone());
+        }
 
         m.props.set("edition", crate_.edition.clone());
         m.props.set_if_nonempty("features", crate_.features.clone());
