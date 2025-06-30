@@ -77,12 +77,12 @@ describe('ExpandedTimelineComponent', () => {
     dom = new DOMTestHelper(fixture, fixture.nativeElement);
     timelineData = new TimelineData();
     const traces = new TracesBuilder()
-      .setEntries(TraceType.SURFACE_FLINGER, [{}])
-      .setTimestamps(TraceType.SURFACE_FLINGER, [time10])
-      .setEntries(TraceType.WINDOW_MANAGER, [{}])
-      .setTimestamps(TraceType.WINDOW_MANAGER, [time11])
-      .setEntries(TraceType.TRANSACTIONS, [{}])
-      .setTimestamps(TraceType.TRANSACTIONS, [time12])
+      .setEntries(TraceType.SURFACE_FLINGER, [{}, {}])
+      .setTimestamps(TraceType.SURFACE_FLINGER, [time10, time10])
+      .setEntries(TraceType.WINDOW_MANAGER, [{}, {}])
+      .setTimestamps(TraceType.WINDOW_MANAGER, [time11, time11])
+      .setEntries(TraceType.TRANSACTIONS, [{}, {}])
+      .setTimestamps(TraceType.TRANSACTIONS, [time12, time12])
       .setEntries(TraceType.TRANSITION, [
         new HierarchyTreeBuilder()
           .setId('TransitionsTraceEntry')
@@ -102,7 +102,7 @@ describe('ExpandedTimelineComponent', () => {
           .build(),
       ])
       .setTimestamps(TraceType.TRANSITION, [time10, time60])
-      .setTimestamps(TraceType.PROTO_LOG, [time12])
+      .setTimestamps(TraceType.PROTO_LOG, [time12, time12])
       .build();
     await timelineData.initialize(
       traces,
@@ -130,13 +130,13 @@ describe('ExpandedTimelineComponent', () => {
     dom.detectChanges();
 
     const singleTimelines = assertDefined(component.singleTimelines);
-    expect(singleTimelines.length).toBe(4);
+    expect(singleTimelines.length).toEqual(4);
 
     // initially only first entry of SF is set
     singleTimelines.forEach((timeline) => {
       if (assertDefined(timeline.trace).type === TraceType.SURFACE_FLINGER) {
         const entry = assertDefined(timeline.selectedEntry);
-        expect(entry.getFullTrace().type).toBe(TraceType.SURFACE_FLINGER);
+        expect(entry.getFullTrace().type).toEqual(TraceType.SURFACE_FLINGER);
       } else {
         expect(timeline.selectedEntry).toBeUndefined();
       }
@@ -156,7 +156,7 @@ describe('ExpandedTimelineComponent', () => {
     dom.detectChanges();
 
     const singleTimelines = assertDefined(component.singleTimelines);
-    expect(singleTimelines.length).toBe(4);
+    expect(singleTimelines.length).toEqual(4);
 
     singleTimelines.forEach((timeline) => {
       // protolog and transactions traces have no timestamps before current position

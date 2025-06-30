@@ -28,7 +28,7 @@ export class TraceEntryFinder {
       return undefined;
     }
 
-    if (trace.isDumpWithoutTimestamp()) {
+    if (trace.isDump()) {
       // always display dumps regardless of the current trace position
       return trace.getEntry(0);
     }
