@@ -111,7 +111,7 @@ export class CrossToolProtocol
     if (!OriginAllowList.isAllowed(event.origin)) {
       console.warn(
         'Cross-tool protocol received message from unauthorized origin:',
-        event.origin
+        event.origin,
       );
       return;
     }

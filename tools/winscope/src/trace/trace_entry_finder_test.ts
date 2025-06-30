@@ -60,9 +60,19 @@ describe('TraceEntryFinder', () => {
     ).toBeUndefined();
   });
 
-  it('returns sole entry of dump regardless of position', () => {
+  it('returns sole entry of dump without timestamp regardless of position', () => {
     const dump = new TraceBuilder<string>()
       .setTimestamps([TimestampConverterUtils.makeZeroTimestamp()])
+      .setEntries(['entry-0'])
+      .build();
+    expect(TraceEntryFinder.findCorrespondingEntry(dump, posTs10)).toEqual(
+      dump.getEntry(0),
+    );
+  });
+
+  it('returns sole entry of dump with timestamp regardless of position', () => {
+    const dump = new TraceBuilder<string>()
+      .setTimestamps([ts14])
       .setEntries(['entry-0'])
       .build();
     expect(TraceEntryFinder.findCorrespondingEntry(dump, posTs10)).toEqual(
