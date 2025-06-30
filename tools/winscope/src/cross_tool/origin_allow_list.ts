@@ -29,8 +29,16 @@ export class OriginAllowList {
     new RegExp('^https://localhost([^\\/]*\\.)*google\\.com:(\\d+)?$'), // local apps
   ];
 
+  private static readonly EXPECTED_DENY_LIST_DEV = [
+    new RegExp('^(http|https)://localhost:8080$'), // Winscope tool
+  ];
+
+  private static readonly EXPECTED_DENY_LIST_KARMA_TEST = [
+    new RegExp('^(http|https)://localhost:9877$'), // Karma test environment
+  ];
+
   static isAllowed(originUrl: string, mode = globalConfig.MODE): boolean {
-    const list = OriginAllowList.getList(mode);
+    const list = OriginAllowList.getAllowList(mode);
 
     for (const regex of list) {
       if (regex.test(originUrl)) {
@@ -41,14 +49,38 @@ export class OriginAllowList {
     return false;
   }
 
-  private static getList(mode: typeof globalConfig.MODE): RegExp[] {
+  static isUnexpected(originUrl: string, mode = globalConfig.MODE): boolean {
+    const list = OriginAllowList.getExpectedDenyList(mode);
+
+    for (const regex of list) {
+      if (regex.test(originUrl)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private static getAllowList(mode: typeof globalConfig.MODE): RegExp[] {
     switch (mode) {
       case 'DEV':
-        return OriginAllowList.ALLOW_LIST_DEV;
       case 'KARMA_TEST':
         return OriginAllowList.ALLOW_LIST_DEV;
       case 'PROD':
         return OriginAllowList.ALLOW_LIST_PROD;
+      default:
+        throw new Error(`Unhandled mode: ${globalConfig.MODE}`);
+    }
+  }
+
+  private static getExpectedDenyList(mode: typeof globalConfig.MODE): RegExp[] {
+    switch (mode) {
+      case 'DEV':
+        return OriginAllowList.EXPECTED_DENY_LIST_DEV;
+      case 'KARMA_TEST':
+        return OriginAllowList.EXPECTED_DENY_LIST_KARMA_TEST;
+      case 'PROD':
+        return [];
       default:
         throw new Error(`Unhandled mode: ${globalConfig.MODE}`);
     }
