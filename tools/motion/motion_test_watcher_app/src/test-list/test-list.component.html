@@ -15,10 +15,10 @@
 
 <div *ngIf="totalTestCount > 0">
   <div class="p-4 bg-white rounded-md">
-    <div class="flex justify-between items-center pb-2 mb-2">
+    <div class="flex justify-between items-center pb-2 mb-2 text-sm 2xl:text-base">
       <select
         id="statusFilter"
-        class="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+        class="mt-1 block pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
         [(ngModel)]="filterStatus"
         (change)="onFilterStatusChange()"
       >
@@ -53,11 +53,11 @@
         (opened)="panelOpened(golden)"
         [ngClass]="getResultClass(golden)"
       >
-        <mat-expansion-panel-header class="flex items-center">
+        <mat-expansion-panel-header class="flex items-center" matTooltip={{golden.testMethodName}} matTooltipPosition="right">
           <mat-panel-title class="flex-1 min-w-0 flex items-center">
             <div *ngIf="showCheckBoxes" class="flex-shrink-0">
               <label for="golden-checkbox-{{ golden.id }}"
-                class="flex items-center cursor-pointer p-3 rounded-full hover:bg-gray-200 transition-colors"
+                class="flex items-center text-sm 2xl:text-base cursor-pointer p-3 rounded-full hover:bg-gray-200 transition-colors"
                 (click)="$event.stopPropagation()">
                 <input class="h-5 w-5" id="golden-checkbox-{{ golden.id }}" type="checkbox"
                   [checked]="isGoldenSelected(golden)" (change)="toggleGoldenSelection(golden, $event)"
@@ -78,11 +78,11 @@
             </button>
           </div>
         </mat-expansion-panel-header>
-        <div class="p-4">
-          <div class="font-medium text-gray-700">
+        <div class="p-2 pt-0">
+          <div class="font-medium text-sm 2xl:text-base text-gray-700">
             {{ golden.testClassName }}
           </div>
-          <div class="text-gray-600">Golden: {{ golden.label }}</div>
+          <div class="text-gray-600 text-sm 2xl:text-base break-all">Golden: {{ golden.label }}</div>
           <div class="text-gray-500 text-sm">
             {{ golden.testTime | date : "medium" }}
           </div>

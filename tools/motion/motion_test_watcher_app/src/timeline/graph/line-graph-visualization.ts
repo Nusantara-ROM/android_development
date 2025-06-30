@@ -269,11 +269,11 @@ export class LineGraphVisualization implements Visualization {
           YmarkerLine.attr('x1', snappedXPos).attr('x2', snappedXPos);
 
           tooltipText
-            .text(`Actual: ${dataPoint.actualValue}`)
+            .text(`${this.solidLineLegend}: ${dataPoint.actualValue}`)
             .append('tspan')
             .attr('x', 0)
             .attr('dy', '1.2em')
-            .text(`Expected: ${dataPoint.expectedValue}`);
+            .text(`${this.dottedLineLegend}: ${dataPoint.expectedValue}`);
           const textBBox = (tooltipText.node() as SVGTextElement).getBBox();
           tooltipRect
             .attr('x', textBBox.x - 5)
