@@ -21,6 +21,9 @@ export enum MessageType {
   BUGREPORT,
   TIMESTAMP,
   FILES,
+
+  // Winscope-specific messages
+  TEST_FAILURE_INFO = 1000,
 }
 
 export enum TimestampType {
@@ -70,4 +73,10 @@ export class MessageFiles implements Message {
     public timestampNs?: bigint,
     public timestampType?: TimestampType,
   ) {}
+}
+
+export class MessageTestFailureInfo implements Message {
+  type = MessageType.TEST_FAILURE_INFO;
+
+  constructor(public stackTrace?: string) {}
 }
