@@ -231,12 +231,18 @@ describe('HierarchyPresenter', () => {
 
   it('robust to empty trace position update', async () => {
     await applyTracePositionUpdate();
+    presenter.applyPinnedItemChange(
+      assertDefined(presenter.getAllFormattedTrees()?.at(0)),
+    );
+
     expect(presenter.getCurrentEntryForTrace(trace)).toEqual(trace.getEntry(0));
     expect(presenter.getCurrentHierarchyTreesForTrace(trace)).toEqual([tree1]);
+    expect(presenter.getPinnedItems().length).toBeGreaterThan(0);
 
     await presenter.applyTracePositionUpdate([], '');
     expect(presenter.getCurrentEntryForTrace(trace)).toBeUndefined();
     expect(presenter.getCurrentHierarchyTreesForTrace(trace)).toBeUndefined();
+    expect(presenter.getPinnedItems()).toEqual([]);
   });
 
   it('adds diffs to hierarchy tree based on user option', async () => {

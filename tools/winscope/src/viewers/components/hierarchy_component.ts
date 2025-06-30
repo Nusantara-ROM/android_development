@@ -29,6 +29,7 @@ import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {PersistentStore} from 'common/store/persistent_store';
 import {Analytics} from 'logging/analytics';
 import {UserWarning} from 'messaging/user_warning';
+import {TRACE_INFO} from 'trace/trace_info';
 import {TraceType} from 'trace/trace_type';
 import {RectShowState} from 'viewers/common/rect_show_state';
 import {TableProperties} from 'viewers/common/table_properties';
@@ -94,7 +95,9 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
       </div>
     </div>
     <mat-divider></mat-divider>
-    <span class="mat-body-1 placeholder-text" *ngIf="showPlaceholderText()"> {{ placeholderText + ' Try changing timeline position.' }} </span>
+    <span
+      class="mat-body-1 placeholder-text"
+      *ngIf="showPlaceholderText()">{{ getPlaceholderText() }}</span>
     <div class="hierarchy-content tree-wrapper">
       <div class="trees">
         <tree-view
@@ -216,13 +219,25 @@ export class HierarchyComponent {
     this.elementRef.nativeElement.dispatchEvent(event);
   }
 
-  disableTooltip(el: HTMLElement) {
+  disableTooltip(el: HTMLElement): boolean {
     return !isElementOverflowing(el);
   }
 
-  getPinnedItemsPadding() {
+  getPinnedItemsPadding(): string {
     const addGutter = (this.rectIdToShowState?.size ?? 0) > 0;
     return `0px 10.5px 0px ${addGutter ? 22.5 : 10.5}px`;
+  }
+
+  getPlaceholderText(): string {
+    return (
+      this.placeholderText +
+      ` There may be no ${
+        this.dependencies.length > 0
+          ? TRACE_INFO[this.dependencies[0]].name + ' state'
+          : 'state for this trace'
+      } associated with the current state in the active trace.` +
+      ' Try changing timeline position.'
+    );
   }
 
   @HostListener('document:keydown', ['$event'])

@@ -369,13 +369,12 @@ export abstract class AbstractHierarchyViewerPresenter<
 
     const currentHierarchyTrees =
       this.hierarchyPresenter.getAllCurrentHierarchyTrees();
-    if (currentHierarchyTrees) {
-      const rectStartTime = Date.now();
-      this.rectsPresenter?.applyHierarchyTreesChange(currentHierarchyTrees);
-      this.logFetchComponentData(rectStartTime, 'rects');
 
-      await this.updatePropertiesTree();
-    }
+    const rectStartTime = Date.now();
+    this.rectsPresenter?.applyHierarchyTreesChange(currentHierarchyTrees ?? []);
+    this.logFetchComponentData(rectStartTime, 'rects');
+
+    await this.updatePropertiesTree();
   }
 
   protected async applyHighlightedNodeChange(node: UiHierarchyTreeNode) {
