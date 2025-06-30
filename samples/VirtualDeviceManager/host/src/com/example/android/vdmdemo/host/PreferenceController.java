@@ -76,7 +76,8 @@ final class PreferenceController {
             new BoolRule(R.string.pref_enable_custom_activity_policy, BAKLAVA,
                     Flags::activityControlApi),
 
-            new StringRule(R.string.pref_camera_policy, VANILLA_ICE_CREAM),
+            new StringRule(R.string.pref_camera_policy, VANILLA_ICE_CREAM)
+                    .withDefaultValue(String.valueOf(0)),
 
             new BoolRule(R.string.pref_enable_client_sensors, UPSIDE_DOWN_CAKE),
 

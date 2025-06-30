@@ -108,6 +108,11 @@ public final class VdmService extends Hilt_VdmService {
 
     private static final String ACTION_STOP = "com.example.android.vdmdemo.host.VdmService.STOP";
 
+    // Values from @array/camera_policy_values
+    private static final int CAMERA_POLICY_NO_CAMERAS = 0;
+    private static final int CAMERA_POLICY_DEFAULT_CAMERAS = 1;
+    private static final int CAMERA_POLICY_CLIENT_CAMERAS = 2;
+
     private int mRecordingAudioSessionId;
     private int mPlaybackAudioSessionId;
 
@@ -622,9 +627,9 @@ public final class VdmService extends Hilt_VdmService {
             virtualDeviceBuilder.setDevicePolicy(POLICY_TYPE_SENSORS, DEVICE_POLICY_CUSTOM);
         }
 
-        final String cameraPolicy = mPreferenceController.getString(R.string.pref_camera_policy);
-        if (cameraPolicy.equals(getString(R.string.no_cameras)) || cameraPolicy.equals(
-                getString(R.string.client_cameras))) {
+        final int cameraPolicy = mPreferenceController.getInt(R.string.pref_camera_policy);
+        if (cameraPolicy == CAMERA_POLICY_NO_CAMERAS
+                || cameraPolicy == CAMERA_POLICY_CLIENT_CAMERAS) {
             virtualDeviceBuilder.setDevicePolicy(POLICY_TYPE_CAMERA, DEVICE_POLICY_CUSTOM);
         }
 
@@ -649,13 +654,13 @@ public final class VdmService extends Hilt_VdmService {
                 new RunningVdmUidsTracker(getApplicationContext(), mPreferenceController,
                         mAudioStreamer, mAudioInjector));
 
-        if (!cameraPolicy.equals(getString(R.string.no_cameras))) {
+        if (cameraPolicy != CAMERA_POLICY_NO_CAMERAS) {
             if (mRemoteCameraManager != null) {
                 mRemoteCameraManager.close();
             }
             mRemoteCameraManager = new RemoteCameraManager(mVirtualDevice, mRemoteIo);
             mRemoteCameraManager.createCameras(mDeviceCapabilities.getCameraCapabilitiesList(),
-                    cameraPolicy.equals(getString(R.string.client_cameras)),
+                    cameraPolicy == CAMERA_POLICY_CLIENT_CAMERAS,
                     mPreferenceController.getBoolean(R.string.pref_duplicate_front_camera),
                     mPreferenceController.getBoolean(R.string.pref_duplicate_back_camera));
         }
@@ -820,7 +825,7 @@ public final class VdmService extends Hilt_VdmService {
                 });
         observers.put(R.string.pref_camera_policy, s -> {
             // reset the state of the camera preferences dependencies
-            if (s.equals(getString(R.string.no_cameras))) {
+            if (Integer.parseInt((String) s) == CAMERA_POLICY_NO_CAMERAS) {
                 mPreferenceController.setBoolean(R.string.pref_duplicate_front_camera, false);
                 mPreferenceController.setBoolean(R.string.pref_duplicate_back_camera, false);
             }
