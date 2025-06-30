@@ -53,13 +53,14 @@ import com.android.mechanics.debug.debugMotionValue
 import com.android.mechanics.demo.staging.rememberDistanceGestureContext
 import com.android.mechanics.demo.staging.rememberMotionValue
 import com.android.mechanics.demo.tuneable.Demo
+import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.effects.FixedValue
 import com.android.mechanics.spec.Mapping
 import com.android.mechanics.spec.MotionSpec
 import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 import com.android.mechanics.spec.builder.spatialMotionSpec
 
-object DirectionChangeDemo : Demo<Unit> {
+object DirectionChangeDemo : Demo<Unit>, HasMotionValueVisualization {
 
     var inputRange by mutableStateOf(0f..0f)
 

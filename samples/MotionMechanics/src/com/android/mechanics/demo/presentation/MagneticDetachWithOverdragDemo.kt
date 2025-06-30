@@ -53,6 +53,7 @@ import com.android.mechanics.demo.presentation.MagneticDetachWithOverdragDemo.in
 import com.android.mechanics.demo.staging.rememberDistanceGestureContext
 import com.android.mechanics.demo.staging.rememberMotionValue
 import com.android.mechanics.demo.tuneable.Demo
+import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.effects.MagneticDetach
 import com.android.mechanics.effects.Overdrag
 import com.android.mechanics.spec.InputDirection
@@ -62,7 +63,7 @@ import com.android.mechanics.spec.builder.fixedSpatialValueSpec
 import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 import com.android.mechanics.spec.builder.spatialMotionSpec
 
-object MagneticDetachWithOverdragDemo : Demo<Unit> {
+object MagneticDetachWithOverdragDemo : Demo<Unit>, HasMotionValueVisualization {
 
     var inputRange by mutableStateOf(0f..0f)
 

@@ -54,6 +54,7 @@ import com.android.mechanics.debug.debugMotionValue
 import com.android.mechanics.demo.staging.rememberDistanceGestureContext
 import com.android.mechanics.demo.staging.rememberMotionValue
 import com.android.mechanics.demo.tuneable.Demo
+import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.spec.Breakpoint
 import com.android.mechanics.spec.BreakpointKey
 import com.android.mechanics.spec.InputDirection
@@ -65,7 +66,7 @@ import com.android.mechanics.spec.SegmentKey
 import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 import com.android.mechanics.spec.builder.spatialDirectionalMotionSpec
 
-object DirectionSpecDemo : Demo<Unit> {
+object DirectionSpecDemo : Demo<Unit>, HasMotionValueVisualization {
     object Keys {
         val Start = BreakpointKey("Start")
         val Detach = BreakpointKey("Detach")

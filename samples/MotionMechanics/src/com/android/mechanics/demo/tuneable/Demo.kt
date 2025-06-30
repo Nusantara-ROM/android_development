@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.android.mechanics.demo.tuneable
 
 import androidx.compose.foundation.layout.Column
@@ -25,7 +27,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -46,7 +51,9 @@ interface Demo<T> {
     @Composable fun ColumnScope.ConfigUi(config: T, onConfigChanged: (T) -> Unit)
 
     @Composable fun DemoUi(config: T, modifier: Modifier)
+}
 
+interface HasMotionValueVisualization {
     val visualizationInputRange: ClosedFloatingPointRange<Float>
 
     val expandedGraphHeight: Dp
@@ -62,6 +69,7 @@ fun <T> Demo<T>.ConfigurableDemo(modifier: Modifier = Modifier) {
     var config by remember(defaultConfig) { mutableStateOf(defaultConfig) }
 
     var showConfigurationDialog by remember { mutableStateOf(false) }
+    var expressive by remember { mutableStateOf(true) }
 
     if (showConfigurationDialog) {
         ConfigDialog(
@@ -81,15 +89,32 @@ fun <T> Demo<T>.ConfigurableDemo(modifier: Modifier = Modifier) {
                 Spacer(Modifier.width(8.dp))
                 Text("Config")
             }
+
+            TextButton(onClick = { expressive = !expressive }) {
+                Text(if (expressive) "Expressive" else "Standard")
+            }
         }
 
-        DebugUi(
-            visualizationInputRange,
-            expandedGraphHeight,
-            collapsedGraphHeight,
-            modifier = modifier.fillMaxWidth().weight(1f, fill = true),
-        ) { contentModifier ->
-            DemoUi(config, contentModifier)
+        SectionContainer {
+            MaterialTheme(
+                motionScheme =
+                    remember(expressive) {
+                        if (expressive) MotionScheme.expressive() else MotionScheme.standard()
+                    }
+            ) {
+                if (this@ConfigurableDemo is HasMotionValueVisualization) {
+                    DebugUi(
+                        visualizationInputRange,
+                        expandedGraphHeight,
+                        collapsedGraphHeight,
+                        modifier = modifier.fillMaxWidth().weight(1f, fill = true),
+                    ) { contentModifier ->
+                        DemoUi(config, contentModifier)
+                    }
+                } else {
+                    DemoUi(config, modifier.fillMaxWidth().weight(1f, fill = true))
+                }
+            }
         }
     }
 }

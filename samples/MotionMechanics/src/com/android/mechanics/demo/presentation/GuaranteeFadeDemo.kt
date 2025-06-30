@@ -48,12 +48,13 @@ import com.android.mechanics.debug.debugMotionValueGraph
 import com.android.mechanics.demo.staging.rememberDistanceGestureContext
 import com.android.mechanics.demo.staging.rememberMotionValue
 import com.android.mechanics.demo.tuneable.Demo
+import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.spec.Guarantee
 import com.android.mechanics.spec.MotionSpec
 import com.android.mechanics.spec.builder.effectsDirectionalMotionSpec
 import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 
-object GuaranteeFadeDemo : Demo<Unit> {
+object GuaranteeFadeDemo : Demo<Unit>, HasMotionValueVisualization {
 
     var inputRange by mutableStateOf(0f..200f)
 
