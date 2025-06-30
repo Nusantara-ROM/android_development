@@ -49,16 +49,19 @@ export class OriginAllowList {
     return false;
   }
 
-  static isUnexpected(originUrl: string, mode = globalConfig.MODE): boolean {
+  static isUnauthorizedOriginExpected(
+    originUrl: string,
+    mode = globalConfig.MODE,
+  ): boolean {
     const list = OriginAllowList.getExpectedDenyList(mode);
 
     for (const regex of list) {
       if (regex.test(originUrl)) {
-        return false;
+        return true;
       }
     }
 
-    return true;
+    return false;
   }
 
   private static getAllowList(mode: typeof globalConfig.MODE): RegExp[] {
