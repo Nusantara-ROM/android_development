@@ -66,7 +66,7 @@ export class MockPresenter extends AbstractHierarchyViewerPresenter<UiDataHierar
     this.rectsPresenter = new RectsPresenter(
       {opt: {name: 'Test opt', enabled: false}},
       () => this.uiRects,
-      () => this.displays,
+      (rectsToDraw: UiRect[]) => (rectsToDraw.length > 0 ? this.displays : []),
     );
   }
 

@@ -43,8 +43,8 @@ import {UserOptions} from './user_options';
 import {ViewerEvents} from './viewer_events';
 
 describe('AbstractHierarchyViewerPresenter', () => {
-  const timestamp1 = TimestampConverterUtils.makeElapsedTimestamp(1n);
   const timestamp2 = TimestampConverterUtils.makeElapsedTimestamp(2n);
+  const timestamp3 = TimestampConverterUtils.makeElapsedTimestamp(3n);
   let uiData: UiDataHierarchy;
   let presenter: MockPresenter;
   let trace: Trace<HierarchyTreeNode>;
@@ -87,7 +87,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
           ])
           .build(),
       ])
-      .setTimestamps([timestamp1, timestamp2])
+      .setTimestamps([timestamp2, timestamp3])
       .build();
     selectedTree = UiHierarchyTreeNode.from(
       assertDefined((await trace.getEntry(0).getValue()).getChildByName('p1')),
@@ -120,7 +120,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
     const trace = new TraceBuilder<HierarchyTreeNode>()
       .setType(TraceType.SURFACE_FLINGER)
       .setEntries([selectedTree])
-      .setTimestamps([timestamp1])
+      .setTimestamps([timestamp2])
       .setIsCorrupted(true)
       .build();
     const traces = new Traces();
@@ -175,6 +175,20 @@ describe('AbstractHierarchyViewerPresenter', () => {
     ).toBeGreaterThan(0);
     expect(uiData.rectsToDraw?.length).toBeGreaterThan(0);
     expect(uiData.displays?.length).toBeGreaterThan(0);
+
+    await presenter.onHighlightedNodeChange(selectedTree);
+    expect(uiData.propertiesTree).toBeDefined();
+
+    await presenter.onAppEvent(
+      TracePositionUpdate.fromTimestamp(
+        TimestampConverterUtils.makeElapsedTimestamp(1n),
+      ),
+    );
+    expect(uiData.hierarchyTrees).toBeUndefined();
+    expect(uiData.pinnedItems.length).toEqual(0);
+    expect(uiData.rectsToDraw).toEqual([]);
+    expect(uiData.displays).toEqual([]);
+    expect(uiData.propertiesTree).toBeUndefined();
   });
 
   it('adds event listeners', () => {

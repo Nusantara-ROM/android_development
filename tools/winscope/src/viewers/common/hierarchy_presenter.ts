@@ -255,6 +255,7 @@ export class HierarchyPresenter {
     this.currentTrees = currTrees.length > 0 ? currTrees : undefined;
     this.previousTrees = prevTrees.length > 0 ? prevTrees : undefined;
     this.selectedTree = undefined;
+    this.pinnedItems = [];
 
     if (this.getHierarchyTreeNameStrategy && entries.length > 0) {
       entries.forEach((entry) => {
