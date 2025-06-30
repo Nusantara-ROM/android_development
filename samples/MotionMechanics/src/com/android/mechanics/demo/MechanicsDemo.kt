@@ -49,13 +49,13 @@ object DemoScreens {
 }
 
 @Composable
-fun MechanicsDemo() {
+fun MechanicsDemo(startDestination: String?) {
     val rootScreen = DemoScreens.Home
 
     Box(Modifier.fillMaxSize().systemBarsPadding()) {
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = rootScreen.identifier) {
-            screen(rootScreen, navController)
+            screen(rootScreen, navController, startDestination ?: "")
         }
     }
 }
