@@ -109,7 +109,7 @@ export class CrossToolProtocol
 
   private async onMessageReceived(event: MessageEvent) {
     if (!OriginAllowList.isAllowed(event.origin)) {
-      if (OriginAllowList.isUnexpected(origin)) {
+      if (!OriginAllowList.isUnauthorizedOriginExpected(event.origin)) {
         console.warn(
           'Cross-tool protocol received message from unauthorized origin:',
           event.origin,
