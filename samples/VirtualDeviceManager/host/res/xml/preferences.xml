@@ -101,9 +101,9 @@
         <ListPreference
             android:key="@string/pref_camera_policy"
             android:title="Camera policy"
-            android:entries="@array/camera_policy_options"
-            android:entryValues="@array/camera_policy_options"
-            android:defaultValue="@string/no_cameras"
+            android:entries="@array/camera_policy_labels"
+            android:entryValues="@array/camera_policy_values"
+            android:defaultValue="0"
             app:useSimpleSummaryProvider="true"
             app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat
