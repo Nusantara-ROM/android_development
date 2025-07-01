@@ -115,6 +115,7 @@ specified outside of a package.
 | `no_std`                | boolean                   | `false` | yes         | Don't link against `std`, only `core`.                                                                             |
 | `copy_out`              | boolean                   | `false` | yes         | Copy `build.rs` output to `./out/*` and add a genrule to copy `./out/*` to genrule output.                         |
 | `test_data`             | string => list of strings | `{}`    | yes         | Add the given files to the given tests' `data` property. The key is the test source filename relative to the crate |
+| `target_windows`        | boolean                   | `false` | yes         | Add a `target: { windows: { enabled: true } }` property to modules.
 | `whole_static_libs`     | list of strings           | `[]`    | yes         | Static libraries in this list will instead be added as whole_static_libs.                                          |
 | `exported_c_header_dir` | list of paths             | `[]`    | yes         | Directories with headers to export for C usage.                                                                    |
 | `extra_srcs`            | list of paths             | `[]`    | yes         | Additional sources that should be listed as inputs in `srcs`.                                                      |

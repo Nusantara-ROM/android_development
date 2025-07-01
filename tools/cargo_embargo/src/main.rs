@@ -1224,6 +1224,11 @@ fn crate_to_bp_modules(
                 m.props.set("min_sdk_version", min_sdk_version.clone());
             }
         }
+
+        if package_cfg.target_windows {
+            m.props.object("target").object("windows").set("enabled", true);
+        }
+
         if crate_type.is_test() {
             if let Some(data) =
                 package_cfg.test_data.get(crate_.main_src.to_string_lossy().as_ref())
@@ -1521,6 +1526,51 @@ mod tests {
                 }
             }]
         );
+    }
+
+    #[test]
+    fn crate_to_bp_target_windows() {
+        let c = Crate {
+            name: "name".to_string(),
+            package_name: "package_name".to_string(),
+            edition: "2021".to_string(),
+            types: vec![CrateType::Lib],
+            ..Default::default()
+        };
+        let cfg = VariantConfig { ..Default::default() };
+        let package_cfg = PackageVariantConfig { target_windows: true, ..Default::default() };
+        let modules = crate_to_bp_modules(&c, &cfg, &package_cfg, &[]).unwrap();
+
+        let mut windows_props = BpProperties::new();
+        windows_props.set("enabled", true);
+        let mut target_props = BpProperties::new();
+        target_props.map.insert("windows".to_string(), BpValue::Object(windows_props));
+
+        let expected_props = BpProperties {
+            map: [
+                (
+                    "apex_available".to_string(),
+                    BpValue::List(vec![
+                        BpValue::String("//apex_available:platform".to_string()),
+                        BpValue::String("//apex_available:anyapex".to_string()),
+                    ]),
+                ),
+                ("cargo_env_compat".to_string(), BpValue::Bool(true)),
+                ("crate_name".to_string(), BpValue::String("name".to_string())),
+                ("edition".to_string(), BpValue::String("2021".to_string())),
+                ("host_supported".to_string(), BpValue::Bool(true)),
+                ("name".to_string(), BpValue::String("libname".to_string())),
+                ("product_available".to_string(), BpValue::Bool(true)),
+                ("crate_root".to_string(), BpValue::String("".to_string())),
+                ("vendor_available".to_string(), BpValue::Bool(true)),
+                ("target".to_string(), BpValue::Object(target_props)),
+            ]
+            .into_iter()
+            .collect(),
+            raw_block: None,
+        };
+
+        assert_eq!(modules[0].props, expected_props);
     }
 
     #[test]

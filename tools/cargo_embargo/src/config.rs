@@ -443,6 +443,9 @@ pub struct PackageVariantConfig {
     /// Additional sources that should be listed as inputs in `srcs`.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub extra_srcs: Vec<PathBuf>,
+    /// Add a `target: { windows: { enabled: true } }` property to modules.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub target_windows: bool,
 }
 
 impl Default for PackageVariantConfig {
@@ -463,6 +466,7 @@ impl Default for PackageVariantConfig {
             whole_static_libs: Default::default(),
             exported_c_header_dir: Default::default(),
             extra_srcs: Default::default(),
+            target_windows: false,
         }
     }
 }
@@ -483,7 +487,8 @@ mod tests {
                 "another": {
                     "add_toplevel_block": "block.bp",
                     "device_supported": false,
-                    "force_rlib": true
+                    "force_rlib": true,
+                    "target_windows": true
                 },
                 "rulesmk": {
                     "rulesmk_patch": "patches/rules.mk.patch"
@@ -529,6 +534,7 @@ mod tests {
                                 PackageVariantConfig {
                                     device_supported: false,
                                     force_rlib: true,
+                                    target_windows: true,
                                     ..Default::default()
                                 },
                             ),
@@ -552,6 +558,7 @@ mod tests {
                                     alloc: false,
                                     device_supported: false,
                                     force_rlib: false,
+                                    target_windows: true,
                                     ..Default::default()
                                 },
                             ),
@@ -611,6 +618,7 @@ mod tests {
                         "argh".to_string(),
                         PackageVariantConfig {
                             dep_blocklist: vec!["bad_dep".to_string()],
+                            target_windows: true,
                             ..Default::default()
                         },
                     )]
@@ -631,6 +639,7 @@ mod tests {
                         PackageVariantConfig {
                             dep_blocklist: vec!["bad_dep".to_string()],
                             no_std: true,
+                            target_windows: true,
                             ..Default::default()
                         },
                     )]
@@ -656,7 +665,8 @@ mod tests {
       "add_toplevel_block": "block.bp",
       "dep_blocklist": [
         "bad_dep"
-      ]
+      ],
+      "target_windows": true
     }
   },
   "tests": true,
