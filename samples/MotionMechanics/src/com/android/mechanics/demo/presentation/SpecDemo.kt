@@ -54,6 +54,7 @@ import com.android.mechanics.demo.staging.rememberDistanceGestureContext
 import com.android.mechanics.demo.staging.rememberMotionValue
 import com.android.mechanics.demo.tuneable.Demo
 import com.android.mechanics.demo.tuneable.Dropdown
+import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.demo.tuneable.LabelledCheckbox
 import com.android.mechanics.spec.DirectionalMotionSpec
 import com.android.mechanics.spec.Guarantee
@@ -62,7 +63,7 @@ import com.android.mechanics.spec.MotionSpec
 import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 import com.android.mechanics.spec.builder.spatialDirectionalMotionSpec
 
-object SpecDemo : Demo<SpecDemo.Config> {
+object SpecDemo : Demo<SpecDemo.Config>, HasMotionValueVisualization {
     enum class Scenario(val label: String) {
         Empty("Simple"),
         Toggle("Toggle"),

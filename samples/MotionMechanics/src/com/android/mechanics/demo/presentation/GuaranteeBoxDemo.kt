@@ -60,6 +60,7 @@ import com.android.mechanics.demo.staging.rememberMotionValue
 import com.android.mechanics.demo.tuneable.Demo
 import com.android.mechanics.demo.tuneable.DpSlider
 import com.android.mechanics.demo.tuneable.Dropdown
+import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.demo.tuneable.SpringParameterSection
 import com.android.mechanics.spec.Guarantee
 import com.android.mechanics.spec.Mapping
@@ -69,7 +70,7 @@ import com.android.mechanics.spec.builder.spatialDirectionalMotionSpec
 import com.android.mechanics.spring.SpringParameters
 import kotlin.math.min
 
-object GuaranteeBoxDemo : Demo<GuaranteeBoxDemo.Config> {
+object GuaranteeBoxDemo : Demo<GuaranteeBoxDemo.Config>, HasMotionValueVisualization {
     enum class Scenario(val label: String) {
         Mapped("Mapped"),
         Triggered("With Triggers"),
