@@ -21,7 +21,10 @@ import {Operation} from 'trace/tree_node/operations/operation';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 
 export class TranslateIntDef implements Operation<PropertyTreeNode> {
-  constructor(private readonly rootField: TamperedProtoField) {}
+  constructor(
+    private readonly rootField: TamperedProtoField,
+    private translateAsAll: string[] = [],
+  ) {}
 
   apply(value: PropertyTreeNode, parentField = this.rootField): void {
     const protoType = parentField.tamperedMessageType;
@@ -59,14 +62,17 @@ export class TranslateIntDef implements Operation<PropertyTreeNode> {
   ): string | number {
     const typeDefSpec = this.getTypeDefSpecFromField(field);
 
+    const translateAsAll = this.translateAsAll.includes(field.name);
+
     if (typeDefSpec) {
-      return this.getIntFlagsAsStrings(value, typeDefSpec);
+      return this.getIntFlagsAsStrings(value, typeDefSpec, translateAsAll);
     } else {
       const propertyPath = `${field.parent?.name}.${field.name}`;
       if (this.intDefColumn[propertyPath]) {
         return this.getIntFlagsAsStrings(
           value,
           this.intDefColumn[propertyPath],
+          translateAsAll,
         );
       }
     }
@@ -87,6 +93,7 @@ export class TranslateIntDef implements Operation<PropertyTreeNode> {
   private getIntFlagsAsStrings(
     intFlags: number,
     annotationType: string,
+    translateAsAll: boolean,
   ): string {
     const flags: string[] = [];
     const mapping =
@@ -124,6 +131,14 @@ export class TranslateIntDef implements Operation<PropertyTreeNode> {
       flags.push(this.formatUnknownFlag(leftOver));
     }
 
+    if (
+      !leftOver &&
+      flags.length === knownFlagValues.length &&
+      translateAsAll
+    ) {
+      return 'ALL';
+    }
+
     return flags.join(' | ');
   }
 
@@ -141,6 +156,8 @@ export class TranslateIntDef implements Operation<PropertyTreeNode> {
     'InsetsSourceConsumerProto.typeNumber':
       'android.view.WindowInsets.Type.InsetsType',
     'InsetsSourceControlProto.typeNumber':
+      'android.view.WindowInsets.Type.InsetsType',
+    'RemoteInsetsControlTargetProto.requestedVisibleTypes':
       'android.view.WindowInsets.Type.InsetsType',
     'ShellTransition.flags': 'android.view.WindowManager.TransitionFlags',
     'Target.flags': 'android.window.TransitionInfo.ChangeFlags',

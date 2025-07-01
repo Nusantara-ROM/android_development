@@ -105,9 +105,33 @@ describe('TranslateIntDef', () => {
     checkValue('inputConfig', 'UNKNOWN (0x10)');
   });
 
-  function applyTranslation() {
+  it('formats flags as ALL if all flags set and field name provided', () => {
+    propertyRoot = new PropertyTreeBuilder()
+      .setIsRoot(true)
+      .setRootId('test')
+      .setName('node')
+      .setChildren([{name: 'inputConfig', value: 15}])
+      .build();
+
+    applyTranslation(['inputConfig']);
+    checkValue('inputConfig', 'ALL');
+  });
+
+  it('does not format flags as ALL if field name not provided', () => {
+    propertyRoot = new PropertyTreeBuilder()
+      .setIsRoot(true)
+      .setRootId('test')
+      .setName('node')
+      .setChildren([{name: 'inputConfig', value: 15}])
+      .build();
+
+    applyTranslation();
+    checkValue('inputConfig', 'BOTTOM | RIGHT | TOP | LEFT');
+  });
+
+  function applyTranslation(translateAsAll: string[] = []) {
     const field = rootType.fields['inputWindowInfo'];
-    operation = new TranslateIntDef(field);
+    operation = new TranslateIntDef(field, translateAsAll);
     operation.apply(propertyRoot);
   }
 

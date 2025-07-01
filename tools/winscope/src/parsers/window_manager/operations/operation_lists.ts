@@ -125,7 +125,9 @@ export class WmOperationLists {
             this.tamperedProtos.displayContentField,
             commonFormatters,
           ),
-          new TranslateIntDef(this.tamperedProtos.displayContentField),
+          new TranslateIntDef(this.tamperedProtos.displayContentField, [
+            'requestedVisibleTypes',
+          ]),
         ],
         eager: [
           new AddDefaults(
@@ -257,7 +259,9 @@ export class WmOperationLists {
               ...Array.from(commonFormatters.entries()),
             ]),
           ),
-          new TranslateIntDef(this.tamperedProtos.windowStateField),
+          new TranslateIntDef(this.tamperedProtos.windowStateField, [
+            'requestedVisibleTypes',
+          ]),
         ],
         eager: [
           new AddDefaults(
