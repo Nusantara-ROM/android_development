@@ -26,7 +26,7 @@ describe('TranslateIntDef', () => {
   let operation: TranslateIntDef;
   let rootType: TamperedMessageType;
 
-  beforeEach(() => {
+  beforeAll(() => {
     rootType = TamperedMessageType.tamper(root.lookupType('RootMessage'));
   });
 
@@ -38,14 +38,8 @@ describe('TranslateIntDef', () => {
       .setChildren([{name: 'layoutParamsFlags', value: 1}])
       .build();
 
-    const field = rootType.fields['intdefMappingEntry'];
-    operation = new TranslateIntDef(field);
-    operation.apply(propertyRoot);
-    expect(
-      assertDefined(
-        propertyRoot.getChildByName('layoutParamsFlags'),
-      ).formattedValue(),
-    ).toEqual('FLAG_ALLOW_LOCK_WHILE_SCREEN_ON');
+    applyTranslation();
+    checkValue('layoutParamsFlags', 'FLAG_ALLOW_LOCK_WHILE_SCREEN_ON');
   });
 
   it('translates intdef from field mapping', () => {
@@ -54,65 +48,21 @@ describe('TranslateIntDef', () => {
       .setRootId('test')
       .setName('node')
       .setChildren([
-        {
-          name: 'windowLayoutParams',
-          value: undefined,
-          children: [
-            {name: 'type', value: 1},
-            {name: 'gravity', value: 1},
-            {name: 'softInputMode', value: 1},
-            {name: 'inputFeatureFlags', value: 1},
-            {name: 'flags', value: 1},
-            {name: 'systemUiVisibilityFlags', value: 1},
-            {name: 'subtreeSystemUiVisibilityFlags', value: 1},
-            {name: 'appearance', value: 1},
-            {name: 'behavior', value: 1},
-          ],
-        },
+        {name: 'inputConfig', value: 1},
+        {name: 'testAndroidTypedef', value: 1},
       ])
       .build();
 
-    const field = rootType.fields['windowLayoutParams'];
-    operation = new TranslateIntDef(field);
-    operation.apply(propertyRoot);
+    applyTranslation();
 
-    const params = assertDefined(
-      propertyRoot.getChildByName('windowLayoutParams'),
-    );
+    // Applies android.content.pm.ActivityInfo.ScreenOrientation translation
+    // from proto .android.typedef specification
+    checkValue('testAndroidTypedef', 'SCREEN_ORIENTATION_PORTRAIT');
 
-    expect(
-      assertDefined(params.getChildByName('type')).formattedValue(),
-    ).toEqual('TYPE_BASE_APPLICATION');
-    expect(
-      assertDefined(params.getChildByName('gravity')).formattedValue(),
-    ).toEqual('CENTER_HORIZONTAL');
-    expect(
-      assertDefined(params.getChildByName('softInputMode')).formattedValue(),
-    ).toEqual('SOFT_INPUT_STATE_UNCHANGED');
-    expect(
-      assertDefined(
-        params.getChildByName('inputFeatureFlags'),
-      ).formattedValue(),
-    ).toEqual('INPUT_FEATURE_NO_INPUT_CHANNEL');
-    expect(
-      assertDefined(params.getChildByName('flags')).formattedValue(),
-    ).toEqual('FLAG_ALLOW_LOCK_WHILE_SCREEN_ON');
-    expect(
-      assertDefined(
-        params.getChildByName('systemUiVisibilityFlags'),
-      ).formattedValue(),
-    ).toEqual('SYSTEM_UI_FLAG_LOW_PROFILE');
-    expect(
-      assertDefined(
-        params.getChildByName('subtreeSystemUiVisibilityFlags'),
-      ).formattedValue(),
-    ).toEqual('SYSTEM_UI_FLAG_LOW_PROFILE');
-    expect(
-      assertDefined(params.getChildByName('appearance')).formattedValue(),
-    ).toEqual('APPEARANCE_OPAQUE_STATUS_BARS');
-    expect(
-      assertDefined(params.getChildByName('behavior')).formattedValue(),
-    ).toEqual('BEHAVIOR_DEFAULT');
+    // Applies android.view.WindowInsets.Side.InsetsSide translation from
+    // proto .perfetto.protos.typedef specification over the hardcoded mapping
+    // in TranslateIntdef#intDefColumn
+    checkValue('inputConfig', 'LEFT');
   });
 
   it('translates BigInt', () => {
@@ -123,14 +73,8 @@ describe('TranslateIntDef', () => {
       .setChildren([{name: 'layoutParamsFlags', value: 1n}])
       .build();
 
-    const field = rootType.fields['intdefMappingEntry'];
-    operation = new TranslateIntDef(field);
-    operation.apply(propertyRoot);
-    expect(
-      assertDefined(
-        propertyRoot.getChildByName('layoutParamsFlags'),
-      ).formattedValue(),
-    ).toEqual('FLAG_ALLOW_LOCK_WHILE_SCREEN_ON');
+    applyTranslation();
+    checkValue('layoutParamsFlags', 'FLAG_ALLOW_LOCK_WHILE_SCREEN_ON');
   });
 
   it('formats leftover flags', () => {
@@ -138,19 +82,11 @@ describe('TranslateIntDef', () => {
       .setIsRoot(true)
       .setRootId('test')
       .setName('node')
-      .setChildren([{name: 'inputConfig', value: -262144}])
+      .setChildren([{name: 'inputConfig', value: 20}])
       .build();
 
-    const field = rootType.fields['intdefMappingEntry'];
-    operation = new TranslateIntDef(field);
-    operation.apply(propertyRoot);
-    expect(
-      assertDefined(
-        propertyRoot.getChildByName('inputConfig'),
-      ).formattedValue(),
-    ).toEqual(
-      'DISPLAY_TOPOLOGY_AWARE | SENSITIVE_FOR_PRIVACY | UNKNOWN (0xFFF00000)',
-    );
+    applyTranslation();
+    checkValue('inputConfig', 'RIGHT | UNKNOWN (0x10)');
   });
 
   it('formats flags if no translation found', () => {
@@ -160,22 +96,24 @@ describe('TranslateIntDef', () => {
       .setName('node')
       .setChildren([
         {name: 'layoutParamsFlags', value: 0},
-        {name: 'inputConfig', value: -1048576},
+        {name: 'inputConfig', value: 16},
       ])
       .build();
 
-    const field = rootType.fields['intdefMappingEntry'];
+    applyTranslation();
+    checkValue('layoutParamsFlags', '0x0');
+    checkValue('inputConfig', 'UNKNOWN (0x10)');
+  });
+
+  function applyTranslation() {
+    const field = rootType.fields['inputWindowInfo'];
     operation = new TranslateIntDef(field);
     operation.apply(propertyRoot);
+  }
+
+  function checkValue(property: string, value: string) {
     expect(
-      assertDefined(
-        propertyRoot.getChildByName('layoutParamsFlags'),
-      ).formattedValue(),
-    ).toEqual('0x0');
-    expect(
-      assertDefined(
-        propertyRoot.getChildByName('inputConfig'),
-      ).formattedValue(),
-    ).toEqual('UNKNOWN (0xFFF00000)');
-  });
+      assertDefined(propertyRoot.getChildByName(property)).formattedValue(),
+    ).toEqual(value);
+  }
 });

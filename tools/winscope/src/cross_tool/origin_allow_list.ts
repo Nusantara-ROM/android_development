@@ -34,7 +34,7 @@ export class OriginAllowList {
   ];
 
   private static readonly EXPECTED_DENY_LIST_KARMA_TEST = [
-    new RegExp('^(http|https)://localhost:9877$'), // Karma test environment
+    new RegExp('^(http|https)://localhost:9876$'), // Karma test environment
   ];
 
   static isAllowed(originUrl: string, mode = globalConfig.MODE): boolean {

@@ -119,11 +119,8 @@ Check the test run artifacts for trace files
     `;
     const message = new MessageTestFailureInfo(stackTrace);
 
-    console.error('Sending debug message');
     // @ts-ignore
     await protocol.onMessageDebugInfoReceived(message);
-    console.error('Sent debug message');
-    console.log('emittedEvent', emittedEvent);
     expect(emittedEvent).toBeUndefined();
   });
 

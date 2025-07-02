@@ -77,21 +77,18 @@ export class TranslateIntDef implements Operation<PropertyTreeNode> {
   private getTypeDefSpecFromField(
     field: TamperedProtoField,
   ): string | undefined {
-    if (field.options === undefined) {
-      return undefined;
-    } else if (field.options['(.android.typedef)'] !== undefined) {
-      return field.options['(.android.typedef)'];
-    } else if (field.options['(.perfetto.protos.typedef)'] !== undefined) {
-      return field.options['(.perfetto.protos.typedef)'];
-    }
-    return undefined;
+    return (
+      field.options?.['(.perfetto.protos.typedef)'] ??
+      field.options?.['(.android.typedef)'] ??
+      undefined
+    );
   }
 
   private getIntFlagsAsStrings(
     intFlags: number,
     annotationType: string,
   ): string {
-    let flags = '';
+    const flags: string[] = [];
     const mapping =
       intDefMapping[annotationType as keyof typeof intDefMapping]?.values ?? {};
 
@@ -113,26 +110,21 @@ export class TranslateIntDef implements Operation<PropertyTreeNode> {
         (leftOver & flagValue && (intFlags & flagValue) === flagValue) ||
         (parsedIntFlags === 0 && flagValue === 0)
       ) {
-        if (flags.length > 0) flags += ' | ';
-        flags += mapping[flagValue as keyof typeof mapping];
-
+        flags.push(mapping[flagValue as keyof typeof mapping]);
         leftOver = leftOver & ~flagValue;
       }
     }
 
     if (flags.length === 0) {
-      if (leftOver === 0) {
-        return formatAsHex(0, true);
-      }
-      return this.formatUnknownFlag(leftOver);
+      return leftOver ? this.formatUnknownFlag(leftOver) : formatAsHex(0, true);
     }
 
     if (leftOver) {
       // If 0 is a valid flag value that isn't in the intDefMapping it will be ignored
-      flags += ' | ' + this.formatUnknownFlag(leftOver);
+      flags.push(this.formatUnknownFlag(leftOver));
     }
 
-    return flags;
+    return flags.join(' | ');
   }
 
   private formatUnknownFlag(value: number): string {
@@ -140,43 +132,21 @@ export class TranslateIntDef implements Operation<PropertyTreeNode> {
   }
 
   private readonly intDefColumn: {[key: string]: string} = {
-    'WindowLayoutParams.type':
-      'android.view.WindowManager.LayoutParams.WindowType',
-    'WindowLayoutParams.flags': 'android.view.WindowManager.LayoutParams.Flags',
-    'WindowLayoutParams.privateFlags':
-      'android.view.WindowManager.LayoutParams.PrivateFlags',
-    'WindowLayoutParams.gravity': 'android.view.Gravity.GravityFlags',
-    'WindowLayoutParams.softInputMode':
-      'android.view.WindowManager.LayoutParams.WindowType',
-    'WindowLayoutParams.systemUiVisibilityFlags':
-      'android.view.WindowManager.LayoutParams.SystemUiVisibilityFlags',
-    'WindowLayoutParams.subtreeSystemUiVisibilityFlags':
-      'android.view.WindowManager.LayoutParams.SystemUiVisibilityFlags',
-    'WindowLayoutParams.behavior':
-      'android.view.WindowInsetsController.Behavior',
-    'WindowLayoutParams.fitInsetsSides':
-      'android.view.WindowInsets.Side.InsetsSide',
-    'InputWindowInfoProto.layoutParamsFlags':
-      'android.view.WindowManager.LayoutParams.Flags',
+    'ConfigurationProto.orientation':
+      'android.content.pm.ActivityInfo.ScreenOrientation',
     'InputWindowInfoProto.inputConfig':
       'android.view.InputWindowHandle.InputConfigFlags',
-    'Configuration.windowingMode':
-      'android.app.WindowConfiguration.WindowingMode',
-    'WindowConfiguration.windowingMode':
-      'android.app.WindowConfiguration.WindowingMode',
-    'Configuration.orientation':
-      'android.content.pm.ActivityInfo.ScreenOrientation',
-    'WindowConfiguration.orientation':
-      'android.content.pm.ActivityInfo.ScreenOrientation',
-    'WindowState.orientation':
-      'android.content.pm.ActivityInfo.ScreenOrientation',
-    'InsetsSourceControlProto.typeNumber':
-      'android.view.WindowInsets.Type.InsetsType',
+    'InputWindowInfoProto.layoutParamsFlags':
+      'android.view.WindowManager.LayoutParams.Flags',
     'InsetsSourceConsumerProto.typeNumber':
       'android.view.WindowInsets.Type.InsetsType',
+    'InsetsSourceControlProto.typeNumber':
+      'android.view.WindowInsets.Type.InsetsType',
+    'ShellTransition.flags': 'android.view.WindowManager.TransitionFlags',
+    'Target.flags': 'android.window.TransitionInfo.ChangeFlags',
+    'WindowContainerProto.orientation':
+      'android.content.pm.ActivityInfo.ScreenOrientation',
     'WindowStateProto.requestedVisibleTypes':
       'android.view.WindowInsets.Type.InsetsType',
-    'Target.flags': 'android.window.TransitionInfo.ChangeFlags',
-    'ShellTransition.flags': 'android.view.WindowManager.TransitionFlags',
   };
 }
