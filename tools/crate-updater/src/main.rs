@@ -12,6 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Script to automate routine 3rd party Rust crate updates.
+//
+// Usage:
+//
+// * Check out a clean copy of main-without-vendor, dedicated to
+//   crate updates. See go/repo-init/main-without-vendor.
+//
+// * `cargo run -- <path to repo for crate updates>`
+//   For example, `cargo run -- ~/src/main-for-crate-updates/`
+//
+// The crate updater can also be run on the cron, but requires
+// a workstation or cloudtop with a valid credential from running gcert.
+// Therefore, it is suggested that the crontab entry be configured
+// to run shortly after the end of your regular work day.
+//
+// Example crontab entry:
+//
+// 0 2 * * * cargo run --manifest-path=$HOME/src/main-without-vendor/development/tools/crate-updater/Cargo.toml -- $HOME/src/main-for-crate-updates &> $HOME/crate-updater-`date +"\%Y-\%m-\%d"`.log
+
 use std::{
     env,
     path::{Path, PathBuf},
@@ -268,7 +287,8 @@ fn try_update(
 }
 
 fn send_email(updates_tried_string: Vec<String>) -> Result<()> {
-    let username = env::var("USER")?;
+    println!("Sending email");
+    let username = env::var("USER").or_else(|_err| env::var("LOGNAME"))?;
     Command::new("/google/bin/releases/gws-sre/files/sendgmr/sendgmr")
         .args([
             "--subject",
