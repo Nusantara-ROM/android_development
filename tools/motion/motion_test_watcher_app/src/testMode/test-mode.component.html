@@ -1,34 +1,19 @@
-<div class="mt-6 relative w-full max-w-sm mx-auto mb-6">
-  <button mat-button type="button" [matMenuTriggerFor]="appMenu"
-    class="relative flex justify-between items-center w-full min-h-[40px] px-4 py-2 text-left bg-white border border-blue-500 rounded-lg shadow-sm
-           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer
-           transition-all duration-200 ease-in-out text-gray-700">
+<div class="p-4 bg-gray-50 relative w-full max-w-sm mx-auto">
 
-    <span class="block truncate pr-4">
-      <span class="text-blue-600 text-sm font-medium uppercase" *ngIf="selectedMode && selectedMode.trim().length > 0">
-        Test Mode: {{ selectedMode }}
-      </span>
-      <span class="text-blue-700 text-sm font-medium uppercase" *ngIf="!selectedMode || selectedMode.trim().length === 0">
-        Select Mode
-      </span>
-    </span>
+  <div class="relative inline-block text-left">
+    <div>
+      <button (click)="toggleDropdown()" type="button" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm text-gray-700 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
+        <span class="block truncate pr-6" *ngIf="selectedMode && selectedMode.trim().length > 0">Test Mode: {{ selectedMode }}</span>
+        <span class="block truncate pr-6" *ngIf="!selectedMode || selectedMode.trim().length === 0">Select Mode</span>
+        <svg class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+          <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
 
-    <span class="ml-2 flex items-center pr-2 pointer-events-none">
-      <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-        aria-hidden="true">
-        <path fill-rule="evenodd"
-          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-          clip-rule="evenodd" />
-      </svg>
-    </span>
-  </button>
 
-  <mat-menu #appMenu="matMenu"
-    class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200
-           py-1 max-h-60 overflow-y-auto focus:outline-none">
-    <button mat-menu-item *ngFor="let action of testModes" (click)="onActionSelected(action)"
-      class="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center text-gray-800">
-      <span class="text-xs">{{ action.toUpperCase() }}</span>
-    </button>
-  </mat-menu>
+    <div *ngIf="showDropdown" class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-600 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+      <p *ngFor="let testMode of testModes" (click)="onActionSelected(testMode)" class="block px-4 py-2 cursor-pointer text-sm text-gray-700 bg-blue-50 hover:bg-blue-300 ">{{testMode.toUpperCase()}}</p>
+    </div>
+  </div>
 </div>
