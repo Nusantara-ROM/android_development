@@ -102,7 +102,7 @@ describe('PerfettoParserProtolog', () => {
 
   it('supports LOG_TABLE_FILTER_VALUES custom query', async () => {
     const trace = new TraceBuilder()
-      .setType(TraceType.TRANSACTIONS)
+      .setType(TraceType.PROTO_LOG)
       .setParser(parser)
       .build();
     const traceEntries = trace.sliceEntries(0, 3);
