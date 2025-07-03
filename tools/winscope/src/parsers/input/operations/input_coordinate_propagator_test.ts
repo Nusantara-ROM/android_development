@@ -31,7 +31,7 @@ describe('InputCoordinatePropagator', () => {
         .setRootId('entries')
         .setName('dispatchEntries')
         .setChildren([
-          {name: 'motionEvent', children: [
+          {name: 'event', children: [
               {name: 'pointer', children: [
                   {name: '0', children: [
                       {name: 'pointerId', value: 0},
@@ -48,7 +48,7 @@ describe('InputCoordinatePropagator', () => {
                     ]},
                 ]},
             ]},
-          {name: 'windowDispatchEvents', children: [
+          {name: 'dispatchEvents', children: [
               {name: '0', children: [
                   {name: 'dispatchedPointer', children: [
                       {name: '0', children: [
@@ -64,7 +64,7 @@ describe('InputCoordinatePropagator', () => {
     operation.apply(root);
 
     const axisValueInWindow = root
-      .getChildByName('windowDispatchEvents')
+      .getChildByName('dispatchEvents')
       ?.getChildByName('0')
       ?.getChildByName('dispatchedPointer')
       ?.getChildByName('0')
@@ -96,7 +96,7 @@ describe('InputCoordinatePropagator', () => {
     ).toEqual(9.87);
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')
@@ -105,7 +105,7 @@ describe('InputCoordinatePropagator', () => {
     ).toEqual(1.23);
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')
@@ -118,7 +118,7 @@ describe('InputCoordinatePropagator', () => {
     // prettier-ignore
     const windowDispatchEntries = new PropertyTreeBuilder()
         .setRootId(root.id)
-        .setName('windowDispatchEvents')
+        .setName('dispatchEvents')
         .setChildren([
           {name: '0', children: [
               {name: 'dispatchedPointer', children: [
@@ -134,7 +134,7 @@ describe('InputCoordinatePropagator', () => {
 
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')
@@ -142,7 +142,7 @@ describe('InputCoordinatePropagator', () => {
     ).toBeUndefined();
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')
@@ -150,7 +150,7 @@ describe('InputCoordinatePropagator', () => {
     ).toBeUndefined();
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')
@@ -162,7 +162,7 @@ describe('InputCoordinatePropagator', () => {
     // prettier-ignore
     const windowDispatchEntries = new PropertyTreeBuilder()
         .setRootId(root.id)
-        .setName('windowDispatchEvents')
+        .setName('dispatchEvents')
         .setChildren([
               {name: '0', children: [
                   {name: 'dispatchedPointer', children: [
@@ -188,7 +188,7 @@ describe('InputCoordinatePropagator', () => {
     operation.apply(root);
 
     const axisValueInWindow = root
-      .getChildByName('windowDispatchEvents')
+      .getChildByName('dispatchEvents')
       ?.getChildByName('0')
       ?.getChildByName('dispatchedPointer')
       ?.getChildByName('0')
@@ -222,7 +222,7 @@ describe('InputCoordinatePropagator', () => {
     ).toEqual(9.87);
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')
@@ -231,7 +231,7 @@ describe('InputCoordinatePropagator', () => {
     ).toEqual(0.98);
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')
@@ -244,7 +244,7 @@ describe('InputCoordinatePropagator', () => {
     // prettier-ignore
     const motionEventNode = new PropertyTreeBuilder()
         .setRootId(root.id)
-        .setName('motionEvent')
+        .setName('event')
         .setChildren([
           {name: 'pointer', children: [
               {name: '0', children: [
@@ -268,7 +268,7 @@ describe('InputCoordinatePropagator', () => {
 
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')
@@ -276,7 +276,7 @@ describe('InputCoordinatePropagator', () => {
     ).toBeUndefined();
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')
@@ -284,7 +284,7 @@ describe('InputCoordinatePropagator', () => {
     ).toBeUndefined();
     expect(
       root
-        .getChildByName('windowDispatchEvents')
+        .getChildByName('dispatchEvents')
         ?.getChildByName('0')
         ?.getChildByName('dispatchedPointer')
         ?.getChildByName('0')

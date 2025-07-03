@@ -19,6 +19,7 @@ import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {AbstractTracesParser} from 'parsers/traces/abstract_traces_parser';
 import {CoarseVersion} from 'trace/coarse_version';
 import {
+  CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
   VisitableParserCustomQuery,
@@ -26,13 +27,13 @@ import {
 import {EntriesRange, Trace} from 'trace/trace';
 import {Traces} from 'trace/traces';
 import {TraceType} from 'trace/trace_type';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 
 type OriginalTraceIndex = number;
 
-export class TracesParserInput extends AbstractTracesParser<PropertyTreeNode> {
-  private readonly keyEventTrace: Trace<PropertyTreeNode> | undefined;
-  private readonly motionEventTrace: Trace<PropertyTreeNode> | undefined;
+export class TracesParserInput extends AbstractTracesParser<HierarchyTreeNode> {
+  private readonly keyEventTrace: Trace<HierarchyTreeNode> | undefined;
+  private readonly motionEventTrace: Trace<HierarchyTreeNode> | undefined;
   private readonly descriptors: string[];
   private mergedEntryIndexMap:
     | Array<[OriginalTraceIndex, TraceType]>
@@ -72,7 +73,21 @@ export class TracesParserInput extends AbstractTracesParser<PropertyTreeNode> {
     return assertDefined(this.mergedEntryIndexMap).length;
   }
 
-  override getEntry(index: number): Promise<PropertyTreeNode> {
+  override async getAllEntries(): Promise<
+    Array<HierarchyTreeNode | undefined>
+  > {
+    const [keyEvents, motionEvents] = await Promise.all([
+      this.keyEventTrace?.getAllEntryValues() ?? [],
+      this.motionEventTrace?.getAllEntryValues() ?? [],
+    ]);
+    return assertDefined(this.mergedEntryIndexMap).map(([subIndex, type]) => {
+      return type === TraceType.INPUT_KEY_EVENT
+        ? keyEvents[subIndex]
+        : motionEvents[subIndex];
+    });
+  }
+
+  override getEntry(index: number): Promise<HierarchyTreeNode> {
     const [subIndex, type] = assertDefined(this.mergedEntryIndexMap)[index];
     const trace = assertDefined(
       type === TraceType.INPUT_KEY_EVENT
@@ -116,8 +131,8 @@ export class TracesParserInput extends AbstractTracesParser<PropertyTreeNode> {
   // Returns the mapping from the index of the merged trace to the index in the
   // sub-trace.
   private static createMergedEntryIndexMap(
-    trace1: Trace<PropertyTreeNode> | undefined,
-    trace2: Trace<PropertyTreeNode> | undefined,
+    trace1: Trace<HierarchyTreeNode> | undefined,
+    trace2: Trace<HierarchyTreeNode> | undefined,
   ): Array<[OriginalTraceIndex, TraceType]> {
     // We are assuming the parsers entries are sorted by timestamps.
     const timestamps1 = trace1?.getParser().getTimestamps() ?? [];
@@ -151,6 +166,7 @@ export class TracesParserInput extends AbstractTracesParser<PropertyTreeNode> {
   override async customQuery<Q extends CustomQueryType>(
     type: Q,
     entriesRange: EntriesRange,
+    param?: CustomQueryParamTypeMap[Q],
   ): Promise<CustomQueryParserResultTypeMap[Q]> {
     return new VisitableParserCustomQuery(type)
       .visit(CustomQueryType.VSYNCID, async () => {

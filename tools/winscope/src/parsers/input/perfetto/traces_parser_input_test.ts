@@ -26,10 +26,11 @@ import {CoarseVersion} from 'trace/coarse_version';
 import {CustomQueryType} from 'trace/custom_query';
 import {Parser} from 'trace/parser';
 import {TraceType} from 'trace/trace_type';
+import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 
 describe('TracesParserInput', () => {
-  let parser: Parser<PropertyTreeNode>;
+  let parser: Parser<HierarchyTreeNode>;
   let userNotifierChecker: UserNotifierChecker;
 
   beforeAll(() => {
@@ -40,7 +41,7 @@ describe('TracesParserInput', () => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
     parser = (
       await getTracesParser(['traces/perfetto/input-events.perfetto-trace'])
-    ).tracesParser as Parser<PropertyTreeNode>;
+    ).tracesParser as Parser<HierarchyTreeNode>;
     userNotifierChecker.reset();
   });
 
@@ -72,17 +73,21 @@ describe('TracesParserInput', () => {
   });
 
   it('provides correct entries from individual event traces', async () => {
-    const keyEntry = await parser.getEntry(6);
-    const keyEvent = assertDefined(keyEntry.getChildByName('keyEvent'));
-    expect(keyEvent?.getChildByName('eventId')?.getValue()).toEqual(759309047);
+    const keyEvent = await parser.getEntry(6);
+    expect(keyEvent.getEagerPropertyByName('eventId')?.getValue()).toEqual(
+      759309047n,
+    );
+    expect(keyEvent.getEagerPropertyByName('type')?.formattedValue()).toEqual(
+      'KEY',
+    );
 
-    const motionEntry = await parser.getEntry(0);
-    const motionEvent = assertDefined(
-      motionEntry.getChildByName('motionEvent'),
+    const motionEvent = await parser.getEntry(0);
+    expect(motionEvent.getEagerPropertyByName('eventId')?.getValue()).toEqual(
+      330184796n,
     );
-    expect(motionEvent?.getChildByName('eventId')?.getValue()).toEqual(
-      330184796,
-    );
+    expect(
+      motionEvent.getEagerPropertyByName('type')?.formattedValue(),
+    ).toEqual('MOTION');
   });
 
   it('supports VSYNCID custom query', async () => {
