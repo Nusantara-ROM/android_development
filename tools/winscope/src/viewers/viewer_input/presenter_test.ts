@@ -27,6 +27,8 @@ import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {TracesBuilder} from 'test/unit/traces_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {CustomQueryType} from 'trace/custom_query';
+import {InputColumnType} from 'trace/input/input_column_type';
+import {InputEventType} from 'trace/input/input_event_type';
 import {Parser} from 'trace/parser';
 import {Transform} from 'trace/surface_flinger/transform_utils';
 import {Trace} from 'trace/trace';
@@ -34,8 +36,8 @@ import {Traces} from 'trace/traces';
 import {TRACE_INFO} from 'trace/trace_info';
 import {TraceRectBuilder} from 'trace/trace_rect_builder';
 import {TraceType} from 'trace/trace_type';
+import {FixedStringFormatter} from 'trace/tree_node/formatters';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {NotifyLogViewCallbackType} from 'viewers/common/abstract_log_viewer_presenter';
 import {AbstractLogViewerPresenterTest} from 'viewers/common/abstract_log_viewer_presenter_test';
 import {VISIBLE_CHIP} from 'viewers/common/chip';
@@ -56,6 +58,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         {
           name: 'Type',
           cssClass: 'input-type inline',
+          columnType: InputColumnType.EVENT_TYPE,
         },
         new LogSelectFilter(['MOTION', 'KEY'], false, '80', '100%'),
       ),
@@ -65,6 +68,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         {
           name: 'Source',
           cssClass: 'input-source',
+          columnType: InputColumnType.SOURCE,
         },
         new LogSelectFilter(['TOUCHSCREEN', 'KEYBOARD'], false, '200', '100%'),
       ),
@@ -74,6 +78,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         {
           name: 'Action',
           cssClass: 'input-action',
+          columnType: InputColumnType.ACTION,
         },
         new LogSelectFilter(
           ['DOWN', 'OUTSIDE', 'MOVE', 'UP'],
@@ -88,6 +93,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         {
           name: 'Device',
           cssClass: 'input-device-id right-align',
+          columnType: InputColumnType.DEVICE_ID,
         },
         new LogSelectFilter(['4', '2'], false, '80', '100%'),
       ),
@@ -97,6 +103,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         {
           name: 'Display',
           cssClass: 'input-display-id right-align',
+          columnType: InputColumnType.DISPLAY_ID,
         },
         new LogSelectFilter(['0', '-1'], false, '80', '100%'),
       ),
@@ -112,6 +119,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         {
           name: 'Target Windows',
           cssClass: 'input-windows',
+          columnType: InputColumnType.WINDOWS,
         },
         new LogSelectFilter(
           Array.from({length: 6}, () => ''),
@@ -130,7 +138,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
       ],
     },
   ];
-  private trace: Trace<PropertyTreeNode> | undefined;
+  private trace: Trace<HierarchyTreeNode> | undefined;
   private surfaceFlingerTrace: Trace<HierarchyTreeNode> | undefined;
   private positionUpdate: TracePositionUpdate | undefined;
   private layerIdToName: Array<{id: number; name: string}> = [
@@ -142,14 +150,18 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
     // The layer name for window with id 98 is omitted to test incomplete mapping.
   ];
 
-  override async setUpTestEnvironment(): Promise<void> {
-    const parser = (
-      await getTracesParser(['traces/perfetto/input-events.perfetto-trace'])
-    ).tracesParser as Parser<PropertyTreeNode>;
+  private parser: Parser<HierarchyTreeNode> | undefined;
 
-    this.trace = new TraceBuilder<PropertyTreeNode>()
+  override async setUpTestEnvironment(): Promise<void> {
+    if (!this.parser) {
+      this.parser = (
+        await getTracesParser(['traces/perfetto/input-events.perfetto-trace'])
+      ).tracesParser as Parser<HierarchyTreeNode>;
+    }
+
+    this.trace = new TraceBuilder<HierarchyTreeNode>()
       .setType(TraceType.INPUT_EVENT_MERGED)
-      .setParser(parser)
+      .setParser(this.parser)
       .build();
 
     this.surfaceFlingerTrace = new TraceBuilder<HierarchyTreeNode>()
@@ -180,6 +192,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
 
   override async createPresenter(
     callback: NotifyLogViewCallbackType<UiData>,
+    withInitialization = true,
   ): Promise<Presenter> {
     const traces = new Traces();
     traces.addTrace(assertDefined(this.trace));
@@ -190,7 +203,9 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
       traces,
       callback,
     );
-    await presenter.onAppEvent(this.getPositionUpdate()); // trigger initialization
+    if (withInitialization) {
+      await presenter.onAppEvent(this.getPositionUpdate()); // trigger initialization
+    }
     return presenter;
   }
 
@@ -376,7 +391,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         ])
         .build();
 
-      let uiData: UiData = UiData.createEmpty();
+      let uiData: UiData;
 
       beforeEach(async () => {
         uiData = UiData.createEmpty();
@@ -387,6 +402,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         const element = document.createElement('div');
         const presenter = await this.createPresenter(
           (uiDataLog) => (uiData = uiDataLog as UiData),
+          false,
         );
         presenter.addEventListeners(element);
 
@@ -434,13 +450,13 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
       it('updates selected entry', async () => {
         const presenter = await this.createPresenter(
           (uiDataLog) => (uiData = uiDataLog as UiData),
+          false,
         );
-        await TimeUtils.wait(() => !uiData.isFetchingData);
 
-        const keyEntry = assertDefined(this.trace).getEntry(7);
-        await presenter.onAppEvent(
-          TracePositionUpdate.fromTraceEntry(keyEntry),
+        const update = TracePositionUpdate.fromTraceEntry(
+          assertDefined(this.trace).getEntry(7),
         );
+        await sendFirstPositionUpdate(update, presenter);
 
         this.expectEventPresented(uiData, 894093732, 'ACTION_UP');
 
@@ -511,7 +527,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         // FRAME:            0        1       2
         // TEST(time):       0       19      35
         // INPUT(time):     10    20,25   30,36
-        const trace = new TraceBuilder<PropertyTreeNode>()
+        const trace = new TraceBuilder<HierarchyTreeNode>()
           .setType(TraceType.INPUT_EVENT_MERGED)
           .setEntries([
             await parser.getEntry(0),
@@ -589,7 +605,6 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
           (uiDataLog) => (uiData = uiDataLog as UiData),
         );
         await sendFirstPositionUpdate(this.getPositionUpdate(), presenter);
-        expect(uiData.rectsToDraw).toBeDefined();
         expect(uiData.rectsToDraw).toEqual([]);
         checkRectSpec();
       });
@@ -600,7 +615,6 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
           (uiDataLog) => (uiData = uiDataLog as UiData),
         );
         await sendFirstPositionUpdate(this.getPositionUpdate(), presenter);
-        expect(uiData.rectsToDraw).toBeDefined();
         expect(uiData.rectsToDraw).toEqual([]);
       });
 
@@ -630,11 +644,13 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         await presenter.onAppEvent(
           TracePositionUpdate.fromTraceEntry(inputEntry),
         );
+        const properties = await inputEntry.getValue().then((tree) => {
+          return tree.getAllProperties();
+        });
+        const dispatchEvents = properties.getChildByName('dispatchEvents');
         const spyArgs = spy.calls.allArgs();
         expect(spyArgs.length).toEqual(1);
-        expect(spyArgs[0][2]).toEqual(
-          (await inputEntry.getValue()).getChildByName('windowDispatchEvents'),
-        );
+        expect(spyArgs[0][2]).toEqual(dispatchEvents);
         expect(uiData.rectsToDraw).toHaveSize(1);
         expect(uiData.rectsToDraw?.at(0)?.id).toEqual('inputRect');
 
@@ -656,6 +672,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
       it('filters dispatch properties tree', async () => {
         const presenter = await this.createPresenter(
           (uiDataLog) => (uiData = uiDataLog as UiData),
+          false,
         );
         await sendFirstPositionUpdate(this.getPositionUpdate(), presenter);
         await presenter.onLogEntryClick(3);
@@ -671,6 +688,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
       it('updates highlighted property', async () => {
         const presenter = await this.createPresenter(
           (uiDataLog) => (uiData = uiDataLog as UiData),
+          false,
         );
         expect(uiData.highlightedProperty).toEqual('');
         const id = '4';
@@ -744,6 +762,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
       it('emits event on rect double click', async () => {
         const presenter = await this.createPresenter(
           (uiDataLog) => (uiData = uiDataLog as UiData),
+          false,
         );
         const spy = jasmine.createSpy();
         presenter.setEmitEvent(spy);
@@ -753,35 +772,61 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         );
       });
 
-      it('tests input action formatter', async () => {
-        const presenter = await this.createPresenter(
-          (uiDataLog) => (uiData = uiDataLog as UiData),
-        );
-        await TimeUtils.wait(() => !uiData.isFetchingData);
-        const getInputAction = Presenter['getInputAction'];
+      it('formats input actions', async () => {
         const mockEventTree = (actionValue: number, formattedValue: string) => {
-          const mockActionNode = jasmine.createSpyObj('PropertyTreeNode', [
-            'getValue',
-            'formattedValue',
-            'getChildByName',
-          ]);
-          mockActionNode.getValue.and.returnValue(actionValue);
-          mockActionNode.formattedValue.and.returnValue(formattedValue);
-          mockActionNode.getChildByName.and.returnValue(mockActionNode);
-          return mockActionNode;
+          const tree = new HierarchyTreeBuilder()
+            .setId('AndroidKeyEvent')
+            .setName('entry')
+            .setProperties({
+              action: actionValue,
+              source: 0n,
+              deviceId: 0n,
+              displayId: 0n,
+              event: {},
+              dispatchEvents: [],
+              windows: [],
+              type: InputEventType.KEY,
+            })
+            .build();
+          tree
+            .getEagerPropertyByName('action')
+            ?.setFormatter(new FixedStringFormatter(formattedValue));
+          return tree;
         };
-        expect(getInputAction(mockEventTree(0, 'ACTION_DOWN'))).toEqual('DOWN');
-        expect(getInputAction(mockEventTree(1, 'ACTION_UP'))).toEqual('UP');
+        const trace = new TraceBuilder<HierarchyTreeNode>()
+          .setType(TraceType.INPUT_EVENT_MERGED)
+          .setTimestamps([time10, time20, time25, time30])
+          .setEntries([
+            mockEventTree(0, 'ACTION_DOWN'),
+            mockEventTree(1, 'ACTION_UP'),
+            mockEventTree(5 | (2 << 8), 'ACTION_POINTER_DOWN'),
+            mockEventTree(6 | (5 << 8), 'ACTION_POINTER_UP'),
+          ])
+          .build();
+        const traces = new Traces();
+        traces.addTrace(trace);
+        const presenter = new Presenter(
+          traces,
+          trace,
+          new InMemoryStorage(),
+          (newData) => {
+            uiData = newData;
+          },
+        );
+        const update = TracePositionUpdate.fromTraceEntry(trace.getEntry(0));
+        await sendFirstPositionUpdate(update, presenter);
+
         expect(
-          getInputAction(mockEventTree(5 | (2 << 8), 'ACTION_POINTER_DOWN')),
-        ).toEqual('POINTER_DOWN(2)');
-        expect(
-          getInputAction(mockEventTree(6 | (5 << 8), 'ACTION_POINTER_UP')),
-        ).toEqual('POINTER_UP(5)');
+          uiData.entries.map((entry) => {
+            return entry.fields.find(
+              (field) => field.spec.columnType === InputColumnType.ACTION,
+            )?.value;
+          }),
+        ).toEqual(['DOWN', 'UP', 'POINTER_DOWN(2)', 'POINTER_UP(5)']);
       });
 
       async function getTracesWithSf(
-        parser: Parser<PropertyTreeNode>,
+        parser: Parser<HierarchyTreeNode>,
         layerIdToName: Array<{
           id: number;
           name: string;
@@ -792,7 +837,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         // FRAME:         0     1   2   3
         // INPUT(index):  0   1,2   -   3
         // SF(index):     -     0   1   2
-        const trace = new TraceBuilder<PropertyTreeNode>()
+        const trace = new TraceBuilder<HierarchyTreeNode>()
           .setType(TraceType.INPUT_EVENT_MERGED)
           .setEntries([
             await parser.getEntry(0),
