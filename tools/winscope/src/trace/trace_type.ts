@@ -73,9 +73,9 @@ export interface TraceEntryTypeMap {
   [TraceType.TEST_TRACE_STRING]: string;
   [TraceType.TEST_TRACE_NUMBER]: number;
   [TraceType.VIEW_CAPTURE]: HierarchyTreeNode;
-  [TraceType.INPUT_MOTION_EVENT]: PropertyTreeNode;
-  [TraceType.INPUT_KEY_EVENT]: PropertyTreeNode;
-  [TraceType.INPUT_EVENT_MERGED]: PropertyTreeNode;
+  [TraceType.INPUT_MOTION_EVENT]: HierarchyTreeNode;
+  [TraceType.INPUT_KEY_EVENT]: HierarchyTreeNode;
+  [TraceType.INPUT_EVENT_MERGED]: HierarchyTreeNode;
   [TraceType.SEARCH]: QueryResult;
 }
 

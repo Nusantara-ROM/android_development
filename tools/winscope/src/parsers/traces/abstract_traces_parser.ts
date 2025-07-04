@@ -19,6 +19,7 @@ import {Timestamp} from 'common/time/time';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {CoarseVersion} from 'trace/coarse_version';
 import {
+  CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
 } from 'trace/custom_query';
@@ -37,6 +38,7 @@ export abstract class AbstractTracesParser<T> implements Parser<T> {
   customQuery<Q extends CustomQueryType>(
     type: Q,
     entriesRange: EntriesRange,
+    param?: CustomQueryParamTypeMap[Q],
   ): Promise<CustomQueryParserResultTypeMap[Q]> {
     throw NOT_IMPLEMENTED_ERROR;
   }
@@ -49,7 +51,7 @@ export abstract class AbstractTracesParser<T> implements Parser<T> {
     return false;
   }
 
-  getAllEntries(): Promise<T[]> {
+  getAllEntries(): Promise<Array<T | undefined>> {
     throw NOT_IMPLEMENTED_ERROR;
   }
 

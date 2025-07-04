@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertBigInt, assertDefined} from 'common/assert_utils';
 import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {Analytics} from 'logging/analytics';
 import {TabbedViewSwitchRequest} from 'messaging/winscope_event';
 import {CustomQueryType} from 'trace/custom_query';
+import {InputColumnType} from 'trace/input/input_column_type';
+import {InputEventType} from 'trace/input/input_event_type';
 import {Trace, TraceEntry, TraceEntryLazy} from 'trace/trace';
 import {Traces} from 'trace/traces';
 import {TRACE_INFO} from 'trace/trace_info';
@@ -49,38 +51,37 @@ import {
   makeDisplayIdentifiers,
 } from 'viewers/viewer_surface_flinger/presenter';
 import {FormatDispatchEntry} from './operations/format_dispatch_entry';
-import {InputCoordinatePropagator} from './operations/input_coordinate_propagator';
 import {InputEntry, UiData} from './ui_data';
-
-enum InputEventType {
-  KEY,
-  MOTION,
-}
 
 export class Presenter extends AbstractLogViewerPresenter<
   UiData,
-  PropertyTreeNode
+  HierarchyTreeNode
 > {
   private static readonly COLUMNS = {
     type: {
       name: 'Type',
       cssClass: 'input-type inline',
+      columnType: InputColumnType.EVENT_TYPE,
     },
     source: {
       name: 'Source',
       cssClass: 'input-source',
+      columnType: InputColumnType.SOURCE,
     },
     action: {
       name: 'Action',
       cssClass: 'input-action',
+      columnType: InputColumnType.ACTION,
     },
     deviceId: {
       name: 'Device',
       cssClass: 'input-device-id right-align',
+      columnType: InputColumnType.DEVICE_ID,
     },
     displayId: {
       name: 'Display',
       cssClass: 'input-display-id right-align',
+      columnType: InputColumnType.DISPLAY_ID,
     },
     details: {
       name: 'Details',
@@ -89,14 +90,13 @@ export class Presenter extends AbstractLogViewerPresenter<
     dispatchWindows: {
       name: 'Target Windows',
       cssClass: 'input-windows',
+      columnType: InputColumnType.WINDOWS,
     },
   };
-  static readonly DENYLIST_DISPATCH_PROPERTIES = ['eventId'];
+  private static readonly DENYLIST_DISPATCH_PROPERTIES = ['eventId'];
 
   private readonly traces: Traces;
   private readonly surfaceFlingerTrace: Trace<HierarchyTreeNode> | undefined;
-
-  private readonly inputCoordinatePropagator = new InputCoordinatePropagator();
 
   private readonly layerIdToName = new Map<number, string>();
   private readonly allInputLayerIds = new Set<number>();
@@ -147,7 +147,7 @@ export class Presenter extends AbstractLogViewerPresenter<
 
   constructor(
     traces: Traces,
-    mergedInputEventTrace: Trace<PropertyTreeNode>,
+    mergedInputEventTrace: Trace<HierarchyTreeNode>,
     private readonly storage: Store,
     readonly notifyInputViewCallback: NotifyLogViewCallbackType<UiData>,
   ) {
@@ -172,6 +172,32 @@ export class Presenter extends AbstractLogViewerPresenter<
     await this.updateDispatchPropertiesTree();
     this.uiData.dispatchPropertiesFilter = textFilter;
     this.notifyViewChanged();
+  }
+
+  onHighlightedPropertyChange(id: string) {
+    this.propertiesPresenter.applyHighlightedPropertyChange(id);
+    this.dispatchPropertiesPresenter.applyHighlightedPropertyChange(id);
+    this.uiData.highlightedProperty =
+      id === this.uiData.highlightedProperty ? '' : id;
+    this.notifyViewChanged();
+  }
+
+  async onHighlightedIdChange(id: string) {
+    this.uiData.highlightedRect = id === this.uiData.highlightedRect ? '' : id;
+    await this.updateRects();
+    this.notifyViewChanged();
+  }
+
+  async onRectsUserOptionsChange(userOptions: UserOptions) {
+    this.rectsPresenter.applyRectsUserOptionsChange(userOptions);
+    await this.updateRects();
+    this.notifyViewChanged();
+  }
+
+  async onRectDoubleClick() {
+    await this.emitAppEvent(
+      new TabbedViewSwitchRequest(assertDefined(this.surfaceFlingerTrace)),
+    );
   }
 
   protected override async initializeTraceSpecificData() {
@@ -213,35 +239,6 @@ export class Presenter extends AbstractLogViewerPresenter<
     ];
   }
 
-  protected override async makeUiDataEntries(): Promise<InputEntry[]> {
-    const entries: InputEntry[] = [];
-    for (let i = 0; i < this.trace.lengthEntries; i++) {
-      const traceEntry = assertDefined(this.trace.getEntry(i));
-      const entry = await this.makeInputEntry(traceEntry);
-      entries.push(entry);
-    }
-    return Promise.resolve(entries);
-  }
-
-  private static getUniqueFieldValues(
-    headers: LogHeader[],
-    entries: LogEntry[],
-  ): Map<ColumnSpec, Set<string>> {
-    const uniqueFieldValues = new Map<ColumnSpec, Set<string>>();
-    headers.forEach((header) => {
-      if (!header.filter || header.spec === Presenter.COLUMNS.dispatchWindows) {
-        return;
-      }
-      uniqueFieldValues.set(header.spec, new Set());
-    });
-    entries.forEach((entry) => {
-      entry.fields.forEach((field) => {
-        uniqueFieldValues.get(field.spec)?.add(field.value.toString());
-      });
-    });
-    return uniqueFieldValues;
-  }
-
   protected override async updateFiltersInHeaders(
     headers: LogHeader[],
     entries: LogEntry[],
@@ -266,29 +263,104 @@ export class Presenter extends AbstractLogViewerPresenter<
     });
   }
 
-  private async makeInputEntry(
-    traceEntry: TraceEntryLazy<PropertyTreeNode>,
-  ): Promise<InputEntry> {
-    const wrapperTree = await traceEntry.getValue();
-    this.inputCoordinatePropagator.apply(wrapperTree);
-
-    let eventTree = wrapperTree.getChildByName('keyEvent');
-    let type = InputEventType.KEY;
-    if (eventTree === undefined || eventTree.getAllChildren().length === 0) {
-      eventTree = assertDefined(wrapperTree.getChildByName('motionEvent'));
-      type = InputEventType.MOTION;
+  protected override async makeUiDataEntries(): Promise<InputEntry[]> {
+    const entries: InputEntry[] = [];
+    const trees = await this.trace.getAllEntryValues();
+    for (let i = 0; i < trees.length; i++) {
+      const wrapperTree = trees[i];
+      if (wrapperTree === undefined) {
+        continue;
+      }
+      const traceEntry = assertDefined(this.trace.getEntry(i));
+      const entry = this.makeInputEntry(traceEntry, wrapperTree);
+      entries.push(entry);
     }
-    eventTree.setIsRoot(true);
+    return entries;
+  }
 
-    const dispatchTree = assertDefined(
-      wrapperTree.getChildByName('windowDispatchEvents'),
+  protected override async updatePropertiesTree() {
+    await super.updatePropertiesTree();
+    await this.updateDispatchPropertiesTree();
+    await this.updateRects();
+  }
+
+  protected override addViewerSpecificListeners(htmlElement: HTMLElement) {
+    htmlElement.addEventListener(
+      ViewerEvents.HighlightedPropertyChange,
+      (event) =>
+        this.onHighlightedPropertyChange((event as CustomEvent).detail.id),
     );
-    dispatchTree.setIsRoot(true);
-    dispatchTree.getAllChildren().forEach((dispatchEntry) => {
-      const windowIdNode = dispatchEntry.getChildByName('windowId');
-      const windowId = Number(windowIdNode?.getValue() ?? -1);
-      this.allInputLayerIds.add(windowId);
+
+    htmlElement.addEventListener(ViewerEvents.HighlightedIdChange, (event) =>
+      this.onHighlightedIdChange((event as CustomEvent).detail.id),
+    );
+
+    htmlElement.addEventListener(
+      ViewerEvents.RectsUserOptionsChange,
+      async (event) => {
+        await this.onRectsUserOptionsChange(
+          (event as CustomEvent).detail.userOptions,
+        );
+      },
+    );
+
+    htmlElement.addEventListener(ViewerEvents.RectsDblClick, async (event) => {
+      await this.onRectDoubleClick();
     });
+
+    htmlElement.addEventListener(
+      ViewerEvents.DispatchPropertiesFilterChange,
+      async (event) => {
+        const detail: TextFilter = (event as CustomEvent).detail;
+        await this.onDispatchPropertiesFilterChange(detail);
+      },
+    );
+  }
+
+  private async updateDispatchPropertiesTree() {
+    const inputEntry = this.getCurrentEntry();
+    const tree = inputEntry?.getDispatchPropertiesTree
+      ? await inputEntry.getDispatchPropertiesTree()
+      : undefined;
+    this.dispatchPropertiesPresenter.setPropertiesTree(tree);
+    await this.dispatchPropertiesPresenter.formatPropertiesTree(
+      undefined,
+      undefined,
+      this.keepCalculated ?? false,
+      this.trace.type,
+    );
+    this.uiData.dispatchPropertiesTree =
+      this.dispatchPropertiesPresenter.getFormattedTree();
+  }
+
+  private makeInputEntry(
+    traceEntry: TraceEntryLazy<HierarchyTreeNode>,
+    wrapperTree: HierarchyTreeNode,
+  ): InputEntry {
+    const type = assertDefined(wrapperTree.getEagerPropertyByName('type'));
+
+    const getPropertiesTree = async () => {
+      const properties = await wrapperTree.getAllProperties();
+      const event = assertDefined(properties.getChildByName('event'));
+      event.setIsRoot(true);
+      return event;
+    };
+    const getDispatchPropertiesTree = async () => {
+      const properties = await wrapperTree.getAllProperties();
+      const dispatchTree = assertDefined(
+        properties.getChildByName('dispatchEvents'),
+      );
+      dispatchTree.setIsRoot(true);
+      return dispatchTree;
+    };
+
+    const windows = assertDefined(wrapperTree.getEagerPropertyByName('windows'))
+      .getAllChildren()
+      .map((window) => {
+        const windowId = Number(window?.getValue() ?? -1);
+        this.allInputLayerIds.add(windowId);
+        return windowId;
+      });
 
     let sfEntry: TraceEntry<HierarchyTreeNode> | undefined;
     if (this.surfaceFlingerTrace !== undefined && this.trace.hasFrameInfo()) {
@@ -306,68 +378,55 @@ export class Presenter extends AbstractLogViewerPresenter<
       [
         {
           spec: Presenter.COLUMNS.type,
-          value: type === InputEventType.KEY ? 'KEY' : 'MOTION',
+          value: type.formattedValue(),
           propagateEntryTimestamp: true,
         },
         {
           spec: Presenter.COLUMNS.source,
-          value: assertDefined(eventTree.getChildByName('source'))
+          value: assertDefined(wrapperTree.getEagerPropertyByName('source'))
             .formattedValue()
             .replace('SOURCE_', ''),
         },
         {
           spec: Presenter.COLUMNS.action,
-          value: Presenter.getInputAction(eventTree),
+          value: Presenter.getInputAction(wrapperTree),
         },
         {
           spec: Presenter.COLUMNS.deviceId,
-          value: assertDefined(eventTree.getChildByName('deviceId')).getValue(),
+          value: Number(
+            assertBigInt(
+              wrapperTree.getEagerPropertyByName('deviceId')?.getValue(),
+            ),
+          ),
         },
         {
           spec: Presenter.COLUMNS.displayId,
-          value: assertDefined(
-            eventTree.getChildByName('displayId'),
-          ).getValue(),
+          value: Number(
+            assertBigInt(
+              wrapperTree.getEagerPropertyByName('displayId')?.getValue(),
+            ),
+          ),
         },
         {
           spec: Presenter.COLUMNS.details,
           value:
-            type === InputEventType.KEY
-              ? Presenter.extractKeyDetails(eventTree, dispatchTree)
-              : Presenter.extractDispatchDetails(dispatchTree),
+            type.getValue() === InputEventType.KEY
+              ? Presenter.extractKeyDetails(wrapperTree)
+              : Presenter.extractDispatchDetails(wrapperTree),
         },
         {
           spec: Presenter.COLUMNS.dispatchWindows,
-          value: dispatchTree
-            .getAllChildren()
-            .map((dispatchEntry) => {
-              const windowId = Number(
-                dispatchEntry.getChildByName('windowId')?.getValue() ?? -1,
-              );
-              return this.getLayerDisplayName(windowId);
+          value: windows
+            ?.map((window) => {
+              return this.getLayerDisplayName(window);
             })
             .join(', '),
         },
       ],
-      async () => assertDefined(eventTree),
-      async () => dispatchTree,
+      getPropertiesTree,
+      getDispatchPropertiesTree,
       sfEntry,
     );
-  }
-
-  private static getInputAction(eventTree: PropertyTreeNode): string {
-    const actionNode = assertDefined(eventTree.getChildByName('action'));
-    const action = actionNode.getValue();
-    const actionMasked = action & 0xff;
-    const pointerIndex = action >> 8;
-    switch (actionMasked) {
-      case 5:
-        return `POINTER_DOWN(${pointerIndex})`;
-      case 6:
-        return `POINTER_UP(${pointerIndex})`;
-      default:
-        return actionNode.formattedValue().replace('ACTION_', '');
-    }
   }
 
   private getLayerDisplayName(layerId: number): string {
@@ -376,59 +435,6 @@ export class Presenter extends AbstractLogViewerPresenter<
     return `\u{200C}${
       this.layerIdToName.get(layerId) ?? layerId.toString()
     }\u{200C}`;
-  }
-
-  private static extractKeyDetails(
-    eventTree: PropertyTreeNode,
-    dispatchTree: PropertyTreeNode,
-  ): string {
-    const keyDetails =
-      'Keycode: ' +
-      (eventTree
-        .getChildByName('keyCode')
-        ?.formattedValue()
-        ?.replace(/^KEYCODE_/, '') ?? '<?>');
-    return keyDetails + ' ' + Presenter.extractDispatchDetails(dispatchTree);
-  }
-
-  private static extractDispatchDetails(
-    dispatchTree: PropertyTreeNode,
-  ): string {
-    let details = '';
-    dispatchTree.getAllChildren().forEach((dispatchEntry) => {
-      const windowIdNode = dispatchEntry.getChildByName('windowId');
-      if (windowIdNode === undefined) {
-        return;
-      }
-      if (windowIdNode.formattedValue() === '0') {
-        // Skip showing windowId 0, which is an omnipresent system window.
-        return;
-      }
-      details += windowIdNode.getValue() + ', ';
-    });
-    return '[' + details.slice(0, -2) + ']';
-  }
-
-  protected override async updatePropertiesTree() {
-    await super.updatePropertiesTree();
-    await this.updateDispatchPropertiesTree();
-    await this.updateRects();
-  }
-
-  private async updateDispatchPropertiesTree() {
-    const inputEntry = this.getCurrentEntry();
-    const tree = inputEntry?.getDispatchPropertiesTree
-      ? await inputEntry.getDispatchPropertiesTree()
-      : undefined;
-    this.dispatchPropertiesPresenter.setPropertiesTree(tree);
-    await this.dispatchPropertiesPresenter.formatPropertiesTree(
-      undefined,
-      undefined,
-      this.keepCalculated ?? false,
-      this.trace.type,
-    );
-    this.uiData.dispatchPropertiesTree =
-      this.dispatchPropertiesPresenter.getFormattedTree();
   }
 
   private async updateRects() {
@@ -486,62 +492,64 @@ export class Presenter extends AbstractLogViewerPresenter<
     return entries[index];
   }
 
-  protected override addViewerSpecificListeners(htmlElement: HTMLElement) {
-    htmlElement.addEventListener(
-      ViewerEvents.HighlightedPropertyChange,
-      (event) =>
-        this.onHighlightedPropertyChange((event as CustomEvent).detail.id),
-    );
+  private static getInputAction(tree: HierarchyTreeNode): string {
+    const actionNode = assertDefined(tree.getEagerPropertyByName('action'));
+    const action = Number(actionNode.getValue());
+    const actionMasked = action & 0xff;
+    const pointerIndex = action >> 8;
+    switch (actionMasked) {
+      case 5:
+        return `POINTER_DOWN(${pointerIndex})`;
+      case 6:
+        return `POINTER_UP(${pointerIndex})`;
+      default:
+        return actionNode.formattedValue().replace('ACTION_', '');
+    }
+  }
 
-    htmlElement.addEventListener(ViewerEvents.HighlightedIdChange, (event) =>
-      this.onHighlightedIdChange((event as CustomEvent).detail.id),
-    );
+  private static extractKeyDetails(wrapperTree: HierarchyTreeNode): string {
+    const keyDetails =
+      'Keycode: ' +
+      (wrapperTree
+        .getEagerPropertyByName('keyCode')
+        ?.formattedValue()
+        ?.replace(/^KEYCODE_/, '') ?? '<?>');
+    return keyDetails + ' ' + Presenter.extractDispatchDetails(wrapperTree);
+  }
 
-    htmlElement.addEventListener(
-      ViewerEvents.RectsUserOptionsChange,
-      async (event) => {
-        await this.onRectsUserOptionsChange(
-          (event as CustomEvent).detail.userOptions,
-        );
-      },
-    );
+  private static extractDispatchDetails(
+    wrapperTree: HierarchyTreeNode,
+  ): string {
+    let details = '';
+    wrapperTree
+      .getEagerPropertyByName('windows')
+      ?.getAllChildren()
+      .forEach((window) => {
+        if (window.formattedValue() === '0') {
+          // Skip showing windowId 0, which is an omnipresent system window.
+          return;
+        }
+        details += window.getValue() + ', ';
+      });
+    return '[' + details.slice(0, -2) + ']';
+  }
 
-    htmlElement.addEventListener(ViewerEvents.RectsDblClick, async (event) => {
-      await this.onRectDoubleClick();
+  private static getUniqueFieldValues(
+    headers: LogHeader[],
+    entries: LogEntry[],
+  ): Map<ColumnSpec, Set<string>> {
+    const uniqueFieldValues = new Map<ColumnSpec, Set<string>>();
+    headers.forEach((header) => {
+      if (!header.filter || header.spec === Presenter.COLUMNS.dispatchWindows) {
+        return;
+      }
+      uniqueFieldValues.set(header.spec, new Set());
     });
-
-    htmlElement.addEventListener(
-      ViewerEvents.DispatchPropertiesFilterChange,
-      async (event) => {
-        const detail: TextFilter = (event as CustomEvent).detail;
-        await this.onDispatchPropertiesFilterChange(detail);
-      },
-    );
-  }
-
-  onHighlightedPropertyChange(id: string) {
-    this.propertiesPresenter.applyHighlightedPropertyChange(id);
-    this.dispatchPropertiesPresenter.applyHighlightedPropertyChange(id);
-    this.uiData.highlightedProperty =
-      id === this.uiData.highlightedProperty ? '' : id;
-    this.notifyViewChanged();
-  }
-
-  async onHighlightedIdChange(id: string) {
-    this.uiData.highlightedRect = id === this.uiData.highlightedRect ? '' : id;
-    await this.updateRects();
-    this.notifyViewChanged();
-  }
-
-  async onRectsUserOptionsChange(userOptions: UserOptions) {
-    this.rectsPresenter.applyRectsUserOptionsChange(userOptions);
-    await this.updateRects();
-    this.notifyViewChanged();
-  }
-
-  async onRectDoubleClick() {
-    await this.emitAppEvent(
-      new TabbedViewSwitchRequest(assertDefined(this.surfaceFlingerTrace)),
-    );
+    entries.forEach((entry) => {
+      entry.fields.forEach((field) => {
+        uniqueFieldValues.get(field.spec)?.add(field.value.toString());
+      });
+    });
+    return uniqueFieldValues;
   }
 }

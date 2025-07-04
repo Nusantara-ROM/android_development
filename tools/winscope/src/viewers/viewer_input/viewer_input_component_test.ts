@@ -18,10 +18,12 @@ import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {assertDefined} from 'common/assert_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
+import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
+import {InputColumnType} from 'trace/input/input_column_type';
 import {TraceType} from 'trace/trace_type';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {AbstractLogViewerComponentTest} from 'viewers/common/abstract_log_viewer_component_test';
 import {LogSelectFilter} from 'viewers/common/log_filters';
 import {LogHeader} from 'viewers/common/ui_data_log';
@@ -38,14 +40,18 @@ class ViewerInputComponentTest extends AbstractLogViewerComponentTest<ViewerInpu
   protected override readonly propertiesSectionTitle = 'EVENT DETAILS';
   protected override readonly propertiesPlaceholder = 'No selected entry.';
 
-  private tree = new PropertyTreeBuilder()
+  private hTree = new HierarchyTreeBuilder()
+    .setId('AndroidMotionEvent')
+    .setName('entry')
+    .build();
+  private pTree = new PropertyTreeBuilder()
     .setIsRoot(true)
     .setRootId('AndroidMotionEvent')
     .setName('entry')
     .build();
-  private trace = new TraceBuilder<PropertyTreeNode>()
+  private trace = new TraceBuilder<HierarchyTreeNode>()
     .setType(TraceType.INPUT_EVENT_MERGED)
-    .setEntries([this.tree])
+    .setEntries([this.hTree])
     .setTimestamps([TimestampConverterUtils.makeElapsedTimestamp(20n)])
     .build();
   private entry = this.trace.getEntry(0);
@@ -155,13 +161,20 @@ class ViewerInputComponentTest extends AbstractLogViewerComponentTest<ViewerInpu
         },
         this.testField,
         this.testField,
-        this.testField,
+        {
+          spec: {
+            name: 'Test Column Action',
+            cssClass: 'test-class-action',
+            columnType: InputColumnType.ACTION,
+          },
+          value: 'VALUE',
+        },
         this.testField,
         this.testField,
         this.testField,
       ],
-      async () => this.tree,
-      async () => this.tree,
+      async () => this.pTree,
+      async () => this.pTree,
       undefined,
     );
   }

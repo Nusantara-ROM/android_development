@@ -18,7 +18,7 @@ import {assertDefined} from 'common/assert_utils';
 import {DispatchedPointerAxis} from 'trace/input/dispatched_pointer_axis';
 import {Operation} from 'trace/tree_node/operations/operation';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {PropertyTreeNodeFactory} from 'trace/tree_node/property_tree_node_factory';
+import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
 
 /**
  * A single input event can be dispatched to multiple windows, where each dispatch
@@ -29,23 +29,16 @@ import {PropertyTreeNodeFactory} from 'trace/tree_node/property_tree_node_factor
  * logged to save space.
  */
 export class InputCoordinatePropagator implements Operation<PropertyTreeNode> {
-  private propertyTreeNodeFactory = new PropertyTreeNodeFactory();
-
   apply(root: PropertyTreeNode): void {
-    const motionEventTree = root.getChildByName('motionEvent');
-    if (
-      motionEventTree === undefined ||
-      motionEventTree.getAllChildren().length === 0
-    ) {
+    const eventTree = root.getChildByName('event');
+    if (eventTree === undefined || eventTree.getAllChildren().length === 0) {
       return;
     }
 
-    const pointersById = this.getPointerCoordsById(motionEventTree);
+    const pointersById = this.getPointerCoordsById(eventTree);
     if (pointersById.size === 0) return;
 
-    const dispatchTree = assertDefined(
-      root.getChildByName('windowDispatchEvents'),
-    );
+    const dispatchTree = assertDefined(root.getChildByName('dispatchEvents'));
     dispatchTree.getAllChildren().forEach((dispatchEntry) => {
       dispatchEntry
         .getChildByName('dispatchedPointer')
@@ -108,7 +101,7 @@ export class InputCoordinatePropagator implements Operation<PropertyTreeNode> {
     name: string,
     value: any = undefined,
   ): PropertyTreeNode {
-    const node = this.propertyTreeNodeFactory.makeCalculatedProperty(
+    const node = DEFAULT_PROPERTY_TREE_NODE_FACTORY.makeCalculatedProperty(
       parent.id,
       name,
       value,
