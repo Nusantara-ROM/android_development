@@ -54,11 +54,29 @@
         [ngClass]="getResultClass(golden)"
       >
         <mat-expansion-panel-header class="flex items-center">
-          <mat-panel-title class="flex-1 min-w-0">
-            <div class="flex items-center">
+          <mat-panel-title class="flex-1 min-w-0 flex items-center">
+            <div *ngIf="showCheckBoxes" class="flex-shrink-0">
+              <label for="golden-checkbox-{{ golden.id }}"
+                class="flex items-center cursor-pointer p-3 rounded-full hover:bg-gray-200 transition-colors"
+                (click)="$event.stopPropagation()">
+                <input class="h-5 w-5" id="golden-checkbox-{{ golden.id }}" type="checkbox"
+                  [checked]="isGoldenSelected(golden)" (change)="toggleGoldenSelection(golden, $event)"
+                  (click)="$event.stopPropagation()">
+              </label>
+            </div>
+
+            <div class="flex-grow min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
               <span class="truncate">{{ golden.testMethodName }}</span>
             </div>
           </mat-panel-title>
+          <div class="status-indicator-container flex items-center space-x-2 mr-2">
+            <mat-spinner *ngIf="golden.status === 'UPDATING'" [diameter]="20" [strokeWidth]="3" matTooltip="Updating...">
+            </mat-spinner>
+            <button mat-icon-button *ngIf="golden.status === 'FAILED_UPDATE'"
+              (click)="retryGolden(golden.id); $event.stopPropagation()" [matTooltip]="'Retry. Error: ' + golden.error">
+              <mat-icon class="text-red-500">replay</mat-icon>
+            </button>
+          </div>
         </mat-expansion-panel-header>
         <div class="p-4">
           <div class="font-medium text-gray-700">
@@ -73,6 +91,18 @@
       </div>
 
     </mat-accordion>
+    <div *ngIf="showCheckBoxes" class="mt-5 items-center flex w-full space-x-2">
+      <div class="flex px-6 items-center"><label for="selectAll"
+          class="flex items-center cursor-pointer p-3 mr-1 rounded-full hover:bg-gray-200 transition-colors">
+          <input class="w-5 h-5" id="selectAll" type="checkbox" [checked]="areAllBoxesSelected(filteredGoldens)"
+            (change)="toggleAllBoxesSelection($event)"></label>Select All
+      </div>
+      <div class="px-5 ">
+        <button class="px-3 py-1 rounded bg-red-500 hover:bg-red-700 text-white" (click)="updateSelectedGoldens()">
+          Update Selected Goldens
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

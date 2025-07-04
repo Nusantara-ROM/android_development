@@ -18,10 +18,39 @@
 </mat-toolbar>
 
 <div class="flex h-screen p-4 bg-gray-100">
-  <div class="flex items-start justify-center w-10 bg-slate-200">
-    <button (click)="toggleTestListVisibility()" class="pt-4">
-    <span class="google-symbols">menu</span>
-    </button>
+  <div class="flex flex-col py-4 justify-start w-10 bg-slate-200 mx-auto">
+    <div (click)="toggleTestListVisibility()"
+      class="p-2 mx-auto cursor-pointer rounded hover:bg-gray-400 transition-colors relative group">
+      <button>
+        <span class="google-symbols">menu</span>
+      </button>
+      <span class="
+              absolute left-full top-1/2 -translate-y-1/2 ml-2
+              px-3 py-1 bg-gray-600 text-gray-100 text-sm font-medium
+              rounded-lg whitespace-nowrap opacity-0
+              transition-opacity duration-300
+              group-hover:opacity-100
+              pointer-events-none
+            ">
+        {{ showTestList ? 'Close Test List' : 'Open Test List' }}
+      </span>
+    </div>
+    <div *ngIf="goldens[0]?.dataSource===undefined" (click)="toggleCheckBoxes()"
+      class="p-2 mx-auto cursor-pointer rounded hover:bg-gray-400 transition-colors relative group">
+      <button>
+        <span class="google-symbols">update</span>
+      </button>
+      <span class="z-10
+              absolute left-full top-1/2 -translate-y-1/2 ml-2
+              px-3 py-1 bg-gray-600 text-gray-100 text-sm font-medium
+              rounded-lg whitespace-nowrap opacity-0
+              transition-opacity duration-300
+              group-hover:opacity-100
+              pointer-events-none
+            ">
+        Update Golden
+      </span>
+    </div>
   </div>
   <div *ngIf="showTestList" [@sidebarMenuAnimation] class="w-1/4 bg-white rounded-r-md  overflow-y-auto mr-4">
       <app-test-list
@@ -30,6 +59,7 @@
         (selectedGoldenChange)="setSelectedGolden($event)"
         [testNames]="testNames"
         (selectedTestNameChange)="setSelectedTest($event)"
+        [(showCheckBoxes)]="showCheckBoxes"
       ></app-test-list>
   </div>
 

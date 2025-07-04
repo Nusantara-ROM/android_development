@@ -16,7 +16,7 @@
 
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Inject, Injectable, InjectionToken } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map, tap } from 'rxjs/operators';
 
 import { MotionGolden, MotionGoldenData } from '../model/golden';
@@ -164,19 +164,36 @@ export class GoldensService {
 
     }
 
-  updateGolden(golden: MotionGolden): Observable<void> {
+  updateGolden(golden: MotionGolden): Observable<Record<string, string>> {
     return this.http
-      .put<void>(
-        `${this.serverRoot}/service/update?id=${golden.id}`,
-        {},
-        { headers: this.defaultHeaders }
-      )
+      .put<
+        Record<string, string>
+      >(`${this.serverRoot}/service/update?id=${golden.id}`, {}, { headers: this.defaultHeaders })
       .pipe(
-        tap((_) => {
-          console.log(`updated golden`);
-          golden.updated = true;
+        tap((results: Record<string, string>) => { }),
+        catchError(this.handleErrorForUpdatingGolden<Record<string, string>>('updateGolden')),
+      );
+  }
+
+  updateSelectedGoldens(selectedGoldenIds: string[]): Observable<any> {
+    return this.http
+      .put<
+        Record<string, string>
+      >(`${this.serverRoot}/service/updateSelectedGoldensIds`, { selectedGoldenIds }, { headers: this.defaultHeaders })
+      .pipe(
+        tap((rawResults: Record<string, string>) => {
+          console.log(
+            `Service: Batch update request sent for the IDs:`,
+            selectedGoldenIds,
+          );
+          console.log(
+            `Service: Raw batch update results received:`,
+            rawResults,
+          );
         }),
-        catchError(this.handleError<void>('update'))
+        catchError(
+          this.handleErrorForUpdatingGolden<Record<string, string>>('updateSelectedGoldens'),
+        ),
       );
   }
 
@@ -219,6 +236,14 @@ export class GoldensService {
 
       // Let the app keep running by returning an empty result.
       return of(result as T);
+    };
+  }
+
+  private handleErrorForUpdatingGolden<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(error);
+      const response = error.error;
+      return of(response as T);
     };
   }
 }

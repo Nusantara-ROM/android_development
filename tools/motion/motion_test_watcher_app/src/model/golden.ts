@@ -24,13 +24,13 @@ export interface MotionGolden {
   testClassName: string;
   testMethodName: string;
   testTime: string;
-  updated: boolean;
   videoUrl: string | undefined;
   goldenName: string | undefined;
   dataSource: DataSource;
-  isLocalData: boolean;
   expectedData: MotionGoldenData;
   actualData: MotionGoldenData;
+  status?: 'IDLE' | 'UPDATING' | 'PASSED_UPDATE' | 'FAILED_UPDATE';
+  error?: string;
 }
 
 export enum DataSource{
