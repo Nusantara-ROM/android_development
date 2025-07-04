@@ -16,12 +16,12 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {Point} from 'common/geometry/point';
+import {DispatchedPointerAxis} from 'trace/input/dispatched_pointer_axis';
 import {TraceRect} from 'trace/trace_rect';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {UiRectBuilder} from 'viewers/components/rects/ui_rect_builder';
-import {DispatchedPointerAxis} from 'viewers/viewer_input/operations/dispatched_pointer_axis';
 
 class UiRectFactory {
   makeUiRects(
