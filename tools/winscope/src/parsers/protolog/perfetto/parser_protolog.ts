@@ -42,8 +42,8 @@ export class ParserProtolog extends AbstractParser<HierarchyTreeNode> {
     const sql = `SELECT
         ${Object.values(ProtologColumnType).join(', ')}
       FROM
-        ${this.getTableName()}
-      WHERE protolog.id = ${this.entryIndexToRowIdMap[index]};`;
+        ${this.getTableName()} AS tbl
+      WHERE tbl.id = ${this.entryIndexToRowIdMap[index]};`;
 
     return this.makeHierarchyTrees(sql).then((trees) => trees[0]);
   }
@@ -52,8 +52,8 @@ export class ParserProtolog extends AbstractParser<HierarchyTreeNode> {
     const sql = `SELECT
         ${Object.values(ProtologColumnType).join(', ')}
       FROM
-        ${this.getTableName()}
-      ORDER BY protolog.id`;
+        ${this.getTableName()} AS tbl
+      ORDER BY tbl.id`;
 
     return this.makeHierarchyTrees(sql);
   }
