@@ -100,6 +100,18 @@ describe('PropertyTreeNodeFactory', () => {
     expect(node).toEqual(expectedNode);
   });
 
+  it('makes node with empty object value', () => {
+    const node = factory.makeProtoProperty('RootId name', '', {});
+    const expectedNode = new PropertyTreeBuilder()
+      .setRootId('RootId')
+      .setIsRoot(true)
+      .setName('name')
+      .setSource(PropertySource.PROTO)
+      .setValue({})
+      .build();
+    expect(node).toEqual(expectedNode);
+  });
+
   it('makes simple properties nested in object', () => {
     const nestedProperty = {size: 3, isPresent: false};
     const node = factory.makeProtoProperty(

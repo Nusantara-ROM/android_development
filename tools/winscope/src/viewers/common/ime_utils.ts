@@ -110,43 +110,41 @@ class ImeAdditionalPropertiesUtils {
     return new ProcessedWindowManagerState(entry.id, entry.name, props, entry);
   }
 
-  getImeLayers(
+  async getImeLayers(
     entryTree: HierarchyTreeNode,
     processedWindowManagerState: ProcessedWindowManagerState,
     sfEntryTimestamp: Timestamp | undefined,
-  ): ImeLayers | undefined {
+  ): Promise<ImeLayers | undefined> {
     const imeContainerLayer = entryTree.findDfs(this.isImeContainer);
-
     if (!imeContainerLayer) {
       return undefined;
     }
 
-    const imeContainerProps: ImeContainerProperties = {
-      id: imeContainerLayer.id,
-      zOrderRelativeOfId: assertDefined(
-        imeContainerLayer.getEagerPropertyByName('zOrderRelativeOf'),
-      ).getValue(),
-      z: assertDefined(
-        imeContainerLayer.getEagerPropertyByName('z'),
-      ).getValue(),
-    };
-
     const inputMethodSurfaceLayer = imeContainerLayer.findDfs(
       this.isInputMethodSurface,
     );
-
     if (!inputMethodSurfaceLayer) {
       return undefined;
     }
 
+    const imeContainerAllProps = await imeContainerLayer.getAllProperties();
+    const imeContainerProps: ImeContainerProperties = {
+      id: imeContainerLayer.id,
+      zOrderRelativeOfId: assertDefined(
+        imeContainerAllProps.getChildByName('zOrderRelativeOf'),
+      ).getValue(),
+      z: assertDefined(imeContainerAllProps.getChildByName('z')).getValue(),
+    };
+
+    const inputMethodSurfaceAllProps =
+      await inputMethodSurfaceLayer.getAllProperties();
     const inputMethodSurfaceProps: InputMethodSurfaceProperties = {
       id: inputMethodSurfaceLayer.id,
       isVisible: assertDefined(
-        inputMethodSurfaceLayer.getEagerPropertyByName('isComputedVisible'),
+        inputMethodSurfaceAllProps.getChildByName('isVisible'),
       ).getValue(),
-      screenBounds:
-        inputMethodSurfaceLayer.getEagerPropertyByName('screenBounds'),
-      rect: inputMethodSurfaceLayer.getEagerPropertyByName('bounds'),
+      screenBounds: inputMethodSurfaceAllProps.getChildByName('screenBounds'),
+      rect: inputMethodSurfaceAllProps.getChildByName('bounds'),
     };
 
     let focusedWindowLayer: HierarchyTreeNode | undefined;
@@ -162,7 +160,7 @@ class ImeAdditionalPropertiesUtils {
     }
 
     const focusedWindowColor = focusedWindowLayer
-      ? focusedWindowLayer.getEagerPropertyByName('color')
+      ? (await focusedWindowLayer.getAllProperties()).getChildByName('color')
       : undefined;
 
     // we want to see both ImeContainer and IME-snapshot if there are

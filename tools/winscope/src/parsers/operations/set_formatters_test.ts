@@ -37,6 +37,7 @@ describe('SetFormatters', () => {
     field = TamperedMessageType.tamper(root.lookupType('RootMessage')).fields[
       'entry'
     ];
+    operation = new SetFormatters();
   });
 
   it('adds correct formatter for enum node', () => {
@@ -62,7 +63,6 @@ describe('SetFormatters', () => {
       .setName('node')
       .build();
     propertyRoot.addOrReplaceChild(TreeNodeUtils.makeColorNode(-1, -1, -1, 1));
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -80,7 +80,6 @@ describe('SetFormatters', () => {
     propertyRoot.addOrReplaceChild(
       TreeNodeUtils.makeColorNode(0, 0, 0, undefined),
     );
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -96,7 +95,6 @@ describe('SetFormatters', () => {
       .setName('node')
       .build();
     propertyRoot.addOrReplaceChild(TreeNodeUtils.makeRectNode(0, 0, 1, 1));
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -112,7 +110,6 @@ describe('SetFormatters', () => {
       .setName('node')
       .build();
     propertyRoot.addOrReplaceChild(TreeNodeUtils.makeBufferNode());
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -128,7 +125,6 @@ describe('SetFormatters', () => {
       .setName('node')
       .build();
     propertyRoot.addOrReplaceChild(TreeNodeUtils.makeSizeNode(1, 2));
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -167,7 +163,6 @@ describe('SetFormatters', () => {
         },
       ])
       .build();
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -183,7 +178,6 @@ describe('SetFormatters', () => {
       .setName('node')
       .build();
     propertyRoot.addOrReplaceChild(TreeNodeUtils.makePositionNode(1, 2));
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -201,7 +195,6 @@ describe('SetFormatters', () => {
     propertyRoot.addOrReplaceChild(
       TreeNodeUtils.makeTransformNode(TransformTypeFlags.EMPTY),
     );
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -220,7 +213,6 @@ describe('SetFormatters', () => {
       ])
       .build();
 
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -243,7 +235,6 @@ describe('SetFormatters', () => {
       .setChildren([{name: 'val', value: 1}])
       .build();
 
-    operation = new SetFormatters();
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');

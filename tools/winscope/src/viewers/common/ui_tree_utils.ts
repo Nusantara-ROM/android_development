@@ -32,10 +32,16 @@ export class UiTreeUtils {
   }
 
   static isVisible: TreeNodeFilter = (node: TreeNode) => {
-    return (
-      node instanceof UiHierarchyTreeNode &&
-      node.getEagerPropertyByName('isComputedVisible')?.getValue()
-    );
+    if (!(node instanceof UiHierarchyTreeNode)) {
+      return;
+    }
+    const isComputedVisible = node
+      .getEagerPropertyByName('isComputedVisible')
+      ?.getValue();
+    if (isComputedVisible !== undefined) {
+      return isComputedVisible;
+    }
+    return node.getEagerPropertyByName('isVisible')?.getValue() ?? false;
   };
 
   static makeIsNotDefaultFilter(allowList: string[]): TreeNodeFilter {

@@ -178,7 +178,7 @@ the default for its data type.`,
       );
 
       if (sfEntry) {
-        sfProperties = ImeUtils.getImeLayers(
+        sfProperties = await ImeUtils.getImeLayers(
           sfEntry,
           wmProperties,
           sfEntryTimestamp,

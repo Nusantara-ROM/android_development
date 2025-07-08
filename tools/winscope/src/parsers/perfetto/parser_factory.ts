@@ -95,6 +95,7 @@ export class ParserFactory {
     let hasFoundParser = false;
 
     const errors: string[] = [];
+    await traceProcessor.query('INCLUDE PERFETTO MODULE android.winscope.rect');
     for (const ParserType of ParserFactory.PARSERS) {
       try {
         const parser = new ParserType(

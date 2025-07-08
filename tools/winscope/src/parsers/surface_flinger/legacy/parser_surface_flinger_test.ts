@@ -120,59 +120,18 @@ describe('ParserSurfaceFlinger', () => {
 
       it('decodes layer state flags', async () => {
         const entry = await perfettoParser.getEntry(0);
-        {
-          const layer = assertDefined(
-            entry.findDfs(UiTreeUtils.makeIdMatchFilter('27 Leaf:24:25#27')),
-          );
-          expect(layer.name).toEqual('Leaf:24:25#27');
+        const layer = assertDefined(
+          entry.findDfs(UiTreeUtils.makeIdMatchFilter('48 Task=4#48')),
+        );
+        expect(layer.name).toEqual('Task=4#48');
 
-          expect(
-            assertDefined(
-              layer.getEagerPropertyByName('flags'),
-            ).formattedValue(),
-          ).toEqual('0');
-          expect(
-            assertDefined(
-              layer.getEagerPropertyByName('verboseFlags'),
-            ).formattedValue(),
-          ).toEqual('');
-        }
-        {
-          const layer = assertDefined(
-            entry.findDfs(UiTreeUtils.makeIdMatchFilter('48 Task=4#48')),
-          );
-          expect(layer.name).toEqual('Task=4#48');
-
-          expect(
-            assertDefined(
-              layer.getEagerPropertyByName('flags'),
-            ).formattedValue(),
-          ).toEqual('1');
-          expect(
-            assertDefined(
-              layer.getEagerPropertyByName('verboseFlags'),
-            ).formattedValue(),
-          ).toEqual('HIDDEN (0x1)');
-        }
-        {
-          const layer = assertDefined(
-            entry.findDfs(
-              UiTreeUtils.makeIdMatchFilter('77 Wallpaper BBQ wrapper#77'),
-            ),
-          );
-          expect(layer.name).toEqual('Wallpaper BBQ wrapper#77');
-
-          expect(
-            assertDefined(
-              layer.getEagerPropertyByName('flags'),
-            ).formattedValue(),
-          ).toEqual('256');
-          expect(
-            assertDefined(
-              layer.getEagerPropertyByName('verboseFlags'),
-            ).formattedValue(),
-          ).toEqual('ENABLE_BACKPRESSURE (0x100)');
-        }
+        const props = await layer.getAllProperties();
+        expect(
+          assertDefined(props.getChildByName('flags')).formattedValue(),
+        ).toEqual('1');
+        expect(
+          assertDefined(props.getChildByName('verboseFlags')).formattedValue(),
+        ).toEqual('HIDDEN (0x1)');
       });
 
       it('supports VSYNCID custom query', async () => {

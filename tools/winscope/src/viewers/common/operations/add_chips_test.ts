@@ -173,12 +173,12 @@ describe('AddChips', () => {
           {
             id: 2,
             name: 'parentNode',
-            properties: {id: 2, zOrderRelativeOf: -1},
+            properties: {layerId: 2, zOrderRelativeOf: -1},
             children: [
               {
                 id: 1,
                 name: 'node',
-                properties: {id: 1, zOrderRelativeOf: 2},
+                properties: {layerId: 1, zOrderRelativeOf: 2},
               },
             ],
           },

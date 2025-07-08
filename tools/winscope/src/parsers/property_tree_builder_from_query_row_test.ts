@@ -21,6 +21,9 @@ import {PropertyTreeBuilderFromQueryRow} from './property_tree_builder_from_quer
 
 describe('PropertyTreeBuilderFromQueryRow', () => {
   const columns = ['test_prop', 'other_prop'];
+  const spyRow = makeSpyRowIterator();
+  spyRow.get.withArgs(columns[0]).and.returnValue(1);
+  spyRow.get.withArgs(columns[1]).and.returnValue('test_value');
   let builder: PropertyTreeBuilderFromQueryRow;
 
   beforeEach(() => {
@@ -34,10 +37,6 @@ describe('PropertyTreeBuilderFromQueryRow', () => {
   });
 
   it('converts column name from snake to camel case', () => {
-    const spyRow = makeSpyRowIterator();
-    spyRow.get.withArgs(columns[0]).and.returnValue(1);
-    spyRow.get.withArgs(columns[1]).and.returnValue('test_value');
-
     const expectedRoot = new PropertyTreeBuilder()
       .setRootId('1')
       .setName('rootName')
@@ -50,6 +49,26 @@ describe('PropertyTreeBuilderFromQueryRow', () => {
       .build();
 
     const tree = builder.setColumns(columns).setData(spyRow).build();
+    expect(tree).toEqual(expectedRoot);
+  });
+
+  it('converts column to boolean value', () => {
+    const expectedRoot = new PropertyTreeBuilder()
+      .setRootId('1')
+      .setName('rootName')
+      .setIsRoot(true)
+      .setSource(PropertySource.TP)
+      .setChildren([
+        {name: 'testProp', value: true},
+        {name: 'otherProp', value: 'test_value'},
+      ])
+      .build();
+
+    const tree = builder
+      .setColumns(columns)
+      .setConvertColumnToBoolean(columns[0])
+      .setData(spyRow)
+      .build();
     expect(tree).toEqual(expectedRoot);
   });
 });
