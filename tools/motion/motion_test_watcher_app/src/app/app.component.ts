@@ -80,6 +80,35 @@ import { TestModeComponent } from '../testMode/test-mode.component';
           paddingRight: '*'
         }))
       ])
+    ]),
+
+    trigger('collapseAnimation', [
+      state('void', style({
+        height: '0',
+        opacity: 0,
+        overflow: 'hidden'
+      })),
+
+      state('*', style({
+        height: '*',
+        opacity: 1,
+        overflow: 'hidden'
+      })),
+
+      transition(':enter', [
+        animate('300ms ease-out')
+      ]),
+
+      transition(':leave', [
+        animate('300ms ease-in')
+      ])
+    ]),
+    trigger('timelineHeightChange', [
+      state('true', style({ height: 'calc(66.6666% - 16px)' })),
+      state('false', style({ height: 'calc(100% - 16px)' })),
+      transition('true <=> false', [
+        animate('300ms ease-in-out')
+      ])
     ])
   ]
 })
@@ -146,6 +175,11 @@ export class AppComponent implements DoCheck, OnInit {
   selectedGolden: MotionGolden | null = null;
   showTestList: boolean = true;
   showCheckBoxes: boolean =false;
+  showPreviewComponent: boolean = true;
+
+  get isVideoPresent(): boolean {
+    return this.selectedGolden?.videoUrl != null;
+  }
 
   toggleTestListVisibility() {
     this.showTestList = !this.showTestList;
@@ -231,5 +265,8 @@ export class AppComponent implements DoCheck, OnInit {
 
   toggleCheckBoxes(): void {
     this.showCheckBoxes = !this.showCheckBoxes;
+  }
+  openPreviewComponent(): void {
+    this.showPreviewComponent = !this.showPreviewComponent;
   }
 }
