@@ -327,7 +327,7 @@ impl Crate {
                     // example: memoffset=/some/path/libmemoffset-2cfda327d156e680.rmeta
                     let arg = arg_iter.next().unwrap();
                     if let Some((name, path)) = arg.split_once('=') {
-                        let filename = path.split('/').last().unwrap();
+                        let filename = path.split('/').next_back().unwrap();
 
                         // Example filename: "libgetrandom-fd8800939535fc59.rmeta" or "libmls_rs_uniffi.rlib".
                         static REGEX: LazyLock<Regex> = LazyLock::new(|| {
