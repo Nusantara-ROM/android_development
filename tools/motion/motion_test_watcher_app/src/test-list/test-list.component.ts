@@ -177,17 +177,18 @@ export class TestListComponent implements OnChanges{
     }
   }
 
-  areAllBoxesSelected(filteredGoldens: MotionGolden[]): boolean {
-    if (filteredGoldens.length === 0) {
+  areAllBoxesSelected(): boolean {
+    const visibleGoldens : MotionGolden[] = this.filteredGoldens.flatMap(item => item.value);
+    if (visibleGoldens.length === 0) {
       return false;
     }
-    return filteredGoldens.every(golden => this.isGoldenSelected(golden));
+    return visibleGoldens.every(golden => this.isGoldenSelected(golden));
   }
 
   toggleAllBoxesSelection(event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
     if (isChecked) {
-      this.selectedGoldenIds = new Set(this.filteredGoldens.map(golden => golden.id));
+      this.selectedGoldenIds = new Set(this.filteredGoldens.flatMap((item) => item.value.map((golden) => golden.id)));
     } else {
       this.selectedGoldenIds.clear();
     }

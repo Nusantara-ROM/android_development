@@ -94,7 +94,7 @@
     <div *ngIf="showCheckBoxes" class="mt-5 items-center flex w-full space-x-2">
       <div class="flex px-6 items-center"><label for="selectAll"
           class="flex items-center cursor-pointer p-3 mr-1 rounded-full hover:bg-gray-200 transition-colors">
-          <input class="w-5 h-5" id="selectAll" type="checkbox" [checked]="areAllBoxesSelected(filteredGoldens)"
+          <input class="w-5 h-5" id="selectAll" type="checkbox" [checked]="areAllBoxesSelected()"
             (change)="toggleAllBoxesSelection($event)"></label>Select All
       </div>
       <div class="px-5 ">
