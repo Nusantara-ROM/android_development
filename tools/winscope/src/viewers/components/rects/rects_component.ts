@@ -488,12 +488,12 @@ export class RectsComponent implements OnInit, OnDestroy {
     );
     this.resizeObserver.observe(canvasContainer);
 
-    this.largeRectsCanvasElement = canvasContainer.querySelector(
-      '.large-rects-canvas',
-    )! as HTMLCanvasElement;
+    this.largeRectsCanvasElement = assertDefined(
+      canvasContainer.querySelector<HTMLCanvasElement>('.large-rects-canvas'),
+    );
     this.largeRectsLabelsElement = assertDefined(
-      canvasContainer.querySelector('.large-rects-labels'),
-    ) as HTMLElement;
+      canvasContainer.querySelector<HTMLElement>('.large-rects-labels'),
+    );
     this.largeRectsCanvas = new Canvas(
       this.largeRectsCanvasElement,
       this.largeRectsLabelsElement,
@@ -589,6 +589,10 @@ export class RectsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.resizeObserver?.disconnect();
+    this.largeRectsCanvas?.onDestroy();
+    this.miniRectsCanvas?.onDestroy();
+    (this.largeRectsCanvasElement?.getContext('2d') as any)?.reset();
+    (this.miniRectsCanvasElement?.getContext('2d') as any)?.reset();
   }
 
   onDisplaysChange(change: SimpleChange) {
