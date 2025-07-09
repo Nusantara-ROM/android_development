@@ -90,12 +90,13 @@ export class ParserFactory {
       'Reading from trace processor...',
       undefined,
     );
+
+    await this.processGeometryTables(traceProcessor);
+
     const parsers: Array<Parser<object>> = [];
-
     let hasFoundParser = false;
-
     const errors: string[] = [];
-    await traceProcessor.query('INCLUDE PERFETTO MODULE android.winscope.rect');
+
     for (const ParserType of ParserFactory.PARSERS) {
       try {
         const parser = new ParserType(
@@ -146,5 +147,25 @@ export class ParserFactory {
     Analytics.Memory.logUsage('tp_initialized');
 
     return traceProcessor;
+  }
+
+  private async processGeometryTables(traceProcessor: TraceProcessor) {
+    await traceProcessor.query('INCLUDE PERFETTO MODULE android.winscope.rect');
+    await traceProcessor.query(`CREATE PERFETTO TABLE winscope_rect AS
+      SELECT
+        tr.id as trace_rect_id,
+        tr.group_id,
+        tr.depth,
+        tr.is_spy,
+        tr.is_visible,
+        tr.opacity,
+        tr.transform_id,
+        rr.x,
+        rr.y,
+        rr.w,
+        rr.h
+      FROM android_winscope_trace_rect AS tr
+      INNER JOIN android_winscope_rect AS rr
+        ON tr.rect_id = rr.id`);
   }
 }
