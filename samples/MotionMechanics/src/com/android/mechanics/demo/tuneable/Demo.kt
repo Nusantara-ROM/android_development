@@ -35,13 +35,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.android.mechanics.debug.DebugMotionValueVisualization
 import com.android.mechanics.demo.staging.debug.DebugUi
+import com.android.mechanics.spec.MotionSpec
 
 interface Demo<T> {
     val identifier: String
@@ -55,6 +58,9 @@ interface Demo<T> {
 
 interface HasMotionValueVisualization {
     val visualizationInputRange: ClosedFloatingPointRange<Float>
+
+    fun computeOutputRange(spec: MotionSpec, inputRange: ClosedFloatingPointRange<Float>) =
+        DebugMotionValueVisualization.default(spec, inputRange)
 
     val expandedGraphHeight: Dp
         get() = 96.dp
@@ -70,6 +76,7 @@ fun <T> Demo<T>.ConfigurableDemo(modifier: Modifier = Modifier) {
 
     var showConfigurationDialog by remember { mutableStateOf(false) }
     var expressive by remember { mutableStateOf(true) }
+    var showDebugger by remember { mutableStateOf(false) }
 
     if (showConfigurationDialog) {
         ConfigDialog(
@@ -93,6 +100,16 @@ fun <T> Demo<T>.ConfigurableDemo(modifier: Modifier = Modifier) {
             TextButton(onClick = { expressive = !expressive }) {
                 Text(if (expressive) "Expressive" else "Standard")
             }
+
+            if (this@ConfigurableDemo is HasMotionValueVisualization) {
+                TextButton(onClick = { showDebugger = !showDebugger }) {
+                    Text(if (showDebugger) "Hide Debugger" else "Show Debugger")
+                }
+            }
+        }
+
+        val demoContent = remember {
+            movableContentOf { DemoUi(config, modifier = Modifier.fillMaxSize()) }
         }
 
         SectionContainer {
@@ -102,17 +119,18 @@ fun <T> Demo<T>.ConfigurableDemo(modifier: Modifier = Modifier) {
                         if (expressive) MotionScheme.expressive() else MotionScheme.standard()
                     }
             ) {
-                if (this@ConfigurableDemo is HasMotionValueVisualization) {
+                if (showDebugger && this@ConfigurableDemo is HasMotionValueVisualization) {
                     DebugUi(
-                        visualizationInputRange,
-                        expandedGraphHeight,
-                        collapsedGraphHeight,
+                        visualizationInputRange = visualizationInputRange,
+                        outputRange = this@ConfigurableDemo::computeOutputRange,
+                        expandedGraphHeight = expandedGraphHeight,
+                        collapsedGraphHeight = collapsedGraphHeight,
                         modifier = modifier.fillMaxWidth().weight(1f, fill = true),
-                    ) { contentModifier ->
-                        DemoUi(config, contentModifier)
+                    ) {
+                        demoContent()
                     }
                 } else {
-                    DemoUi(config, modifier.fillMaxWidth().weight(1f, fill = true))
+                    demoContent()
                 }
             }
         }

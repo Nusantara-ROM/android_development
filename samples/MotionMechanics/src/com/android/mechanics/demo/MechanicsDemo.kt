@@ -30,6 +30,7 @@ import com.android.mechanics.demo.presentation.GuaranteeFadeDemo
 import com.android.mechanics.demo.presentation.MagneticDetachDemo
 import com.android.mechanics.demo.presentation.MagneticDetachWithOverdragDemo
 import com.android.mechanics.demo.presentation.SpecDemo
+import com.android.mechanics.demo.wallpaper.experiment0.CustomizationMechanicsDemo
 
 object DemoScreens {
 
@@ -44,6 +45,7 @@ object DemoScreens {
                 "Guaranteed Size" to DemoScreen(GuaranteeBoxDemo),
                 "Magnetic detach" to DemoScreen(MagneticDetachDemo),
                 "Magnetic detach with Overdrag" to DemoScreen(MagneticDetachWithOverdragDemo),
+                "Customization Picker Mechanics" to DemoScreen(CustomizationMechanicsDemo),
             ),
         )
 }
