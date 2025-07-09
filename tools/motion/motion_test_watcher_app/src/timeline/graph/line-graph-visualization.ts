@@ -70,7 +70,14 @@ export class LineGraphVisualization implements Visualization {
     this.drawExpected(g, data);
     this.drawActual(g, data);
     this.drawLegend(g);
-    this.addMarker(g, 0);
+    let firstValidDataPoint: number | undefined;
+    const dataPoints = data
+      .filter((dp): dp is { x: number } => typeof dp.x === 'number')
+      .map(dp => dp.x);
+    if (dataPoints.length >= 2) {
+      firstValidDataPoint = dataPoints[1];
+    }
+    this.addMarker(g, this.xScale(firstValidDataPoint ?? 0));
     this.drawHover(g, data);
   }
 
@@ -320,7 +327,6 @@ export class LineGraphVisualization implements Visualization {
       .attr('stroke', COLORS.red)
       .attr('stroke-width', 1)
       .attr('stroke-linecap', 'butt')
-      .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
   }
 
   private updateMarker(): void {
