@@ -91,15 +91,15 @@ describe('EntryHierarchyTreeFactory', () => {
     it('adds fill region rects to input rect', () => {
       let calls = 0;
       layersIter.next.and.callFake(() => {
-        if (calls !== 0) {
+        if (calls === 2) {
           layersIter.valid.and.returnValue(false);
           return;
         }
         calls++;
-        layersIter.get.withArgs('fr_x').and.returnValue(5);
-        layersIter.get.withArgs('fr_y').and.returnValue(6);
-        layersIter.get.withArgs('fr_w').and.returnValue(7);
-        layersIter.get.withArgs('fr_h').and.returnValue(8);
+        layersIter.get.withArgs('fr_x').and.returnValue(1 * calls);
+        layersIter.get.withArgs('fr_y').and.returnValue(2 * calls);
+        layersIter.get.withArgs('fr_w').and.returnValue(3 * calls);
+        layersIter.get.withArgs('fr_h').and.returnValue(4 * calls);
       });
 
       const spyRectWithFillRegion = jasmine.createSpyObj<TraceRect>(
@@ -115,7 +115,7 @@ describe('EntryHierarchyTreeFactory', () => {
       expect(layer.getRects()).toBeUndefined();
 
       const expectedRect = jasmine.createSpyObj<TraceRect>('rect', [], {
-        fillRegion: new Region([new Rect(5, 6, 7, 8)]),
+        fillRegion: new Region([new Rect(1, 2, 3, 4), new Rect(2, 4, 6, 8)]),
       });
       expect(layer.getSecondaryRects()).toEqual([expectedRect]);
     });

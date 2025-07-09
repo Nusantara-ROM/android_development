@@ -58,7 +58,7 @@ export class RectExtractor {
       return undefined;
     }
     return new Rect(
-      assertNumber(row.get('fr_x')),
+      fillRegionX,
       assertNumber(row.get('fr_y')),
       assertNumber(row.get('fr_w')),
       assertNumber(row.get('fr_h')),

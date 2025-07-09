@@ -94,17 +94,15 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
           display.display_name,
           trace_rect.group_id,
           trace_rect.depth,
-          rect.x,
-          rect.y,
-          rect.w,
-          rect.h
-        FROM  surfaceflinger_layers_snapshot AS sfs
+          trace_rect.x,
+          trace_rect.y,
+          trace_rect.w,
+          trace_rect.h
+        FROM surfaceflinger_layers_snapshot AS sfs
         LEFT JOIN android_surfaceflinger_display AS display
           ON sfs.id = display.snapshot_id
-        LEFT JOIN android_winscope_trace_rect AS trace_rect
-          ON display.trace_rect_id = trace_rect.id
-        LEFT JOIN android_winscope_rect AS rect
-          ON trace_rect.rect_id = rect.id
+        LEFT JOIN winscope_rect AS trace_rect
+          ON display.trace_rect_id = trace_rect.trace_rect_id
         WHERE sfs.id = ${snapshotId}
         ORDER BY display.id;`;
     return await this.traceProcessor.query(snapshotQuery);
@@ -128,10 +126,10 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
           ltr.group_id,
           ltr.depth,
           ltr.opacity,
-          lr.x,
-          lr.y,
-          lr.w,
-          lr.h,
+          ltr.x,
+          ltr.y,
+          ltr.w,
+          ltr.h,
           lt.dsdx,
           lt.dtdx,
           lt.dsdy,
@@ -142,25 +140,21 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
           itr.depth AS input_depth,
           itr.is_visible AS input_is_visible,
           itr.is_spy,
-          ir.x AS input_x,
-          ir.y AS input_y,
-          ir.w AS input_w,
-          ir.h AS input_h,
+          itr.x AS input_x,
+          itr.y AS input_y,
+          itr.w AS input_w,
+          itr.h AS input_h,
           frr.x AS fr_x,
           frr.y AS fr_y,
           frr.w AS fr_w,
           frr.h AS fr_h
         FROM surfaceflinger_layer AS sfl
-        LEFT JOIN android_winscope_trace_rect AS ltr
-          ON sfl.layer_rect_id = ltr.id
-        LEFT JOIN android_winscope_rect AS lr
-          ON ltr.rect_id = lr.id
+        LEFT JOIN winscope_rect AS ltr
+          ON sfl.layer_rect_id = ltr.trace_rect_id
         LEFT JOIN android_winscope_transform AS lt
           ON ltr.transform_id = lt.id
-        LEFT JOIN android_winscope_trace_rect AS itr
-          ON sfl.input_rect_id = itr.id
-        LEFT JOIN android_winscope_rect AS ir
-          ON itr.rect_id = ir.id
+        LEFT JOIN winscope_rect AS itr
+          ON sfl.input_rect_id = itr.trace_rect_id
         LEFT JOIN android_winscope_fill_region AS fr
           ON sfl.input_rect_id = fr.trace_rect_id
         LEFT JOIN android_winscope_rect AS frr
