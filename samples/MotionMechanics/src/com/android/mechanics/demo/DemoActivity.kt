@@ -23,18 +23,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.google.android.libraries.view.hierarchysnapshotter.HierarchySnapshotterBuilder
-import com.google.android.libraries.view.hierarchysnapshotter.compose.ComposeExtension
 
 class DemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setDecorFitsSystemWindows(false)
-
-        HierarchySnapshotterBuilder.forContext(this)
-            .withCommonAttributeGenerators()
-            .withExtensions(ComposeExtension(this))
-            .buildAndInstall()
 
         setContent {
             MaterialTheme {
