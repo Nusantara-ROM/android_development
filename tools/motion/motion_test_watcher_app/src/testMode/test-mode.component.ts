@@ -36,8 +36,11 @@ export class TestModeComponent implements OnChanges{
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown
   }
-  ngOnChanges(changes: SimpleChanges): void {
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['testModes']) {
+      this.setFirstTestModeAsDefaultMode()
+    }
   }
 
   onActionSelected(action: String): void {
@@ -46,10 +49,15 @@ export class TestModeComponent implements OnChanges{
     this.toggleDropdown()
   }
 
+  switchMode(mode : String) {
+    this.selectedTestMode.emit(mode);
+  }
 
-
-   switchMode(mode : String) {
-     this.selectedTestMode.emit(mode);
+  setFirstTestModeAsDefaultMode() {
+    if (this.testModes[0] != null) {
+      this.selectedMode = this.testModes[0]
+      this.switchMode(this.selectedMode)
     }
+  }
 }
 
