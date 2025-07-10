@@ -19,6 +19,7 @@ import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {UserNotifier} from 'common/user_notifier';
 import Long from 'long';
 import {FailedToConvertLegacyTraces} from 'messaging/user_warnings';
+import {Writer} from 'protobufjs';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
@@ -52,6 +53,7 @@ export class LegacyToPerfettoConverter {
       ).notify();
       return perfettoFile;
     }
+
     const legacyPackets = LegacyToPerfettoConverter.makeTraceDataPackets(
       legacyParsers,
       trace,
@@ -61,9 +63,43 @@ export class LegacyToPerfettoConverter {
     }
     trace.packet.push(...legacyPackets);
 
-    const data = perfetto.protos.Trace.encode(trace).finish();
+    // To avoid out-of-memory crashes with larger traces, we add encoded
+    // packets to size-limited chunks. TraceProcessor can load files in
+    // arbitrary chunks so we don't need to worry about how/where the
+    // encoded packets are split into chunks.
+    const chunks: Uint8Array[] = [];
+    let currBuffer: Uint8Array[] = [];
+    let currSize = 0;
+
+    for (const packet of trace.packet) {
+      const encodedPacket = LegacyToPerfettoConverter.encodePacket(packet);
+
+      if (
+        currSize + encodedPacket.byteLength >
+        LegacyToPerfettoConverter.MAX_BUFFER_SIZE
+      ) {
+        if (currBuffer.length > 0) {
+          const chunk = LegacyToPerfettoConverter.createChunk(
+            currSize,
+            currBuffer,
+          );
+          chunks.push(chunk);
+        }
+        currBuffer = [encodedPacket];
+        currSize = encodedPacket.byteLength;
+      } else {
+        currBuffer.push(encodedPacket);
+        currSize += encodedPacket.byteLength;
+      }
+    }
+
+    if (currBuffer.length > 0) {
+      const chunk = LegacyToPerfettoConverter.createChunk(currSize, currBuffer);
+      chunks.push(chunk);
+    }
+
     return new TraceFile(
-      new File([data], 'combined_winscope_trace.perfetto-trace'),
+      new File(chunks, 'combined_winscope_trace.perfetto-trace'),
     );
   }
 
@@ -275,4 +311,53 @@ export class LegacyToPerfettoConverter {
     }
     return packets;
   }
+
+  // Since larger traces cannot be encoded using the Trace.encode function
+  // provided by protobufjs as this causes an out-of-memory crash, we
+  // manually encode the packet. The encoded packet should have the following
+  // protobuf format:
+  // [<field_tag>][<packet_length>][<packet_bytes>]
+  // where field tag is given by (field_number << 3) | wire_type.
+
+  // Trace proto from external/perfetto/protos/perfetto/trace/trace.proto:
+  // message Trace {
+  //   repeated TracePacket packet = 1;
+  // }
+
+  // TracePacket has field number 1 and wire type 2 (LEN = length-delimited).
+
+  private static encodePacket(
+    packet: perfetto.protos.ITracePacket,
+  ): Uint8Array {
+    const encodedPacket = perfetto.protos.TracePacket.encode(packet).finish();
+    const prefix = LegacyToPerfettoConverter.createPacketPrefix(
+      encodedPacket.byteLength,
+    );
+    const packetWithPrefix = new Uint8Array(
+      prefix.byteLength + encodedPacket.byteLength,
+    );
+    packetWithPrefix.set(prefix, 0);
+    packetWithPrefix.set(encodedPacket, prefix.length);
+    return packetWithPrefix;
+  }
+
+  private static createPacketPrefix(packetLength: number): Uint8Array {
+    const writer = Writer.create();
+    writer.uint32(LegacyToPerfettoConverter.FIELD_TAG);
+    writer.uint32(packetLength);
+    return writer.finish();
+  }
+
+  private static createChunk(size: number, buffers: Uint8Array[]): Uint8Array {
+    const chunk = new Uint8Array(size);
+    let offset = 0;
+    for (const buffer of buffers) {
+      chunk.set(buffer, offset);
+      offset += buffer.byteLength;
+    }
+    return chunk;
+  }
+
+  private static readonly FIELD_TAG = 0x0a; // (1 << 3) | 2
+  private static readonly MAX_BUFFER_SIZE = 2 ** 31 - 1;
 }

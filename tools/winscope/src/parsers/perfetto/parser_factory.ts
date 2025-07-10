@@ -64,25 +64,11 @@ export class ParserFactory {
     progressListener?: ProgressListener,
   ): Promise<ProcessedFile> {
     const traceProcessor = await this.initializeTraceProcessor();
-    for (
-      let chunkStart = 0;
-      chunkStart < traceFile.file.size;
-      chunkStart += ParserFactory.CHUNK_SIZE_BYTES
-    ) {
-      progressListener?.onProgressUpdate(
-        'Loading perfetto trace...',
-        (chunkStart / traceFile.file.size) * 100,
-      );
-      const chunkEnd = chunkStart + ParserFactory.CHUNK_SIZE_BYTES;
-      const data = await traceFile.file
-        .slice(chunkStart, chunkEnd)
-        .arrayBuffer();
-      try {
-        await traceProcessor.parse(new Uint8Array(data));
-      } catch (e) {
-        console.error('Trace processor failed to parse data:', e);
-        return {parsers: [], isPerfettoTrace: false};
-      }
+    try {
+      await this.loadFileInTp(traceFile.file, traceProcessor, progressListener);
+    } catch (e) {
+      console.error('Trace processor failed to parse data:', e);
+      return {parsers: [], isPerfettoTrace: false};
     }
     await traceProcessor.notifyEof();
 
@@ -167,5 +153,25 @@ export class ParserFactory {
       FROM android_winscope_trace_rect AS tr
       INNER JOIN android_winscope_rect AS rr
         ON tr.rect_id = rr.id`);
+  }
+
+  private async loadFileInTp(
+    file: File,
+    traceProcessor: TraceProcessor,
+    progressListener?: ProgressListener,
+  ) {
+    for (
+      let chunkStart = 0;
+      chunkStart < file.size;
+      chunkStart += ParserFactory.CHUNK_SIZE_BYTES
+    ) {
+      progressListener?.onProgressUpdate(
+        'Loading perfetto trace...',
+        (chunkStart / file.size) * 100,
+      );
+      const chunkEnd = chunkStart + ParserFactory.CHUNK_SIZE_BYTES;
+      const data = await file.slice(chunkStart, chunkEnd).arrayBuffer();
+      await traceProcessor.parse(new Uint8Array(data));
+    }
   }
 }
