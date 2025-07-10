@@ -17,6 +17,7 @@
 import {equal} from 'common/array_utils';
 import {assertDefined, assertUnreachable} from 'common/assert_utils';
 import {Box3D} from 'common/geometry/box3d';
+import {CornerRadii} from 'common/geometry/corner_radii';
 import {Point3D} from 'common/geometry/point3d';
 import {Rect3D} from 'common/geometry/rect3d';
 import {TransformMatrix} from 'common/geometry/transform_matrix';
@@ -311,38 +312,38 @@ export class Canvas {
       rect.topLeft.y,
       rect.bottomRight.z,
     );
-    const cornerRadius = this.getAdjustedCornerRadius(rect);
+    const cornerRadii = this.getAdjustedCornerRadii(rect);
 
     // Create (rounded) rect shape
     const shape = new THREE.Shape()
-      .moveTo(rect.topLeft.x, rect.topLeft.y + cornerRadius)
-      .lineTo(bottomLeft.x, bottomLeft.y - cornerRadius)
+      .moveTo(rect.topLeft.x, rect.topLeft.y + cornerRadii.tl)
+      .lineTo(bottomLeft.x, bottomLeft.y - cornerRadii.bl)
       .quadraticCurveTo(
         bottomLeft.x,
         bottomLeft.y,
-        bottomLeft.x + cornerRadius,
+        bottomLeft.x + cornerRadii.bl,
         bottomLeft.y,
       )
-      .lineTo(rect.bottomRight.x - cornerRadius, rect.bottomRight.y)
+      .lineTo(rect.bottomRight.x - cornerRadii.br, rect.bottomRight.y)
       .quadraticCurveTo(
         rect.bottomRight.x,
         rect.bottomRight.y,
         rect.bottomRight.x,
-        rect.bottomRight.y - cornerRadius,
+        rect.bottomRight.y - cornerRadii.br,
       )
-      .lineTo(topRight.x, topRight.y + cornerRadius)
+      .lineTo(topRight.x, topRight.y + cornerRadii.tr)
       .quadraticCurveTo(
         topRight.x,
         topRight.y,
-        topRight.x - cornerRadius,
+        topRight.x - cornerRadii.tr,
         topRight.y,
       )
-      .lineTo(rect.topLeft.x + cornerRadius, rect.topLeft.y)
+      .lineTo(rect.topLeft.x + cornerRadii.tl, rect.topLeft.y)
       .quadraticCurveTo(
         rect.topLeft.x,
         rect.topLeft.y,
         rect.topLeft.x,
-        rect.topLeft.y + cornerRadius,
+        rect.topLeft.y + cornerRadii.tl,
       );
     return new THREE.ShapeGeometry(shape);
   }
@@ -425,7 +426,7 @@ export class Canvas {
     // create line edges for rect
     const edgeGeo = new THREE.EdgesGeometry(rectGeometry);
     let color: number;
-    if (rect.cornerRadius) {
+    if (rect.cornerRadii) {
       color = Canvas.RECT_EDGE_COLOR_ROUNDED;
     } else {
       color = this.getRectEdgeColor();
@@ -436,17 +437,30 @@ export class Canvas {
     return lineSegments;
   }
 
-  private getAdjustedCornerRadius(rect: UiRect3D): number {
-    // Limit corner radius if larger than height/2 (or width/2)
-    const height = rect.bottomRight.y - rect.topLeft.y;
-    const width = rect.bottomRight.x - rect.topLeft.x;
-    const minEdge = Math.min(height, width);
-    const cornerRadius = Math.min(rect.cornerRadius, minEdge / 2);
+  private getAdjustedCornerRadii(rect: UiRect3D): CornerRadii {
+    const cornerRadii = new CornerRadii(0, 0, 0, 0);
+    if (rect.cornerRadii) {
+      // Limit corner radius if larger than height/2 or width/2
+      const height = rect.bottomRight.y - rect.topLeft.y;
+      const width = rect.bottomRight.x - rect.topLeft.x;
+      const limit = Math.min(height, width) / 2;
+
+      cornerRadii.tl = this.adjustCornerRadius(rect.cornerRadii.tl, limit);
+      cornerRadii.tr = this.adjustCornerRadius(rect.cornerRadii.tr, limit);
+      cornerRadii.bl = this.adjustCornerRadius(rect.cornerRadii.bl, limit);
+      cornerRadii.br = this.adjustCornerRadius(rect.cornerRadii.br, limit);
+    }
+
+    return cornerRadii;
+  }
+
+  private adjustCornerRadius(radius: number, limit: number): number {
+    radius = Math.min(radius, limit);
 
     // Force radius > 0, because radius === 0 could result in weird triangular shapes
     // being drawn instead of rectangles. Seems like quadraticCurveTo() doesn't
     // always handle properly the case with radius === 0.
-    return Math.max(cornerRadius, 0.01);
+    return Math.max(radius, 0.01);
   }
 
   private makePinnedRectBorders(rect: UiRect3D): THREE.Mesh {
@@ -470,89 +484,89 @@ export class Canvas {
   }
 
   private createPinnedBorderRects(rect: UiRect3D): THREE.Shape[] {
-    const cornerRadius = this.getAdjustedCornerRadius(rect);
+    const cornerRadii = this.getAdjustedCornerRadii(rect);
     const xBoldWidth = Canvas.RECT_EDGE_BOLD_WIDTH / rect.transform.dsdx;
     const yBorderWidth = Canvas.RECT_EDGE_BOLD_WIDTH / rect.transform.dsdy;
     const borderRects = [
       // left and bottom borders
       new THREE.Shape()
-        .moveTo(rect.topLeft.x, rect.topLeft.y + cornerRadius)
-        .lineTo(rect.topLeft.x, rect.bottomRight.y - cornerRadius)
+        .moveTo(rect.topLeft.x, rect.topLeft.y + cornerRadii.tl)
+        .lineTo(rect.topLeft.x, rect.bottomRight.y - cornerRadii.bl)
         .quadraticCurveTo(
           rect.topLeft.x,
           rect.bottomRight.y,
-          rect.topLeft.x + cornerRadius,
+          rect.topLeft.x + cornerRadii.bl,
           rect.bottomRight.y,
         )
-        .lineTo(rect.bottomRight.x - cornerRadius, rect.bottomRight.y)
+        .lineTo(rect.bottomRight.x - cornerRadii.br, rect.bottomRight.y)
         .quadraticCurveTo(
           rect.bottomRight.x,
           rect.bottomRight.y,
           rect.bottomRight.x,
-          rect.bottomRight.y - cornerRadius,
+          rect.bottomRight.y - cornerRadii.br,
         )
         .lineTo(
           rect.bottomRight.x - xBoldWidth,
-          rect.bottomRight.y - cornerRadius,
+          rect.bottomRight.y - cornerRadii.br,
         )
         .quadraticCurveTo(
           rect.bottomRight.x - xBoldWidth,
           rect.bottomRight.y - yBorderWidth,
-          rect.bottomRight.x - cornerRadius,
+          rect.bottomRight.x - cornerRadii.br,
           rect.bottomRight.y - yBorderWidth,
         )
         .lineTo(
-          rect.topLeft.x + cornerRadius,
+          rect.topLeft.x + cornerRadii.bl,
           rect.bottomRight.y - yBorderWidth,
         )
         .quadraticCurveTo(
           rect.topLeft.x + xBoldWidth,
           rect.bottomRight.y - yBorderWidth,
           rect.topLeft.x + xBoldWidth,
-          rect.bottomRight.y - cornerRadius,
+          rect.bottomRight.y - cornerRadii.bl,
         )
-        .lineTo(rect.topLeft.x + xBoldWidth, rect.topLeft.y + cornerRadius)
-        .lineTo(rect.topLeft.x, rect.topLeft.y + cornerRadius),
+        .lineTo(rect.topLeft.x + xBoldWidth, rect.topLeft.y + cornerRadii.tl)
+        .lineTo(rect.topLeft.x, rect.topLeft.y + cornerRadii.tl),
 
       // right and top borders
       new THREE.Shape()
-        .moveTo(rect.bottomRight.x, rect.bottomRight.y - cornerRadius)
-        .lineTo(rect.bottomRight.x, rect.topLeft.y + cornerRadius)
+        .moveTo(rect.bottomRight.x, rect.bottomRight.y - cornerRadii.br)
+        .lineTo(rect.bottomRight.x, rect.topLeft.y + cornerRadii.tr)
         .quadraticCurveTo(
           rect.bottomRight.x,
           rect.topLeft.y,
-          rect.bottomRight.x - cornerRadius,
+          rect.bottomRight.x - cornerRadii.tr,
           rect.topLeft.y,
         )
-        .lineTo(rect.topLeft.x + cornerRadius, rect.topLeft.y)
+        .lineTo(rect.topLeft.x + cornerRadii.tl, rect.topLeft.y)
         .quadraticCurveTo(
           rect.topLeft.x,
           rect.topLeft.y,
           rect.topLeft.x,
-          rect.topLeft.y + cornerRadius,
+          rect.topLeft.y + cornerRadii.tl,
         )
-        .lineTo(rect.topLeft.x + xBoldWidth, rect.topLeft.y + cornerRadius)
+        .lineTo(rect.topLeft.x + xBoldWidth, rect.topLeft.y + cornerRadii.tl)
         .quadraticCurveTo(
           rect.topLeft.x + xBoldWidth,
           rect.topLeft.y + yBorderWidth,
-          rect.topLeft.x + cornerRadius,
+          rect.topLeft.x + cornerRadii.tl,
           rect.topLeft.y + yBorderWidth,
         )
         .lineTo(
-          rect.bottomRight.x - cornerRadius,
+          rect.bottomRight.x - cornerRadii.tr,
           rect.topLeft.y + yBorderWidth,
         )
         .quadraticCurveTo(
           rect.bottomRight.x - xBoldWidth,
           rect.topLeft.y + yBorderWidth,
           rect.bottomRight.x - xBoldWidth,
-          rect.topLeft.y + cornerRadius,
+          rect.topLeft.y + cornerRadii.tr,
         )
         .lineTo(
           rect.bottomRight.x - xBoldWidth,
-          rect.bottomRight.y - cornerRadius,
+          rect.bottomRight.y - cornerRadii.br,
         )
-        .lineTo(rect.bottomRight.x, rect.bottomRight.y - cornerRadius),
+        .lineTo(rect.bottomRight.x, rect.bottomRight.y - cornerRadii.br),
     ];
     return borderRects;
   }
@@ -803,7 +817,7 @@ export class Canvas {
     const isGeometryChanged =
       !newRect.bottomRight.isEqual(existingRect.bottomRight) ||
       !newRect.topLeft.isEqual(existingRect.topLeft) ||
-      newRect.cornerRadius !== existingRect.cornerRadius;
+      !this.cornerRadiiEqual(newRect, existingRect);
 
     if (isGeometryChanged) {
       existingMesh.geometry.dispose();
@@ -831,6 +845,19 @@ export class Canvas {
       );
       existingMesh.applyMatrix4(this.toMatrix4(newRect.transform));
     }
+  }
+
+  private cornerRadiiEqual(rect: UiRect3D, other: UiRect3D) {
+    if (rect.cornerRadii === undefined && other.cornerRadii === undefined) {
+      return true;
+    }
+    if (rect.cornerRadii === undefined) {
+      return false;
+    }
+    if (other.cornerRadii === undefined) {
+      return false;
+    }
+    return rect.cornerRadii.isEqual(other.cornerRadii);
   }
 
   private addRectBorders(newRect: UiRect3D, mesh: THREE.Mesh) {

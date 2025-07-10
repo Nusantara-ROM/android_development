@@ -48,7 +48,6 @@ describe('UiHierarchyTreeNode', () => {
         .setHeight(10)
         .setId('1')
         .setName('rect1')
-        .setCornerRadius(0)
         .setDepth(1)
         .setGroupId(0)
         .setIsVisible(false)

@@ -17,6 +17,7 @@
 import {equal} from 'common/array_utils';
 import {assertDefined} from 'common/assert_utils';
 import {Box3D} from 'common/geometry/box3d';
+import {CornerRadii} from 'common/geometry/corner_radii';
 import {Distance} from 'common/geometry/distance';
 import {Point3D} from 'common/geometry/point3d';
 import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
@@ -409,12 +410,17 @@ describe('Canvas', () => {
 
       // geometry object replaced
       const roundRect = makeUiRect3D(rectId);
-      roundRect.cornerRadius = 5;
+      roundRect.cornerRadii = new CornerRadii(0, 0.4, 0.3, 0.2);
       updateRectsAndCheckGeometryId(roundRect, rectMesh, rectGeometryId);
       rectGeometryId = rectMesh.geometry.id;
 
+      const diffRadii = makeUiRect3D(rectId);
+      diffRadii.cornerRadii = new CornerRadii(0.5, 0.4, 0.3, 0.2);
+      updateRectsAndCheckGeometryId(diffRadii, rectMesh, rectGeometryId);
+      rectGeometryId = rectMesh.geometry.id;
+
       const bottomRightChanged = makeUiRect3D(rectId);
-      bottomRightChanged.cornerRadius = 5;
+      bottomRightChanged.cornerRadii = new CornerRadii(0.5, 0.4, 0.3, 0.2);
       bottomRightChanged.bottomRight = new Point3D(5, 5, 5);
       updateRectsAndCheckGeometryId(
         bottomRightChanged,
@@ -424,14 +430,14 @@ describe('Canvas', () => {
       rectGeometryId = rectMesh.geometry.id;
 
       const topLeftChanged = makeUiRect3D(rectId);
-      topLeftChanged.cornerRadius = 5;
+      topLeftChanged.cornerRadii = new CornerRadii(0.5, 0.4, 0.3, 0.2);
       topLeftChanged.bottomRight = new Point3D(5, 5, 5);
       topLeftChanged.topLeft = new Point3D(0, 0, 5);
       updateRectsAndCheckGeometryId(topLeftChanged, rectMesh, rectGeometryId);
       rectGeometryId = rectMesh.geometry.id;
 
       const rotated = makeUiRect3D(rectId);
-      rotated.cornerRadius = 5;
+      rotated.cornerRadii = new CornerRadii(0.5, 0.4, 0.3, 0.2);
       rotated.bottomRight = new Point3D(5, 5, 5);
       rotated.topLeft = new Point3D(0, 0, 5);
       rotated.transform = TransformType.getDefaultTransform(
@@ -443,6 +449,11 @@ describe('Canvas', () => {
       canvas.updateRects([rotated]);
       expect(rectMesh.geometry.id).toEqual(rectGeometryId);
       expect(rectMesh.rotation.equals(prevRotation)).toBeFalse();
+
+      const noRadii = makeUiRect3D(rectId);
+      rotated.bottomRight = new Point3D(5, 5, 5);
+      rotated.topLeft = new Point3D(0, 0, 5);
+      updateRectsAndCheckGeometryId(noRadii, rectMesh, rectGeometryId);
     });
 
     it('handles changes in fill region', () => {
@@ -1081,7 +1092,7 @@ describe('Canvas', () => {
       id,
       topLeft: new Point3D(0, 0, 0),
       bottomRight: new Point3D(1, 1, 0),
-      cornerRadius: 0,
+      cornerRadii: undefined,
       darkFactor: 1,
       colorType: ColorType.VISIBLE,
       isClickable: false,
