@@ -157,6 +157,7 @@ impl BpProperties {
             "vendor_ramdisk_available",
             "ramdisk_available",
             "min_sdk_version",
+            "sdk_version",
             "visibility",
         ];
         let mut props: Vec<(&String, &BpValue)> = self.map.iter().collect();

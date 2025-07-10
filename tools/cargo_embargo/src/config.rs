@@ -299,6 +299,9 @@ pub struct VariantConfig {
     /// Minimum SDK version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub min_sdk_version: Option<String>,
+    /// SDK version.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sdk_version: Option<String>,
     /// Map of renames for modules. For example, if a "libfoo" would be generated and there is an
     /// entry ("libfoo", "libbar"), the generated module will be called "libbar" instead.
     ///
@@ -349,6 +352,7 @@ impl Default for VariantConfig {
             vendor_available: true,
             vendor_ramdisk_available: false,
             min_sdk_version: None,
+            sdk_version: None,
             module_name_overrides: Default::default(),
             package: Default::default(),
             cfg_blocklist: Default::default(),

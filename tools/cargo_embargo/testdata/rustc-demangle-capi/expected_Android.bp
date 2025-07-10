@@ -31,6 +31,7 @@ vendor_available: true,
 vendor_ramdisk_available: true,
 ramdisk_available: true,
 min_sdk_version: "S",
+sdk_version: "29",
 }
 
 rust_test {

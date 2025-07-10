@@ -1223,6 +1223,9 @@ fn crate_to_bp_modules(
             if let Some(min_sdk_version) = &cfg.min_sdk_version {
                 m.props.set("min_sdk_version", min_sdk_version.clone());
             }
+            if let Some(sdk_version) = &cfg.sdk_version {
+                m.props.set("sdk_version", sdk_version.clone());
+            }
         }
         if crate_type.is_test() {
             if let Some(data) =
