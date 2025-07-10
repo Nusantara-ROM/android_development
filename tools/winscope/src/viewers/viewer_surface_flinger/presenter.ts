@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import {assertBigInt, assertDefined, assertString} from 'common/assert_utils';
+import {
+  assertBigInt,
+  assertDefined,
+  assertNumberOrUndefined,
+  assertString,
+} from 'common/assert_utils';
 import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {
@@ -376,7 +381,11 @@ the default for its data type.`,
         .map((c) => this.getLayerSummary(c.id)),
       calcColor: this.getColorPropertyValue(pTree, 'color'),
       calcShadowRadius: this.getPixelPropertyValue(pTree, 'shadowRadius'),
-      calcCornerRadius: this.getPixelPropertyValue(pTree, 'cornerRadius'),
+      calcCornerRadii: this.getCornerRadiiValue(
+        pTree,
+        'cornerRadii',
+        'cornerRadius',
+      ),
       calcCornerRadiusCrop: this.getRectPropertyValue(
         pTree,
         'cornerRadiusCrop',
@@ -386,8 +395,9 @@ the default for its data type.`,
         'backgroundBlurRadius',
       ),
       reqColor: this.getColorPropertyValue(pTree, 'requestedColor'),
-      reqCornerRadius: this.getPixelPropertyValue(
+      reqCornerRadii: this.getCornerRadiiValue(
         pTree,
+        'requestedCornerRadii',
         'requestedCornerRadius',
       ),
       reqCrop: this.getRectPropertyValue(pTree, 'crop'),
@@ -496,6 +506,48 @@ the default for its data type.`,
   private getColorPropertyValue(tree: PropertyTreeNode, label: string): string {
     const propVal = assertDefined(tree.getChildByName(label)).formattedValue();
     return propVal !== 'null' ? propVal : 'no color found';
+  }
+
+  private getCornerRadiiValue(
+    tree: PropertyTreeNode,
+    cornerRadiiLabel: string,
+    cornerRadiusLabel: string,
+  ): string {
+    const cornerRadii =
+      tree.getChildByName(cornerRadiiLabel)?.getAllChildren() ?? [];
+    let [tl, tr, bl, br] = [0, 0, 0, 0];
+    if (cornerRadii.length > 0) {
+      cornerRadii.forEach((r) => {
+        const value = r.getValue();
+        switch (r.name) {
+          case 'tl':
+            tl = value;
+            return;
+          case 'tr':
+            tr = value;
+            return;
+          case 'bl':
+            bl = value;
+            return;
+          case 'br':
+            br = value;
+            return;
+          default:
+            throw new Error(
+              `Encountered unexpected corner radius node: ${r.name}`,
+            );
+        }
+      });
+    } else {
+      const r = assertNumberOrUndefined(
+        tree.getChildByName(cornerRadiusLabel)?.getValue(),
+      );
+      if (r !== undefined && r > 0) {
+        [tl, tr, bl, br] = [r, r, r, r];
+      }
+    }
+
+    return `(${tl}, ${tr}, ${bl}, ${br})`;
   }
 
   private async setInitialWmActiveDisplay(event: TracePositionUpdate) {

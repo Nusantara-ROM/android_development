@@ -571,6 +571,25 @@ the default for its data type.`,
       });
 
       it('formats summary, color, pixel and crop correctly in curated properties', async () => {
+        const layer1Props = getPropertiesForCuratedPanel(1n);
+        Object.assign(layer1Props, {
+          occludedBy: [0n],
+          partiallyOccludedBy: [2n],
+          coveredBy: [3n],
+          destinationFrame: {left: 0, right: 1, top: 0, bottom: 1},
+          color: {r: 0, g: 0, b: 0, a: 1},
+          shadowRadius: 1,
+          cornerRadii: {tl: 1, tr: 2, br: 4},
+          crop: {left: 0, top: 0, right: 1, bottom: 2},
+          requestedCornerRadius: 5,
+        });
+
+        const layer2Props = getPropertiesForCuratedPanel(2n);
+        Object.assign(layer2Props, {
+          cornerRadius: 6,
+          requestedCornerRadii: {bl: 3},
+        });
+
         const tree = new HierarchyTreeBuilder()
           .setId('LayerTraceEntry')
           .setName('root')
@@ -578,49 +597,22 @@ the default for its data type.`,
             {
               id: '1',
               name: 'layer1',
-              properties: {
-                layerId: 1n,
-                occludedBy: [0n],
-                partiallyOccludedBy: [2n],
-                coveredBy: [3n],
-                flags: null,
-                zOrderRelativeOf: null,
-                bounds: null,
-                screenBounds: null,
-                activeBuffer: null,
-                currFrame: null,
-                destinationFrame: {left: 0, right: 1, top: 0, bottom: 1},
-                z: null,
-                color: {r: 0, g: 0, b: 0, a: 1},
-                shadowRadius: 1,
-                cornerRadius: null,
-                cornerRadiusCrop: null,
-                backgroundBlurRadius: null,
-                crop: {left: 0, top: 0, right: 1, bottom: 2},
-                requestedColor: null,
-                requestedCornerRadius: null,
-              },
+              properties: layer1Props,
             },
             {
               id: '0',
               name: 'layer0',
-              properties: {
-                layerId: 0n,
-              },
+              properties: getPropertiesForCuratedPanel(0n),
             },
             {
               id: '2',
               name: 'layer2',
-              properties: {
-                layerId: 2n,
-              },
+              properties: layer2Props,
             },
             {
               id: '3',
               name: 'layer3',
-              properties: {
-                layerId: 3n,
-              },
+              properties: {layerId: 3n},
             },
           ])
           .build();
@@ -646,7 +638,8 @@ the default for its data type.`,
         await presenter.onHighlightedIdChange(
           assertDefined(tree.getChildByName('layer1')).id,
         );
-        expect(uiData.curatedProperties?.summary).toEqual([
+        let properties = assertDefined(uiData.curatedProperties);
+        expect(properties.summary).toEqual([
           {
             key: 'Occluded by',
             desc: 'Fully occluded by these opaque layers',
@@ -663,17 +656,28 @@ the default for its data type.`,
             layerValues: [{layerId: '3', nodeId: '3 layer3', name: 'layer3'}],
           },
         ]);
-        expect(uiData.curatedProperties?.calcColor).toEqual(
-          '(0, 0, 0), alpha: 1',
+        expect(properties.calcColor).toEqual('(0, 0, 0), alpha: 1');
+        expect(properties.reqColor).toEqual('no color found');
+        expect(properties.calcShadowRadius).toEqual('1 px');
+        expect(properties.calcCornerRadii).toEqual('(1, 2, 0, 4)');
+        expect(properties.destinationFrame).toEqual('(0, 0) - (1, 1)');
+        expect(properties.calcCrop).toEqual(EMPTY_OBJ_STRING);
+        expect(properties.reqCrop).toEqual('(0, 0) - (1, 2)');
+        expect(properties.reqCornerRadii).toEqual('(5, 5, 5, 5)');
+
+        await presenter.onHighlightedIdChange(
+          assertDefined(tree.getChildByName('layer0')).id,
         );
-        expect(uiData.curatedProperties?.reqColor).toEqual('no color found');
-        expect(uiData.curatedProperties?.calcShadowRadius).toEqual('1 px');
-        expect(uiData.curatedProperties?.calcCornerRadius).toEqual('0 px');
-        expect(uiData.curatedProperties?.destinationFrame).toEqual(
-          '(0, 0) - (1, 1)',
+        properties = assertDefined(uiData.curatedProperties);
+        expect(properties.calcCornerRadii).toEqual('(0, 0, 0, 0)');
+        expect(properties.reqCornerRadii).toEqual('(0, 0, 0, 0)');
+
+        await presenter.onHighlightedIdChange(
+          assertDefined(tree.getChildByName('layer2')).id,
         );
-        expect(uiData.curatedProperties?.calcCrop).toEqual(EMPTY_OBJ_STRING);
-        expect(uiData.curatedProperties?.reqCrop).toEqual('(0, 0) - (1, 2)');
+        properties = assertDefined(uiData.curatedProperties);
+        expect(properties.calcCornerRadii).toEqual('(6, 6, 6, 6)');
+        expect(properties.reqCornerRadii).toEqual('(0, 0, 3, 0)');
       });
 
       it('draws input windows', async () => {
@@ -742,6 +746,30 @@ the default for its data type.`,
 
         await presenter.onAppEvent(positionUpdate);
         return [presenter, traceVc];
+      }
+
+      function getPropertiesForCuratedPanel(layerId: bigint) {
+        return {
+          layerId,
+          flags: null,
+          zOrderRelativeOf: null,
+          bounds: null,
+          screenBounds: null,
+          activeBuffer: null,
+          currFrame: null,
+          destinationFrame: null,
+          z: null,
+          color: null,
+          shadowRadius: null,
+          cornerRadii: null,
+          cornerRadius: null,
+          cornerRadiusCrop: null,
+          backgroundBlurRadius: null,
+          crop: null,
+          requestedColor: null,
+          requestedCornerRadii: null,
+          requestedCornerRadius: null,
+        };
       }
     });
   }

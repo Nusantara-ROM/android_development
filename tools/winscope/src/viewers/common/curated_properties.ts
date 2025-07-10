@@ -45,11 +45,11 @@ export interface SfCuratedProperties {
   relativeChildren: SfLayerSummary[];
   calcColor: string;
   calcShadowRadius: string;
-  calcCornerRadius: string;
+  calcCornerRadii: string;
   calcCornerRadiusCrop: string;
   backgroundBlurRadius: string;
   reqColor: string;
-  reqCornerRadius: string;
+  reqCornerRadii: string;
   reqCrop: string;
   inputTransform: PropertyTreeNode | undefined;
   inputRegion: string | undefined;

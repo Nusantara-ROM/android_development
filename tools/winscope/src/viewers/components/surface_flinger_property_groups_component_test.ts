@@ -146,12 +146,16 @@ describe('SurfaceFlingerPropertyGroupsComponent', () => {
     const calculatedDiv = dom.get('.effects .left-column');
     calculatedDiv.get('.shadow').checkTextExact('Shadow Radius: 1 px');
     calculatedDiv.get('.blur').checkTextExact('Blur Radius: 1 px');
-    calculatedDiv.get('.corner-radius').checkTextExact('Corner Radius: 1 px');
+    calculatedDiv
+      .get('.corner-radius')
+      .checkTextExact('Corner Radii: (1, 2, 3, 4)');
   });
 
   it('displays simple requested effects', () => {
     const requestedDiv = dom.get('.effects .right-column');
-    requestedDiv.get('.corner-radius').checkTextExact('Corner Radius: 1 px');
+    requestedDiv
+      .get('.corner-radius')
+      .checkTextExact('Corner Radii: (4, 3, 2, 1)');
   });
 
   it('displays color and alpha value in effects', () => {
@@ -246,11 +250,11 @@ describe('SurfaceFlingerPropertyGroupsComponent', () => {
       relativeChildren: [],
       calcColor: `${EMPTY_OBJ_STRING}, alpha: 1`,
       calcShadowRadius: '1 px',
-      calcCornerRadius: '1 px',
+      calcCornerRadii: '(1, 2, 3, 4)',
       calcCornerRadiusCrop: EMPTY_OBJ_STRING,
       backgroundBlurRadius: '1 px',
       reqColor: `${EMPTY_OBJ_STRING}, alpha: 1`,
-      reqCornerRadius: '1 px',
+      reqCornerRadii: '(4, 3, 2, 1)',
       reqCrop: '(0, 0) - (1, 2)',
       inputTransform: this.transformNode,
       inputRegion: 'null',
