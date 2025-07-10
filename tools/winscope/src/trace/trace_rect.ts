@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CornerRadii} from 'common/geometry/corner_radii';
 import {Rect} from 'common/geometry/rect';
 import {Region} from 'common/geometry/region';
 import {TransformMatrix} from 'common/geometry/transform_matrix';
@@ -27,7 +28,7 @@ export class TraceRect extends Rect implements Item {
     h: number,
     readonly id: string,
     readonly name: string,
-    readonly cornerRadius: number,
+    readonly cornerRadii: CornerRadii | undefined,
     readonly transform: TransformMatrix,
     readonly groupId: number,
     readonly isVisible: boolean,

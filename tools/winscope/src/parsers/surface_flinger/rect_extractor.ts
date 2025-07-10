@@ -91,7 +91,7 @@ export class RectExtractor {
       .setRow(row)
       .setId(rectId)
       .setName(layerName)
-      .setExtractCornerRadius(true)
+      .setExtractCornerRadii(true)
       .setExtractOpacity(true)
       .build();
   }

@@ -43,7 +43,6 @@ class RectWmFactory {
       .setHeight(displayRectHeight)
       .setId(display.id)
       .setName(`Display - ${display.name}`)
-      .setCornerRadius(0)
       .setGroupId(
         assertDefined(display.getEagerPropertyByName('id')).getValue(),
       )
@@ -93,7 +92,6 @@ class RectWmFactory {
       .setHeight(rectBottom - rectTop)
       .setId(container.id)
       .setName(container.name)
-      .setCornerRadius(0)
       .setGroupId(displayId)
       .setIsVisible(isVisible)
       .setIsDisplay(false)
