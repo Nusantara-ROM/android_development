@@ -50,9 +50,14 @@ export const logComponentStyles = `
     min-width: 135px;
   }
 
-  .go-to-current-time {
-    height: 100%;
+  .time-controls {
+    display: flex;
+    align-items: center;
+  }
+
+  .time-controls .time-button {
     width: fit-content;
+    padding: 0 4px;
   }
 
   .placeholder-text {

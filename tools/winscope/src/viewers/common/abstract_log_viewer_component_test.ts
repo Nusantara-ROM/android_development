@@ -104,7 +104,7 @@ export abstract class AbstractLogViewerComponentTest<
         });
 
         it('handles go to current time button', () => {
-          expect(dom.find('.go-to-current-time') !== undefined).toEqual(
+          expect(dom.find('.go-to-current-entry') !== undefined).toEqual(
             this.hasCurrentTimeButton,
           );
         });

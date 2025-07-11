@@ -65,14 +65,34 @@ import {
 
     <div class="entries" [class.padded]="padEntries">
       <div class="headers table-header" *ngIf="headers.length > 0">
-        <div *ngIf="showTraceEntryTimes" class="time">
+        <div *ngIf="showTraceEntryTimes" class="time time-controls">
           <button
               color="primary"
-              mat-button
-              class="time-button go-to-current-time"
+              mat-icon-button
+              class="time-button go-to-first-entry"
+              (click)="onGoToFirstEntryClick()"
+              matTooltip="Go to first entry"
+              matTooltipPosition="above">
+            <mat-icon>first_page</mat-icon>
+          </button>
+          <button
+              color="primary"
+              mat-icon-button
+              class="time-button go-to-current-entry"
               *ngIf="showCurrentTimeButton"
-              (click)="onGoToCurrentTimeClick()">
-            Go to Current Time
+              (click)="onGoToCurrentEntryClick()"
+              matTooltip="Go to current entry"
+              matTooltipPosition="above">
+            <mat-icon>move_down</mat-icon>
+          </button>
+          <button
+              color="primary"
+              mat-icon-button
+              class="time-button go-to-last-entry"
+              (click)="onGoToLastEntryClick()"
+              matTooltip="Go to last entry"
+              matTooltipPosition="above">
+              <mat-icon>last_page</mat-icon>
           </button>
         </div>
 
@@ -315,9 +335,32 @@ export class LogComponent {
     this.emitEvent(ViewerEvents.LogEntryClick, index);
   }
 
-  onGoToCurrentTimeClick() {
+  onGoToFirstEntryClick() {
+    const firstEntry = this.entries.at(0);
+    if (firstEntry) {
+      this.scrollComponent?.scrollToIndex(0);
+      this.emitEvent(
+        ViewerEvents.TimestampClick,
+        new TimestampClickDetail(firstEntry.traceEntry),
+      );
+    }
+  }
+
+  onGoToCurrentEntryClick() {
     if (this.currentIndex !== undefined && this.scrollComponent) {
       this.scrollComponent.scrollToIndex(this.currentIndex);
+    }
+  }
+
+  onGoToLastEntryClick() {
+    const lastIndex = this.entries.length - 1;
+    const lastEntry = this.entries.at(lastIndex);
+    if (lastEntry) {
+      this.scrollComponent?.scrollToIndex(lastIndex);
+      this.emitEvent(
+        ViewerEvents.TimestampClick,
+        new TimestampClickDetail(lastEntry.traceEntry),
+      );
     }
   }
 

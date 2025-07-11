@@ -125,6 +125,20 @@ describe('LogComponent', () => {
     entryText.checkText('2ns');
   });
 
+  it('emits event and scrolls to first entry on button click', () => {
+    const spy = spyOn(
+      assertDefined(component.logComponent?.scrollComponent),
+      'scrollToIndex',
+    );
+    let clicked: TraceEntry<object> | undefined;
+    dom.addEventListener(ViewerEvents.TimestampClick, (event) => {
+      clicked = (event as CustomEvent).detail.entry;
+    });
+    dom.findAndClick('.go-to-first-entry');
+    expect(spy).toHaveBeenCalledWith(0);
+    expect(clicked?.getIndex()).toEqual(0);
+  });
+
   it('scrolls to current entry on button click', () => {
     component.currentIndex = 1;
     dom.detectChanges();
@@ -132,8 +146,22 @@ describe('LogComponent', () => {
       assertDefined(component.logComponent?.scrollComponent),
       'scrollToIndex',
     );
-    dom.findAndClick('.go-to-current-time');
+    dom.findAndClick('.go-to-current-entry');
     expect(spy).toHaveBeenCalledWith(1);
+  });
+
+  it('emits event and scrolls to last entry on button click', () => {
+    const spy = spyOn(
+      assertDefined(component.logComponent?.scrollComponent),
+      'scrollToIndex',
+    );
+    let clicked: TraceEntry<object> | undefined;
+    dom.addEventListener(ViewerEvents.TimestampClick, (event) => {
+      clicked = (event as CustomEvent).detail.entry;
+    });
+    dom.findAndClick('.go-to-last-entry');
+    expect(spy).toHaveBeenCalledWith(1);
+    expect(clicked?.getIndex()).toEqual(1);
   });
 
   it('applies select filter correctly', async () => {
@@ -221,7 +249,7 @@ describe('LogComponent', () => {
   });
 
   it('propagates entry on trace entry timestamp click', () => {
-    const logTimestampButton = dom.findAll('.time-button')[1];
+    const logTimestampButton = dom.get(':not(.time-controls) .time-button');
     checkEntryPropagatedOnTimestampClick(logTimestampButton);
   });
 
