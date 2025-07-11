@@ -377,6 +377,7 @@ private fun ContentScope.UnderScrim(
                 tiles = quickSettingsTiles.take(2 * nQuickSettingsColumns),
                 nColumns = nQuickSettingsColumns,
                 isExpanded = false,
+                revealEffect = false,
                 expansionProgress = { expansionProgress },
                 horizontalPaddingModifier.element(Shade.Elements.CollapsedGrid),
             )
