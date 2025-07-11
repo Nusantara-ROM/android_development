@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CornerRadii} from 'common/geometry/corner_radii';
 import {Rect} from 'common/geometry/rect';
 import {Region} from 'common/geometry/region';
 import {
@@ -114,11 +115,16 @@ describe('TraceRectBuilderFromQueryRow', () => {
     expect(builder.setExtractOpacity(true).build()).toEqual(expectedRect);
   });
 
-  it('extracts corner radius', () => {
+  it('extracts corner radii', () => {
     setDefaultColumnValues();
-    row.get.withArgs('corner_radius').and.returnValue(0.5);
-    const expectedRect = makeExpectedRect({cornerRadius: 0.5});
-    expect(builder.setExtractCornerRadius(true).build()).toEqual(expectedRect);
+    row.get.withArgs('corner_radius_tl').and.returnValue(0.5);
+    row.get.withArgs('corner_radius_tr').and.returnValue(0.25);
+    row.get.withArgs('corner_radius_bl').and.returnValue(null);
+    row.get.withArgs('corner_radius_br').and.returnValue(null);
+    const expectedRect = makeExpectedRect({
+      cornerRadii: new CornerRadii(0.5, 0.25, 0, 0),
+    });
+    expect(builder.setExtractCornerRadii(true).build()).toEqual(expectedRect);
   });
 
   it('does not extract matrix', () => {
@@ -171,7 +177,7 @@ describe('TraceRectBuilderFromQueryRow', () => {
     groupId?: number;
     depth?: number;
     opacity?: number;
-    cornerRadius?: number;
+    cornerRadii?: CornerRadii;
     x?: number;
     y?: number;
     w?: number;
@@ -196,7 +202,6 @@ describe('TraceRectBuilderFromQueryRow', () => {
       .setHeight(params?.h ?? 400)
       .setId(id)
       .setName(name)
-      .setCornerRadius(params?.cornerRadius ?? 0)
       .setTransform(params?.transformMatrix ?? defaultMatrix)
       .setGroupId(params?.groupId ?? 3)
       .setIsVisible(params?.isVisible !== undefined ? params.isVisible : true)
@@ -210,6 +215,9 @@ describe('TraceRectBuilderFromQueryRow', () => {
     }
     if (params?.fillRegion) {
       builder.setFillRegion(params.fillRegion);
+    }
+    if (params?.cornerRadii) {
+      builder.setCornerRadii(params.cornerRadii);
     }
     return builder.build();
   }

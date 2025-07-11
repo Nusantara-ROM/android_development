@@ -20,6 +20,7 @@ import {
   assertNumber,
   assertNumberOrUndefined,
 } from 'common/assert_utils';
+import {CornerRadii} from 'common/geometry/corner_radii';
 import {Rect} from 'common/geometry/rect';
 import {Region} from 'common/geometry/region';
 import {
@@ -45,7 +46,7 @@ export class TraceRectBuilderFromQueryRow {
   private depthCol = 'depth';
   private extractMatrix = true;
   private extractOpacity = false;
-  private extractCornerRadius = false;
+  private extractCornerRadii = false;
   private extractIsSpy = false;
   private fillRegion: Region | undefined;
 
@@ -104,8 +105,8 @@ export class TraceRectBuilderFromQueryRow {
     return this;
   }
 
-  setExtractCornerRadius(value: boolean): this {
-    this.extractCornerRadius = value;
+  setExtractCornerRadii(value: boolean): this {
+    this.extractCornerRadii = value;
     return this;
   }
 
@@ -138,28 +139,27 @@ export class TraceRectBuilderFromQueryRow {
     const w = assertNumber(this.row.get(this.wCol));
     const h = assertNumber(this.row.get(this.hCol));
 
-    const cornerRadius = this.extractCornerRadius
-      ? assertNumberOrUndefined(this.row.get('corner_radius')) ?? 0
-      : 0;
     const isVisible = this.isDisplay
       ? 0n
-      : assertBigIntOrUndefined(this.row.get(this.isVisibleCol)) ?? 0n;
+      : assertBigInt(this.row.get(this.isVisibleCol) ?? 0n);
     const groupId = assertBigInt(this.row.get(this.groupIdCol));
-    const depth = assertBigIntOrUndefined(this.row.get(this.depthCol));
+    const depth = assertBigIntOrUndefined(
+      this.row.get(this.depthCol) ?? undefined,
+    );
     const isSpy = this.extractIsSpy
-      ? assertBigIntOrUndefined(this.row.get('is_spy')) ?? 0n
+      ? assertBigInt(this.row.get('is_spy') ?? 0n)
       : 0n;
 
     let matrix = IDENTITY_MATRIX;
 
     if (this.extractMatrix) {
       matrix = TransformMatrix.from({
-        dsdx: assertNumberOrUndefined(this.row.get('dsdx')),
-        dtdx: assertNumberOrUndefined(this.row.get('dtdx')),
-        tx: assertNumberOrUndefined(this.row.get('tx')),
-        dtdy: assertNumberOrUndefined(this.row.get('dtdy')),
-        dsdy: assertNumberOrUndefined(this.row.get('dsdy')),
-        ty: assertNumberOrUndefined(this.row.get('ty')),
+        dsdx: assertNumberOrUndefined(this.row.get('dsdx') ?? undefined),
+        dtdx: assertNumberOrUndefined(this.row.get('dtdx') ?? undefined),
+        tx: assertNumberOrUndefined(this.row.get('tx') ?? undefined),
+        dtdy: assertNumberOrUndefined(this.row.get('dtdy') ?? undefined),
+        dsdy: assertNumberOrUndefined(this.row.get('dsdy') ?? undefined),
+        ty: assertNumberOrUndefined(this.row.get('ty') ?? undefined),
       });
     }
 
@@ -170,7 +170,6 @@ export class TraceRectBuilderFromQueryRow {
       .setHeight(h)
       .setId(this.id)
       .setName(this.name)
-      .setCornerRadius(cornerRadius)
       .setTransform(matrix)
       .setGroupId(Number(groupId))
       .setIsVisible(isVisible !== 0n)
@@ -180,7 +179,9 @@ export class TraceRectBuilderFromQueryRow {
       .setIsSpy(isSpy !== 0n);
 
     if (this.extractOpacity) {
-      const opacity = assertNumberOrUndefined(this.row.get('opacity'));
+      const opacity = assertNumberOrUndefined(
+        this.row.get('opacity') ?? undefined,
+      );
       if (opacity !== undefined) {
         builder.setOpacity(opacity);
       }
@@ -188,6 +189,16 @@ export class TraceRectBuilderFromQueryRow {
 
     if (this.fillRegion) {
       builder.setFillRegion(this.fillRegion);
+    }
+
+    if (this.extractCornerRadii) {
+      const cornerRadii = new CornerRadii(
+        assertNumber(this.row.get('corner_radius_tl') ?? 0),
+        assertNumber(this.row.get('corner_radius_tr') ?? 0),
+        assertNumber(this.row.get('corner_radius_bl') ?? 0),
+        assertNumber(this.row.get('corner_radius_br') ?? 0),
+      );
+      builder.setCornerRadii(cornerRadii);
     }
 
     return builder.build();

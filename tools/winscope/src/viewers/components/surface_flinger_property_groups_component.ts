@@ -233,9 +233,9 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           <p class="mat-body-2 corner-radius">
             <span
               class="mat-body-1"
-              matTooltip="Final corner radius - may be affected by parent corner radii.">Corner Radius:</span>
+              matTooltip="Final corner radii (<TL>, <TR>, <BL>, <BR>) - may be affected by parent corner radii.">Corner Radii:</span>
             &ngsp;
-            {{ properties.calcCornerRadius }}
+            {{ properties.calcCornerRadii }}
           </p>
           <p class="mat-body-2 shadow">
             <span class="mat-body-1">Shadow Radius:</span>
@@ -271,9 +271,9 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           <p class="mat-body-2 corner-radius">
             <span
               class="mat-body-1"
-              matTooltip="Requested corner radius not accounting for any parent values.">Corner Radius:</span>
+              matTooltip="Requested corner radii (<TL>, <TR>, <BL>, <BR>) not accounting for any parent values.">Corner Radii:</span>
             &ngsp;
-            {{ properties.reqCornerRadius }}
+            {{ properties.reqCornerRadii }}
           </p>
         </div>
       </div>

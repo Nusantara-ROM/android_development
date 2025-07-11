@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CornerRadii} from 'common/geometry/corner_radii';
 import {Region} from 'common/geometry/region';
 import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {Transform} from 'trace/surface_flinger/transform_utils';
@@ -26,7 +27,7 @@ export class TraceRectBuilder {
   h: number | undefined;
   id: string | undefined;
   name: string | undefined;
-  cornerRadius: number | undefined;
+  cornerRadii: CornerRadii | undefined;
   transform: TransformMatrix = Transform.EMPTY.matrix;
   groupId: number | undefined;
   isVisible: boolean | undefined;
@@ -67,8 +68,8 @@ export class TraceRectBuilder {
     return this;
   }
 
-  setCornerRadius(value: number) {
-    this.cornerRadius = value;
+  setCornerRadii(value: CornerRadii) {
+    this.cornerRadii = value;
     return this;
   }
 
@@ -142,10 +143,6 @@ export class TraceRectBuilder {
       throw new Error('name not set');
     }
 
-    if (this.cornerRadius === undefined) {
-      throw new Error('cornerRadius not set');
-    }
-
     if (this.groupId === undefined) {
       throw new Error('groupId not set');
     }
@@ -173,7 +170,7 @@ export class TraceRectBuilder {
       this.h,
       this.id,
       this.name,
-      this.cornerRadius,
+      this.cornerRadii,
       this.transform,
       this.groupId,
       this.isVisible,

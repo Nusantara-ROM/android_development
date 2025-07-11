@@ -43,7 +43,7 @@ class UiRectFactory {
         .setId(traceRect.id)
         .setGroupId(traceRect.groupId)
         .setIsClickable(!traceRect.isDisplay)
-        .setCornerRadius(traceRect.cornerRadius)
+        .setCornerRadii(traceRect.cornerRadii)
         .setHasContent(
           viewCapturePackageNames.includes(
             traceRect.name.substring(0, traceRect.name.indexOf('/')),
@@ -73,7 +73,6 @@ class UiRectFactory {
         .setId(traceRect.id)
         .setGroupId(groupId)
         .setIsClickable(true)
-        .setCornerRadius(traceRect.cornerRadius)
         .setHasContent(traceRect.isVisible)
         .setDepth(assertDefined(traceRect.depth))
         .setOpacity(traceRect.opacity)
@@ -112,7 +111,6 @@ class UiRectFactory {
         .setId(traceRect.id)
         .setGroupId(traceRect.groupId)
         .setIsClickable(true)
-        .setCornerRadius(traceRect.cornerRadius)
         .setHasContent(hasContent(traceRect.id))
         .setDepth(traceRect.depth)
         .setOpacity(opacity)

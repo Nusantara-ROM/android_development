@@ -548,7 +548,6 @@ describe('AbstractHierarchyViewerPresenter', () => {
         .setId('1 p1')
         .setGroupId(0)
         .setIsClickable(true)
-        .setCornerRadius(0)
         .setDepth(0)
         .build(),
       new UiRectBuilder()
@@ -564,7 +563,6 @@ describe('AbstractHierarchyViewerPresenter', () => {
         .setId('3 c3')
         .setGroupId(0)
         .setIsClickable(true)
-        .setCornerRadius(0)
         .setDepth(1)
         .build(),
       new UiRectBuilder()
@@ -580,7 +578,6 @@ describe('AbstractHierarchyViewerPresenter', () => {
         .setId('2 p2')
         .setGroupId(0)
         .setIsClickable(true)
-        .setCornerRadius(0)
         .setDepth(2)
         .build(),
     ];

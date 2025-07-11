@@ -70,7 +70,6 @@ class RectVcFactory {
       .setHeight(nodeHeight * newScaleY)
       .setId(node.id)
       .setName(node.name)
-      .setCornerRadius(0)
       .setGroupId(0)
       .setIsVisible(
         node.getEagerPropertyByName('isComputedVisible')?.getValue() ?? false,

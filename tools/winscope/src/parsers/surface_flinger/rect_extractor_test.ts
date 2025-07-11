@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CornerRadii} from 'common/geometry/corner_radii';
 import {Rect} from 'common/geometry/rect';
 import {Region} from 'common/geometry/region';
 import {
@@ -120,7 +121,10 @@ describe('SurfaceFlinger RectExtractor', () => {
       layersIter.get.withArgs('layer_id').and.returnValue(1n);
       layersIter.get.withArgs('opacity').and.returnValue(0.5);
       layersIter.get.withArgs('is_spy').and.returnValue(1n);
-      layersIter.get.withArgs('corner_radius').and.returnValue(0.25);
+      layersIter.get.withArgs('corner_radius_tl').and.returnValue(0.25);
+      layersIter.get.withArgs('corner_radius_tr').and.returnValue(null);
+      layersIter.get.withArgs('corner_radius_bl').and.returnValue(0.5);
+      layersIter.get.withArgs('corner_radius_br').and.returnValue(null);
       layersIter.get.withArgs('dsdx').and.returnValue(1);
       layersIter.get.withArgs('dtdx').and.returnValue(2);
       layersIter.get.withArgs('tx').and.returnValue(3);
@@ -137,7 +141,7 @@ describe('SurfaceFlinger RectExtractor', () => {
         .setHeight(400)
         .setId(id)
         .setName(name)
-        .setCornerRadius(0.25)
+        .setCornerRadii(new CornerRadii(0.25, 0, 0.5, 0))
         .setTransform(expectedMatrix)
         .setGroupId(3)
         .setIsVisible(true)
@@ -157,7 +161,6 @@ describe('SurfaceFlinger RectExtractor', () => {
         .setHeight(200)
         .setId(rectId1)
         .setName(rectName1)
-        .setCornerRadius(0)
         .setTransform(expectedMatrix)
         .setGroupId(4)
         .setIsVisible(false)
@@ -273,7 +276,6 @@ describe('SurfaceFlinger RectExtractor', () => {
         .setHeight(2000)
         .setId('Display - 123')
         .setName(name)
-        .setCornerRadius(0)
         .setTransform(IDENTITY_MATRIX)
         .setGroupId(321)
         .setIsVisible(false)

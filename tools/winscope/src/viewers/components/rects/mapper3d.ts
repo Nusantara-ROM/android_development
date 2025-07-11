@@ -295,7 +295,7 @@ class Mapper3D {
         topLeft: new Point3D(rect2d.x, rect2d.y, z),
         bottomRight: new Point3D(rect2d.x + rect2d.w, rect2d.y + rect2d.h, z),
         isOversized: false,
-        cornerRadius: rect2d.cornerRadius,
+        cornerRadii: rect2d.cornerRadii,
         darkFactor,
         colorType: this.getColorType(rect2d),
         isClickable: rect2d.isClickable,

@@ -1034,7 +1034,6 @@ describe('RectsComponent', () => {
       .setId(id ?? 'test-id ' + groupId)
       .setGroupId(groupId)
       .setIsClickable(true)
-      .setCornerRadius(0)
       .setDepth(0)
       .setOpacity(0.5)
       .build();
