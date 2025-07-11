@@ -17,26 +17,7 @@
 import {ObjectUtils} from './object_utils';
 
 describe('ObjectUtils', () => {
-  it('getField()', () => {
-    const obj = {
-      child0: {
-        key0: 'value0',
-      },
-      child1: [{key1: 'value1'}, 10],
-    };
-
-    expect(ObjectUtils.getProperty(obj, 'child0')).toEqual({key0: 'value0'});
-    expect(ObjectUtils.getProperty(obj, 'child0.key0')).toEqual('value0');
-    expect(ObjectUtils.getProperty(obj, 'child1')).toEqual([
-      {key1: 'value1'},
-      10,
-    ]);
-    expect(ObjectUtils.getProperty(obj, 'child1[0]')).toEqual({key1: 'value1'});
-    expect(ObjectUtils.getProperty(obj, 'child1[0].key1')).toEqual('value1');
-    expect(ObjectUtils.getProperty(obj, 'child1[1]')).toEqual(10);
-  });
-
-  it('setField()', () => {
+  it('setProperty()', () => {
     const obj = {};
 
     ObjectUtils.setProperty(obj, 'child0.key0', 'value0');

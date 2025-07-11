@@ -85,12 +85,6 @@ export class Transform {
 }
 
 export class TransformType {
-  static isSimpleRotation(type: TransformTypeFlags | undefined): boolean {
-    return !(type
-      ? TransformType.isFlagSet(type, TransformTypeFlags.ROT_INVALID_VAL)
-      : false);
-  }
-
   static getTypeFlags(type: TransformTypeFlags): string {
     const typeFlags: string[] = [];
 

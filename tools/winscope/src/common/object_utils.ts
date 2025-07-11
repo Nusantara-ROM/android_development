@@ -41,36 +41,6 @@ export class ObjectUtils {
   private static readonly ARRAY_KEY_REGEX = new RegExp('(.+)\\[(\\d+)\\]');
 
   /**
-   * Gets the property at the given path in the object.
-   *
-   * @param obj The object to get the property from.
-   * @param path The path to the property, using dot notation for nested objects.
-   * @return The value of the property at the given path.
-   */
-  static getProperty(obj: object, path: string): any {
-    const keys = ObjectUtils.parseKeys(path);
-    keys.forEach((key) => {
-      if (obj === undefined) {
-        return;
-      }
-
-      if (key.isArrayKey()) {
-        if ((obj as any)[key.key] === undefined) {
-          return;
-        }
-        assertTrue(
-          Array.isArray((obj as any)[key.key]),
-          () => 'Expected to be array',
-        );
-        obj = (obj as any)[key.key][assertDefined(key.index)];
-      } else {
-        obj = (obj as any)[key.key];
-      }
-    });
-    return obj;
-  }
-
-  /**
    * Sets the property at the given path in the object.
    *
    * @param obj The object to set the property on.

@@ -241,10 +241,6 @@ export class LogComponent {
     @Inject(ElementRef) private elementRef: ElementRef<HTMLElement>,
   ) {}
 
-  getHeadersWithFilters() {
-    return this.headers.filter((header) => this.isHeaderWithFilter(header));
-  }
-
   isHeaderWithFilter(header: LogHeader): boolean {
     return header.filter !== undefined;
   }

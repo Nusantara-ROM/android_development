@@ -15,7 +15,6 @@
  */
 
 import {Rect} from 'common/geometry/rect';
-import {Region} from 'common/geometry/region';
 import {PropertyTreeNode} from './tree_node/property_tree_node';
 
 export class GeometryFactory {
@@ -25,14 +24,5 @@ export class GeometryFactory {
     const right = node.getChildByName('right')?.getValue() ?? 0;
     const bottom = node.getChildByName('bottom')?.getValue() ?? 0;
     return new Rect(left, top, right - left, bottom - top);
-  }
-
-  static makeRegion(node: PropertyTreeNode): Region {
-    const rects =
-      node
-        .getChildByName('rect')
-        ?.getAllChildren()
-        .map((rectNode) => GeometryFactory.makeRect(rectNode)) ?? [];
-    return new Region(rects);
   }
 }

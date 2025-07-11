@@ -16,8 +16,6 @@
 
 import {Point} from './point';
 import {Point3D} from './point3d';
-import {Rect} from './rect';
-import {Region} from './region';
 
 /**
  * These values correspond to the values from the gui::Transform class in the
@@ -59,10 +57,6 @@ export class TransformMatrix {
     );
   }
 
-  isValid(): boolean {
-    return this.dsdx * this.dsdy !== this.dtdx * this.dtdy;
-  }
-
   transformPoint(point: Point): Point {
     return {
       x: this.dsdx * point.x + this.dtdx * point.y + this.tx,
@@ -73,23 +67,6 @@ export class TransformMatrix {
   transformPoint3D(point: Point3D): Point3D {
     const p = this.transformPoint(point);
     return new Point3D(p.x, p.y, point.z);
-  }
-
-  transformRect(r: Rect): Rect {
-    const ltPrime = this.transformPoint({x: r.x, y: r.y});
-    const rbPrime = this.transformPoint({x: r.x + r.w, y: r.y + r.h});
-    const x = Math.min(ltPrime.x, rbPrime.x);
-    const y = Math.min(ltPrime.y, rbPrime.y);
-    return new Rect(
-      x,
-      y,
-      Math.max(ltPrime.x, rbPrime.x) - x,
-      Math.max(ltPrime.y, rbPrime.y) - y,
-    );
-  }
-
-  transformRegion(region: Region): Region {
-    return new Region(region.rects.map((rect) => this.transformRect(rect)));
   }
 
   inverse(): TransformMatrix {

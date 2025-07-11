@@ -137,17 +137,16 @@ export class VariableHeightScrollStrategy implements VirtualScrollStrategy {
       this.getOffsetByItemIndex(newRange.start),
     );
     this.scrolledIndexChangeSubject.next(firstVisibleIndex);
-    this.updateItemHeightCache();
+    this.updateItemHeightCache(this.wrapper, viewport);
   }
 
-  private updateItemHeightCache() {
-    if (!this.wrapper || !this.viewport) {
-      return;
-    }
-
+  private updateItemHeightCache(
+    wrapper: any,
+    viewport: CdkVirtualScrollViewport,
+  ) {
     let cacheUpdated = false;
 
-    for (const node of this.wrapper.childNodes) {
+    for (const node of wrapper.childNodes) {
       if (node && node.nodeName === 'DIV') {
         const id = Number(node.getAttribute('item-id'));
         const cachedHeight = this.itemHeightCache.get(id);
@@ -166,7 +165,7 @@ export class VariableHeightScrollStrategy implements VirtualScrollStrategy {
     }
 
     if (cacheUpdated) {
-      this.viewport.setTotalContentSize(this.getTotalItemsHeight());
+      viewport.setTotalContentSize(this.getTotalItemsHeight());
     }
   }
 
