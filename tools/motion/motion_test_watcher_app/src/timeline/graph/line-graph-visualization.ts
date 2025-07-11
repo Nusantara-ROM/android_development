@@ -112,7 +112,6 @@ export class LineGraphVisualization implements Visualization {
       .x((d) => this.xScale(d.x))
       .y((d) => this.yScale(d.expectedValue as number))
       .defined(d => d.expectedValue != null && typeof d.expectedValue === 'number')
-      .curve(d3.curveMonotoneX);
 
     g.append('path')
       .datum(data)
@@ -139,20 +138,32 @@ export class LineGraphVisualization implements Visualization {
     g: d3.Selection<SVGGElement, unknown, null, undefined>,
     data: DataPoint[]
   ) {
-    const actualLine = d3
-      .line<DataPoint>()
-      .x((d) => this.xScale(d.x))
-      .y((d) => this.yScale(d.actualValue as number))
-      .defined(d => d.actualValue != null && typeof d.actualValue === 'number')
-      .curve(d3.curveMonotoneX);
+    const isActualDifferentFromExpected = (d: DataPoint): boolean => {
+      if (d.actualValue == null && d.expectedValue == null) {
+        return false;
+      }
+      if (d.actualValue == null || d.expectedValue == null) {
+        return true;
+      }
+      return d.actualValue !== d.expectedValue;
+    };
+    for (let i = 0; i < data.length - 1; i++) {
+      const p1 = data[i];
+      const p2 = data[i + 1];
+      if (p1.actualValue == null || p2.actualValue == null) {
+        continue;
+      }
+      const segmentColor =
+        isActualDifferentFromExpected(p1) || isActualDifferentFromExpected(p2) ? COLORS.red : COLORS.blue;
 
-    g.append('path')
-      .datum(data)
-      .attr('fill', 'none')
-      .attr('stroke',COLORS.blue)
-      .attr('stroke-width', 2.5)
-      .attr('d', actualLine);
-
+      g.append('line')
+        .attr('x1', this.xScale(p1.x))
+        .attr('y1', this.yScale(p1.actualValue))
+        .attr('x2', this.xScale(p2.x))
+        .attr('y2', this.yScale(p2.actualValue))
+        .attr('stroke', segmentColor)
+        .attr('stroke-width', 2.5)
+    }
     g.selectAll('.dot-actual')
       .data(data.filter((d) => d.actualValue !== undefined))
       .enter()
@@ -160,8 +171,10 @@ export class LineGraphVisualization implements Visualization {
       .attr('class', 'dot-actual')
       .attr('cx', (d) => this.xScale(d.x))
       .attr('cy', (d) => this.yScale(d.actualValue || 0))
-      .attr('r', 3)
-      .attr('fill',COLORS.blue);
+      .attr('r', (d) => { return isActualDifferentFromExpected(d) ? 4 : 3 })
+      .attr('fill', (d) => {
+        return isActualDifferentFromExpected(d) ? COLORS.red : COLORS.blue;
+      })
   }
 
   private drawLegend(g: d3.Selection<SVGGElement, unknown, null, undefined>) {
@@ -178,9 +191,18 @@ export class LineGraphVisualization implements Visualization {
       .append('line')
       .attr('x1', 0)
       .attr('y1', 0)
-      .attr('x2', 20)
+      .attr('x2', 10)
       .attr('y2', 0)
       .attr('stroke', COLORS.blue)
+      .attr('stroke-width', 2.5);
+
+    legend
+      .append('line')
+      .attr('x1', 10)
+      .attr('y1', 0)
+      .attr('x2', 20)
+      .attr('y2', 0)
+      .attr('stroke', COLORS.red)
       .attr('stroke-width', 2.5);
 
     legend
