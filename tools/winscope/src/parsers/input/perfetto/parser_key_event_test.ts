@@ -57,6 +57,12 @@ describe('PerfettoParserKeyEvent', () => {
     expect(timestamps).toEqual(expected);
   });
 
+  it('retrieves all entries', async () => {
+    const entries = await parser.getAllEntries();
+    expect(entries.length).toEqual(2);
+    expect(entries.every((entry) => entry !== undefined)).toBeTrue();
+  });
+
   it('retrieves trace entry from timestamp', async () => {
     const entry = await parser.getEntry(1);
     expect(entry.id).toEqual('AndroidKeyEvent entry');

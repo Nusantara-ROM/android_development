@@ -54,6 +54,12 @@ describe('PerfettoParserProtolog', () => {
     expect(timestamps.slice(0, 3)).toEqual(expected);
   });
 
+  it('retrieves all entries', async () => {
+    const entries = await parser.getAllEntries();
+    expect(entries.length).toEqual(3);
+    expect(entries.every((entry) => entry !== undefined)).toBeTrue();
+  });
+
   it('reconstructs human-readable log message (REAL time)', async () => {
     const message = await parser.getEntry(0);
 

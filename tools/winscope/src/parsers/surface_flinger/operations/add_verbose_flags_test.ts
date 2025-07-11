@@ -192,4 +192,21 @@ describe('AddVerboseFlags', () => {
     operation.apply(propertyRoot);
     expect(propertyRoot).toEqual(expectedRoot);
   });
+
+  it('handles no flags', () => {
+    operation.apply(propertyRoot);
+    expect(propertyRoot).toEqual(expectedRoot);
+  });
+
+  it('handles node with verbose flags already added', () => {
+    const verboseFlags = TreeNodeUtils.makePropertyNode(
+      propertyRoot.id,
+      'verboseFlags',
+      'verbose flags',
+    );
+    propertyRoot.addOrReplaceChild(verboseFlags);
+    expectedRoot.addOrReplaceChild(verboseFlags);
+    operation.apply(propertyRoot);
+    expect(propertyRoot).toEqual(expectedRoot);
+  });
 });

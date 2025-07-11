@@ -451,8 +451,8 @@ describe('Canvas', () => {
       expect(rectMesh.rotation.equals(prevRotation)).toBeFalse();
 
       const noRadii = makeUiRect3D(rectId);
-      rotated.bottomRight = new Point3D(5, 5, 5);
-      rotated.topLeft = new Point3D(0, 0, 5);
+      noRadii.bottomRight = new Point3D(5, 5, 5);
+      noRadii.topLeft = new Point3D(0, 0, 5);
       updateRectsAndCheckGeometryId(noRadii, rectMesh, rectGeometryId);
     });
 

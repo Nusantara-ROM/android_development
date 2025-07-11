@@ -46,6 +46,7 @@ describe('UpdateTransforms', () => {
       y: 0,
     };
   });
+
   it('adds matrix to transform', () => {
     propertyRoot.addOrReplaceChild(
       TreeNodeUtils.makePropertyNode(

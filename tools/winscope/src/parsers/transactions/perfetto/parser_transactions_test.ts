@@ -62,7 +62,13 @@ describe('PerfettoParserTransactions', () => {
     expect(timestamps.slice(0, 3)).toEqual(expected);
   });
 
-  it('retrieves trace entry from timestamp', async () => {
+  it('retrieves all entries', async () => {
+    const entries = await parser.getAllEntries();
+    expect(entries.length).toEqual(712);
+    expect(entries.every((entry) => entry !== undefined)).toBeTrue();
+  });
+
+  it('retrieves trace entry', async () => {
     const entry = await parser.getEntry(1);
     expect(entry.id).toEqual('TransactionsTraceEntry entry');
   });

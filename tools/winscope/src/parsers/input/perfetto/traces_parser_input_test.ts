@@ -72,6 +72,12 @@ describe('TracesParserInput', () => {
     expect(timestamps).toEqual(expected);
   });
 
+  it('retrieves all entries', async () => {
+    const entries = await parser.getAllEntries();
+    expect(entries.length).toEqual(8);
+    expect(entries.every((entry) => entry !== undefined)).toBeTrue();
+  });
+
   it('provides correct entries from individual event traces', async () => {
     const keyEvent = await parser.getEntry(6);
     expect(keyEvent.getEagerPropertyByName('eventId')?.getValue()).toEqual(

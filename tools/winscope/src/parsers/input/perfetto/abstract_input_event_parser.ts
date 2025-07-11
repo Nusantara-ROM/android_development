@@ -173,12 +173,6 @@ export abstract class AbstractInputEventParser extends AbstractParser<HierarchyT
     return 'android.input';
   }
 
-  protected processDispatchEventsTree(tree: PropertyTreeNode) {
-    AbstractInputEventParser.DISPATCH_EVENT_OPS.forEach((operation) => {
-      operation.apply(tree);
-    });
-  }
-
   private getColumnsForEntryQuery(): string {
     return this.eventTableColumns
       .map((c) => 'tbl.' + c)
