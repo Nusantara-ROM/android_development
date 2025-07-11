@@ -30,7 +30,7 @@ export abstract class AbstractUpdateLayersAndWindows<T extends TreeNode>
   abstract apply(node: T): void;
 
   protected updateLayerId(layerId: PropertyTreeNode) {
-    const layerIdValue = layerId.getValue();
+    const layerIdValue = layerId.getValue() ?? undefined;
     if (layerIdValue === undefined) {
       return;
     }
@@ -44,7 +44,7 @@ export abstract class AbstractUpdateLayersAndWindows<T extends TreeNode>
   }
 
   protected updateWindowId(windowId: PropertyTreeNode) {
-    let windowIdValue = windowId.getValue();
+    let windowIdValue = windowId.getValue() ?? undefined;
     if (windowIdValue === undefined) {
       return;
     }

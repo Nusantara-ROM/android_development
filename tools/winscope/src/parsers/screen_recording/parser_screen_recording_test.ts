@@ -137,14 +137,61 @@ describe('ParserScreenRecording', () => {
 
     describe('with Android screen recording format', () => {
       checkStartTimeInFilename(
-        `test/2025-06-27_11-54-32-1234567890abcdef1234567890abcdef-${startTimeMs}-screen.mp4`,
+        `test/screen-20250627-115432-${startTimeMs}.mp4`,
       );
+
+      it('fails to parse invalid format', async () => {
+        await checkFailsToParseFilename('screen.mp4'); // missing date, time, start time
+        await checkFailsToParseFilename('screen-20250627.mp4'); // missing time, start time
+        await checkFailsToParseFilename('screen-20250627-115432.mp4'); // missing start time
+
+        await checkFailsToParseFilename('screen-2025627-115432-123321.mp4'); // invalid date
+        await checkFailsToParseFilename('screen-20250627-15432-123321.mp4'); // invalid time
+        await checkFailsToParseFilename('screen-20250627-115432-123a321.mp4'); // invalid start time
+      });
     });
 
     describe('with date and UID format', () => {
       checkStartTimeInFilename(
-        `test/screen-20250627-115432-${startTimeMs}.mp4`,
+        `test/2025-06-27_11-54-32-1234567890abcdef1234567890abcdef-${startTimeMs}-screen.mp4`,
       );
+
+      it('fails to parse invalid format', async () => {
+        // datetime missing underscore
+        await checkFailsToParseFilename(
+          '2025-06-2711-54-32-1234567890abcdef1234567890abcdef-123321-screen.mp4',
+        );
+
+        // invalid date
+        await checkFailsToParseFilename(
+          '2025-6-27_11-54-32-1234567890abcdef1234567890abcdef-123321-screen.mp4',
+        );
+
+        // invalid time
+        await checkFailsToParseFilename(
+          '2025-06-27_11-4-32-1234567890abcdef1234567890abcdef-123321-screen.mp4',
+        );
+
+        // invalid uid
+        await checkFailsToParseFilename(
+          '2025-06-27_11-54-32-123a321-123321-screen.mp4',
+        );
+
+        // missing suffix
+        await checkFailsToParseFilename(
+          '2025-06-27_11-54-32-1234567890abcdef1234567890abcdef-123321.mp4',
+        );
+
+        // invalid suffix
+        await checkFailsToParseFilename(
+          '2025-06-27_11-54-32-1234567890abcdef1234567890abcdef-123321-screenrecord.mp4',
+        );
+
+        // invalid start time
+        await checkFailsToParseFilename(
+          '2025-06-27_11-54-32-1234567890abcdef1234567890abcdef-123a321-screenrecord.mp4',
+        );
+      });
     });
 
     function checkStartTimeInFilename(filename: string) {
@@ -186,6 +233,16 @@ describe('ParserScreenRecording', () => {
           expect(Number(entry.videoTimeSeconds)).toBeCloseTo(4.192109, 0.001);
         }
       });
+    }
+
+    async function checkFailsToParseFilename(filename: string) {
+      const parsers = await new LegacyParserProvider()
+        .addFile(
+          'traces/elapsed_and_real_timestamp/screen_recording_no_metadata.mp4',
+          filename,
+        )
+        .getParsers();
+      expect(parsers.length).toEqual(0);
     }
   });
 });

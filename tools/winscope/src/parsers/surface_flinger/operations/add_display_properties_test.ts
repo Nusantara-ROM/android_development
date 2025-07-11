@@ -127,4 +127,29 @@ describe('AddDisplayProperties', () => {
       false,
     );
   });
+
+  it('handles missing properties', () => {
+    expect(() => operation.apply(propertyRoot)).not.toThrowError();
+
+    const displays = TreeNodeUtils.makePropertyNode(
+      propertyRoot.id,
+      'displays',
+      [
+        {
+          dpiX: 0,
+          size: {w: 1080, h: 2340},
+          layerStack: 4294967295,
+        },
+        {
+          dpiY: 0,
+          size: {w: 1080, h: 2340},
+          layerStack: 4294967295,
+        },
+      ],
+    );
+    propertyRoot.addOrReplaceChild(displays);
+
+    operation.apply(propertyRoot);
+    expect(() => operation.apply(propertyRoot)).not.toThrowError();
+  });
 });

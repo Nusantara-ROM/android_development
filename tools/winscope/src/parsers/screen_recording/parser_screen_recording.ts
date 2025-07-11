@@ -362,7 +362,7 @@ class ScreenRecordingWithUID {
       return undefined;
     }
     const time = rem.slice(0, 8);
-    if (time === undefined || !ScreenRecordingWithUID.TIME_REGEX.test(time)) {
+    if (!ScreenRecordingWithUID.TIME_REGEX.test(time)) {
       return undefined;
     }
 

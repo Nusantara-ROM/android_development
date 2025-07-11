@@ -56,6 +56,12 @@ describe('PerfettoParserTransitions', () => {
       expect(actual).toEqual(expected);
     });
 
+    it('retrieves all entries', async () => {
+      const entries = await parser.getAllEntries();
+      expect(entries.length).toEqual(4);
+      expect(entries.every((entry) => entry !== undefined)).toBeTrue();
+    });
+
     it('extracts eager properties', async () => {
       const entry = await parser.getEntry(0);
 
