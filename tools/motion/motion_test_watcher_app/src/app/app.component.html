@@ -37,7 +37,7 @@
       <button>
         <span class="google-symbols">menu</span>
       </button>
-      <span class="
+      <span class="z-10
               absolute left-full top-1/2 -translate-y-1/2 ml-2
               px-3 py-1 bg-gray-600 text-gray-100 text-sm font-medium
               rounded-lg whitespace-nowrap opacity-0
@@ -51,7 +51,7 @@
     <div *ngIf="goldens[0]?.dataSource===undefined" (click)="toggleCheckBoxes()"
       class="p-2 mx-auto cursor-pointer rounded hover:bg-gray-400 transition-colors relative group">
       <button>
-        <span class="google-symbols">update</span>
+        <span class="google-symbols">check_box</span>
       </button>
       <span class="z-10
               absolute left-full top-1/2 -translate-y-1/2 ml-2
@@ -81,7 +81,7 @@
       [@collapseAnimation]>
       <app-preview [selectedGolden]="selectedGolden"></app-preview>
     </div>
-    <div class="bg-white rounded-md shadow-md p-4 overflow-hidden"
+    <div class="bg-white rounded-md shadow-md p-4 overflow-y-auto no-scrollbar"
       [@timelineHeightChange]="(showPreviewComponent && isVideoPresent)">
       <app-timeline [selectedGolden]="selectedGolden" [showTestList]="showTestList"></app-timeline>
     </div>
