@@ -163,6 +163,13 @@ pub(crate) static LICENSES: &[License] = &[
         module_license_file_name: "MODULE_LICENSE_CC0",
         license_type: LicenseType::UNENCUMBERED,
     },
+    License {
+        name: "bzip2-1.0.6",
+        text: Some(include_str!("licenses/bzip2-1.0.6.txt")),
+        file_names: &[],
+        module_license_file_name: "MODULE_LICENSE_BSD_LIKE",
+        license_type: LicenseType::NOTICE,
+    },
 ];
 
 /// Specifies the order of preference for choosing a license.
