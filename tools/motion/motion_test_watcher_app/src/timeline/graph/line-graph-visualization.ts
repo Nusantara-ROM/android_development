@@ -21,6 +21,8 @@ export class LineGraphVisualization implements Visualization {
   yScale = d3.scaleLinear();
   solidLineLegend: string = '';
   dottedLineLegend: string ='';
+  firstValidDataPoint: number = 0;
+  currentShowMarkerState: boolean = true;
 
   constructor(
     minValue: number,
@@ -37,6 +39,12 @@ export class LineGraphVisualization implements Visualization {
       if (this.viewSelectedCurrentFrame === frame) return;
       this.viewSelectedCurrentFrame = frame ? frame : 0;
       this.updateMarker();
+    });
+    this.previewService.showMarker$.subscribe((showMarker) =>{
+      this.currentShowMarkerState= showMarker;
+      this.graph.selectAll('.currentFrameLine').remove();
+      if(!showMarker) return;
+      this.addMarker(this.graph, this.xScale(this.firstValidDataPoint));
     });
   }
 
@@ -66,19 +74,18 @@ export class LineGraphVisualization implements Visualization {
 
     this.graph = g;
 
+    // The x-value for the first playable video frame, derived from data[1].
+    // data[0] represents a 'before' state with no corresponding video frame.
+    this.firstValidDataPoint = data[1]?.x ?? 0;
+
     this.drawAxes(g);
     this.drawExpected(g, data);
     this.drawActual(g, data);
     this.drawLegend(g);
-    let firstValidDataPoint: number | undefined;
-    const dataPoints = data
-      .filter((dp): dp is { x: number } => typeof dp.x === 'number')
-      .map(dp => dp.x);
-    if (dataPoints.length >= 2) {
-      firstValidDataPoint = dataPoints[1];
-    }
-    this.addMarker(g, this.xScale(firstValidDataPoint ?? 0));
     this.drawHover(g, data);
+    if (this.currentShowMarkerState) {
+      this.addMarker(g, this.xScale(this.firstValidDataPoint));
+    }
   }
 
   private drawAxes(g: d3.Selection<SVGGElement, unknown, null, undefined>) {

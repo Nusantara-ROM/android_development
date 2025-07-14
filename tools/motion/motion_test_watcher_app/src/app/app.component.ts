@@ -24,6 +24,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TestModeComponent } from '../testMode/test-mode.component';
+import { PreviewService } from '../service/preview.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-root',
@@ -96,6 +97,7 @@ export class AppComponent implements DoCheck, OnInit {
     private progressTracker: ProgressTracker,
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private previewService: PreviewService
     ) {}
 
   isNullOrEmpty(obj : any) : Boolean {
@@ -248,6 +250,7 @@ export class AppComponent implements DoCheck, OnInit {
 
   setSelectedGolden(golden: MotionGolden): void {
     this.selectedGolden = golden;
+    this.previewService.setShowMarker(this.showPreviewComponent && this.isVideoPresent);
   }
 
    setSelectedTest(testName: String): void {
@@ -270,5 +273,6 @@ export class AppComponent implements DoCheck, OnInit {
   }
   openPreviewComponent(): void {
     this.showPreviewComponent = !this.showPreviewComponent;
+    this.previewService.setShowMarker(this.showPreviewComponent && this.isVideoPresent);
   }
 }
