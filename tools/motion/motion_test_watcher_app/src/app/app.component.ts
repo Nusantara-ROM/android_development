@@ -82,7 +82,7 @@ import { TestModeComponent } from '../testMode/test-mode.component';
     ]),
     trigger('timelineHeightChange', [
       state('true', style({ height: 'calc(66.6666% - 16px)' })),
-      state('false', style({ height: 'calc(100% - 16px)' })),
+      state('false', style({ height: '100%' })),
       transition('true <=> false', [
         animate('300ms ease-in-out')
       ])
