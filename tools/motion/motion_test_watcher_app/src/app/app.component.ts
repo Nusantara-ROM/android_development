@@ -103,6 +103,7 @@ export class AppComponent implements DoCheck, OnInit {
 
  switchMode(mode : String) {
     this.showLoaderBar()
+    this.testMode = ""
     this.goldenService.switchMode(mode).
     pipe(finalize(() => this.hideLoaderBar()))
     .subscribe((goldens) => {
@@ -132,6 +133,7 @@ export class AppComponent implements DoCheck, OnInit {
             this.goldens = []
             this.selectedGolden = null
             this.testNames = fetchedTestNames
+            this.testMode = "PRESUBMIT"
           },
           error : (err) => {
             this.testNames = []
@@ -145,6 +147,7 @@ export class AppComponent implements DoCheck, OnInit {
   }
 
   showProgress = false;
+  testMode = "";
   showLoader = false;
   goldens: MotionGolden[] = [];
   testNames: String[] = [];
@@ -184,6 +187,7 @@ export class AppComponent implements DoCheck, OnInit {
     const rightLink = searchParams.get('rightLink') ?? ""
 
     if(leftLink || rightLink){
+      this.testMode = "GERRIT"
       this.fetchGerritData(leftLink, rightLink)
     } else {
       console.log("GERRIT: left and right is null")

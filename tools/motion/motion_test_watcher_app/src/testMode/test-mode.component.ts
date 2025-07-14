@@ -27,6 +27,7 @@ import { MatMenuModule } from '@angular/material/menu';
 })
 export class TestModeComponent implements OnChanges{
   @Input() testModes: String[] = [];
+  @Input() testMode: String = "";  // will either be GERRIT OR PRESUBMIT (special cases that cannot come in test modes api response)
   @Output() selectedTestMode = new EventEmitter<String>();
 
 
@@ -38,8 +39,11 @@ export class TestModeComponent implements OnChanges{
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['testModes']) {
+    if (changes['testModes'] && this.testMode.length == 0) {
       this.setFirstTestModeAsDefaultMode()
+    }
+    if (changes["testMode"] && this.testMode.length > 0) {
+      this.selectedMode = this.testMode
     }
   }
 

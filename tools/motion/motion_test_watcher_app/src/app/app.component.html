@@ -9,7 +9,7 @@
       </button>
     </div>
     <div class="button-dropdown-container">
-      <test-mode-list [testModes]="testModes" (selectedTestMode)="switchMode($event)">
+      <test-mode-list [testModes]="testModes" (selectedTestMode)="switchMode($event)" [testMode]="testMode">
 
       </test-mode-list>
     </div>
