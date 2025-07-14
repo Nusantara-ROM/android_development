@@ -114,7 +114,9 @@ export class AppComponent implements DoCheck, OnInit {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(DialogContentComponent);
+    const dialogRef = this.dialog.open(DialogContentComponent, {
+      maxWidth: '55vw'
+    });
 
     dialogRef.afterClosed().subscribe(invocationID => {
       if (invocationID) {
