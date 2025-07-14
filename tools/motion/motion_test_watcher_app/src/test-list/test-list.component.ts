@@ -82,6 +82,13 @@ export class TestListComponent implements OnChanges{
     this.selectedGoldenChange.emit(golden);
   }
 
+  panelClosed(golden: MotionGolden): void {
+    if (this.selectedGolden && this.selectedGolden.id === golden.id) {
+      this.selectedGolden = null;
+      this.selectedGoldenChange.emit(undefined);
+    }
+  }
+
   extractLastPart(path: String): String {
   return path.split('/').pop() || '';
 }
