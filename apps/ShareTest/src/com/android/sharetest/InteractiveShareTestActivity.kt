@@ -156,7 +156,6 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
                         shareText = ::shareText,
                         shareImages = { shareImages(previews, it) },
                         updateRefinement = ::updateRefinement,
-                        setChooserMinimized = ::setChooserMinimized,
                         closeChooser = ::closeChooser,
                         setTargetsEnabled = ::setTargetsEnabled,
                     )
@@ -276,10 +275,6 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
     private fun closeChooser() {
         chooserSession.value = null
         chooserWindowTopOffset.value = -1
-    }
-
-    private fun setChooserMinimized(isMinimized: Boolean) {
-        chooserSession.value?.setMinimized(isMinimized)
     }
 
     private fun setTargetsEnabled(isEnabled: Boolean) {

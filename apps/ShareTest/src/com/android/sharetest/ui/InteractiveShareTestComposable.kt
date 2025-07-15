@@ -33,7 +33,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,10 +48,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 
 @Composable
 fun InteractiveShareTestComposable(
@@ -68,7 +64,6 @@ fun InteractiveShareTestComposable(
     shareText: (String) -> Unit,
     shareImages: (Int) -> Unit,
     updateRefinement: () -> Unit,
-    setChooserMinimized: (Boolean) -> Unit,
     closeChooser: () -> Unit,
     setTargetsEnabled: (Boolean) -> Unit,
 ) {
@@ -115,11 +110,7 @@ fun InteractiveShareTestComposable(
                 onCheckedChange = { updateRefinement() },
             )
             if (isChooserRunning) {
-                ChooserActions(
-                    closeChooser = closeChooser,
-                    setChooserMinimized = setChooserMinimized,
-                    setTargetsEnabled = setTargetsEnabled,
-                )
+                ChooserActions(closeChooser = closeChooser, setTargetsEnabled = setTargetsEnabled)
             }
         }
 
@@ -162,58 +153,10 @@ private fun ShareText(initialText: String, shareText: (String) -> Unit, modifier
 }
 
 @Composable
-private fun ChooserActions(
-    closeChooser: () -> Unit,
-    setChooserMinimized: (Boolean) -> Unit,
-    setTargetsEnabled: (Boolean) -> Unit,
-) {
-    var delayMinimizationActions by remember { mutableStateOf(false) }
-    var countDown by remember { mutableIntStateOf(0) }
+private fun ChooserActions(closeChooser: () -> Unit, setTargetsEnabled: (Boolean) -> Unit) {
     var areTargetsEnabled by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
-    fun setChooserMinimizedDelayed(isMinimized: Boolean) {
-        countDown = 3
-        scope.launch {
-            while (countDown > 0) {
-                delay(1_000)
-                countDown--
-            }
-            if (isActive) {
-                setChooserMinimized(isMinimized)
-            }
-        }
-    }
     Column(verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.columnSpacing)) {
-        LabeledCheckbox(
-            isChecked = delayMinimizationActions,
-            label = "Delay minimization actions",
-            onCheckedChange = { delayMinimizationActions = !delayMinimizationActions },
-            isEnabled = countDown == 0,
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.rowSpacing)) {
-            TextButton(
-                text = if (countDown == 0) "Minimize" else countDown.toString(),
-                enabled = countDown == 0,
-                onClick = {
-                    if (delayMinimizationActions) {
-                        setChooserMinimizedDelayed(true)
-                    } else {
-                        setChooserMinimized(true)
-                    }
-                },
-            )
-            TextButton(
-                text = if (countDown == 0) "Maximize" else countDown.toString(),
-                enabled = countDown == 0,
-                onClick = {
-                    if (delayMinimizationActions) {
-                        setChooserMinimizedDelayed(false)
-                    } else {
-                        setChooserMinimized(false)
-                    }
-                },
-            )
-        }
         Row(horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.rowSpacing)) {
             TextButton(text = "Close Chooser", onClick = { closeChooser() })
             TextButton(
