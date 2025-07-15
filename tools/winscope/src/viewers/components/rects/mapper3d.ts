@@ -35,7 +35,7 @@ import {UiRect3D} from './ui_rect3d';
 class Mapper3D {
   private static readonly CAMERA_ROTATION_FACTOR_INIT = 1;
   private static readonly DISPLAY_CLUSTER_SPACING = 750;
-  private static readonly LABEL_FIRST_Y_OFFSET = 100;
+  private static readonly LABEL_FIRST_Y_OFFSET = 50;
   private static readonly LABEL_Y_OFFSET = 500;
   private static readonly SINGLE_LABEL_Y_OFFSET = 100;
   private static readonly LABEL_CIRCLE_RADIUS = 15;
@@ -412,10 +412,21 @@ class Mapper3D {
       Math.min(this.zoomFactor, 1 + (8 - rects2d.length) * 0.05),
       0.25,
     );
+
+    let circleRadius = Mapper3D.LABEL_CIRCLE_RADIUS;
+    let yOffsetScaleFactor = firstLabelScaleFactor;
+
+    const display = rects2d.find((r) => r.isDisplay);
+    if (display) {
+      yOffsetScaleFactor *= 2400 / display.h;
+      circleRadius *= display.w / 1080;
+    }
+
     const fixedYOffset =
       y0 + Mapper3D.LABEL_FIRST_Y_OFFSET / firstLabelScaleFactor;
-    const multiLabelYOffset = Mapper3D.LABEL_Y_OFFSET / this.zoomFactor;
-    const singleLabelYOffset = Mapper3D.SINGLE_LABEL_Y_OFFSET / this.zoomFactor;
+    const multiLabelYOffset = Mapper3D.LABEL_Y_OFFSET / yOffsetScaleFactor;
+    const singleLabelYOffset =
+      Mapper3D.SINGLE_LABEL_Y_OFFSET / yOffsetScaleFactor;
 
     rects2d.forEach((rect2d, index) => {
       if (!rect2d.label) {
@@ -440,18 +451,18 @@ class Mapper3D {
       const yOffsetXYRot =
         V[1] * Math.cos(angleX) + zOffsetYRot * -Math.sin(angleX);
 
-      const yOffsetIndex = onlyHighlighted
-        ? singleLabelYOffset
-        : multiLabelYOffset;
-      const lineEndY = fixedYOffset + yOffsetXYRot + index * yOffsetIndex;
+      const lineEndY =
+        fixedYOffset +
+        yOffsetXYRot +
+        (onlyHighlighted ? singleLabelYOffset : index * multiLabelYOffset);
 
-      lineStart.x += Mapper3D.LABEL_CIRCLE_RADIUS / 2;
+      lineStart.x += circleRadius / 2;
 
       const lineEnd = new Point3D(lineStart.x, lineEndY, lineStart.z);
 
       const RectLabel: RectLabel = {
         circle: {
-          radius: Mapper3D.LABEL_CIRCLE_RADIUS,
+          radius: circleRadius,
           center: new Point3D(lineStart.x, lineStart.y, lineStart.z + 0.5),
         },
         linePoints: [lineStart, lineEnd],

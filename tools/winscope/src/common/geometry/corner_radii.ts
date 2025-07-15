@@ -22,6 +22,10 @@ export class CornerRadii {
     public br: number,
   ) {}
 
+  isEmpty() {
+    return this.tl === 0 && this.tr === 0 && this.bl === 0 && this.br === 0;
+  }
+
   isEqual(other: CornerRadii) {
     return (
       this.tl === other.tl &&

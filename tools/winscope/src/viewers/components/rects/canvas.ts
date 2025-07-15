@@ -426,7 +426,7 @@ export class Canvas {
     // create line edges for rect
     const edgeGeo = new THREE.EdgesGeometry(rectGeometry);
     let color: number;
-    if (rect.cornerRadii) {
+    if (rect.cornerRadii && !rect.cornerRadii.isEmpty()) {
       color = Canvas.RECT_EDGE_COLOR_ROUNDED;
     } else {
       color = this.getRectEdgeColor();
