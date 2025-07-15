@@ -279,6 +279,29 @@ describe('HierarchyTreeBuilderSf', () => {
     expect(root).toEqual(expectedRoot);
   });
 
+  it('handles missing parent values', () => {
+    const layer1Props = new PropertyTreeBuilder()
+      .setIsRoot(true)
+      .setRootId('1')
+      .setName('layer1')
+      .setChildren([
+        {name: 'layerId', value: 1},
+        {name: 'name', value: 'layer1'},
+        {name: 'children', value: []},
+        {name: 'flags', value: LayerFlag.HIDDEN},
+      ])
+      .build();
+    const layer1Provider = makePropertiesProvider(layer1Props);
+
+    const root = builder.setRoot(entry).setChildren([layer1Provider]).build();
+
+    expectedRoot.addOrReplaceChild(
+      new HierarchyTreeNode('1 layer1', 'layer1', layer1Provider),
+    );
+
+    expect(root).toEqual(expectedRoot);
+  });
+
   function makePropertiesProvider(node: PropertyTreeNode): PropertiesProvider {
     return new PropertiesProvider(
       node,

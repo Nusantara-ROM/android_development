@@ -64,12 +64,14 @@ export class HierarchyTreeBuilderSf extends HierarchyTreeBuilder {
   ): void {
     for (const children of identifierToChildren.values()) {
       children.forEach((child) => {
-        const parentIdNode = assertDefined(
-          child.getEagerPropertyByName('parent'),
-        );
-        const isDefault = parentIdNode.source === PropertySource.DEFAULT;
-        const parentId = this.getIdentifierValue(parentIdNode);
-        const parent = identifierToChildren.get(parentId)?.at(0);
+        const parentIdNode = child.getEagerPropertyByName('parent');
+        const isDefault = parentIdNode?.source === PropertySource.DEFAULT;
+
+        let parent: HierarchyTreeNode | undefined;
+        if (parentIdNode) {
+          const parentId = this.getIdentifierValue(parentIdNode);
+          parent = identifierToChildren.get(parentId)?.at(0);
+        }
 
         if (!isDefault && parent) {
           this.setParentChildRelationship(parent, child);
