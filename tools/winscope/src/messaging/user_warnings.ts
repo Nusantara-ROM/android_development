@@ -316,6 +316,22 @@ export class DuplicateLayerIds extends UserWarning {
   }
 }
 
+export class RecursiveLayerIds extends UserWarning {
+  constructor(private readonly layerIds: number[]) {
+    super();
+  }
+
+  getDescriptor(): string {
+    return 'recursive layer id';
+  }
+
+  getMessage(): string {
+    const optionalPlural = this.layerIds.length > 1 ? 's' : '';
+    const layerIds = this.layerIds.join(', ');
+    return `Recursive SF layer id${optionalPlural} ${layerIds} found - same value set for id and parent, so omitted from the hierarchy`;
+  }
+}
+
 export class MonotonicScreenRecording extends UserWarning {
   getDescriptor(): string {
     return 'monotonic screen recording';

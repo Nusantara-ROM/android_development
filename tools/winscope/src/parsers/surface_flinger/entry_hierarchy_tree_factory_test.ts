@@ -17,7 +17,11 @@
 import {assertDefined} from 'common/assert_utils';
 import {Rect} from 'common/geometry/rect';
 import {Region} from 'common/geometry/region';
-import {DuplicateLayerIds, MissingLayerIds} from 'messaging/user_warnings';
+import {
+  DuplicateLayerIds,
+  MissingLayerIds,
+  RecursiveLayerIds,
+} from 'messaging/user_warnings';
 import {TraceRect} from 'trace/trace_rect';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {QueryResult, RowIterator} from 'trace_processor/query_result';
@@ -162,6 +166,24 @@ describe('EntryHierarchyTreeFactory', () => {
       expect(tree.getChildByName(layerName1)).toBeDefined();
       expect(tree.getChildByName(layerName1 + ' duplicate(1)')).toBeDefined();
       expect(tree.getWarnings()).toEqual([new DuplicateLayerIds([1])]);
+    });
+
+    it('handles recursive layer ids', () => {
+      layersIter.get.withArgs('parent').and.returnValue(1n);
+      let calls = 0;
+      layersIter.next.and.callFake(() => {
+        if (calls !== 0) {
+          layersIter.valid.and.returnValue(false);
+          return;
+        }
+        calls++;
+        layersIter.get.withArgs('layer_id').and.returnValue(7n);
+        layersIter.get.withArgs('parent').and.returnValue(7n);
+      });
+
+      const tree = makeEntryHierarchyTree();
+      expect(tree.getAllChildren().length).toEqual(0);
+      expect(tree.getWarnings()).toEqual([new RecursiveLayerIds([1, 7])]);
     });
   });
 
