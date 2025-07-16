@@ -21,7 +21,11 @@ import {
   assertString,
 } from 'common/assert_utils';
 import {UserWarning} from 'messaging/user_warning';
-import {DuplicateLayerIds, MissingLayerIds} from 'messaging/user_warnings';
+import {
+  DuplicateLayerIds,
+  MissingLayerIds,
+  RecursiveLayerIds,
+} from 'messaging/user_warnings';
 import {AddDefaults} from 'parsers/operations/add_defaults';
 import {SetFormatters} from 'parsers/operations/set_formatters';
 import {TranslateIntDef} from 'parsers/operations/translate_intdef';
@@ -180,6 +184,8 @@ export class EntryHierarchyTreeFactory {
   } {
     const processed = new Map<number, number>();
     let missingLayerIds = false;
+    const recursiveIds: number[] = [];
+
     const layers: PropertiesProvider[] = [];
     const rects = new Map<bigint, LayerRects>();
     let prevUniqueRowId: bigint | undefined;
@@ -192,7 +198,13 @@ export class EntryHierarchyTreeFactory {
         missingLayerIds = true;
         continue;
       }
+
       const layerId = Number(layerIdBigint);
+
+      if (layerIdBigint === it.get('parent')) {
+        recursiveIds.push(layerId);
+        continue;
+      }
 
       const uniqueRowId = assertBigInt(it.get('id'));
       if (prevUniqueRowId !== undefined && uniqueRowId === prevUniqueRowId) {
@@ -236,6 +248,9 @@ export class EntryHierarchyTreeFactory {
     );
     if (duplicateIds.length > 0) {
       warnings.push(new DuplicateLayerIds(duplicateIds));
+    }
+    if (recursiveIds.length > 0) {
+      warnings.push(new RecursiveLayerIds(recursiveIds));
     }
 
     return {layers, rects, warnings};
