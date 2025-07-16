@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import {assertBigInt, assertString} from 'common/assert_utils';
+import {
+  assertBigIntOrUndefined,
+  assertStringOrUndefined,
+} from 'common/assert_utils';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {queryVsyncId} from 'parsers/perfetto/utils';
 import {EntryHierarchyTreeFactory} from 'parsers/surface_flinger/entry_hierarchy_tree_factory';
@@ -67,9 +70,13 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
         const result: CustomQueryParserResultTypeMap[CustomQueryType.SF_LAYERS_ID_AND_NAME] =
           [];
         for (const it = queryResult.iter({}); it.valid(); it.next()) {
-          const id = Number(assertBigInt(it.get('layer_id')));
-          const name = assertString(it.get('layer_name'));
-          result.push({id, name});
+          const id = assertBigIntOrUndefined(it.get('layer_id') ?? undefined);
+          const name = assertStringOrUndefined(
+            it.get('layer_name') ?? undefined,
+          );
+          if (id !== undefined && name !== undefined) {
+            result.push({id: Number(id), name});
+          }
         }
         return result;
       })
