@@ -438,20 +438,17 @@ export class Canvas {
   }
 
   private getAdjustedCornerRadii(rect: UiRect3D): CornerRadii {
-    const cornerRadii = new CornerRadii(0, 0, 0, 0);
-    if (rect.cornerRadii) {
-      // Limit corner radius if larger than height/2 or width/2
-      const height = rect.bottomRight.y - rect.topLeft.y;
-      const width = rect.bottomRight.x - rect.topLeft.x;
-      const limit = Math.min(height, width) / 2;
+    // Limit corner radius if larger than height/2 or width/2
+    const height = rect.bottomRight.y - rect.topLeft.y;
+    const width = rect.bottomRight.x - rect.topLeft.x;
+    const limit = Math.min(height, width) / 2;
 
-      cornerRadii.tl = this.adjustCornerRadius(rect.cornerRadii.tl, limit);
-      cornerRadii.tr = this.adjustCornerRadius(rect.cornerRadii.tr, limit);
-      cornerRadii.bl = this.adjustCornerRadius(rect.cornerRadii.bl, limit);
-      cornerRadii.br = this.adjustCornerRadius(rect.cornerRadii.br, limit);
-    }
-
-    return cornerRadii;
+    return new CornerRadii(
+      this.adjustCornerRadius(rect.cornerRadii?.tl ?? 0, limit),
+      this.adjustCornerRadius(rect.cornerRadii?.tr ?? 0, limit),
+      this.adjustCornerRadius(rect.cornerRadii?.bl ?? 0, limit),
+      this.adjustCornerRadius(rect.cornerRadii?.br ?? 0, limit),
+    );
   }
 
   private adjustCornerRadius(radius: number, limit: number): number {
