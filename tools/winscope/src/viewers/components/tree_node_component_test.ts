@@ -119,6 +119,34 @@ describe('TreeNodeComponent', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
+  it('can collapse a tree if node is selected', () => {
+    const treeNodeComponent = assertDefined(component.treeNodeComponent);
+    treeNodeComponent.showChevron = jasmine.createSpy().and.returnValue(true);
+    dom.detectChanges();
+    component.isSelected = false;
+    dom.detectChanges();
+    component.isSelected = true;
+    dom.detectChanges();
+    const spy = spyOn(treeNodeComponent.toggleTreeChange, 'emit');
+    dom.findAndClick('.toggle-tree-btn');
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('can expand a tree only once on change', () => {
+    const spy = spyOn(
+      assertDefined(component.treeNodeComponent).expandTreeChange,
+      'emit',
+    );
+    component.isSelected = false;
+    component.isExpanded = true;
+    dom.detectChanges();
+    component.isSelected = true;
+    dom.detectChanges();
+    component.isExpanded = false;
+    dom.detectChanges();
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
   it('assigns diff css classes to expand tree button', () => {
     const expandButton = dom.get('.expand-tree-btn');
     expandButton.checkClassNameExact('icon-button expand-tree-btn');

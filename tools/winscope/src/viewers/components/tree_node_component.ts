@@ -20,6 +20,7 @@ import {
   Inject,
   Input,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import {assertDefined} from 'common/assert_utils';
 import {DiffType} from 'viewers/common/diff_type';
@@ -122,10 +123,11 @@ export class TreeNodeComponent {
     this.treeWrapper = this.getTreeWrapper();
   }
 
-  ngOnChanges() {
-    if (!this.isInPinnedSection && this.isSelected) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (!this.isInPinnedSection && changes['isSelected']?.currentValue) {
       this.expandTreeChange.emit();
     }
+
     this.collapseDiffClass = this.updateCollapseDiffClass();
     if (!this.isInPinnedSection && this.isSelected && !this.isNodeInView()) {
       this.el.scrollIntoView({block: 'center', inline: 'nearest'});
