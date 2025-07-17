@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalAnimatableApi::class)
-
 package com.android.mechanics.demo.presentation
 
-import androidx.compose.animation.core.ExperimentalAnimatableApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -50,12 +47,12 @@ import androidx.compose.ui.unit.dp
 import com.android.mechanics.debug.debugMotionValue
 import com.android.mechanics.demo.presentation.MagneticDetachWithOverdragDemo.TargetValue
 import com.android.mechanics.demo.presentation.MagneticDetachWithOverdragDemo.inputRange
-import com.android.mechanics.demo.staging.rememberDistanceGestureContext
-import com.android.mechanics.demo.staging.rememberMotionValue
 import com.android.mechanics.demo.tuneable.Demo
 import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.effects.MagneticDetach
 import com.android.mechanics.effects.Overdrag
+import com.android.mechanics.rememberDistanceGestureContext
+import com.android.mechanics.rememberMotionValue
 import com.android.mechanics.spec.InputDirection
 import com.android.mechanics.spec.SemanticKey
 import com.android.mechanics.spec.builder.MotionBuilderContext
