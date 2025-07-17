@@ -15,7 +15,7 @@
  */
 
 import {Inject, Injectable, NgZone} from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {assertDefined} from 'common/assert_utils';
 import {NotificationType, UserNotification} from 'messaging/user_notification';
 import {SnackBarComponent} from './snack_bar_component';

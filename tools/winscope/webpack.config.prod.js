@@ -17,7 +17,6 @@ const {merge} = require('webpack-merge');
 const configCommon = require('./webpack.config.common');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
 const configProd = {
   mode: 'production',
@@ -61,9 +60,7 @@ const configProd = {
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       inject: 'body',
-      inlineSource: '.(css|js)$',
     }),
-    new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
   ],
 };
 

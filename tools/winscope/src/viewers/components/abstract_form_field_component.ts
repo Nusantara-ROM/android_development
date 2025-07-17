@@ -15,7 +15,7 @@
  */
 
 import {Input} from '@angular/core';
-import {MatFormField} from '@angular/material/form-field';
+import {MatLegacyFormField as MatFormField} from '@angular/material/legacy-form-field';
 import {isElementOverflowing} from 'common/dom_utils';
 
 export abstract class AbstractFormFieldComponent {

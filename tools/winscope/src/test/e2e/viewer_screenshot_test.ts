@@ -63,11 +63,11 @@ describe('Viewer Screenshot', () => {
     expect(await overlayTitle.getText()).toEqual('screenshot');
 
     const selectTrigger = element(
-      by.css(`${viewerSelector} .mat-select-trigger`),
+      by.css(`${viewerSelector} .mat-mdc-select-trigger`),
     );
     expect(await selectTrigger.isPresent()).toBeTruthy();
     await selectTrigger.click();
-    const option2 = element.all(by.css('.mat-option')).last();
+    const option2 = element.all(by.css('.mat-mdc-option')).last();
     await option2.click();
 
     expect(await img.isPresent()).toBeTruthy();

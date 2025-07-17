@@ -388,7 +388,7 @@ describe('TimelineComponent', () => {
     loadAllTraces(component, dom, false);
     await dom.openMatSelect();
 
-    const matOptions = dom.getMatSelectPanel().findAll('mat-option'); // [WM, SF, SR, ProtoLog, VC]
+    const matOptions = dom.getMatSelectPanel().findAll('.mat-mdc-option'); // [WM, SF, SR, ProtoLog, VC]
 
     for (const i of [0, 2, 4]) {
       expect(matOptions[i].getHTMLElement().ariaDisabled).toEqual('false');

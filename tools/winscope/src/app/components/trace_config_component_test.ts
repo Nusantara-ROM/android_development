@@ -17,14 +17,14 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import {CommonModule} from '@angular/common';
 import {TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDividerModule} from '@angular/material/divider';
-import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
+import {MatLegacyCheckboxModule as MatCheckboxModule} from '@angular/material/legacy-checkbox';
+import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
+import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
+import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
+import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
@@ -172,12 +172,10 @@ describe('TraceConfigComponent', () => {
 
     box.checkText(traceKey);
     expect(inputElement.checked).toBeTrue();
-    expect(inputElement.ariaChecked).toEqual('true');
     expect(config[traceKey].config.enabled).toBeTrue();
 
     input.click();
     expect(inputElement.checked).toBeFalse();
-    expect(inputElement.ariaChecked).toEqual('false');
     expect(config[traceKey].config.enabled).toBeFalse();
     expect(configChangeSpy).toHaveBeenCalledTimes(1);
   });
@@ -193,12 +191,10 @@ describe('TraceConfigComponent', () => {
 
     box.checkText(traceKey);
     expect(inputElement.checked).toBeFalse();
-    expect(inputElement.ariaChecked).toEqual('false');
     expect(config[traceKey].config.enabled).toBeFalse();
 
     input.click();
     expect(inputElement.checked).toBeTrue();
-    expect(inputElement.ariaChecked).toEqual('true');
     expect(config[traceKey].config.enabled).toBeTrue();
     expect(configChangeSpy).toHaveBeenCalledTimes(1);
   });
@@ -237,14 +233,12 @@ describe('TraceConfigComponent', () => {
     ).checkboxConfigs[0].enabled = false;
     await detectNgModelChanges();
     expect(inputElement.checked).toBeFalse();
-    expect(inputElement.ariaChecked).toEqual('false');
 
     assertDefined(
       assertDefined(component.traceConfig)[layersTraceKey].config,
     ).checkboxConfigs[0].enabled = true;
     await detectNgModelChanges();
     expect(inputElement.checked).toBeTrue();
-    expect(inputElement.ariaChecked).toEqual('true');
   });
 
   it('changing checkbox config by DOM interaction emits event', async () => {

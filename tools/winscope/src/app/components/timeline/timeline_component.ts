@@ -183,7 +183,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
               </div>
             </div>
             <div id="trace-selector">
-              <mat-form-field appearance="none">
+              <mat-form-field>
                 <mat-select #traceSelector [formControl]="selectedTracesFormControl" multiple>
                   <div class="select-traces-panel">
                     <div class="tip">Filter traces in the timeline</div>

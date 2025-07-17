@@ -15,7 +15,10 @@
  */
 
 import {Component, ElementRef, Inject} from '@angular/core';
-import {MatSnackBarRef, MAT_SNACK_BAR_DATA} from '@angular/material/snack-bar';
+import {
+  MAT_LEGACY_SNACK_BAR_DATA as MAT_SNACK_BAR_DATA,
+  MatLegacySnackBarRef as MatSnackBarRef,
+} from '@angular/material/legacy-snack-bar';
 
 @Component({
   selector: 'snack-bar',

@@ -24,8 +24,8 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {MatSelectChange} from '@angular/material/select';
+import {MatLegacyDialog as MatDialog} from '@angular/material/legacy-dialog';
+import {MatLegacySelectChange as MatSelectChange} from '@angular/material/legacy-select';
 import {equal} from 'common/array_utils';
 import {
   assertDefined,

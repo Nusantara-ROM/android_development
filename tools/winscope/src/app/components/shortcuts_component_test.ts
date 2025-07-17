@@ -15,8 +15,8 @@
  */
 import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
-import {MatDialogModule} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
+import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {ShortcutsComponent} from './shortcuts_component';
 

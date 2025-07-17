@@ -15,10 +15,10 @@
  */
 import {Component} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
-import {MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
+import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
 import {ImeAdditionalProperties} from 'viewers/common/ime_additional_properties';

@@ -30,7 +30,7 @@ import {
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
 import {CanColor} from '@angular/material/core';
 import {MatIconRegistry} from '@angular/material/icon';
-import {MatSelectChange} from '@angular/material/select';
+import {MatLegacySelectChange as MatSelectChange} from '@angular/material/legacy-select';
 import {DomSanitizer} from '@angular/platform-browser';
 import {assertDefined} from 'common/assert_utils';
 import {Distance} from 'common/geometry/distance';

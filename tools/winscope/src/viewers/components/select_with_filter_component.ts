@@ -20,8 +20,11 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import {MatOption} from '@angular/material/core';
-import {MatSelect, MatSelectChange} from '@angular/material/select';
+import {MatLegacyOption as MatOption} from '@angular/material/legacy-core';
+import {
+  MatLegacySelect as MatSelect,
+  MatLegacySelectChange as MatSelectChange,
+} from '@angular/material/legacy-select';
 import {AbstractSelectComponent} from './abstract_select_component';
 
 @Component({

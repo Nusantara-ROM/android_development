@@ -17,15 +17,15 @@
 import {CommonModule} from '@angular/common';
 import {Component, ViewChild} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
-import {MatButtonModule} from '@angular/material/button';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatDividerModule} from '@angular/material/divider';
-import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatIconTestingModule} from '@angular/material/icon/testing';
-import {MatSelectModule} from '@angular/material/select';
-import {MatSliderModule} from '@angular/material/slider';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
+import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
+import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
+import {MatLegacySliderModule as MatSliderModule} from '@angular/material/legacy-slider';
+import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {Box3D} from 'common/geometry/box3d';
@@ -232,7 +232,7 @@ describe('RectsComponent', () => {
     dom.openMatSelect();
     const [display0, display1] = dom
       .getMatSelectPanel()
-      .findAll('.mat-option .option-only-button');
+      .findAll('mat-option .option-only-button');
 
     // no change
     display0.click();
@@ -1070,7 +1070,7 @@ describe('RectsComponent', () => {
   }
 
   function getDisplayOptions() {
-    return dom.getMatSelectPanel().findAll('.mat-option');
+    return dom.getMatSelectPanel().findAll('mat-option');
   }
 
   function checkAllSpiesCalled(times: number) {

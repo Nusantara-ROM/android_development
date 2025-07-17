@@ -40,7 +40,7 @@ app-root {
     user-select: auto !important;
 }
 
-.mat-option, .mat-option-text {
+.mat-mdc-option, .mat-mdc-option-text {
     user-select: none;
 }
 

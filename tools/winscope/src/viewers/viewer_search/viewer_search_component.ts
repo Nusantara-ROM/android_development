@@ -26,7 +26,7 @@ import {
   ViewChildren,
 } from '@angular/core';
 import {FormControl, ValidationErrors, Validators} from '@angular/forms';
-import {MatTabGroup} from '@angular/material/tabs';
+import {MatLegacyTabGroup as MatTabGroup} from '@angular/material/legacy-tabs';
 import {SEARCH_VIEWS} from 'app/trace_search/trace_search_initializer';
 import {assertDefined} from 'common/assert_utils';
 import {TimeDuration} from 'common/time/time_duration';

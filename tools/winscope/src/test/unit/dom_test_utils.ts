@@ -158,11 +158,17 @@ export class DOMTestHelper<T> {
   }
 
   isMatSelectOpen(): boolean {
-    return this.findInDocument('.mat-select-panel') !== undefined;
+    return (
+      this.findInDocument('.mat-mdc-select-panel') !== undefined ||
+      this.findInDocument('.mat-select-panel') !== undefined
+    );
   }
 
   async openMatSelect() {
-    await this.clickAndWaitStable('.mat-select-trigger');
+    const trigger =
+      this.find('.mat-select-trigger') ?? this.get('.mat-mdc-select-trigger');
+    trigger.click();
+    await trigger.whenStable();
   }
 
   clickMatOption() {
@@ -171,11 +177,17 @@ export class DOMTestHelper<T> {
   }
 
   getMatSelectPanel(): DOMTestHelper<T> {
-    return this.getInDocument('.mat-select-panel');
+    return (
+      this.findInDocument('.mat-select-panel') ??
+      this.getInDocument('.mat-mdc-select-panel')
+    );
   }
 
   findMatTooltipPanel(): DOMTestHelper<T> | undefined {
-    return this.findInDocument('.mat-tooltip-panel');
+    return (
+      this.findInDocument('.mat-tooltip-panel') ??
+      this.findInDocument('.mat-mdc-tooltip-panel')
+    );
   }
 
   getSnackBar(): DOMTestHelper<T> {

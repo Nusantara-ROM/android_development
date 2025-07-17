@@ -37,7 +37,7 @@ $light-theme: mat.define-light-theme((
    warn: $warn,
  ),
  density: 0,
- typography: null, // Set typography on mat.core() only, to avoid duplicates.
+ typography: $typography,
 ));
 
 $dark-theme: mat.define-dark-theme((
@@ -45,18 +45,21 @@ $dark-theme: mat.define-dark-theme((
     primary: $dark-primary,
     accent: $dark-accent,
     warn: $warn,
-  )
+  ),
+  typography: $typography,
 ));
 
 @mixin background-color($theme, $contrast-theme) {
   $config: mat.get-color-config($theme);
   $background: map.get($config, background);
-
   $contrast-config: mat.get-color-config($contrast-theme);
   $contrast-background: map.get($contrast-config, background);
   & {
     --background-color: #{mat.get-color-from-palette($background, background)};
-    --contrast-background-color: #{mat.get-color-from-palette($contrast-background, background)};
+    --contrast-background-color: #{mat.get-color-from-palette(
+        $contrast-background,
+        background
+      )};
   }
 }
 
@@ -77,14 +80,13 @@ $dark-theme: mat.define-dark-theme((
   }
 }
 
-@include mat.core($typography);
+@include mat.core();
 @include mat.all-component-themes($light-theme);
 
+
 body:not(.dark-mode) {
-  --added-element-color: #D8EAC5;
-  @include background-color($light-theme, $dark-theme);
+  --added-element-color: #466b20;
   --blue-text-color: #{map.get(mat.$indigo-palette, A200)};
-  @include border-color($light-theme);
   --card-title-background-color: #f1f1f1;
   --contrast-text-color: white;
   --current-element-color: #7b9ccc;
@@ -93,7 +95,6 @@ body:not(.dark-mode) {
   --disabled-color: rgba(0, 0, 0, 0.12);
   --drawer-block-primary: #EEEFF0;
   --drawer-block-secondary: #DDDDDD;
-  --drawer-color: var(--background-color);
   --gray-text-color: #7f7f7f;
   --green-text-color: #4e9c00;
   --hover-element-color: #eaeaea;
@@ -113,14 +114,18 @@ body:not(.dark-mode) {
   --error-background-color: #ffdada;
   --error-color: #d93025;
   --icon-accent-color: #d9d9d9;
+
+  @include background-color($light-theme, $dark-theme);
+  @include border-color($light-theme);
+
+  & {
+    --drawer-color: var(--background-color);
+  }
 }
 
 body.dark-mode {
-  @include mat.all-component-colors($dark-theme);
   --added-element-color: #6D8358;
-  @include background-color($dark-theme, $light-theme);
   --blue-text-color: #b8e3fd;
-  @include border-color($dark-theme);
   --card-title-background-color: #343434;
   --contrast-text-color: rgba(0, 0, 0, 0.87);
   --current-element-color: #365179;
@@ -129,7 +134,6 @@ body.dark-mode {
   --disabled-color: rgba(255, 255, 255, 0.12);
   --drawer-block-primary: #696563;
   --drawer-block-secondary: #5e5b5a;
-  @include drawer-color($dark-theme);
   --gray-text-color: #aeaeae;
   --green-text-color: #6ad400;
   --hover-element-color: #656565;
@@ -148,4 +152,9 @@ body.dark-mode {
   --error-background-color: #FFDADA80;
   --error-color: #f6aea9;
   --icon-accent-color: #969696;
+
+  @include mat.all-component-colors($dark-theme);
+  @include background-color($dark-theme, $light-theme);
+  @include border-color($dark-theme);
+  @include drawer-color($dark-theme);
 }
