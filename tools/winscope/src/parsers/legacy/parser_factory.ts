@@ -38,7 +38,7 @@ import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
 import {TraceMetadata} from 'trace/trace_metadata';
 
-interface ProcessedFiles {
+export interface ProcessedFiles {
   parsers: FileAndParser[];
   unsupportedFiles: TraceFile[];
 }

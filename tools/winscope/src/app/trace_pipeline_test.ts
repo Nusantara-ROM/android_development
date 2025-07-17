@@ -54,7 +54,8 @@ describe('TracePipeline', () => {
   let brCodenameFile: File;
   let brSfFile: File;
   let jpgFile: File;
-  let perfettoFile: File;
+  let perfettoFileProtolog: File;
+  let perfettoFileTransactions: File;
   let elapsedFile: File;
 
   let progressListener: ProgressListenerStub;
@@ -92,9 +93,11 @@ describe('TracePipeline', () => {
       'FS/data/misc/wmtrace/surface_flinger.bp',
     );
     jpgFile = await getFixtureFile('invalid_files/winscope_homepage.jpg');
-    perfettoFile = await getFixtureFile(
+    perfettoFileProtolog = await getFixtureFile(
       'traces/perfetto/protolog.perfetto-trace',
-      'traces/perfetto/protolog',
+    );
+    perfettoFileTransactions = await getFixtureFile(
+      'traces/perfetto/transactions_trace.perfetto-trace',
     );
     elapsedFile = await getFixtureFile(
       'traces/elapsed_timestamp/SurfaceFlinger.pb',
@@ -275,17 +278,24 @@ describe('TracePipeline', () => {
     ]);
   });
 
+  it('notifies for unsupported file uploaded with file', async () => {
+    await loadFiles([jpgFile, perfettoFileProtolog]);
+    await expectLoadResult(1, [
+      new UnsupportedFileFormat('winscope_homepage.jpg'),
+    ]);
+  });
+
   it('notifies for unsupported file uploaded before valid file', async () => {
-    const invalidFiles = [jpgFile, perfettoFile];
-    await loadFiles(invalidFiles);
+    await loadFiles([jpgFile]);
+    await loadFiles([perfettoFileProtolog]);
     await expectLoadResult(1, [
       new UnsupportedFileFormat('winscope_homepage.jpg'),
     ]);
   });
 
   it('notifies for unsupported file uploaded after valid file', async () => {
-    const invalidFiles = [perfettoFile, jpgFile];
-    await loadFiles(invalidFiles);
+    await loadFiles([perfettoFileProtolog]);
+    await loadFiles([jpgFile]);
     await expectLoadResult(1, [
       new UnsupportedFileFormat('winscope_homepage.jpg'),
     ]);
@@ -304,7 +314,7 @@ describe('TracePipeline', () => {
   });
 
   it('surfaces information about packet loss', async () => {
-    await loadFiles([perfettoFile]);
+    await loadFiles([perfettoFileProtolog]);
     expect(tracePipeline.lostPackets()).toEqual(0);
 
     const queryResultObj = jasmine.createSpyObj<QueryResult>('result', [
@@ -327,15 +337,15 @@ describe('TracePipeline', () => {
           "WHERE name = 'traced_buf_trace_writer_packet_loss'",
       )
       .and.returnValue(Promise.resolve(queryResultObj));
-    await loadFiles([perfettoFile]);
+    await loadFiles([perfettoFileProtolog]);
     expect(tracePipeline.lostPackets()).toEqual(2);
 
     queryResultObj.numRows.and.returnValue(0);
-    await loadFiles([perfettoFile]); // clears lost packets from previous load on overwrite
+    await loadFiles([perfettoFileProtolog]); // clears lost packets from previous load on overwrite
     expect(tracePipeline.lostPackets()).toEqual(0);
 
     queryResultObj.numRows.and.returnValue(1);
-    await loadFiles([perfettoFile]);
+    await loadFiles([perfettoFileProtolog]);
     expect(tracePipeline.lostPackets()).toEqual(2);
     tracePipeline.clear(); // resets lost packets on explicit clear call
     expect(tracePipeline.lostPackets()).toEqual(0);
@@ -487,10 +497,7 @@ describe('TracePipeline', () => {
   });
 
   it('creates zip archive with loaded trace files', async () => {
-    const files = [
-      screenRecordingFile,
-      await getFixtureFile('traces/perfetto/transactions_trace.perfetto-trace'),
-    ];
+    const files = [screenRecordingFile, perfettoFileTransactions];
     await loadFiles(files);
     await expectLoadResult(2, []);
 
@@ -520,7 +527,7 @@ describe('TracePipeline', () => {
   });
 
   it('tries to create search trace', async () => {
-    await loadFiles([perfettoFile]);
+    await loadFiles([perfettoFileProtolog]);
     const validQuery = 'select ts from protolog';
     expect(await tracePipeline.tryCreateSearchTrace(validQuery)).toBeDefined();
     expect(await tracePipeline.tryCreateSearchTrace('fail')).toBeUndefined();
@@ -603,13 +610,13 @@ describe('TracePipeline', () => {
     });
 
     it('with perfetto parser loaded', async () => {
-      await loadFiles([perfettoFile]);
+      await loadFiles([perfettoFileProtolog]);
       const parserPerfetto = getParser(TraceType.PROTO_LOG);
       await tracePipeline.convertLegacyTracesToPerfetto();
       expect(converterSpy).toHaveBeenCalledOnceWith(
         [parserSf],
         [parserSf, parserPerfetto],
-        new TraceFile(perfettoFile),
+        new TraceFile(perfettoFileProtolog),
       );
       expect(tracePipeline.getTraces().getSize()).toEqual(2);
       checkSfTraceIsPerfetto();
