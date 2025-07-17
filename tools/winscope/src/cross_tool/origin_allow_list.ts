@@ -26,7 +26,8 @@ export class OriginAllowList {
   private static readonly ALLOW_LIST_DEV = [
     ...OriginAllowList.ALLOW_LIST_PROD,
     new RegExp('^(http|https)://localhost:8081$'), // remote tool mock
-    new RegExp('^https://localhost([^\\/]*\\.)*google\\.com:(\\d+)?$'), // local apps
+    new RegExp('^https://localhost([^\\/]*\\.)*google\\.com(:\\d+)?$'), // local apps
+    new RegExp('^https://.*\\.proxy\\.googlers\\.com(:\\d+)?$'), // local apps
   ];
 
   private static readonly EXPECTED_DENY_LIST_DEV = [
