@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {MatLegacyOption as MatOption} from '@angular/material/legacy-core';
-import {MatLegacySelect as MatSelect} from '@angular/material/legacy-select';
+import {MatOption} from '@angular/material/core';
+import {MatSelect} from '@angular/material/select';
 import {KeyboardEventCode} from 'common/dom_utils';
 import {AbstractFormFieldComponent} from './abstract_form_field_component';
 

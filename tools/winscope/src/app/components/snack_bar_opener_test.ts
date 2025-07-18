@@ -17,10 +17,7 @@
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {Overlay} from '@angular/cdk/overlay';
 import {TestBed} from '@angular/core/testing';
-import {
-  MatLegacySnackBar as MatSnackBar,
-  MatLegacySnackBarRef as MatSnackBarRef,
-} from '@angular/material/legacy-snack-bar';
+import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
   FailedToInitializeTimelineData,

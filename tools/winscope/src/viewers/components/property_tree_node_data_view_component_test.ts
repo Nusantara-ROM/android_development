@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {ComponentFixtureAutoDetect, TestBed} from '@angular/core/testing';
-import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
+import {MatButtonModule} from '@angular/material/button';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';

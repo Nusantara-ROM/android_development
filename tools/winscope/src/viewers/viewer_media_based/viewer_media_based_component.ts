@@ -23,7 +23,7 @@ import {
   NgZone,
   SimpleChanges,
 } from '@angular/core';
-import {MatLegacySelectChange as MatSelectChange} from '@angular/material/legacy-select';
+import {MatSelectChange} from '@angular/material/select';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {assertDefined} from 'common/assert_utils';
 import {Size} from 'common/geometry/size';

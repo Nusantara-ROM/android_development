@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Inject} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
-import {MatIconModule} from '@angular/material/icon';
-import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
-import {MatLegacyCheckboxModule as MatCheckboxModule} from '@angular/material/legacy-checkbox';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {
-  MatLegacyDialog as MatDialog,
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import {MatIconModule} from '@angular/material/icon';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {
@@ -45,7 +46,10 @@ describe('WarningDialogComponent', () => {
         BrowserAnimationsModule,
       ],
       declarations: [TestHostComponent, WarningDialogComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {provide: MatDialogRef, useValue: {}},
+        {provide: MAT_DIALOG_DATA, useValue: {}},
+      ],
     }).compileComponents();
     const fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;

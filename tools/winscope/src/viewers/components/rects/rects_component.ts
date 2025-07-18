@@ -30,7 +30,7 @@ import {
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
 import {CanColor} from '@angular/material/core';
 import {MatIconRegistry} from '@angular/material/icon';
-import {MatLegacySelectChange as MatSelectChange} from '@angular/material/legacy-select';
+import {MatSelectChange} from '@angular/material/select';
 import {DomSanitizer} from '@angular/platform-browser';
 import {assertDefined} from 'common/assert_utils';
 import {Distance} from 'common/geometry/distance';
@@ -86,16 +86,20 @@ import {ShadingMode} from './shading_mode';
               (mouseleave)="onInteractionEnd([rotationSlider, rotationSliderIcon])" #rotationSliderIcon> rotate_90_degrees_ccw </mat-icon>
             <mat-slider
               class="slider-rotation"
-              step="0.02"
-              min="0"
-              max="1"
               aria-label="units"
-              [value]="largeRectsMapper3d.getCameraRotationFactor()"
-              (input)="onRotationSliderChange($event.value)"
-              (focus)="$event.target.blur()"
               color="accent"
+              [step]="0.02"
+              [min]="0"
+              [max]="1"
               (mousedown)="onInteractionStart([rotationSlider, rotationSliderIcon])"
-              (mouseup)="onInteractionEnd([rotationSlider, rotationSliderIcon])" #rotationSlider></mat-slider>
+              (mouseup)="onInteractionEnd([rotationSlider, rotationSliderIcon])"
+              #rotationSlider>
+              <input
+                [value]="largeRectsMapper3d.getCameraRotationFactor()"
+                (input)="onRotationSliderChange($event.target.value)"
+                (focus)="$event.target.blur()"
+                matSliderThumb>
+            </mat-slider>
             <mat-icon
               color="accent"
               matTooltip="Spacing"
@@ -104,16 +108,20 @@ import {ShadingMode} from './shading_mode';
               (mouseleave)="onInteractionEnd([spacingSlider, spacingSliderIcon])" #spacingSliderIcon> format_letter_spacing </mat-icon>
             <mat-slider
               class="slider-spacing"
-              step="0.02"
-              min="0.02"
-              max="1"
               aria-label="units"
-              [value]="getZSpacingFactor()"
-              (input)="onSeparationSliderChange($event.value)"
-              (focus)="$event.target.blur()"
               color="accent"
+              [step]="0.02"
+              [min]="0.02"
+              [max]="1"
               (mousedown)="onInteractionStart([spacingSlider, spacingSliderIcon])"
-              (mouseup)="onInteractionEnd([spacingSlider, spacingSliderIcon])" #spacingSlider></mat-slider>
+              (mouseup)="onInteractionEnd([spacingSlider, spacingSliderIcon])"
+              #spacingSlider>
+              <input
+                [value]="getZSpacingFactor()"
+                (input)="onSeparationSliderChange($event.target.value)"
+                (focus)="$event.target.blur()"
+                matSliderThumb>
+            </mat-slider>
           </div>
 
           <div class="icon-divider"></div>
@@ -175,7 +183,7 @@ import {ShadingMode} from './shading_mode';
             </mat-button-toggle>
           </mat-button-toggle-group>
           <span class="mat-body-1">{{groupLabel}}:</span>
-          <mat-form-field appearance="none" class="displays-select">
+          <mat-form-field appearance="fill" class="displays-select">
             <mat-select
               #displaySelect
               disableOptionCentering
@@ -442,7 +450,7 @@ export class RectsComponent implements OnInit, OnDestroy {
   private internalDisplays: DisplayIdentifier[] = [];
   private internalHighlightedItem = '';
   private currentDisplays: DisplayIdentifier[] = [];
-  private largeRectsMapper3d = new Mapper3D();
+  largeRectsMapper3d = new Mapper3D();
   private miniRectsMapper3d = new Mapper3D();
   private largeRectsCanvas?: Canvas;
   private miniRectsCanvas?: Canvas;

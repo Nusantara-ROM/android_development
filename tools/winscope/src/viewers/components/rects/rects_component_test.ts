@@ -17,15 +17,15 @@
 import {CommonModule} from '@angular/common';
 import {Component, ViewChild} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
+import {MatButtonModule} from '@angular/material/button';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatIconTestingModule} from '@angular/material/icon/testing';
-import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
-import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
-import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
-import {MatLegacySliderModule as MatSliderModule} from '@angular/material/legacy-slider';
-import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {Box3D} from 'common/geometry/box3d';
@@ -112,18 +112,22 @@ describe('RectsComponent', () => {
   });
 
   it('can be created', () => {
+    dom.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('renders rotation slider', () => {
+    dom.detectChanges();
     expect(dom.find('mat-slider.slider-rotation')).toBeDefined();
   });
 
   it('renders separation slider', () => {
+    dom.detectChanges();
     expect(dom.find('mat-slider.slider-spacing')).toBeDefined();
   });
 
   it('renders canvas', () => {
+    dom.detectChanges();
     expect(dom.find(largeRectsCanvasSelector)).toBeDefined();
   });
 
@@ -151,10 +155,11 @@ describe('RectsComponent', () => {
   it('draws scene when rotation slider changes', () => {
     dom.detectChanges();
     resetSpies();
-    const slider = dom.get('.slider-rotation');
+    const sliderInput = dom.get('.slider-rotation input');
+    sliderInput.updateValue('0.5');
 
     checkAllSpiesCalled(0);
-    slider.dispatchEvent(new MouseEvent('mousedown'));
+    sliderInput.dispatchEvent(new Event('input'));
     expect(updateViewPositionSpy).toHaveBeenCalledTimes(1);
     expect(updateRectsSpy).toHaveBeenCalledTimes(0);
     expect(updateLabelsSpy).toHaveBeenCalledTimes(1);
@@ -164,17 +169,18 @@ describe('RectsComponent', () => {
   it('draws scene when spacing slider changes', () => {
     dom.detectChanges();
     resetSpies();
-    const slider = dom.get('.slider-spacing');
+    const sliderInput = dom.get('.slider-spacing input');
+    sliderInput.updateValue('0.5');
 
     checkAllSpiesCalled(0);
-    slider.dispatchEvent(new MouseEvent('mousedown'));
+    sliderInput.dispatchEvent(new Event('input'));
     checkAllSpiesCalled(1);
   });
 
   it('unfocuses spacing slider on click', () => {
     dom.detectChanges();
     const spacingSlider = dom.get('.slider-spacing');
-    checkSliderUnfocusesOnClick(spacingSlider, 0.02);
+    checkSliderUnfocusesOnClick(spacingSlider, 1);
   });
 
   it('unfocuses rotation slider on click', () => {
@@ -916,7 +922,7 @@ describe('RectsComponent', () => {
 
     const wrapperEl = optionsWrapper.getHTMLElement();
     wrapperEl.style.width = wrapperEl.clientWidth / 2 + 'px';
-    dom.detectChanges(); // halve wrapper width so options no longer all fit
+    dom.detectChanges(); // halve wrapper width so options no longer all it
     const expandButton = legendEl.get('.rect-legend-expand-button');
     expandButton.checkTextExact('more_horiz');
     expandButton.click();
@@ -930,7 +936,7 @@ describe('RectsComponent', () => {
     expandButton.click(); // click again to show expanded view
 
     wrapperEl.style.width = '';
-    dom.detectChanges(); // button disappears now that options all fit in available space
+    dom.detectChanges(); // button disappears now that options all it in available space
     expect(legendEl.find('.rect-legend-expand-button')).toBeUndefined();
   });
 

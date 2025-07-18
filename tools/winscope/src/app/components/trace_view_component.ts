@@ -59,7 +59,7 @@ interface Tab {
       </div>
       <div class="header-items-wrapper">
         <div class="trace-tabs-wrapper header-items-wrapper">
-          <nav mat-tab-nav-bar class="tabs-navigation-bar">
+          <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="tabs-navigation-bar">
             <a
                 *ngFor="let tab of tabs; last as isLast"
                 mat-tab-link
@@ -150,6 +150,7 @@ interface Tab {
         </ng-template>
       </div>
       <mat-divider></mat-divider>
+      <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
       <div class="trace-view-content"></div>
   `,
   styles: [
@@ -224,7 +225,7 @@ interface Tab {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        width: 100%:
+        width: 100%;
       }
 
       .existing-preset:hover {

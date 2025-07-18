@@ -4,7 +4,8 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths":{
-      "protos/*": ["../deps_build/protos/*"]
+      "protos/*": ["../deps_build/protos/*"],
+      "android/*": ["../../../frameworks/base/core/proto/*"]
     },
     "outDir": "./dist/out-tsc",
     "allowJs": true,
@@ -27,8 +28,9 @@
       "es2020",
       "dom"
     ],
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
+  "include": ["src"],
   "include": ["src"],
   "exclude": ["src/test/e2e"],
   "angularCompilerOptions": {

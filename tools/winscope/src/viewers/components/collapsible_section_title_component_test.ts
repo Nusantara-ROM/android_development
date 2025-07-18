@@ -15,8 +15,8 @@
  */
 
 import {TestBed} from '@angular/core/testing';
+import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {CollapsibleSectionTitleComponent} from './collapsible_section_title_component';
 

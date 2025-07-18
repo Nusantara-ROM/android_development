@@ -346,6 +346,9 @@ describe('MiniTimelineComponent', () => {
     const miniTimelineComponent = assertDefined(
       component.miniTimelineComponent,
     );
+    spyOnProperty(miniTimelineComponent.getCanvas(), 'width').and.returnValue(
+      1732,
+    );
     const spy = spyOn(miniTimelineComponent.onToggleBookmark, 'emit');
 
     openContextMenu(miniTimelineComponent);
@@ -364,6 +367,9 @@ describe('MiniTimelineComponent', () => {
     dom.detectChanges();
     const miniTimelineComponent = assertDefined(
       component.miniTimelineComponent,
+    );
+    spyOnProperty(miniTimelineComponent.getCanvas(), 'width').and.returnValue(
+      1732,
     );
     const spy = spyOn(miniTimelineComponent.onToggleBookmark, 'emit');
 

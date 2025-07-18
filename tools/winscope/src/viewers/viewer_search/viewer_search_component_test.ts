@@ -20,14 +20,14 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
 import {Component, ViewChild} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
-import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
-import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
-import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
-import {MatLegacyProgressSpinnerModule as MatProgressSpinnerModule} from '@angular/material/legacy-progress-spinner';
-import {MatLegacyTabsModule as MatTabsModule} from '@angular/material/legacy-tabs';
-import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
+import {MatInputModule} from '@angular/material/input';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SEARCH_VIEWS} from 'app/trace_search/trace_search_initializer';
 import {assertDefined} from 'common/assert_utils';
@@ -100,8 +100,9 @@ describe('ViewerSearchComponent', () => {
 
   it('creates global search section with tabs', () => {
     const globalSearch = dom.get('.global-search');
-    const [searchTab, savedTab, recentTab] =
-      globalSearch.findAll('.mat-tab-label');
+    const [searchTab, savedTab, recentTab] = globalSearch.findAll(
+      '.mdc-tab .mdc-tab__text-label',
+    );
     searchTab.checkTextExact('Search');
     savedTab.checkTextExact('Saved');
     recentTab.checkTextExact('Recent');
@@ -232,7 +233,7 @@ describe('ViewerSearchComponent', () => {
     data.currentSearches[0].result = new SearchResult([], []);
     updateInputDataAndDetectChanges(data);
     addCurrentSearchWithResult(testQuery, 2);
-    let resultTabs = dom.findAll('.result-tabs .mat-tab-label');
+    let resultTabs = dom.findAll('.result-tabs .mdc-tab__text-label');
     let activeSections = dom.findAll('active-search');
     expect(activeSections.length).toEqual(2);
     expect(resultTabs.length).toEqual(2);
@@ -249,7 +250,7 @@ describe('ViewerSearchComponent', () => {
     updateInputDataAndDetectChanges(newData);
     await dom.whenStable();
 
-    resultTabs = dom.findAll('.result-tabs .mat-tab-label');
+    resultTabs = dom.findAll('.result-tabs .mdc-tab__text-label');
     activeSections = dom.findAll('active-search');
     expect(resultTabs.length).toEqual(1);
     resultTabs[0].checkTextExact('Query 2');

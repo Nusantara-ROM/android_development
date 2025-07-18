@@ -17,14 +17,14 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import {CommonModule} from '@angular/common';
 import {TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
-import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
-import {MatLegacyCheckboxModule as MatCheckboxModule} from '@angular/material/legacy-checkbox';
-import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
-import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
-import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
-import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
@@ -287,22 +287,20 @@ describe('TraceConfigComponent', () => {
     checkSelectionConfigValue(multSelectKey, []);
   });
 
-  it('stabilizes tooltip position', async () => {
+  it('shows tooltip', async () => {
     const settingsPanel = getAdvancedSettingsPanelForKey(optSelectKey);
     await settingsPanel.openMatSelect();
 
     const panel = dom.getMatSelectPanel();
     const options = panel.findAll('mat-option');
+    const longOption = options[1];
+
+    const longOptionEl = longOption.get('.option-value').getHTMLElement();
+    spyOnProperty(longOptionEl, 'scrollWidth').and.returnValue(
+      longOptionEl.clientWidth * 2,
+    );
 
     await checkTooltips(options, [undefined, options[1].getText()]);
-
-    const longOption = options[1];
-    longOption.dispatchEvent(new Event('mouseenter'));
-    const tooltipPanel = assertDefined(
-      dom.findMatTooltipPanel(),
-    ).getHTMLElement();
-    expect(tooltipPanel.style.top.length).toBeGreaterThan(0);
-    expect(tooltipPanel.style.left.length).toBeGreaterThan(0);
   });
 
   it('disables selection field if no options', async () => {

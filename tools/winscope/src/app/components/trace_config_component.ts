@@ -23,11 +23,8 @@ import {
   NgZone,
   Output,
 } from '@angular/core';
-import {MatLegacyOption as MatOption} from '@angular/material/legacy-core';
-import {
-  MatLegacySelect as MatSelect,
-  MatLegacySelectChange as MatSelectChange,
-} from '@angular/material/legacy-select';
+import {MatOption} from '@angular/material/core';
+import {MatSelect, MatSelectChange} from '@angular/material/select';
 import {overlayPanelStyles} from 'app/styles/overlay_panel.styles';
 import {assertDefined} from 'common/assert_utils';
 import {isElementOverflowing} from 'common/dom_utils';
@@ -149,7 +146,7 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
                             (mouseenter)="onSelectOptionHover($event, option.value)"
                             matTooltipPosition="right"
                             [matTooltip]="option.value"
-                            [matTooltipDisabled]="disableOptionTooltip(option.value, optionEl)">
+                            [matTooltipDisabled]="disableOptionTooltip(optionEl)">
                               <span class="option-with-chip">
                                 <span
                                   class="option-value" #optionEl> {{ option.value }} </span>
@@ -254,7 +251,6 @@ export class TraceConfigComponent extends AbstractSelectComponent<SelectionConfi
     new EventEmitter<TraceConfigurationMap>();
 
   private lastClickedIndex = new Map<string, number>();
-  private stableTooltips = new Set<string>();
 
   constructor(
     @Inject(ChangeDetectorRef) private changeDetectorRef: ChangeDetectorRef,
@@ -307,22 +303,8 @@ export class TraceConfigComponent extends AbstractSelectComponent<SelectionConfi
     return select.multiple ? select.value?.join(', ') : select.value;
   }
 
-  onSelectOptionHover(event: MouseEvent, option: string) {
-    if (this.stableTooltips.has(option)) {
-      return;
-    }
-    this.ngZone.run(() => {
-      (event.target as HTMLElement).dispatchEvent(new Event('mouseleave'));
-      this.stableTooltips.add(option);
-      this.changeDetectorRef.detectChanges();
-      (event.target as HTMLElement).dispatchEvent(new Event('mouseenter'));
-    });
-  }
-
-  disableOptionTooltip(option: string, optionText: HTMLElement): boolean {
-    return (
-      !this.stableTooltips.has(option) || !isElementOverflowing(optionText)
-    );
+  disableOptionTooltip(optionText: HTMLElement): boolean {
+    return !isElementOverflowing(optionText);
   }
 
   onSelectChange(event: MatSelectChange, config: SelectionConfiguration) {

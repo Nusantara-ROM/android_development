@@ -25,7 +25,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import {MatLegacySelectChange as MatSelectChange} from '@angular/material/legacy-select';
+import {MatSelectChange} from '@angular/material/select';
 
 import {
   isElementOverflowing,
@@ -127,7 +127,6 @@ import {
                 [options]="header.filter.options"
                 [outerFilterWidth]="header.filter.outerFilterWidthCss"
                 [innerFilterWidth]="header.filter.innerFilterWidthCss"
-                appearance="none"
                 formFieldClass="no-padding-field"
                 (selectChange)="onFilterChange($event, header)">
             </select-with-filter>
@@ -137,7 +136,6 @@ import {
               [textFilter]="header.filter.textFilter"
               [label]="header.spec.name"
               [filterName]="header.spec.name"
-              appearance="none"
               [formFieldClass]="
                 'wide-field no-padding-field center-field '
                  + header.spec.cssClass
