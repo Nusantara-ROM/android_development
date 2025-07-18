@@ -54,11 +54,11 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
             Launch the Winscope ADB Connect proxy to capture traces directly from your browser.
           </p>
           <p class="mat-body-1">Python 3.10+ and ADB are required. Run this command:</p>
-          <mat-form-field class="proxy-command-form" appearance="outline">
+          <mat-form-field class="proxy-command" appearance="outline">
             <input matInput readonly [value]="proxyCommand" />
             <button
               mat-icon-button
-              matSuffix
+              matIconSuffix
               [cdkCopyToClipboard]="proxyCommand"
               matTooltip="Copy command">
               <mat-icon>content_copy</mat-icon>
@@ -90,11 +90,11 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
           <p class="mat-body-1">
             Please update the proxy to version {{ proxyVersion }}. Run this command:
           </p>
-          <mat-form-field class="proxy-command-container" appearance="outline">
+          <mat-form-field class="proxy-command" appearance="outline">
             <input matInput readonly [value]="proxyCommand" />
             <button
               mat-icon-button
-              matSuffix
+              matIconSuffix
               [cdkCopyToClipboard]="proxyCommand"
               matTooltip="Copy command">
               <mat-icon>content_copy</mat-icon>
@@ -125,7 +125,7 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
           </p>
           <p class="mat-body-1">Enter Winscope proxy token:</p>
           <mat-form-field
-            class="proxy-token-input-field"
+            class="proxy-token-input-field mat-form-field-appearance-none no-bottom-padding-field"
             (keydown.enter)="onKeydownEnterProxyTokenInput($event)">
             <input matInput [(ngModel)]="proxyToken" name="proxy-token" />
           </mat-form-field>
@@ -146,10 +146,6 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
   `,
   styles: [
     `
-      /* TODO(b/300063426): remove after migration to angular 15, replace with subscriptSizing */
-      ::ng-deep .proxy-command-form .mat-form-field-wrapper {
-        padding: 0;
-      }
       .proxy-command-text {
         user-select: all;
         overflow: auto;

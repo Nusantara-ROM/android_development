@@ -56,7 +56,7 @@ import {TransformMatrixComponent} from './transform_matrix_component';
 
     <div class="property-groups-content" *ngIf="properties">
       <div class="group">
-        <h3 class="group-header mat-subheading-2">Visibility</h3>
+        <h3 class="group-header mat-subtitle-1">Visibility</h3>
         <div class="left-column">
           <p class="mat-body-2 flags">
             <span class="mat-body-1">Flags:</span>
@@ -88,7 +88,7 @@ import {TransformMatrixComponent} from './transform_matrix_component';
       <mat-divider></mat-divider>
 
       <div class="group geometry">
-        <h3 class="group-header mat-subheading-2">Geometry</h3>
+        <h3 class="group-header mat-subtitle-1">Geometry</h3>
         <div class="left-column">
           <p class="column-header mat-small">Calculated</p>
           <p
@@ -141,7 +141,7 @@ import {TransformMatrixComponent} from './transform_matrix_component';
       <mat-divider></mat-divider>
 
       <div class="group buffer">
-        <h3 class="group-header mat-subheading-2">Buffer</h3>
+        <h3 class="group-header mat-subtitle-1">Buffer</h3>
         <div class="left-column">
           <p
             class="mat-body-2 size"
@@ -185,7 +185,7 @@ import {TransformMatrixComponent} from './transform_matrix_component';
       <mat-divider></mat-divider>
 
       <div class="group hierarchy-info">
-        <h3 class="group-header mat-subheading-2">Hierarchy</h3>
+        <h3 class="group-header mat-subtitle-1">Hierarchy</h3>
         <div class="left-column">
           <p class="mat-body-2 z-order">
             <span class="mat-body-1">Z-order:</span>
@@ -235,7 +235,7 @@ import {TransformMatrixComponent} from './transform_matrix_component';
       <mat-divider></mat-divider>
 
       <div class="group effects">
-        <h3 class="group-header mat-subheading-2">Effects</h3>
+        <h3 class="group-header mat-subtitle-1">Effects</h3>
         <div class="left-column">
           <p class="column-header mat-small">Calculated</p>
           <p class="mat-body-2 color">
@@ -296,7 +296,7 @@ import {TransformMatrixComponent} from './transform_matrix_component';
       <mat-divider></mat-divider>
 
       <div class="group inputs">
-        <h3 class="group-header mat-subheading-2">Input</h3>
+        <h3 class="group-header mat-subtitle-1">Input</h3>
         <ng-container *ngIf="properties.hasInputChannel">
           <div class="left-column">
             <p class="property mat-body-1">To Display Transform:</p>

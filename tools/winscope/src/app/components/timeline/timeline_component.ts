@@ -344,14 +344,14 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
         width: 282px;
         background-color: var(--drawer-block-primary);
       }
-      #time-selector .mat-form-field-wrapper {
+      #time-selector .mat-mdc-text-field-wrapper {
         width: 100%;
       }
-      #time-selector .mat-form-field-infix, #trace-selector .mat-form-field-infix {
+      #time-selector .mat-mdc-form-field-infix, #trace-selector .mat-mdc-form-field-infix {
         padding: 0 0.75rem 0 0.5rem !important;
         border-top: unset;
       }
-      #time-selector .mat-form-field-flex, #time-selector .field-suffix {
+      #time-selector .mat-mdc-form-field-flex, #time-selector .field-suffix {
         border-radius: 0;
         padding: 0;
         display: flex;
@@ -391,7 +391,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
         width: 90%;
         background-color: var(--drawer-block-secondary);
       }
-      #time-selector .mat-icon-button {
+      #time-selector .mat-mdc-icon-button {
         width: 24px;
         height: 24px;
         padding-left: 3px;
@@ -440,7 +440,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
         overflow-y: auto;
         overflow-x: hidden;
       }
-      #trace-selector .mat-form-field-infix {
+      #trace-selector .mat-mdc-form-field-infix {
         width: 80px;
       }
       #trace-selector .shown-selection {
@@ -464,14 +464,14 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
         align-content: flex-start;
         width: 70%;
       }
-      #trace-selector .mat-select-trigger {
+      #trace-selector .mat-mdc-select-trigger {
         height: unset;
         flex-direction: column-reverse;
       }
-      #trace-selector .mat-select-arrow-wrapper {
+      #trace-selector .mat-mdc-select-arrow-wrapper {
         display: none;
       }
-      #trace-selector .mat-form-field-wrapper {
+      #trace-selector .mat-mdc-text-field-wrapper {
         padding: 0;
       }
       :has(>.select-traces-panel) {

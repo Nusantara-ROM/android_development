@@ -76,7 +76,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
             (click)="onClickShowInPropertiesPanelWm(wmHierarchyTree(), 'Window Manager State')">
             WMState
           </button>
-          <h3 *ngIf="!wmHierarchyTree()" class="group-header mat-subheading-2">WMState</h3>
+          <h3 *ngIf="!wmHierarchyTree()" class="group-header mat-subtitle-1">WMState</h3>
           <div class="left-column wm-state">
             <p *ngIf="additionalProperties?.wm" class="mat-body-1">
               {{ wmRootLabel() }}
@@ -191,7 +191,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
             (click)="onClickShowInPropertiesPanelWm(wmHierarchyTree(), 'Window Manager State')">
             WMState
           </button>
-          <h3 *ngIf="!wmHierarchyTree()" class="group-header mat-subheading-2">WMState</h3>
+          <h3 *ngIf="!wmHierarchyTree()" class="group-header mat-subtitle-1">WMState</h3>
           <div class="left-column wm-state">
             <p *ngIf="additionalProperties?.wm" class="mat-body-1">
               {{ wmRootLabel() }}
@@ -202,7 +202,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           </div>
         </div>
         <div class="group">
-          <h3 class="group-header mat-subheading-2">SFLayer</h3>
+          <h3 class="group-header mat-subtitle-1">SFLayer</h3>
           <div class="left-column sf-state">
             <p *ngIf="additionalProperties?.sf" class="mat-body-1">
               {{ sfRootLabel() }}
@@ -213,7 +213,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           </div>
         </div>
         <div *ngIf="additionalProperties?.wm" class="group focus">
-          <h3 class="group-header mat-subheading-2">Focus</h3>
+          <h3 class="group-header mat-subtitle-1">Focus</h3>
           <div class="left-column">
             <p class="mat-body-1">
               <span class="mat-body-2">Focused App:</span>
@@ -240,7 +240,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           </div>
         </div>
         <div class="group visibility">
-          <h3 class="group-header mat-subheading-2">Visibility</h3>
+          <h3 class="group-header mat-subtitle-1">Visibility</h3>
           <div class="left-column">
             <p *ngIf="additionalProperties?.wm" class="mat-body-1">
               <span class="mat-body-2">InputMethod Window:</span>

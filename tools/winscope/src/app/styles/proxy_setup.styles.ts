@@ -36,4 +36,7 @@ export const proxySetupStyles = `
   .adb-info {
     margin-left: 5px;
   }
+  .adb-icon {
+    min-width: fit-content;
+  }
 `;

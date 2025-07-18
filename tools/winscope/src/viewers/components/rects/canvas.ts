@@ -208,6 +208,7 @@ export class Canvas {
     }
     rects.forEach((rect) => {
       const existingGraphics = this.lastScene.rectIdToRectGraphics.get(rect.id);
+      if (rect.id.includes('InputMethod')) console.log(rect);
       const mesh = !existingGraphics
         ? this.makeAndAddRectMesh(rect)
         : this.updateExistingRectMesh(
@@ -741,6 +742,7 @@ export class Canvas {
     existingRect: UiRect3D,
     existingMesh: THREE.Mesh,
   ): THREE.Mesh {
+    if (newRect.id.includes('InputMethod')) console.log(newRect);
     this.updateRectMeshFillMaterial(newRect, existingRect, existingMesh);
     this.updateRectMeshPointers(newRect, existingRect, existingMesh);
     this.updateRays(newRect, existingRect);

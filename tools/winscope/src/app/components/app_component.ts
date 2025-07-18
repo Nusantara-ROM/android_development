@@ -276,7 +276,7 @@ import {
     <ng-template #noLoadedTracesBlock>
       <div class="center">
         <div class="landing-content">
-          <h1 class="welcome-info mat-headline">
+          <h1 class="welcome-info mat-headline-1">
             Welcome to Winscope. Please select source to view traces.
           </h1>
 
@@ -359,7 +359,7 @@ import {
       .file-name-input-field .right-align {
         text-align: right;
       }
-      .file-name-input-field .mat-form-field-wrapper {
+      .file-name-input-field .mat-mdc-text-field-wrapper {
         padding-bottom: 10px;
         width: 600px;
       }
@@ -383,6 +383,7 @@ import {
         align-items: center;
         justify-items: center;
         flex-grow: 1;
+        background-color: var(--background-color);
       }
       .landing-content {
         width: 100%;

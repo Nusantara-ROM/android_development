@@ -37,7 +37,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
         [value]="progressPercentage">
       </mat-progress-bar>
 
-      <p class="mat-body-1">{{ message }}</p>
+      <p class="mat-body-1 progress-message">{{ message }}</p>
     </div>
   `,
   styles: [
@@ -63,6 +63,9 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
       }
       mat-card-content {
         flex-grow: 1;
+      }
+      .progress-message {
+        padding-top: 4px;
       }
     `,
   ],

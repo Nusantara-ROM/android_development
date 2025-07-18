@@ -58,7 +58,7 @@ import {CollapsibleSections} from 'viewers/common/collapsible_sections';
           rotate: 180deg;
           writing-mode: vertical-lr;
       }
-      .mat-icon-button {
+      .mat-mdc-icon-button {
           height: 22px;
           width: 22px;
       }

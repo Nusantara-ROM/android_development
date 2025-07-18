@@ -58,12 +58,12 @@ import {LoadProgressComponent} from './load_progress_component';
   ],
   template: `
     <mat-card class="upload-card">
-      <div class="card-header">
+      <mat-card-header class="card-header">
         <mat-card-title class="title">Upload Traces</mat-card-title>
         <div
           *ngIf="!isLoadingFiles && tracePipeline.getTraces().getSize() > 0"
           class="trace-actions-container">
-          <div class="trace-action-buttons">
+          <div class="trace-action-buttons trace-action-buttons-top">
             <button
               class="clear-all-btn"
               color="primary"
@@ -89,8 +89,8 @@ import {LoadProgressComponent} from './load_progress_component';
               Upload another file
             </button>
           </div>
-          <div class="trace-action-buttons">
-            <button
+          <div class="trace-action-buttons trace-action-buttons-bottom">
+            <button\t
               color="primary"
               mat-raised-button
               class="load-btn"
@@ -111,82 +111,91 @@ import {LoadProgressComponent} from './load_progress_component';
             </mat-checkbox>
           </div>
         </div>
-      </div>
+      </mat-card-header>
 
-      <div *ngFor="let message of warningMessages; let i = index" class="warning-banner mat-elevation-z2">
+      <div *ngFor="let message of warningMessages; let i = index" class="warning-banner">
         <div class="warning-content">
           <mat-icon class="warning-icon">warning</mat-icon>
-          <span class="warn-message">{{ message }}</span>
+          <span class="warn-message mat-body-1">{{ message }}</span>
         </div>
-         <button mat-icon-button (click)="clearWarning(i)" [attr.aria-label]="'Dismiss warning: ' + message">
+         <button
+            mat-icon-button
+            (click)="clearWarning(i)"
+            [attr.aria-label]="'Dismiss warning: ' + message">
             <mat-icon>close</mat-icon>
         </button>
       </div>
 
-      <mat-card-content
-        class="drop-box"
-        ref="drop-box"
-        (dragleave)="onFileDragOut($event)"
-        (dragover)="onFileDragIn($event)"
-        (drop)="onFileDrop($event)"
-        (click)="fileDropRef.click()">
-        <input
-          id="fileDropRef"
-          hidden
-          type="file"
-          multiple
-          onclick="this.value = null"
-          #fileDropRef
-          (change)="onInputFiles($event)" />
-
-        <load-progress
-          *ngIf="isLoadingFiles"
-          [progressPercentage]="progressPercentage"
-          [message]="progressMessage">
-        </load-progress>
-
-        <mat-list
-          *ngIf="!isLoadingFiles && tracePipeline.getTraces().getSize() > 0"
-          class="uploaded-files">
-          <mat-list-item
-            [class.no-visualization]="!canVisualizeTrace(trace)"
-            [class.trace-error]="trace.isCorrupted()"
-            *ngFor="let trace of tracePipeline.getTraces()">
-            <mat-icon
-              matListItemIcon
-              [style]="{color: TRACE_INFO[trace.type].color}">
-              {{ TRACE_INFO[trace.type].icon }}
-            </mat-icon>
-
-            <p matListItemLine>{{ TRACE_INFO[trace.type].name }}</p>
-            <p matListItemLine *ngFor="let descriptor of trace.getDescriptors()">{{ descriptor }}</p>
-
-            <div matListItemMeta>
-              <mat-icon
-                class="warning-icon"
-                *ngIf="!canVisualizeTrace(trace)"
-                [matTooltip]="cannotVisualizeTraceTooltip(trace)">warning</mat-icon>
-              <mat-icon
-                class="error-icon"
-                *ngIf="trace.isCorrupted()"
-                [matTooltip]="traceErrorTooltip(trace)">error</mat-icon>
-              <button
-                mat-icon-button
-                (click)="onRemoveTrace($event, trace)"
-                [disabled]="viewersLoading">
-                <mat-icon>close</mat-icon>
-              </button>
-            </div>
-          </mat-list-item>
-        </mat-list>
-
+      <mat-card-content class="upload-card-content">
         <div
-          *ngIf="!isLoadingFiles && tracePipeline.getTraces().getSize() === 0"
-          class="drop-info">
-          <p class="mat-body-3 icon">
-            <mat-icon inline fontIcon="upload"></mat-icon>
-          </p>
-          <p class="mat-body-1">Drag your .winscope file(s) or click to upload</p>
+          class="drop-box"
+          ref="drop-box"
+          (dragleave)="onFileDragOut($event)"
+          (dragover)="onFileDragIn($event)"
+          (drop)="onFileDrop($event)"
+          (click)="fileDropRef.click()">
+          <input
+            id="fileDropRef"
+            hidden
+            type="file"
+            multiple
+            onclick="this.value = null"
+            #fileDropRef
+            (change)="onInputFiles($event)" />
+
+          <load-progress
+            *ngIf="isLoadingFiles"
+            [progressPercentage]="progressPercentage"
+            [message]="progressMessage">
+          </load-progress>
+
+          <mat-list
+            *ngIf="!isLoadingFiles && tracePipeline.getTraces().getSize() > 0"
+            class="uploaded-files">
+            <mat-list-item
+              [class.no-visualization]="!canVisualizeTrace(trace)"
+              [class.trace-error]="trace.isCorrupted()"
+              *ngFor="let trace of tracePipeline.getTraces()">
+              <mat-icon
+                matListItemIcon
+                [style.color]="TRACE_INFO[trace.type].color">
+                {{ TRACE_INFO[trace.type].icon }}
+              </mat-icon>
+
+              <p matListItemTitle>{{ TRACE_INFO[trace.type].name }}</p>
+              <p
+                matListItemLine
+                *ngFor="let descriptor of trace.getDescriptors(); index as i"
+                [style.margin-bottom]="i < trace.getDescriptors().length - 1 ? '0' : undefined">{{ descriptor }}</p>
+
+              <div matListItemMeta>
+                <mat-icon
+                  class="warning-icon"
+                  *ngIf="!canVisualizeTrace(trace)"
+                  [matTooltip]="cannotVisualizeTraceTooltip(trace)">warning</mat-icon>
+                <mat-icon
+                  class="error-icon"
+                  *ngIf="trace.isCorrupted()"
+                  [matTooltip]="traceErrorTooltip(trace)">error</mat-icon>
+                <button
+                  class="clear-icon"
+                  mat-icon-button
+                  (click)="onRemoveTrace($event, trace)"
+                  [disabled]="viewersLoading">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </mat-list-item>
+          </mat-list>
+
+          <div
+            *ngIf="!isLoadingFiles && tracePipeline.getTraces().getSize() === 0"
+            class="drop-info">
+            <p class="icon">
+              <mat-icon inline fontIcon="upload"></mat-icon>
+            </p>
+            <p class="drop-info-text mat-subtitle-2">Drag your Winscope file(s) or click to upload</p>
+          </div>
         </div>
       </mat-card-content>
     </mat-card>
@@ -220,7 +229,18 @@ import {LoadProgressComponent} from './load_progress_component';
         flex-direction: row-reverse;
         flex-wrap: wrap;
         gap: 10px;
-        padding: 4px 0px;
+      }
+      .trace-action-buttons-top {
+        padding-bottom: 4px;
+      }
+      .trace-action-buttons-bottom {
+        padding: 4px 0;
+      }
+      .upload-card-content {
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        padding-top: 10px;
       }
       .drop-box {
         display: flex;
@@ -228,6 +248,7 @@ import {LoadProgressComponent} from './load_progress_component';
         overflow: auto;
         border: 2px dashed var(--border-color);
         cursor: pointer;
+        height: 100%;
       }
       .uploaded-files {
         flex: 400px;
@@ -240,13 +261,16 @@ import {LoadProgressComponent} from './load_progress_component';
         justify-content: center;
         align-items: center;
         pointer-events: none;
+        text-align: center;
       }
       .drop-info p {
         opacity: 0.6;
-        font-size: 1.2rem;
+      }
+      .drop-info .drop-info-text {
+        padding: 0 4px;
       }
       .drop-info .icon {
-        font-size: 3rem;
+        font-size: 48px;
         margin: 0;
       }
       .div-progress {
@@ -268,7 +292,7 @@ import {LoadProgressComponent} from './load_progress_component';
       .div-progress mat-progress-bar {
         max-width: 250px;
       }
-      mat-card-content {
+      mat-mdc-card-content {
         flex-grow: 1;
       }
       .no-visualization {
@@ -284,8 +308,9 @@ import {LoadProgressComponent} from './load_progress_component';
         align-items: center;
         justify-content: space-between;
         gap: 8px;
-        margin: 10px 0;
+        margin: 10px 16px;
         border-radius: 4px;
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 1px 5px 0px rgba(0, 0, 0, 0.12);
       }
       .warning-banner .warning-content {
          display: flex;
@@ -301,6 +326,9 @@ import {LoadProgressComponent} from './load_progress_component';
         padding: 0;
         margin: 0;
         white-space: pre-line;
+      }
+      .clear-icon {
+        color: var(--default-text-color);
       }
       .discard-legacy-traces {
         font-size: 14px;

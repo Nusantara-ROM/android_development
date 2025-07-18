@@ -69,7 +69,7 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
     MatTooltipModule,
   ],
   template: `
-    <h3 class="mat-subheading-2">{{title}}</h3>
+    <h3 class="mat-subtitle-1">{{title}}</h3>
 
     <div class="checkboxes" [style.height]="getTraceCheckboxContainerHeight()">
       <mat-checkbox
@@ -99,7 +99,7 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
             cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
             (backdropClick)="onSettingsOverlayTriggerClick(traceKey, advancedSettingsTrigger)">
               <div class="config-section overlay-panel">
-                <h3 class="mat-subheading-2 config-title">{{ traceConfig[advancedSettingsKey].name }} configuration</h3>
+                <h3 class="mat-subtitle-1 config-title">{{ traceConfig[advancedSettingsKey].name }} configuration</h3>
 
                 <div class="overlay-panel-content">
                   <div
@@ -139,12 +139,12 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
 
                           <mat-form-field
                             *ngIf="selectionConfig.filterString !== undefined"
-                            class="select-config-filter no-bottom-padding-field">
+                            class="select-config-filter no-bottom-padding-field mat-form-field-appearance-none">
                               <mat-label>Filter options</mat-label>
                               <input matInput [(ngModel)]="selectionConfig.filterString" />
                           </mat-form-field>
 
-                          <span class="mat-option" *ngIf="matSelect.multiple || selectionConfig.optional">
+                          <span class="mat-mdc-option" *ngIf="matSelect.multiple || selectionConfig.optional">
                             <button
                               *ngIf="matSelect.multiple"
                               mat-flat-button
@@ -174,7 +174,8 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
                             [matTooltipDisabled]="disableOptionTooltip(optionEl)">
                               <span class="option-with-chip">
                                 <span
-                                  class="option-value" #optionEl> {{ option.value }} </span>
+                                  class="option-value text-no-overflow"
+                                  #optionEl> {{ option.value }} </span>
                                 <button
                                   *ngIf="option.chip"
                                   mat-flat-button
@@ -221,6 +222,8 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+      }
+      .selection-config-opt {
         gap: 10px;
       }
       .wide-field {
@@ -236,6 +239,10 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
         justify-content: space-between;
         display: flex;
         align-items: center;
+        width: 100%;
+      }
+      .option-with-chip .user-option {
+        margin-inline-end: 0px;
       }
       .hidden-option {
         display: none;
@@ -253,10 +260,6 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
       }
       .advanced-settings-button {
         padding: 0 4px;
-      }
-      .option-value {
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
     `,
     userOptionStyle,
@@ -308,7 +311,7 @@ export class TraceConfigComponent extends AbstractSelectComponent<SelectionConfi
 
   getTraceCheckboxContainerHeight(): string {
     const config = assertDefined(this.traceConfig);
-    return Math.ceil(Object.keys(config).length / 3) * 24 + 'px';
+    return Math.ceil(Object.keys(config).length / 3) * 36 + 'px';
   }
 
   getSortedTraceKeys(): string[] {
