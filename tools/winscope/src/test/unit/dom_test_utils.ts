@@ -15,7 +15,7 @@
  */
 
 import {Type} from '@angular/core';
-import {ComponentFixture, flush} from '@angular/core/testing';
+import {ComponentFixture} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventKey, KeyboardEventKeyCode} from 'common/dom_utils';
@@ -351,28 +351,20 @@ export class DOMTestHelper<T> {
     clientX: number,
     clientY: number,
   ) {
-    const event = document.createEvent('MouseEvent');
-    event.initMouseEvent(
-      type,
-      true /* canBubble */,
-      false /* cancelable */,
-      window /* view */,
-      0 /* detail */,
-      screenX /* screenX */,
-      screenY /* screenY */,
-      clientX /* clientX */,
-      clientY /* clientY */,
-      false /* ctrlKey */,
-      false /* altKey */,
-      false /* shiftKey */,
-      false /* metaKey */,
-      0 /* button */,
-      null /* relatedTarget */,
-    );
-    Object.defineProperty(event, 'buttons', {get: () => 1});
+    const event = new MouseEvent(type, {
+      bubbles: true,
+      cancelable: false,
+      composed: true,
+      view: window,
+      detail: 1,
+      screenX,
+      screenY,
+      clientX,
+      clientY,
+      buttons: 1,
+    });
     source.dispatchEvent(event);
     this.detectChanges();
-    flush();
   }
 }
 

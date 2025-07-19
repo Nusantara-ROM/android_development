@@ -143,7 +143,6 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
                             [class.hidden-option]="hideOption(option.value, selectionConfig.filterString ?? '')"
                             (click)="onOptionClick($event, matSelect, matOption, i, selectionConfig)"
                             [value]="option.value"
-                            (mouseenter)="onSelectOptionHover($event, option.value)"
                             matTooltipPosition="right"
                             [matTooltip]="option.value"
                             [matTooltipDisabled]="disableOptionTooltip(optionEl)">

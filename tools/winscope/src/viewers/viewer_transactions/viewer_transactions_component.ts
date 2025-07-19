@@ -37,8 +37,8 @@ import {UiData} from './ui_data';
         [selectedIndex]="inputData?.selectedIndex"
         [scrollToIndex]="inputData?.scrollToIndex"
         [currentIndex]="inputData?.currentIndex"
-        [entries]="inputData?.entries"
-        [headers]="inputData?.headers"
+        [entries]="inputData?.entries ?? []"
+        [headers]="inputData?.headers ?? []"
         [traceType]="${TraceType.TRANSACTIONS}"
         [isFetchingData]="inputData?.isFetchingData"
         [checkScrollViewport]="inputData?.checkScrollViewport">
@@ -47,7 +47,7 @@ import {UiData} from './ui_data';
       <properties-view
         class="properties-view"
         [title]="propertiesTitle"
-        [userOptions]="inputData?.propertiesUserOptions"
+        [userOptions]="inputData?.propertiesUserOptions ?? {}"
         [propertiesTree]="inputData?.propertiesTree"
         [traceType]="${TraceType.TRANSACTIONS}"
         [isProtoDump]="false"

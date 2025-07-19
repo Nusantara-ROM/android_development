@@ -885,9 +885,8 @@ export class RectsComponent implements OnInit, OnDestroy {
       ((event.clientX - canvasOffset.left) / canvas.clientWidth) * 2 - 1;
     const y =
       -((event.clientY - canvasOffset.top) / canvas.clientHeight) * 2 + 1;
-    const z = 0;
 
-    return this.largeRectsCanvas?.getClickedRectId(x, y, z);
+    return this.largeRectsCanvas?.getClickedRectId(x, y);
   }
 
   private doZoomIn(ratio = 1) {

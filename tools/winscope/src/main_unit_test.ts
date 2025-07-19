@@ -47,4 +47,15 @@ TestBed.initTestEnvironment(
 
 // filter matches all "*_test.ts" files that are not within the /test/e2e/ directory
 const context = require.context('./', true, /(?<!\/test\/e2e\/.*)_test.ts$/);
-context.keys().forEach(context);
+context
+  .keys()
+  .sort((a, b) => {
+    if (a < b) {
+      return -1;
+    } else if (a == b) {
+      return 0;
+    } else {
+      return -1;
+    }
+  })
+  .forEach(context);

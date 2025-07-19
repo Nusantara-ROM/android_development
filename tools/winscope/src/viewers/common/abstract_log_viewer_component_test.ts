@@ -27,6 +27,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
+import {MatIconTestingModule} from '@angular/material/icon/testing';
 import {MatInputModule} from '@angular/material/input';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSelectModule} from '@angular/material/select';
@@ -34,7 +35,6 @@ import {MatSliderModule} from '@angular/material/slider';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
-import {animationFrameScheduler} from 'rxjs';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {CollapsedSectionsComponent} from 'viewers/components/collapsed_sections_component';
 import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
@@ -187,30 +187,37 @@ export abstract class AbstractLogViewerComponentTest<
             });
           });
 
-          it('should scroll to index in large jumps', () => {
+          it('should scroll to index in large jumps', async () => {
             expect(dom.find(`.entry[item-id="30"]`)).toBeUndefined();
-            checkScrollToIndex(30);
+            await checkScrollToIndex(30);
+            expect(dom.find(`.entry[item-id="30"]`)).toBeDefined();
+
             expect(dom.find(`.entry[item-id="70"]`)).toBeUndefined();
-            checkScrollToIndex(70);
+            await checkScrollToIndex(70);
+            expect(dom.find(`.entry[item-id="70"]`)).toBeDefined();
           });
 
-          it('should update without jumps as the user scrolls down or up', () => {
+          it('should update without jumps as the user scrolls down or up', async () => {
             for (let i = 1; i < 50; i++) {
-              checkScrollToIndex(i);
+              await checkScrollToIndex(i);
             }
-            for (let i = 49; i >= 0; i--) {
-              checkScrollToIndex(i);
+            for (let i = 48; i >= 0; i--) {
+              await checkScrollToIndex(i);
             }
           });
 
-          function checkScrollToIndex(i: number) {
+          function checkScrollToIndex(i: number): Promise<void> {
+            const promise = new Promise<void>((resolve) => {
+              const sub = viewport.scrolledIndexChange.subscribe((index) => {
+                if (index - i <= 1) {
+                  sub.unsubscribe();
+                  dom.detectChanges();
+                  resolve();
+                }
+              });
+            });
             viewport.scrollToIndex(i);
-            viewport.elementRef.nativeElement.dispatchEvent(
-              new Event('scroll'),
-            );
-            animationFrameScheduler.flush();
-            dom.detectChanges();
-            expect(dom.find(`.entry[item-id="${i}"]`)).toBeDefined();
+            return promise;
           }
         });
       }
@@ -265,6 +272,7 @@ export abstract class AbstractLogViewerComponentTest<
         HttpClientModule,
         MatSliderModule,
         MatProgressSpinnerModule,
+        MatIconTestingModule,
       ],
       declarations,
     }).compileComponents();

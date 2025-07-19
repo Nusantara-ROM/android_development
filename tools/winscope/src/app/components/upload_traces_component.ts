@@ -135,28 +135,30 @@ import {LoadProgressComponent} from './load_progress_component';
             [class.trace-error]="trace.isCorrupted()"
             *ngFor="let trace of tracePipeline.getTraces()">
             <mat-icon
-              matListIcon
+              matListItemIcon
               [style]="{color: TRACE_INFO[trace.type].color}">
               {{ TRACE_INFO[trace.type].icon }}
             </mat-icon>
 
-            <p matLine>{{ TRACE_INFO[trace.type].name }}</p>
-            <p matLine *ngFor="let descriptor of trace.getDescriptors()">{{ descriptor }}</p>
+            <p matListItemLine>{{ TRACE_INFO[trace.type].name }}</p>
+            <p matListItemLine *ngFor="let descriptor of trace.getDescriptors()">{{ descriptor }}</p>
 
-            <mat-icon
-              class="warning-icon"
-              *ngIf="!canVisualizeTrace(trace)"
-              [matTooltip]="cannotVisualizeTraceTooltip(trace)">warning</mat-icon>
-            <mat-icon
-              class="error-icon"
-              *ngIf="trace.isCorrupted()"
-              [matTooltip]="traceErrorTooltip(trace)">error</mat-icon>
-            <button
-              mat-icon-button
-              (click)="onRemoveTrace($event, trace)"
-              [disabled]="viewersLoading">
-              <mat-icon>close</mat-icon>
-            </button>
+            <div matListItemMeta>
+              <mat-icon
+                class="warning-icon"
+                *ngIf="!canVisualizeTrace(trace)"
+                [matTooltip]="cannotVisualizeTraceTooltip(trace)">warning</mat-icon>
+              <mat-icon
+                class="error-icon"
+                *ngIf="trace.isCorrupted()"
+                [matTooltip]="traceErrorTooltip(trace)">error</mat-icon>
+              <button
+                mat-icon-button
+                (click)="onRemoveTrace($event, trace)"
+                [disabled]="viewersLoading">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
           </mat-list-item>
         </mat-list>
 

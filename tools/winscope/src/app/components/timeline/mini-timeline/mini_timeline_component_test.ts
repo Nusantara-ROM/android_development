@@ -17,7 +17,7 @@
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CdkMenuModule} from '@angular/cdk/menu';
 import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
-import {fakeAsync, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -232,7 +232,7 @@ describe('MiniTimelineComponent', () => {
     ]);
   });
 
-  it('updates zoom when slider moved', fakeAsync(() => {
+  it('updates zoom when slider moved', () => {
     dom.detectChanges();
     const initialZoom = new TimeRange(timestamp15, timestamp16);
     assertDefined(component.miniTimelineComponent).onZoomChanged(initialZoom);
@@ -245,7 +245,7 @@ describe('MiniTimelineComponent', () => {
     slider.dragElement(100, 8);
     const finalZoom = timelineData.getZoomRange();
     expect(finalZoom).not.toBe(initialZoom);
-  }));
+  });
 
   it('zooms in/out with buttons', () => {
     initializeTraces();

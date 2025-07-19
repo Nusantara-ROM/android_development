@@ -16,7 +16,7 @@
 
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {ChangeDetectionStrategy} from '@angular/core';
-import {fakeAsync, TestBed} from '@angular/core/testing';
+import {TestBed, discardPeriodicTasks, fakeAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -159,7 +159,7 @@ describe('SliderComponent', () => {
     );
   });
 
-  it('moving slider around updates zoom', fakeAsync(async () => {
+  it('moving slider around updates zoom', () => {
     dom.detectChanges();
     const initialZoom = assertDefined(component.zoomRange);
 
@@ -181,9 +181,9 @@ describe('SliderComponent', () => {
     expect(
       finalZoom.to.minus(finalZoom.from.getValueNs()).getValueNs(),
     ).toEqual(initialZoom.to.minus(initialZoom.from.getValueNs()).getValueNs());
-  }));
+  });
 
-  it('moving slider left pointer around updates zoom', fakeAsync(async () => {
+  it('moving slider left pointer around updates zoom', fakeAsync(() => {
     dom.detectChanges();
     const initialZoom = assertDefined(component.zoomRange);
 
@@ -203,6 +203,7 @@ describe('SliderComponent', () => {
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
     expect(finalZoom.from).not.toBe(initialZoom.from);
     expect(finalZoom.to).toBe(initialZoom.to);
+    discardPeriodicTasks();
   }));
 
   it('moving slider right pointer around updates zoom', fakeAsync(async () => {
@@ -225,6 +226,7 @@ describe('SliderComponent', () => {
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
     expect(finalZoom.from).toBe(initialZoom.from);
     expect(finalZoom.to).not.toBe(initialZoom.to);
+    discardPeriodicTasks();
   }));
 
   it('cannot slide left cropper past edges', fakeAsync(() => {
@@ -248,6 +250,7 @@ describe('SliderComponent', () => {
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
     expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
     expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    discardPeriodicTasks();
   }));
 
   it('cannot slide right cropper past edges', fakeAsync(() => {
@@ -271,6 +274,7 @@ describe('SliderComponent', () => {
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
     expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
     expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    discardPeriodicTasks();
   }));
 
   it('cannot slide left cropper past right cropper', fakeAsync(() => {
@@ -294,6 +298,7 @@ describe('SliderComponent', () => {
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
     expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
     expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    discardPeriodicTasks();
   }));
 
   it('cannot slide right cropper past left cropper', fakeAsync(() => {
@@ -317,9 +322,10 @@ describe('SliderComponent', () => {
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
     expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
     expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    discardPeriodicTasks();
   }));
 
-  it('cannot move slider past edges', fakeAsync(() => {
+  it('cannot move slider past edges', () => {
     component.zoomRange = component.fullRange;
     dom.detectChanges();
     const initialZoom = assertDefined(component.zoomRange);
@@ -340,7 +346,7 @@ describe('SliderComponent', () => {
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
     expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
     expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
-  }));
+  });
 
   function checkVisible(element: HTMLElement) {
     expect(window.getComputedStyle(element).visibility).toEqual('visible');
