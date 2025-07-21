@@ -37,6 +37,7 @@ export class TestListComponent implements OnChanges{
   @Input() goldens: MotionGolden[] = [];
   @Input() testNames: String[] = [];
   @Input() showCheckBoxes: boolean = false;
+  @Input() isRefreshing: boolean = false;
   @Output() showCheckBoxesChange = new EventEmitter<boolean>();
   @Output() selectedTestNameChange = new EventEmitter<String>();
   @Output() refreshRequest = new EventEmitter<boolean>();
