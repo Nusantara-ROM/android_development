@@ -909,8 +909,14 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
             },
             {
               fill: '#ad42f5',
-              desc: 'Has input',
+              desc: 'Visible and has input',
               border: 'var(--default-text-color)',
+              showInWireFrameMode: false,
+            },
+            {
+              fill: '#ad42f5',
+              desc: 'Not visible and has input',
+              border: '#dcdcdc',
               showInWireFrameMode: false,
             },
           ],
