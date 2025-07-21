@@ -214,6 +214,9 @@ import {
   `,
   styles: [
     `
+      .log-title {
+        padding-bottom: 8px;
+      }
       .view-header {
         display: flex;
         flex-direction: column;
