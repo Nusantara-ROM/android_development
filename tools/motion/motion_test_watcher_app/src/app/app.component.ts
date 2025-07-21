@@ -24,6 +24,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TestModeComponent } from '../testMode/test-mode.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-root',
   imports: [
@@ -93,7 +94,8 @@ export class AppComponent implements DoCheck, OnInit {
   constructor(
     private goldenService: GoldensService,
     private progressTracker: ProgressTracker,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
     ) {}
 
   isNullOrEmpty(obj : any) : Boolean {
@@ -158,6 +160,7 @@ export class AppComponent implements DoCheck, OnInit {
   showTestList: boolean = true;
   showCheckBoxes: boolean =false;
   showPreviewComponent: boolean = true;
+  isRefreshing: boolean = false;
 
   get isVideoPresent(): boolean {
     return this.selectedGolden?.videoUrl != null;
@@ -220,11 +223,27 @@ export class AppComponent implements DoCheck, OnInit {
   }
 
   refreshGoldens(clear: boolean): void {
+    this.isRefreshing = true;
     this.progressTracker.beginProgress();
     this.goldenService
       .refreshGoldens(clear)
-      .pipe(finalize(() => this.progressTracker.endProgress))
-      .subscribe((goldens) => (this.goldens = goldens));
+      .pipe(
+        finalize(() => {
+          this.isRefreshing = false;
+          this.progressTracker.endProgress();
+        })
+      )
+      .subscribe({
+        next: (goldens) => {
+          this.goldens = goldens;
+          this.snackBar.open('Refresh successful!', 'Dismiss', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['snackbar-success']
+          });
+        },
+      });
   }
 
   setSelectedGolden(golden: MotionGolden): void {
