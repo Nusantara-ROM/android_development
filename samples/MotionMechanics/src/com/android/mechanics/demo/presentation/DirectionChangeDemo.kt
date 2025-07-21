@@ -51,15 +51,14 @@ import com.android.mechanics.demo.tuneable.Demo
 import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.effects.FixedValue
 import com.android.mechanics.rememberDistanceGestureContext
+import com.android.mechanics.rememberMotionSpecAsState
 import com.android.mechanics.rememberMotionValue
 import com.android.mechanics.spec.Mapping
-import com.android.mechanics.spec.MotionSpec
-import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 import com.android.mechanics.spec.builder.spatialMotionSpec
 
 object DirectionChangeDemo : Demo<Unit>, HasMotionValueVisualization {
 
-    var inputRange by mutableStateOf(0f..0f)
+    private var inputRange by mutableStateOf(0f..0f)
 
     @Composable
     override fun DemoUi(config: Unit, modifier: Modifier) {
@@ -67,8 +66,20 @@ object DirectionChangeDemo : Demo<Unit>, HasMotionValueVisualization {
 
         // Also using GestureContext.dragOffset as input.
         val gestureContext = rememberDistanceGestureContext()
-        val spec = rememberSpec(inputOutputRange = inputRange)
-        val motionValue = rememberMotionValue(gestureContext::dragOffset, { spec }, gestureContext)
+        val motionValue =
+            rememberMotionValue(
+                input = { gestureContext.dragOffset },
+                gestureContext = gestureContext,
+                spec =
+                    rememberMotionSpecAsState {
+                        spatialMotionSpec(baseMapping = Mapping.Fixed(inputRange.start)) {
+                            after(
+                                (inputRange.start + inputRange.endInclusive) / 2f,
+                                FixedValue(inputRange.endInclusive),
+                            )
+                        }
+                    },
+            )
 
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -131,22 +142,6 @@ object DirectionChangeDemo : Demo<Unit>, HasMotionValueVisualization {
                 onValueChange = { gestureContext.dragOffset = it },
                 modifier = Modifier.fillMaxWidth(),
             )
-        }
-    }
-
-    @Composable
-    fun rememberSpec(inputOutputRange: ClosedFloatingPointRange<Float>): MotionSpec {
-
-        val builderContext = rememberMotionBuilderContext()
-        return remember(inputOutputRange, builderContext) {
-            with(builderContext) {
-                spatialMotionSpec(baseMapping = Mapping.Fixed(inputOutputRange.start)) {
-                    after(
-                        (inputOutputRange.start + inputOutputRange.endInclusive) / 2f,
-                        FixedValue(inputOutputRange.endInclusive),
-                    )
-                }
-            }
         }
     }
 
