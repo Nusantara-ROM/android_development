@@ -1,12 +1,12 @@
 import { ProgressTracker } from './../util/progress';
 import { GoldensService } from './../service/goldens.service';
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TestListComponent } from '../test-list/test-list.component';
 import { PreviewComponent } from '../preview/preview.component';
 import { TimelineComponent } from '../timeline/timeline.component';
 import { MotionGolden } from '../model/golden';
-import { finalize } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { NgFor } from '@angular/common';
 import { JsonPipe, NgIf, NgStyle } from '@angular/common';
 import {
@@ -25,6 +25,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TestModeComponent } from '../testMode/test-mode.component';
 import { PreviewService } from '../service/preview.service';
+import { ErrorService } from '../service/error.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-root',
@@ -91,14 +92,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     ])
   ]
 })
-export class AppComponent implements DoCheck, OnInit {
+export class AppComponent implements DoCheck, OnInit, OnDestroy {
   constructor(
     private goldenService: GoldensService,
     private progressTracker: ProgressTracker,
     public dialog: MatDialog,
+    private errorService: ErrorService,
     private snackBar: MatSnackBar,
     private previewService: PreviewService
     ) {}
+
+  private errorSubscription!: Subscription;
 
   isNullOrEmpty(obj : any) : Boolean {
     return (obj == null || obj.length == 0)
@@ -193,6 +197,13 @@ export class AppComponent implements DoCheck, OnInit {
     const leftLink = searchParams.get('leftLink') ?? ""
     const rightLink = searchParams.get('rightLink') ?? ""
 
+    this.errorSubscription = this.errorService.error$.subscribe(message => {
+      this.snackBar.open(message, undefined, {
+        horizontalPosition: 'left',
+        verticalPosition: 'bottom',
+      });
+    });
+
     if(leftLink || rightLink){
       this.testMode = "GERRIT"
       this.fetchGerritData(leftLink, rightLink)
@@ -274,5 +285,10 @@ export class AppComponent implements DoCheck, OnInit {
   openPreviewComponent(): void {
     this.showPreviewComponent = !this.showPreviewComponent;
     this.previewService.setShowMarker(this.showPreviewComponent && this.isVideoPresent);
+  }
+  ngOnDestroy() {
+    if (this.errorSubscription) {
+      this.errorSubscription.unsubscribe();
+    }
   }
 }

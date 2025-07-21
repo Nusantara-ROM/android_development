@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
+import { TruncatePipe } from '../app/pipes/truncate.pipe';
 
 @Component({
   selector: 'test-mode-list',
@@ -23,7 +24,8 @@ import { MatMenuModule } from '@angular/material/menu';
     FormsModule,
     MatIconModule,
     MatExpansionModule,
-    MatMenuModule
+    MatMenuModule,
+    TruncatePipe
   ],
   templateUrl: './test-mode.component.html',
 })

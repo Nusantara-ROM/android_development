@@ -25,6 +25,8 @@ import { Timeline } from '../model/timeline';
 import { VideoSource } from '../model/video-source';
 import { checkNotNull } from '../util/preconditions';
 import { Feature, recordedFeatureFactory } from '../model/feature';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ErrorService } from './error.service';
 
 export const ACCESS_TOKEN = new InjectionToken<string>('token');
 export const SERVICE_PORT = new InjectionToken<string>('port');
@@ -36,6 +38,8 @@ export class GoldensService {
 
   constructor(
     private http: HttpClient,
+    private snackBar: MatSnackBar,
+    private errorService: ErrorService,
     @Inject(ACCESS_TOKEN) config: string,
     @Inject(SERVICE_PORT) port: string
   ) {
@@ -233,7 +237,9 @@ export class GoldensService {
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);
-
+      if (error.status == 0){
+        this.errorService.handleError('Server is not connected. Run the server and try again.');
+      }
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
@@ -242,6 +248,9 @@ export class GoldensService {
   private handleErrorForUpdatingGolden<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);
+      if (error.status == 0){
+        this.errorService.handleError('Server is not connected. Run the server and try again.');
+      }
       const response = error.error;
       return of(response as T);
     };
