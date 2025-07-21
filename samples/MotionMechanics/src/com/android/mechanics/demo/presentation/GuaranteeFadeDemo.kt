@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalAnimatableApi::class, ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.android.mechanics.demo.presentation
 
-import androidx.compose.animation.core.ExperimentalAnimatableApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,10 +44,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.android.mechanics.debug.DebugMotionValueVisualization
 import com.android.mechanics.debug.debugMotionValueGraph
-import com.android.mechanics.demo.staging.rememberDistanceGestureContext
-import com.android.mechanics.demo.staging.rememberMotionValue
 import com.android.mechanics.demo.tuneable.Demo
 import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
+import com.android.mechanics.rememberDistanceGestureContext
+import com.android.mechanics.rememberMotionValue
 import com.android.mechanics.spec.Guarantee
 import com.android.mechanics.spec.MotionSpec
 import com.android.mechanics.spec.builder.effectsDirectionalMotionSpec

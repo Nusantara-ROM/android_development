@@ -50,12 +50,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.android.mechanics.debug.DebugMotionValueVisualization
 import com.android.mechanics.debug.debugMotionValue
-import com.android.mechanics.demo.staging.rememberDistanceGestureContext
-import com.android.mechanics.demo.staging.rememberMotionValue
 import com.android.mechanics.demo.tuneable.Demo
 import com.android.mechanics.demo.tuneable.Dropdown
 import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.demo.tuneable.LabelledCheckbox
+import com.android.mechanics.rememberDistanceGestureContext
+import com.android.mechanics.rememberMotionValue
 import com.android.mechanics.spec.DirectionalMotionSpec
 import com.android.mechanics.spec.Guarantee
 import com.android.mechanics.spec.Mapping
