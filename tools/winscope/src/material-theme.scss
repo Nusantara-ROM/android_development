@@ -20,17 +20,17 @@
 @import '//fonts.googleapis.com/css2?family=Google+Sans';
 @import 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0';
 
-$typography: mat.define-typography-config(
+$typography: mat.m2-define-typography-config(
     $font-family: 'Roboto, sans-serif'
 );
 
-$light-primary: mat.define-palette(mat.$blue-palette, 700);
-$dark-primary: mat.define-palette(mat.$blue-palette, 400);
-$light-accent: mat.define-palette(mat.$grey-palette, 700);
-$dark-accent: mat.define-palette(mat.$grey-palette, 500);
-$warn: mat.define-palette(mat.$red-palette);
+$light-primary: mat.m2-define-palette(mat.$m2-blue-palette, 700);
+$dark-primary: mat.m2-define-palette(mat.$m2-blue-palette, 400);
+$light-accent: mat.m2-define-palette(mat.$m2-grey-palette, 700);
+$dark-accent: mat.m2-define-palette(mat.$m2-grey-palette, 500);
+$warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$light-theme: mat.define-light-theme((
+$light-theme: mat.m2-define-light-theme((
  color: (
    primary: $light-primary,
    accent: $light-accent,
@@ -40,7 +40,7 @@ $light-theme: mat.define-light-theme((
  typography: $typography,
 ));
 
-$dark-theme: mat.define-dark-theme((
+$dark-theme: mat.m2-define-dark-theme((
   color: (
     primary: $dark-primary,
     accent: $dark-accent,
@@ -50,13 +50,13 @@ $dark-theme: mat.define-dark-theme((
 ));
 
 @mixin background-color($theme, $contrast-theme) {
-  $config: mat.get-color-config($theme);
+  $config: mat.m2-get-color-config($theme);
   $background: map.get($config, background);
-  $contrast-config: mat.get-color-config($contrast-theme);
+  $contrast-config: mat.m2-get-color-config($contrast-theme);
   $contrast-background: map.get($contrast-config, background);
   & {
-    --background-color: #{mat.get-color-from-palette($background, background)};
-    --contrast-background-color: #{mat.get-color-from-palette(
+    --background-color: #{mat.m2-get-color-from-palette($background, background)};
+    --contrast-background-color: #{mat.m2-get-color-from-palette(
         $contrast-background,
         background
       )};
@@ -64,19 +64,19 @@ $dark-theme: mat.define-dark-theme((
 }
 
 @mixin border-color($theme) {
-  $config: mat.get-color-config($theme);
+  $config: mat.m2-get-color-config($theme);
   $foreground: map.get($config, foreground);
 
   & {
-    --border-color: #{mat.get-color-from-palette($foreground, divider)};
+    --border-color: #{mat.m2-get-color-from-palette($foreground, divider)};
   }
 }
 
 @mixin drawer-color($theme) {
-  $config: mat.get-color-config($theme);
+  $config: mat.m2-get-color-config($theme);
   $background: map.get($config, background);
   & {
-    --drawer-color: #{mat.get-color-from-palette($background, dialog)};
+    --drawer-color: #{mat.m2-get-color-from-palette($background, dialog)};
   }
 }
 
@@ -86,7 +86,7 @@ $dark-theme: mat.define-dark-theme((
 
 body:not(.dark-mode) {
   --added-element-color: #466b20;
-  --blue-text-color: #{map.get(mat.$indigo-palette, A200)};
+  --blue-text-color: #{map.get(mat.$m2-indigo-palette, A200)};
   --card-title-background-color: #f1f1f1;
   --contrast-text-color: white;
   --current-element-color: #7b9ccc;
@@ -100,7 +100,7 @@ body:not(.dark-mode) {
   --hover-element-color: #eaeaea;
   --modified-element-color: #b8eaea;
   --overlay-panel-background-color: white;
-  --primary: #{mat.get-color-from-palette(mat.$blue-palette, 700)};
+  --primary: #{mat.m2-get-color-from-palette(mat.$m2-blue-palette, 700)};
   --purple-text-color: #a357e9;
   --red-text-color: #b30000;
   --selected-element-color: #E2ECFF;
@@ -139,7 +139,7 @@ body.dark-mode {
   --hover-element-color: #656565;
   --modified-element-color: #619696;
   --overlay-panel-background-color: #424242;
-  --primary: #{mat.get-color-from-palette(mat.$blue-palette, 400)};
+  --primary: #{mat.m2-get-color-from-palette(mat.$m2-blue-palette, 400)};
   --purple-text-color: #dbb4ff;
   --red-text-color: #f85252;
   --selected-element-color: #546481;
