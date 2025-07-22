@@ -27,7 +27,11 @@ import {
 } from '@angular/core';
 import {MatSelectChange} from '@angular/material/select';
 
-import {isElementVisible, KeyboardEventKey} from 'common/dom_utils';
+import {
+  isElementOverflowing,
+  isElementVisible,
+  KeyboardEventKey,
+} from 'common/dom_utils';
 import {Timestamp, TimestampFormatType} from 'common/time/time';
 import {TimeUtils} from 'common/time/time_utils';
 import {TraceType} from 'trace/trace_type';
@@ -98,9 +102,13 @@ import {
 
         <ng-container *ngFor="let header of headers">
           <div
+            #headerEl
             *ngIf="!isHeaderWithFilter(header)"
             class="mat-body-2 header"
-            [class]="header.spec.cssClass">
+            [class]="header.spec.cssClass"
+            [matTooltip]="header.spec.name"
+            [matTooltipDisabled]="disableHeaderTooltip(headerEl)"
+            matTooltipPosition="above">
           {{header.spec.name}}</div>
 
           <div
@@ -266,6 +274,10 @@ export class LogComponent {
 
   isHeaderWithFilter(header: LogHeader): boolean {
     return header.filter !== undefined;
+  }
+
+  disableHeaderTooltip(header: HTMLElement): boolean {
+    return !isElementOverflowing(header);
   }
 
   showFieldButton(entry: LogEntry, field: LogField): boolean {
