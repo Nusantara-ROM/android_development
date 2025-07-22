@@ -151,7 +151,9 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
   ];
 
   private parser: Parser<HierarchyTreeNode> | undefined;
-
+  override resetTestEnvironment() {
+    jasmine.addCustomEqualityTester(clickablePropertyEqualityTester);
+  }
   override async setUpTestEnvironment(): Promise<void> {
     if (!this.parser) {
       this.parser = (
@@ -246,7 +248,36 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
       {spec: uiData.headers[2].spec, value: 'DOWN'},
       {spec: uiData.headers[3].spec, value: 4},
       {spec: uiData.headers[4].spec, value: 0},
-      {spec: uiData.headers[5].spec, value: '[212, 64, 82, 75]'},
+      {
+        spec: uiData.headers[5].spec,
+        value: [
+          '[',
+          {
+            propertyValue: '212',
+            tooltip: this.wrappedName('win-212'),
+            onClick: () => {},
+          },
+          ', ',
+          {
+            propertyValue: '64',
+            tooltip: this.wrappedName('win-64'),
+            onClick: () => {},
+          },
+          ', ',
+          {
+            propertyValue: '82',
+            tooltip: this.wrappedName('win-82'),
+            onClick: () => {},
+          },
+          ', ',
+          {
+            propertyValue: '75',
+            tooltip: this.wrappedName('win-75'),
+            onClick: () => {},
+          },
+          ']',
+        ],
+      },
       {
         spec: uiData.headers[6].spec,
         value: [
@@ -941,3 +972,21 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
 describe('PresenterInput', async () => {
   new PresenterInputTest().execute();
 });
+
+function clickablePropertyEqualityTester(
+  first: any,
+  second: any,
+): boolean | undefined {
+  if (
+    first?.propertyValue &&
+    first?.tooltip &&
+    second?.propertyValue &&
+    second?.tooltip
+  ) {
+    return (
+      first.propertyValue === second.propertyValue &&
+      first.tooltip === second.tooltip
+    );
+  }
+  return undefined;
+}

@@ -15,6 +15,7 @@
  */
 
 import {assertBigInt, assertDefined} from 'common/assert_utils';
+import {FunctionUtils} from 'common/function_utils';
 import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {Analytics} from 'logging/analytics';
@@ -38,7 +39,12 @@ import {LogPresenter} from 'viewers/common/log_presenter';
 import {PropertiesPresenter} from 'viewers/common/properties_presenter';
 import {RectsPresenter} from 'viewers/common/rects_presenter';
 import {TextFilter} from 'viewers/common/text_filter';
-import {ColumnSpec, LogEntry, LogHeader} from 'viewers/common/ui_data_log';
+import {
+  ClickableProperty,
+  ColumnSpec,
+  LogEntry,
+  LogHeader,
+} from 'viewers/common/ui_data_log';
 import {UI_RECT_FACTORY} from 'viewers/common/ui_rect_factory';
 import {UserOptions} from 'viewers/common/user_options';
 import {ViewerEvents} from 'viewers/common/viewer_events';
@@ -411,8 +417,12 @@ export class Presenter extends AbstractLogViewerPresenter<
           spec: Presenter.COLUMNS.details,
           value:
             type.getValue() === InputEventType.KEY
-              ? Presenter.extractKeyDetails(wrapperTree)
-              : Presenter.extractDispatchDetails(wrapperTree),
+              ? Presenter.extractKeyDetails(wrapperTree, (id) =>
+                  this.getLayerDisplayName(id),
+                )
+              : Presenter.createDispatchArray(wrapperTree, (id) =>
+                  this.getLayerDisplayName(id),
+                ),
         },
         {
           spec: Presenter.COLUMNS.dispatchWindows,
@@ -507,31 +517,59 @@ export class Presenter extends AbstractLogViewerPresenter<
     }
   }
 
-  private static extractKeyDetails(wrapperTree: HierarchyTreeNode): string {
+  private static extractKeyDetails(
+    wrapperTree: HierarchyTreeNode,
+    displayNameGetter: (id: number) => string,
+  ): Array<string | ClickableProperty> {
     const keyDetails =
       'Keycode: ' +
       (wrapperTree
         .getEagerPropertyByName('keyCode')
         ?.formattedValue()
         ?.replace(/^KEYCODE_/, '') ?? '<?>');
-    return keyDetails + ' ' + Presenter.extractDispatchDetails(wrapperTree);
+    const windows = Presenter.createDispatchArray(
+      wrapperTree,
+      displayNameGetter,
+    );
+    return [keyDetails, ' ', ...windows];
+  }
+
+  private static createDispatchArray(
+    wrapperTree: HierarchyTreeNode,
+    displayNameGetter: (id: number) => string,
+  ): Array<string | ClickableProperty> {
+    const windows = Presenter.extractDispatchDetails(
+      wrapperTree,
+      displayNameGetter,
+    );
+    const finalArray: Array<string | ClickableProperty> = ['['];
+    windows.forEach((window, index) => {
+      finalArray.push(window);
+      if (index < windows.length - 1) {
+        finalArray.push(', ');
+      }
+    });
+
+    finalArray.push(']');
+    return finalArray;
   }
 
   private static extractDispatchDetails(
     wrapperTree: HierarchyTreeNode,
-  ): string {
-    let details = '';
-    wrapperTree
-      .getEagerPropertyByName('windows')
-      ?.getAllChildren()
-      .forEach((window) => {
-        if (window.formattedValue() === '0') {
-          // Skip showing windowId 0, which is an omnipresent system window.
-          return;
-        }
-        details += window.getValue() + ', ';
+    displayNameGetter: (id: number) => string,
+  ): ClickableProperty[] {
+    const windows =
+      wrapperTree.getEagerPropertyByName('windows')?.getAllChildren() ?? [];
+    return windows
+      .filter((window) => window.formattedValue() !== '0')
+      .map((window) => {
+        const windowId = assertBigInt(window.getValue());
+        return {
+          propertyValue: windowId.toString(),
+          tooltip: displayNameGetter(Number(windowId)),
+          onClick: () => FunctionUtils.DO_NOTHING,
+        };
       });
-    return '[' + details.slice(0, -2) + ']';
   }
 
   private static getUniqueFieldValues(

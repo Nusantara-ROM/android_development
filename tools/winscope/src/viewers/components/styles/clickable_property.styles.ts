@@ -23,6 +23,17 @@ export const timeButtonStyle = `
     }
 `;
 
+export const targetWindowButtonStyle = `
+    .window-button {
+      padding: 0px;
+      line-height: normal;
+      text-align: center;
+      white-space: normal;
+      min-width: fit-content;
+      width: fit-content;
+    }
+`;
+
 export const inlineButtonStyle = `
     .inline button {
       padding: 0px;

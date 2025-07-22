@@ -62,4 +62,14 @@ export interface LogField {
   propagateEntryTimestamp?: boolean;
 }
 
-export type LogFieldValue = string | number | Timestamp;
+export type LogFieldValue =
+  | string
+  | number
+  | Timestamp
+  | Array<string | ClickableProperty>;
+
+export interface ClickableProperty {
+  propertyValue: string;
+  tooltip: string;
+  onClick: () => void;
+}
