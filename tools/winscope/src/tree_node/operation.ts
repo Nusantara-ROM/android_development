@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {TreeNode} from './tree_node';
 
-/**
- * Interface for formatting a PropertyTreeNode.
- */
-export interface PropertyFormatter {
-  format(node: PropertyTreeNode): string;
+export interface Operation<T extends TreeNode> {
+  apply(value: T): void;
 }

@@ -8,15 +8,20 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {Rect} from 'common/geometry/rect';
+import {PropertyTreeNode} from './property_tree_node';
 
-export interface Computation {
-  setRoot(value: HierarchyTreeNode): Computation;
-  executeInPlace(): void;
+export class GeometryFactory {
+  static makeRect(node: PropertyTreeNode): Rect {
+    const left = node.getChildByName('left')?.getValue() ?? 0;
+    const top = node.getChildByName('top')?.getValue() ?? 0;
+    const right = node.getChildByName('right')?.getValue() ?? 0;
+    const bottom = node.getChildByName('bottom')?.getValue() ?? 0;
+    return new Rect(left, top, right - left, bottom - top);
+  }
 }

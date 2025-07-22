@@ -19,6 +19,7 @@ import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
 import {TransformTypeFlags} from 'common/geometry/transform_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
+import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {
   BUFFER_FORMATTER,
   COLOR_FORMATTER,
@@ -36,7 +37,6 @@ import {
   SIZE_FORMATTER,
   TRANSFORM_FORMATTER,
 } from './formatters';
-import {PropertySource, PropertyTreeNode} from './property_tree_node';
 
 describe('Formatters', () => {
   describe('PropertyFormatter', () => {

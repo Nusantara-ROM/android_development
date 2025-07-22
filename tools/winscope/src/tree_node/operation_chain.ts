@@ -14,8 +14,25 @@
  * limitations under the License.
  */
 
-import {TreeNode} from 'trace/tree_node/tree_node';
+import {Operation} from './operation';
+import {TreeNode} from './tree_node';
 
-export interface Operation<T extends TreeNode> {
-  apply(value: T): void;
+export class OperationChain<T extends TreeNode> {
+  constructor(private readonly enclosedOperations: Array<Operation<T>>) {}
+
+  apply(value: T): T {
+    this.enclosedOperations.forEach((operation: Operation<T>) => {
+      operation.apply(value);
+    });
+
+    return value;
+  }
+
+  push(enclosedOperation: Operation<T>) {
+    this.enclosedOperations.push(enclosedOperation);
+  }
+
+  static emptyChain<T extends TreeNode>(): OperationChain<T> {
+    return new OperationChain([]);
+  }
 }

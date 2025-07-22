@@ -16,11 +16,8 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {SetFormatters} from 'parsers/operations/set_formatters';
-import {OperationChain} from 'trace/tree_node/operations/operation_chain';
-import {
-  PropertySource,
-  PropertyTreeNode,
-} from 'trace/tree_node/property_tree_node';
+import {OperationChain} from './operation_chain';
+import {PropertySource, PropertyTreeNode} from './property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from './property_tree_node_factory';
 
 export type LazyPropertiesStrategyType = () => Promise<PropertyTreeNode>;

@@ -15,13 +15,13 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {Operation} from 'trace/tree_node/operations/operation';
-import {OperationChain} from 'trace/tree_node/operations/operation_chain';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {Operation} from './operation';
+import {OperationChain} from './operation_chain';
 import {
   LazyPropertiesStrategyType,
   PropertiesProvider,
 } from './properties_provider';
+import {PropertyTreeNode} from './property_tree_node';
 
 export class PropertiesProviderBuilder {
   private eagerProperties: PropertyTreeNode | undefined;

@@ -15,9 +15,9 @@
  */
 
 import {UserWarning} from 'messaging/user_warning';
-import {TraceRect} from 'trace/trace_rect';
-import {PropertiesProvider} from 'trace/tree_node/properties_provider';
+import {PropertiesProvider} from './properties_provider';
 import {PropertyTreeNode} from './property_tree_node';
+import {TraceRect} from './trace_rect';
 import {TreeNode} from './tree_node';
 
 export class HierarchyTreeNode extends TreeNode {

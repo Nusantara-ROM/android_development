@@ -16,10 +16,7 @@
 
 import {Timestamp} from 'common/time/time';
 import {TimeDuration} from 'common/time/time_duration';
-import {
-  PropertySource,
-  PropertyTreeNode,
-} from 'trace/tree_node/property_tree_node';
+import {PropertySource, PropertyTreeNode} from './property_tree_node';
 
 export class PropertyTreeNodeFactory {
   constructor(private denylistProperties: string[] = []) {}

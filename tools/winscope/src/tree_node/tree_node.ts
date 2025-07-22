@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Item} from 'trace/item';
+import {Item} from './item';
 
 export abstract class TreeNode implements Item {
   protected children: this[] = [];

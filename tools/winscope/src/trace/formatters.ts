@@ -17,9 +17,10 @@
 import {TransformType} from 'common/geometry/transform_utils';
 import {Timestamp} from 'common/time/time';
 import {TimeDuration} from 'common/time/time_duration';
-import {RawDataUtils} from 'parsers/raw_data_utils';
-import {CujType} from 'trace/cujs/cuj_type';
-import {PropertyTreeNode} from './property_tree_node';
+import {CujType} from 'trace/cuj_type';
+import {PropertyFormatter} from 'tree_node/property_formatter';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {RawDataUtils} from 'tree_node/raw_data_utils';
 
 const EMPTY_OBJ_STRING = '{empty}';
 const EMPTY_ARRAY_STRING = '[empty]';
@@ -40,10 +41,6 @@ function formatAsHex(value: number, upperCase = false): string {
     hexValue = hexValue.toUpperCase();
   }
   return '0x' + hexValue;
-}
-
-interface PropertyFormatter {
-  format(node: PropertyTreeNode): string;
 }
 
 class DefaultPropertyFormatter implements PropertyFormatter {
