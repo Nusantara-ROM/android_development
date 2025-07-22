@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+// TODO(b/311642700): Not google3 compatible recommended trySanitizeUrl and windowOpen
 export class WindowUtils {
   static showPopupWindow(url: string): boolean {
     const popup = window.open(

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// TODO(b/311642700): Not google3 compatible
 import Long from 'long';
 import * as protobuf from 'protobufjs';
 

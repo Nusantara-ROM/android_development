@@ -61,7 +61,7 @@ function wrapWithPersistentStoreProxy(
     }
   }
   const proxyObj = new Proxy(object, {
-    set: (target, prop, newValue) => {
+    set: (target: unknown, prop: any, newValue: unknown) => {
       if (typeof prop === 'symbol') {
         throw new Error("Can't use symbol keys only strings");
       }

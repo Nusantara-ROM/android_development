@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/test_utils';
+import {TimestampConverterUtils, timestampEqualityTester} from './test_utils';
 import {TimestampUtils} from './timestamp_utils';
 
 describe('TimestampUtils', () => {

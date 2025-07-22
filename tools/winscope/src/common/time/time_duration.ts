@@ -15,7 +15,7 @@
  */
 
 import {divideAndRound} from 'common/bigint_math';
-import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
+import {TIME_UNIT_TO_NANO} from './time_units';
 
 export class TimeDuration {
   constructor(private timeDiffNs: bigint) {}

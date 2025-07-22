@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// TODO(b/311642700): Not google3 compatible
 import {
   decode as protobufBase64Decode,
   encode as protobufBase64Encode,

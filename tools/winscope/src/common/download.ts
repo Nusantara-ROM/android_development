@@ -27,6 +27,7 @@ export class Download {
   static fromUrl(url: string, filename: string) {
     const a = document.createElement('a');
     document.body.appendChild(a);
+    // TODO: Do not assign non-constant values to HTMLAnchorElement#href, as this can lead to XSS
     a.href = url;
     a.download = filename;
     a.click();

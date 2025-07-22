@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {Timestamp, TimezoneInfo} from 'common/time/time';
-import {TimestampConverter} from 'common/time/timestamp_converter';
+import {Timestamp, TimezoneInfo} from './time';
+import {TimestampConverter} from './timestamp_converter';
 
 class TimestampConverterTestUtils {
   readonly ASIA_TIMEZONE_INFO: TimezoneInfo = {

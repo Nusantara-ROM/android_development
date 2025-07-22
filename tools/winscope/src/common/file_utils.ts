@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import JSZip from 'jszip';
+import * as JSZip from 'jszip';
 import {equal} from './array_utils';
 import {FunctionUtils, OnProgressUpdateType} from './function_utils';
 
