@@ -15,7 +15,7 @@
  */
 
 syntax = "proto2";
-package android.app;
+package android_common.app;
 option java_multiple_files = true;
 
 import "graphics.proto";
@@ -38,9 +38,9 @@ message StatusBarManagerProto {
 message WindowConfigurationProto {
     option (android.msg_privacy).dest = DEST_AUTOMATIC;
 
-    optional .android.graphics.RectProto app_bounds = 1;
-    optional int32 windowing_mode = 2 [(.android.typedef) = "android.app.WindowConfiguration.WindowingMode"];
-    optional int32 activity_type = 3 [(.android.typedef) = "android.app.WindowConfiguration.ActivityType"];
-    optional .android.graphics.RectProto bounds = 4;
-    optional .android.graphics.RectProto max_bounds = 5;
+    optional .android_common.graphics.RectProto app_bounds = 1;
+    optional int32 windowing_mode = 2 [(.android_common.typedef) = "android.app.WindowConfiguration.WindowingMode"];
+    optional int32 activity_type = 3 [(.android_common.typedef) = "android.app.WindowConfiguration.ActivityType"];
+    optional .android_common.graphics.RectProto bounds = 4;
+    optional .android_common.graphics.RectProto max_bounds = 5;
 }

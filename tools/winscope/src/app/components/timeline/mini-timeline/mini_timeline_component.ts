@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {CdkMenuModule} from '@angular/cdk/menu';
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -26,6 +28,8 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
@@ -39,11 +43,19 @@ import {TraceTypeUtils} from 'trace_api/trace_type';
 import {MiniTimelineDrawer} from './drawer/mini_timeline_drawer';
 import {MiniTimelineDrawerImpl} from './drawer/mini_timeline_drawer_impl';
 import {MiniTimelineDrawerInput} from './drawer/mini_timeline_drawer_input';
-import {MIN_SLIDER_WIDTH} from './slider_component';
+import {MIN_SLIDER_WIDTH, SliderComponent} from './slider_component';
 import {Transformer} from './transformer';
 
 @Component({
   selector: 'mini-timeline',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    CdkMenuModule,
+    SliderComponent,
+  ],
   template: `
     <div class="mini-timeline-outer-wrapper">
       <div class="zoom-buttons">

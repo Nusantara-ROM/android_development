@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import {CdkDragEnd, CdkDragMove, CdkDragStart} from '@angular/cdk/drag-drop';
+import {
+  CdkDragEnd,
+  CdkDragMove,
+  CdkDragStart,
+  DragDropModule,
+} from '@angular/cdk/drag-drop';
 import {
   ChangeDetectorRef,
   Component,
@@ -37,6 +42,8 @@ import {Transformer} from './transformer';
 
 @Component({
   selector: 'slider',
+  standalone: true,
+  imports: [DragDropModule],
   template: `
     <div id="timeline-slider-box" #sliderBox>
       <div class="background line"></div>

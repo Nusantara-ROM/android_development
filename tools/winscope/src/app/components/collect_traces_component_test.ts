@@ -16,12 +16,7 @@
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {CommonModule} from '@angular/common';
-import {
-  Component,
-  NO_ERRORS_SCHEMA,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
+import {Component, QueryList, ViewChildren} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -37,7 +32,10 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTabsModule} from '@angular/material/tabs';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {ProxyTraceTimeout} from 'messaging/user_warnings';
@@ -84,6 +82,7 @@ describe('CollectTracesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         CommonModule,
         MatIconModule,
         MatCardModule,
@@ -102,9 +101,6 @@ describe('CollectTracesComponent', () => {
         MatInputModule,
         ClipboardModule,
         OverlayModule,
-      ],
-      providers: [MatSnackBar],
-      declarations: [
         TestHostComponent,
         CollectTracesComponent,
         WinscopeProxySetupComponent,
@@ -113,7 +109,8 @@ describe('CollectTracesComponent', () => {
         LoadProgressComponent,
         WarningDialogComponent,
       ],
-      schemas: [NO_ERRORS_SCHEMA],
+      providers: [MatSnackBar],
+      schemas: [],
     }).compileComponents();
     const fixture = TestBed.createComponent(TestHostComponent);
     hostComponent = fixture.componentInstance;
@@ -941,6 +938,7 @@ describe('CollectTracesComponent', () => {
   }
 
   @Component({
+    imports: [CollectTracesComponent, CommonModule],
     selector: 'host-component',
     template: `
       <collect-traces

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -23,6 +24,9 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {Color} from 'app/colors';
 import {isElementOverflowing, KeyboardEventKey} from 'common/dom_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
@@ -38,11 +42,30 @@ import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
 import {UserOptions} from 'viewers/common/user_options';
 import {ViewerEvents} from 'viewers/common/viewer_events';
+import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
+import {PropertiesTableComponent} from 'viewers/components/properties_table_component';
+import {SearchBoxComponent} from 'viewers/components/search_box_component';
 import {nodeStyles} from 'viewers/components/styles/node.styles';
+import {TreeComponent} from 'viewers/components/tree_component';
+import {TreeNodeComponent} from 'viewers/components/tree_node_component';
+import {UserOptionsComponent} from 'viewers/components/user_options_component';
 import {viewerCardInnerStyle} from './styles/viewer_card.styles';
 
 @Component({
   selector: 'hierarchy-view',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatTooltipModule,
+    CollapsibleSectionTitleComponent,
+    SearchBoxComponent,
+    UserOptionsComponent,
+    PropertiesTableComponent,
+    TreeComponent,
+    TreeNodeComponent,
+  ],
   template: `
     <div class="view-header">
       <div class="title-section">

@@ -24,6 +24,7 @@ import {AbstractTimelineRowComponent} from './abstract_timeline_row_component';
 
 @Component({
   selector: 'single-timeline',
+  standalone: true,
   template: `
     <div
       class="single-timeline"

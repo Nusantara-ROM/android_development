@@ -26,8 +26,11 @@ describe('CollapsibleSectionTitleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatButtonModule, MatIconModule],
-      declarations: [CollapsibleSectionTitleComponent],
+      imports: [
+        CollapsibleSectionTitleComponent,
+        MatButtonModule,
+        MatIconModule,
+      ],
     }).compileComponents();
     const fixture = TestBed.createComponent(CollapsibleSectionTitleComponent);
     component = fixture.componentInstance;

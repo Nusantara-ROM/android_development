@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -24,8 +25,16 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {createCustomElement} from '@angular/elements';
-import {FormControl, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
+import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {Title} from '@angular/platform-browser';
 import {AbtChromeExtensionProtocol} from 'abt_chrome_extension/abt_chrome_extension_protocol';
 import {Mediator} from 'app/mediator';
@@ -70,6 +79,11 @@ import {ViewerTransactionsComponent} from 'viewers/viewer_transactions/viewer_tr
 import {ViewerTransitionsComponent} from 'viewers/viewer_transitions/viewer_transitions_component';
 import {ViewerViewCaptureComponent} from 'viewers/viewer_view_capture/viewer_view_capture_component';
 import {ViewerWindowManagerComponent} from 'viewers/viewer_window_manager/viewer_window_manager_component';
+import {
+  MatDrawer,
+  MatDrawerContainer,
+  MatDrawerContent,
+} from './bottomnav/bottom_drawer_component';
 import {CollectTracesComponent} from './collect_traces_component';
 import {ShortcutsComponent} from './shortcuts_component';
 import {SnackBarOpener} from './snack_bar_opener';
@@ -85,6 +99,29 @@ import {
 @Component({
   selector: 'app-root',
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    MatDividerModule,
+    MatDialogModule,
+    MatDrawer,
+    MatDrawerContainer,
+    MatDrawerContent,
+    TraceViewComponent,
+    TimelineComponent,
+    CollectTracesComponent,
+    UploadTracesComponent,
+    ShortcutsComponent,
+    WarningDialogComponent,
+  ],
   template: `
     <mat-toolbar class="toolbar">
       <div class="horizontal-align vertical-align fixed">

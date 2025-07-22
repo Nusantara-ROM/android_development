@@ -24,7 +24,10 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {
   WarningDialogComponent,
@@ -39,13 +42,15 @@ describe('WarningDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         MatIconModule,
         MatDialogModule,
         MatCheckboxModule,
         MatButtonModule,
         BrowserAnimationsModule,
+        WarningDialogComponent,
+        TestHostComponent,
       ],
-      declarations: [TestHostComponent, WarningDialogComponent],
       providers: [
         {provide: MatDialogRef, useValue: {}},
         {provide: MAT_DIALOG_DATA, useValue: {}},

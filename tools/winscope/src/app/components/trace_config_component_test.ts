@@ -25,7 +25,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
@@ -51,6 +54,7 @@ describe('TraceConfigComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         CommonModule,
         MatCheckboxModule,
         MatDividerModule,
@@ -64,8 +68,8 @@ describe('TraceConfigComponent', () => {
         MatButtonModule,
         OverlayModule,
         MatIconModule,
+        TraceConfigComponent,
       ],
-      declarations: [TraceConfigComponent],
     }).compileComponents();
     const fixture = TestBed.createComponent(TraceConfigComponent);
     component = fixture.componentInstance;

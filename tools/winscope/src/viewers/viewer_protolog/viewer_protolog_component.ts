@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {Component, ViewChild} from '@angular/core';
 import {TraceType} from 'trace_api/trace_type';
 import {LogComponent} from 'viewers/components/log_component';
@@ -22,6 +23,8 @@ import {UiData} from './ui_data';
 
 @Component({
   selector: 'viewer-protolog',
+  standalone: true,
+  imports: [CommonModule, LogComponent],
   template: `
     <div class="card-grid">
        <log-view

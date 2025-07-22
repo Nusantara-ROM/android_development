@@ -31,8 +31,7 @@ describe('UserOptionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatButtonModule, MatIconModule],
-      declarations: [UserOptionsComponent],
+      imports: [UserOptionsComponent, MatButtonModule, MatIconModule],
     }).compileComponents();
     const fixture = TestBed.createComponent(UserOptionsComponent);
     component = fixture.componentInstance;

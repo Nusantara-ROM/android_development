@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
 
 @Component({
   selector: 'collapsed-sections',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatIconModule],
   template: `
       <ng-container *ngFor="let section of sections.getCollapsedSections()">
         <span class="collapsed-section" (click)="onCollapsedSectionClick(section.type)">

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -20,12 +21,39 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import {MatOption} from '@angular/material/core';
-import {MatSelect, MatSelectChange} from '@angular/material/select';
+import {FormsModule} from '@angular/forms';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {
+  MatOption,
+  MatOptionModule,
+  MatPseudoCheckboxModule,
+} from '@angular/material/core';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {
+  MatSelect,
+  MatSelectChange,
+  MatSelectModule,
+} from '@angular/material/select';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {AbstractSelectComponent} from './abstract_select_component';
 
 @Component({
   selector: 'select-with-filter',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    MatTooltipModule,
+    MatOptionModule,
+    MatPseudoCheckboxModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <mat-form-field

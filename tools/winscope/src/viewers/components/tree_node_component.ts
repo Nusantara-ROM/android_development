@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {CommonModule} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -22,14 +24,27 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 import {assertDefined} from 'common/assert_utils';
 import {DiffType} from 'viewers/common/diff_type';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
 import {nodeInnerItemStyles} from 'viewers/components/styles/node.styles';
+import {HierarchyTreeNodeDataViewComponent} from './hierarchy_tree_node_data_view_component';
+import {PropertyTreeNodeDataViewComponent} from './property_tree_node_data_view_component';
 
 @Component({
   selector: 'tree-node',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    ClipboardModule,
+    HierarchyTreeNodeDataViewComponent,
+    PropertyTreeNodeDataViewComponent,
+  ],
   template: `
     <div *ngIf="showStateIcon" class="icon-wrapper-show-state" [style]="getShowStateIconStyle()">
       <button

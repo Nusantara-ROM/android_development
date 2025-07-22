@@ -15,9 +15,14 @@
  */
 
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @Component({
   selector: 'collapsible-section-title',
+  standalone: true,
+  imports: [MatButtonModule, MatIconModule, MatTooltipModule],
   template: `
       <button
         mat-icon-button

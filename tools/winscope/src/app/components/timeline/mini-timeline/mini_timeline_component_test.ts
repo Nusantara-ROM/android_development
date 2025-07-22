@@ -25,7 +25,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
@@ -79,6 +82,7 @@ describe('MiniTimelineComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         FormsModule,
         MatButtonModule,
         MatFormFieldModule,
@@ -90,8 +94,10 @@ describe('MiniTimelineComponent', () => {
         BrowserAnimationsModule,
         DragDropModule,
         CdkMenuModule,
+        MiniTimelineComponent,
+        SliderComponent,
+        TestHostComponent,
       ],
-      declarations: [TestHostComponent, MiniTimelineComponent, SliderComponent],
     })
       .overrideComponent(MiniTimelineComponent, {
         set: {changeDetection: ChangeDetectionStrategy.Default},
@@ -794,6 +800,7 @@ describe('MiniTimelineComponent', () => {
   }
 
   @Component({
+    imports: [MiniTimelineComponent],
     selector: 'host-component',
     template: `
       <mini-timeline

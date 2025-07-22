@@ -22,6 +22,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {FilesSource} from 'app/files_source';
 import {TracePipeline} from 'app/trace_pipeline';
 import {assertDefined} from 'common/assert_utils';
@@ -57,6 +58,7 @@ describe('UploadTracesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         MatCardModule,
         MatSnackBarModule,
         MatListModule,
@@ -65,9 +67,10 @@ describe('UploadTracesComponent', () => {
         MatTooltipModule,
         MatCheckboxModule,
         ClipboardModule,
+        UploadTracesComponent,
+        LoadProgressComponent,
       ],
       providers: [MatSnackBar],
-      declarations: [UploadTracesComponent, LoadProgressComponent],
     }).compileComponents();
     const fixture = TestBed.createComponent(UploadTracesComponent);
     component = fixture.componentInstance;

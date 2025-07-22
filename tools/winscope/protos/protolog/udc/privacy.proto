@@ -18,7 +18,7 @@ syntax = "proto2";
 
 package android;
 
-option java_package = "com.android.incident";
+option java_package = "com.android_common.incident";
 option java_multiple_files = true;
 
 import "google/protobuf/descriptor.proto";

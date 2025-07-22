@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 import {proxySetupStyles} from 'app/styles/proxy_setup.styles';
 import {ConnectionState} from 'trace_collection/connection_state';
 
 @Component({
   selector: 'wdp-setup',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatIconModule],
   template: `
     <ng-container [ngSwitch]="state">
       <ng-container *ngSwitchCase="${ConnectionState.CONNECTING}">

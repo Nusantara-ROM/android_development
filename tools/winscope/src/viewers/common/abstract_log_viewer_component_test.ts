@@ -231,50 +231,48 @@ export abstract class AbstractLogViewerComponentTest<
   protected async initializeTestEnvironment<U extends T>(
     initialUiData: UiDataLog,
     typeofViewer: Type<U>,
-    addedDeclarations: object[] = [],
+    addedImports: object[] = [],
   ): Promise<[DOMTestHelper<U>, CdkVirtualScrollViewport, U]> {
-    const declarations: object[] = [
+    const imports: object[] = [
       typeofViewer,
       SelectWithFilterComponent,
       SearchBoxComponent,
       LogComponent,
       VariableHeightScrollDirective,
+      TreeComponent,
+      TreeNodeComponent,
+      PropertyTreeNodeDataViewComponent,
+      MatDividerModule,
+      ScrollingModule,
+      MatIconModule,
+      ClipboardModule,
+      MatFormFieldModule,
+      MatButtonModule,
+      MatInputModule,
+      BrowserAnimationsModule,
+      FormsModule,
+      MatSelectModule,
+      MatTooltipModule,
+      HttpClientModule,
+      MatSliderModule,
+      MatProgressSpinnerModule,
+      MatIconTestingModule,
     ];
-    if (addedDeclarations) {
-      declarations.push(...addedDeclarations);
+    if (addedImports) {
+      imports.push(...addedImports);
     }
     if (this.testProperties) {
-      declarations.push(
+      imports.push(
         ...[
           CollapsedSectionsComponent,
           CollapsibleSectionTitleComponent,
           PropertiesComponent,
-          TreeComponent,
-          TreeNodeComponent,
-          PropertyTreeNodeDataViewComponent,
         ],
       );
     }
     await TestBed.configureTestingModule({
       providers: [{provide: ComponentFixtureAutoDetect, useValue: true}],
-      imports: [
-        MatDividerModule,
-        ScrollingModule,
-        MatIconModule,
-        ClipboardModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatInputModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        MatSelectModule,
-        MatTooltipModule,
-        HttpClientModule,
-        MatSliderModule,
-        MatProgressSpinnerModule,
-        MatIconTestingModule,
-      ],
-      declarations,
+      imports,
     }).compileComponents();
 
     const fixture = TestBed.createComponent<U>(typeofViewer);

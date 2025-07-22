@@ -14,18 +14,33 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {assertDefined} from 'common/assert_utils';
 import {TraceType} from 'trace_api/trace_type';
 import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
+import {CollapsedSectionsComponent} from 'viewers/components/collapsed_sections_component';
+import {HierarchyComponent} from 'viewers/components/hierarchy_component';
+import {PropertiesComponent} from 'viewers/components/properties_component';
+import {RectsComponent} from 'viewers/components/rects/rects_component';
 import {ShadingMode} from 'viewers/components/rects/shading_mode';
 import {viewerCardStyle} from 'viewers/components/styles/viewer_card.styles';
+import {SurfaceFlingerPropertyGroupsComponent} from 'viewers/components/surface_flinger_property_groups_component';
 import {ViewerComponent} from 'viewers/components/viewer_component';
 import {UiData} from './ui_data';
 
 @Component({
   selector: 'viewer-surface-flinger',
+  standalone: true,
+  imports: [
+    CommonModule,
+    CollapsedSectionsComponent,
+    RectsComponent,
+    HierarchyComponent,
+    PropertiesComponent,
+    SurfaceFlingerPropertyGroupsComponent,
+  ],
   template: `
     <div class="card-grid">
       <collapsed-sections

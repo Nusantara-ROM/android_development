@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {Component, Input} from '@angular/core';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @Component({
   selector: 'load-progress',
+  standalone: true,
+  imports: [CommonModule, MatIconModule, MatProgressBarModule],
   template: `
     <div class="container-progress">
       <p class="mat-body-3">

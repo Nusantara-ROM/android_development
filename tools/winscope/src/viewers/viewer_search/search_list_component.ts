@@ -14,14 +14,26 @@
  * limitations under the License.
  */
 
-import {NgTemplateOutlet} from '@angular/common';
+import {CdkMenuModule} from '@angular/cdk/menu';
+import {CommonModule, NgTemplateOutlet} from '@angular/common';
 import {Component, Input} from '@angular/core';
 import {FormControl} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {isElementOverflowing} from 'common/dom_utils';
 import {ListedSearch} from './ui_data';
 
 @Component({
   selector: 'search-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    CdkMenuModule,
+  ],
   template: `
     <span class="mat-body-1" *ngIf="searches.length === 0">
       {{placeholderText}}

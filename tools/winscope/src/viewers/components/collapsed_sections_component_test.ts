@@ -29,8 +29,7 @@ describe('CollapsedSectionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatButtonModule, MatIconModule],
-      declarations: [CollapsedSectionsComponent],
+      imports: [CollapsedSectionsComponent, MatButtonModule, MatIconModule],
     }).compileComponents();
     const fixture = TestBed.createComponent(CollapsedSectionsComponent);
     component = fixture.componentInstance;

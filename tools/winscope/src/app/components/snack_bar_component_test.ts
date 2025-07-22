@@ -18,6 +18,7 @@ import {Clipboard, ClipboardModule} from '@angular/cdk/clipboard';
 import {TestBed} from '@angular/core/testing';
 import {MatButtonModule} from '@angular/material/button';
 import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from '@angular/material/snack-bar';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {SnackBarComponent} from './snack_bar_component';
 
@@ -37,8 +38,12 @@ describe('SnackBarComponent', () => {
         {provide: MAT_SNACK_BAR_DATA, useValue: messages},
         {provide: Clipboard, useValue: {copy: mockCopyText}},
       ],
-      imports: [ClipboardModule, MatButtonModule],
-      declarations: [SnackBarComponent],
+      imports: [
+        NoopAnimationsModule,
+        ClipboardModule,
+        MatButtonModule,
+        SnackBarComponent,
+      ],
     }).compileComponents();
     const fixture = TestBed.createComponent(SnackBarComponent);
     component = fixture.componentInstance;

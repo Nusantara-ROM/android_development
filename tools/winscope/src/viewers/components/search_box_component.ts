@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {assertDefined} from 'common/assert_utils';
 import {FilterFlag} from 'common/filter_flag';
 import {TextFilter} from 'viewers/common/text_filter';
@@ -22,6 +29,16 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
 
 @Component({
   selector: 'search-box',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+  ],
   template: `
     <mat-form-field
       *ngIf="textFilter"

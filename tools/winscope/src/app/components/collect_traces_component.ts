@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -24,8 +25,15 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
 import {MatDialog} from '@angular/material/dialog';
-import {MatSelectChange} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatListModule} from '@angular/material/list';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {equal} from 'common/array_utils';
 import {
   assertDefined,
@@ -70,14 +78,33 @@ import {
 import {UiTraceTarget} from 'trace_collection/ui/ui_trace_target';
 import {UserRequest, UserRequestConfig} from 'trace_collection/user_request';
 import {LoadProgressComponent} from './load_progress_component';
+import {TraceConfigComponent} from './trace_config_component';
 import {
   WarningDialogComponent,
   WarningDialogData,
   WarningDialogResult,
 } from './warning_dialog_component';
+import {WdpSetupComponent} from './wdp_setup_component';
+import {WinscopeProxySetupComponent} from './winscope_proxy_setup_component';
 
 @Component({
   selector: 'collect-traces',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatIconModule,
+    WinscopeProxySetupComponent,
+    WdpSetupComponent,
+    MatListModule,
+    MatTabsModule,
+    TraceConfigComponent,
+    LoadProgressComponent,
+  ],
   template: `
     <mat-card class="collect-card">
       <mat-card-title class="title">Collect Traces</mat-card-title>

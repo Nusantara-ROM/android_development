@@ -18,7 +18,7 @@ syntax = "proto2";
 import "android.proto";
 import "app.proto";
 
-package android.content;
+package android_common.content;
 option java_multiple_files = true;
 
 message ActivityInfoProto {
@@ -47,11 +47,11 @@ message ActivityInfoProto {
  * An android Configuration object.
  */
 message ConfigurationProto {
-    option (.android.msg_privacy).dest = DEST_AUTOMATIC;
+    option (.android_common.msg_privacy).dest = DEST_AUTOMATIC;
 
     optional float font_scale = 1;
     optional uint32 mcc = 2;
-    optional uint32 mnc = 3 [ (.android.privacy).dest = DEST_EXPLICIT ];
+    optional uint32 mnc = 3 [ (.android_common.privacy).dest = DEST_EXPLICIT ];
     repeated LocaleProto locales = 4 [deprecated = true];
     optional uint32 screen_layout = 5;
     optional uint32 color_mode = 6;
@@ -67,7 +67,7 @@ message ConfigurationProto {
     optional uint32 screen_height_dp = 16;
     optional uint32 smallest_screen_width_dp = 17;
     optional uint32 density_dpi = 18;
-    optional .android.app.WindowConfigurationProto window_configuration = 19;
+    optional .android_common.app.WindowConfigurationProto window_configuration = 19;
     optional string locale_list = 20;
     optional uint32 font_weight_adjustment = 21;
     optional uint32 grammatical_gender = 22;
@@ -77,7 +77,7 @@ message ConfigurationProto {
  * All current configuration data used to select resources.
  */
 message ResourcesConfigurationProto {
-    option (.android.msg_privacy).dest = DEST_AUTOMATIC;
+    option (.android_common.msg_privacy).dest = DEST_AUTOMATIC;
 
     required ConfigurationProto configuration = 1;
 
@@ -90,7 +90,7 @@ message ResourcesConfigurationProto {
  * Overall device configuration data.
  */
 message DeviceConfigurationProto {
-    option (.android.msg_privacy).dest = DEST_AUTOMATIC;
+    option (.android_common.msg_privacy).dest = DEST_AUTOMATIC;
 
     optional uint32 stable_screen_width_px = 1;
     optional uint32 stable_screen_height_px = 2;
@@ -114,7 +114,7 @@ message DeviceConfigurationProto {
  * to filter and target apps.
  */
 message GlobalConfigurationProto {
-    option (.android.msg_privacy).dest = DEST_AUTOMATIC;
+    option (.android_common.msg_privacy).dest = DEST_AUTOMATIC;
 
     optional ResourcesConfigurationProto resources = 1;
     optional DeviceConfigurationProto device = 2;
@@ -122,7 +122,7 @@ message GlobalConfigurationProto {
 
 message LocaleProto {
     option deprecated = true;
-    option (.android.msg_privacy).dest = DEST_AUTOMATIC;
+    option (.android_common.msg_privacy).dest = DEST_AUTOMATIC;
 
     optional string language = 1;
     optional string country = 2;

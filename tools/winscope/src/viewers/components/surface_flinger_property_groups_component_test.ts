@@ -34,9 +34,11 @@ describe('SurfaceFlingerPropertyGroupsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [{provide: ComponentFixtureAutoDetect, useValue: true}],
-      imports: [MatDividerModule, MatTooltipModule, MatIconModule],
-      declarations: [
+      imports: [
         TestHostComponent,
+        MatDividerModule,
+        MatTooltipModule,
+        MatIconModule,
         SurfaceFlingerPropertyGroupsComponent,
         TransformMatrixComponent,
         CollapsibleSectionTitleComponent,
@@ -202,6 +204,7 @@ describe('SurfaceFlingerPropertyGroupsComponent', () => {
   }
 
   @Component({
+    imports: [SurfaceFlingerPropertyGroupsComponent],
     selector: 'host-component',
     template: `
       <surface-flinger-property-groups

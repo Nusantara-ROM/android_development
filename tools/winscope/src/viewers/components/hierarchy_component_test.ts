@@ -51,16 +51,14 @@ describe('HierarchyComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [{provide: ComponentFixtureAutoDetect, useValue: true}],
-      declarations: [
+      imports: [
         HierarchyComponent,
-        TreeComponent,
-        TreeNodeComponent,
         HierarchyTreeNodeDataViewComponent,
         CollapsibleSectionTitleComponent,
         UserOptionsComponent,
         SearchBoxComponent,
-      ],
-      imports: [
+        TreeComponent,
+        TreeNodeComponent,
         CommonModule,
         MatButtonModule,
         MatDividerModule,

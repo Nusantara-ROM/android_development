@@ -32,9 +32,10 @@ describe('SearchListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestHostComponent, SearchListComponent],
       imports: [
         CdkMenuModule,
+        SearchListComponent,
+        TestHostComponent,
         BrowserAnimationsModule,
         MatTooltipModule,
         MatIconModule,
@@ -134,6 +135,7 @@ describe('SearchListComponent', () => {
   });
 
   @Component({
+    imports: [SearchListComponent],
     selector: 'host-component',
     template: `
       <search-list

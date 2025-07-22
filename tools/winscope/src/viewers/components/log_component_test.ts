@@ -90,8 +90,6 @@ describe('LogComponent', () => {
         MatProgressSpinnerModule,
         MatTooltipModule,
         ClipboardModule,
-      ],
-      declarations: [
         TestHostComponent,
         LogComponent,
         SelectWithFilterComponent,
@@ -473,6 +471,7 @@ describe('LogComponent', () => {
   }
 
   @Component({
+    imports: [LogComponent],
     selector: 'host-component',
     template: `
         <log-view

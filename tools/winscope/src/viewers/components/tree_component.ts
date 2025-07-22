@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -36,9 +37,12 @@ import {
   nodeStyles,
   treeNodeDataViewStyles,
 } from 'viewers/components/styles/node.styles';
+import {TreeNodeComponent} from './tree_node_component';
 
 @Component({
   selector: 'tree-view',
+  standalone: true,
+  imports: [CommonModule, TreeNodeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <tree-node

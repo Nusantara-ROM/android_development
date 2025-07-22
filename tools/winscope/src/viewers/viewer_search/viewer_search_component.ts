@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import {CdkAccordionItem} from '@angular/cdk/accordion';
-import {NgTemplateOutlet} from '@angular/common';
+import {CdkAccordionItem, CdkAccordionModule} from '@angular/cdk/accordion';
+import {CdkMenuModule} from '@angular/cdk/menu';
+import {CommonModule, NgTemplateOutlet} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -25,8 +26,21 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import {FormControl, ValidationErrors, Validators} from '@angular/forms';
-import {MatTabGroup} from '@angular/material/tabs';
+import {
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatTabGroup, MatTabsModule} from '@angular/material/tabs';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {SEARCH_VIEWS} from 'app/trace_search/trace_search_initializer';
 import {assertDefined} from 'common/assert_utils';
 import {TimeDuration} from 'common/time/time_duration';
@@ -43,16 +57,40 @@ import {
   SearchQueryClickDetail,
   ViewerEvents,
 } from 'viewers/common/viewer_events';
+import {CollapsedSectionsComponent} from 'viewers/components/collapsed_sections_component';
+import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
+import {LogComponent} from 'viewers/components/log_component';
 import {
   viewerCardInnerStyle,
   viewerCardStyle,
 } from 'viewers/components/styles/viewer_card.styles';
 import {ViewerComponent} from 'viewers/components/viewer_component';
 import {ActiveSearchComponent} from './active_search_component';
-import {ListItemOption} from './search_list_component';
+import {ListItemOption, SearchListComponent} from './search_list_component';
 import {CurrentSearch, ListedSearch, UiData} from './ui_data';
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    CollapsedSectionsComponent,
+    CollapsibleSectionTitleComponent,
+    LogComponent,
+    ActiveSearchComponent,
+    SearchListComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTabsModule,
+    CdkMenuModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    CdkAccordionModule,
+    MatDividerModule,
+  ],
   selector: 'viewer-search',
   template: `
     <div class="card-grid" *ngIf="inputData">

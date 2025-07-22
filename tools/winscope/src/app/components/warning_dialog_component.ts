@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 
 @Component({
   selector: 'warning-dialog',
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, MatCheckboxModule, MatButtonModule],
   template: `
     <h2 class="warning-dialog-title" mat-dialog-title>
       <span> Warning </span>

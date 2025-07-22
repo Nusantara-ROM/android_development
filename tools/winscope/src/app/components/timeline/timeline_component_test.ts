@@ -110,9 +110,6 @@ describe('TimelineComponent', () => {
         DragDropModule,
         ClipboardModule,
         CdkMenuModule,
-      ],
-      declarations: [
-        TestHostComponent,
         ExpandedTimelineComponent,
         DefaultTimelineRowComponent,
         MatDrawer,
@@ -121,6 +118,7 @@ describe('TimelineComponent', () => {
         MiniTimelineComponent,
         TimelineComponent,
         SliderComponent,
+        TestHostComponent,
         TransitionTimelineComponent,
       ],
     })
@@ -1395,6 +1393,7 @@ describe('TimelineComponent', () => {
   }
 
   @Component({
+    imports: [TimelineComponent],
     selector: 'host-component',
     template: `
       <timeline

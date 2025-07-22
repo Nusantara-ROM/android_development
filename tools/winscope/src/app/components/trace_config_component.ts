@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {OverlayModule} from '@angular/cdk/overlay';
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -23,8 +25,19 @@ import {
   NgZone,
   Output,
 } from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatOption} from '@angular/material/core';
-import {MatSelect, MatSelectChange} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {
+  MatSelect,
+  MatSelectChange,
+  MatSelectModule,
+} from '@angular/material/select';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {overlayPanelStyles} from 'app/styles/overlay_panel.styles';
 import {assertDefined} from 'common/assert_utils';
 import {isElementOverflowing} from 'common/dom_utils';
@@ -42,6 +55,19 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
 
 @Component({
   selector: 'trace-config',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCheckboxModule,
+    FormsModule,
+    MatButtonModule,
+    OverlayModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTooltipModule,
+  ],
   template: `
     <h3 class="mat-subheading-2">{{title}}</h3>
 

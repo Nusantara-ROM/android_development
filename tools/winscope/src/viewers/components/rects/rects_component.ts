@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -27,10 +28,16 @@ import {
   SimpleChange,
   SimpleChanges,
 } from '@angular/core';
-import {MatButtonToggleChange} from '@angular/material/button-toggle';
-import {CanColor} from '@angular/material/core';
-import {MatIconRegistry} from '@angular/material/icon';
-import {MatSelectChange} from '@angular/material/select';
+import {MatButtonModule} from '@angular/material/button';
+import {
+  MatButtonToggleChange,
+  MatButtonToggleModule,
+} from '@angular/material/button-toggle';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {DomSanitizer} from '@angular/platform-browser';
 import {assertDefined} from 'common/assert_utils';
 import {Distance} from 'common/geometry/distance';
@@ -43,17 +50,36 @@ import {DisplayIdentifier} from 'viewers/common/display_identifier';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {UserOptions} from 'viewers/common/user_options';
 import {RectDblClickDetail, ViewerEvents} from 'viewers/common/viewer_events';
+import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
 import {RectSpec, TraceRectType} from 'viewers/components/rects/rect_spec';
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {iconDividerStyle} from 'viewers/components/styles/icon_divider.styles';
 import {multlineTooltip} from 'viewers/components/styles/tooltip.styles';
 import {viewerCardInnerStyle} from 'viewers/components/styles/viewer_card.styles';
+import {UserOptionsComponent} from 'viewers/components/user_options_component';
 import {Canvas} from './canvas';
 import {Mapper3D} from './mapper3d';
 import {ShadingMode} from './shading_mode';
 
+interface CanColor {
+  color: string | undefined;
+}
+
 @Component({
   selector: 'rects-view',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatDividerModule,
+    MatIconModule,
+    MatSelectModule,
+    MatSliderModule,
+    MatTooltipModule,
+    CollapsibleSectionTitleComponent,
+    UserOptionsComponent,
+  ],
   template: `
     <div class="view-header">
       <div class="title-section">

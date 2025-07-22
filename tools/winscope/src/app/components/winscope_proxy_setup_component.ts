@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {CommonModule} from '@angular/common';
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {proxySetupStyles} from 'app/styles/proxy_setup.styles';
 import {Download} from 'common/download';
 import {getRootUrl} from 'common/url_utils';
@@ -22,6 +30,17 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
 
 @Component({
   selector: 'winscope-proxy-setup',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    ClipboardModule,
+    MatTooltipModule,
+    MatIconModule,
+    FormsModule,
+  ],
   template: `
     <ng-container [ngSwitch]="state">
       <ng-container *ngSwitchCase="${ConnectionState.CONNECTING}">

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -21,15 +22,29 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {assertDefined} from 'common/assert_utils';
 import {SfCuratedProperties} from 'viewers/common/curated_properties';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
 import {ViewerEvents} from 'viewers/common/viewer_events';
+import {CollapsibleSectionTitleComponent} from './collapsible_section_title_component';
 import {inlineButtonStyle} from './styles/clickable_property.styles';
 import {viewerCardInnerStyle} from './styles/viewer_card.styles';
+import {TransformMatrixComponent} from './transform_matrix_component';
 
 @Component({
   selector: 'surface-flinger-property-groups',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDividerModule,
+    MatButtonModule,
+    MatTooltipModule,
+    CollapsibleSectionTitleComponent,
+    TransformMatrixComponent,
+  ],
   template: `
     <div class="title-section">
       <collapsible-section-title

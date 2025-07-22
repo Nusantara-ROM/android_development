@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {NgTemplateOutlet} from '@angular/common';
+import {CommonModule, NgTemplateOutlet} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -24,13 +24,28 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
+import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventKey} from 'common/dom_utils';
 import {Analytics} from 'logging/analytics';
 
 @Component({
   selector: 'active-search',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+  ],
   template: `
     <span class="header">
       <span class="mat-body-2"> {{label}} </span>

@@ -21,9 +21,7 @@ globalConfig.set({
   MODE: 'DEV',
 });
 
-import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {AppModule} from './app/app_module';
+import {bootstrapApplication} from '@angular/platform-browser';
+import {AppComponent} from 'app/components/app_component';
 
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent).catch((e) => console.error(e));

@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {Component, Inject} from '@angular/core';
-import {MatIconRegistry} from '@angular/material/icon';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from '@angular/platform-browser';
 import {overlayPanelStyles} from 'app/styles/overlay_panel.styles';
 import {getRootUrl} from 'common/url_utils';
 
 @Component({
   selector: 'shortcuts-panel',
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, MatIconModule],
   template: `
     <h2 class="dialog-title" mat-dialog-title>
       <span> ESSENTIAL SHORTCUTS </span>
@@ -62,7 +66,7 @@ import {getRootUrl} from 'common/url_utils';
           </span>
         </div>
         <div class="pointer-shortcut mat-body-1">
-          <mat-icon class="trackpad-icon tall enlarge" svgIcon="trackpad_horizontal_scroll"></mat-icon>
+          <mat-icon class="trackpad-icon tall" svgIcon="trackpad_horizontal_scroll"></mat-icon>
           <span class="action">
             <span class="italic-text"> Horizontal Scroll </span>
             <span> Move slider left/right </span>

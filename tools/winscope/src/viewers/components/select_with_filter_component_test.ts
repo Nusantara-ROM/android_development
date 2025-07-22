@@ -39,7 +39,6 @@ describe('SelectWithFilterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [{provide: ComponentFixtureAutoDetect, useValue: true}],
-      declarations: [SelectWithFilterComponent, TestHostComponent],
       imports: [
         CommonModule,
         MatSelectModule,
@@ -51,6 +50,8 @@ describe('SelectWithFilterComponent', () => {
         MatPseudoCheckboxModule,
         MatDividerModule,
         MatTooltipModule,
+        SelectWithFilterComponent,
+        TestHostComponent,
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(TestHostComponent);
@@ -298,6 +299,7 @@ describe('SelectWithFilterComponent', () => {
   }
 
   @Component({
+    imports: [SelectWithFilterComponent],
     selector: 'host-component',
     template: `
       <select-with-filter

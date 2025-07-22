@@ -48,18 +48,11 @@ describe('PropertiesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [{provide: ComponentFixtureAutoDetect, useValue: true}],
-      declarations: [
-        PropertiesComponent,
-        SurfaceFlingerPropertyGroupsComponent,
-        TreeComponent,
-        TreeNodeComponent,
-        PropertyTreeNodeDataViewComponent,
-        CollapsibleSectionTitleComponent,
-        UserOptionsComponent,
-        SearchBoxComponent,
-      ],
       imports: [
         CommonModule,
+        PropertyTreeNodeDataViewComponent,
+        TreeNodeComponent,
+        TreeComponent,
         MatInputModule,
         MatFormFieldModule,
         MatButtonModule,
@@ -70,6 +63,11 @@ describe('PropertiesComponent', () => {
         MatIconModule,
         MatTooltipModule,
         ClipboardModule,
+        PropertiesComponent,
+        SurfaceFlingerPropertyGroupsComponent,
+        CollapsibleSectionTitleComponent,
+        UserOptionsComponent,
+        SearchBoxComponent,
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(PropertiesComponent);

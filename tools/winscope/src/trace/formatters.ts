@@ -279,6 +279,7 @@ export {
   DEFAULT_PROPERTY_FORMATTER,
   EnumFormatter,
   FixedStringFormatter,
+  formatAsHex,
   HEX_FORMATTER,
   LAYER_ID_FORMATTER,
   MATRIX_FORMATTER,

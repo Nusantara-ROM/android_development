@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {Component, Input} from '@angular/core';
+import {MatDividerModule} from '@angular/material/divider';
 import {VcCuratedProperties} from 'viewers/common/curated_properties';
 
 @Component({
   selector: 'view-capture-property-groups',
+  standalone: true,
+  imports: [CommonModule, MatDividerModule],
   template: `
     <div *ngIf="properties" class="group view">
       <h3 class="group-header mat-subheading-2">View</h3>

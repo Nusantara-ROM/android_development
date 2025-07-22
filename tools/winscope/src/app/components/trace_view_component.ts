@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {OverlayModule} from '@angular/cdk/overlay';
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -23,7 +25,19 @@ import {
   NgZone,
   SimpleChanges,
 } from '@angular/core';
-import {FormControl, ValidationErrors, Validators} from '@angular/forms';
+import {
+  FormControl,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {overlayPanelStyles} from 'app/styles/overlay_panel.styles';
 import {assertDefined} from 'common/assert_utils';
 import {FunctionUtils} from 'common/function_utils';
@@ -54,6 +68,19 @@ interface Tab {
 
 @Component({
   selector: 'trace-view',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MatIconModule,
+    OverlayModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatDividerModule,
+  ],
   template: `
       <div class="overlay-container">
       </div>

@@ -16,7 +16,7 @@
 
 import {OverlayModule} from '@angular/cdk/overlay';
 import {CommonModule} from '@angular/common';
-import {Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -27,7 +27,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TimestampConverterUtils} from 'common/time/test_utils';
@@ -62,8 +65,9 @@ describe('TraceViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestHostComponent, TraceViewComponent],
       imports: [
+        NoopAnimationsModule,
+        TestHostComponent,
         CommonModule,
         MatCardModule,
         MatDividerModule,
@@ -76,8 +80,9 @@ describe('TraceViewComponent', () => {
         BrowserAnimationsModule,
         MatInputModule,
         ReactiveFormsModule,
+        TraceViewComponent,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [],
     }).compileComponents();
     const fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
@@ -368,6 +373,7 @@ describe('TraceViewComponent', () => {
   }
 
   @Component({
+    imports: [TraceViewComponent, CommonModule],
     selector: 'host-component',
     template: `
       <trace-view

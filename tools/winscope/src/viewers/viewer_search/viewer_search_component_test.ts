@@ -17,6 +17,7 @@
 import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {CdkMenuModule} from '@angular/cdk/menu';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import {CommonModule} from '@angular/common';
 import {Component, ViewChild} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -59,17 +60,9 @@ describe('ViewerSearchComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        TestHostComponent,
-        ViewerSearchComponent,
-        CollapsedSectionsComponent,
-        CollapsibleSectionTitleComponent,
-        ActiveSearchComponent,
-        SearchListComponent,
-        LogComponent,
-        VariableHeightScrollDirective,
-      ],
       imports: [
+        CommonModule,
+        TestHostComponent,
         MatFormFieldModule,
         MatInputModule,
         BrowserAnimationsModule,
@@ -84,6 +77,13 @@ describe('ViewerSearchComponent', () => {
         MatTooltipModule,
         CdkAccordionModule,
         MatDividerModule,
+        ViewerSearchComponent,
+        CollapsedSectionsComponent,
+        CollapsibleSectionTitleComponent,
+        ActiveSearchComponent,
+        SearchListComponent,
+        LogComponent,
+        VariableHeightScrollDirective,
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(TestHostComponent);
@@ -508,6 +508,7 @@ describe('ViewerSearchComponent', () => {
   }
 
   @Component({
+    imports: [ViewerSearchComponent],
     selector: 'host-component',
     template: `
       <viewer-search [inputData]="inputData"></viewer-search>

@@ -42,7 +42,10 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {Title} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {Download} from 'common/download';
 import {FileUtils} from 'common/file_utils';
@@ -90,6 +93,7 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       providers: [Title, {provide: ComponentFixtureAutoDetect, useValue: true}],
       imports: [
+        NoopAnimationsModule,
         CommonModule,
         FormsModule,
         MatCardModule,
@@ -114,8 +118,6 @@ describe('AppComponent', () => {
         MatCheckboxModule,
         MatProgressBarModule,
         MatTabsModule,
-      ],
-      declarations: [
         WinscopeProxySetupComponent,
         WdpSetupComponent,
         AppComponent,
@@ -128,10 +130,10 @@ describe('AppComponent', () => {
         TraceConfigComponent,
         TraceViewComponent,
         UploadTracesComponent,
-        ViewerSurfaceFlingerComponent,
         ShortcutsComponent,
         SnackBarComponent,
         WarningDialogComponent,
+        ViewerSurfaceFlingerComponent,
       ],
     })
       .overrideComponent(AppComponent, {

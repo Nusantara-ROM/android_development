@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -30,10 +32,17 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
+  ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
@@ -62,11 +71,26 @@ import {TRACE_INFO} from 'trace_api/trace_info';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType, TraceTypeUtils} from 'trace_api/trace_type';
 import {multlineTooltip} from 'viewers/components/styles/tooltip.styles';
+import {ExpandedTimelineComponent} from './expanded-timeline/expanded_timeline_component';
 import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
 
 @Component({
   selector: 'timeline',
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    ExpandedTimelineComponent,
+    MiniTimelineComponent,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTooltipModule,
+    ClipboardModule,
+    MatSelectModule,
+  ],
   template: `
     <div
       *ngIf="isDisabled"

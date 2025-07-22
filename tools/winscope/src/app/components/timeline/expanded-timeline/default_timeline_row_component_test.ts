@@ -51,8 +51,8 @@ describe('DefaultTimelineRowComponent', () => {
         ReactiveFormsModule,
         BrowserAnimationsModule,
         DragDropModule,
+        DefaultTimelineRowComponent,
       ],
-      declarations: [DefaultTimelineRowComponent],
     }).compileComponents();
     const fixture = TestBed.createComponent(DefaultTimelineRowComponent);
     component = fixture.componentInstance;

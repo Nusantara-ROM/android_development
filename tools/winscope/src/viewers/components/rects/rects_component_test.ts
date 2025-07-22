@@ -93,8 +93,6 @@ describe('RectsComponent', () => {
         BrowserAnimationsModule,
         MatFormFieldModule,
         MatButtonToggleModule,
-      ],
-      declarations: [
         TestHostComponent,
         RectsComponent,
         CollapsibleSectionTitleComponent,
@@ -1102,6 +1100,7 @@ describe('RectsComponent', () => {
   }
 
   @Component({
+    imports: [RectsComponent],
     selector: 'host-component',
     template: `
       <rects-view

@@ -22,6 +22,7 @@ import {UiData} from './ui_data';
 import {ViewerSurfaceFlingerComponent} from './viewer_surface_flinger_component';
 
 @Component({
+  imports: [ViewerSurfaceFlingerComponent],
   selector: 'host-component',
   template:
     '<viewer-surface-flinger [inputData]="inputData"></viewer-surface-flinger>',

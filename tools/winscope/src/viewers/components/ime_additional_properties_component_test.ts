@@ -38,8 +38,6 @@ describe('ImeAdditionalPropertiesComponent', () => {
         MatIconModule,
         MatButtonModule,
         MatTooltipModule,
-      ],
-      declarations: [
         ImeAdditionalPropertiesComponent,
         TestHostComponent,
         CollapsibleSectionTitleComponent,
@@ -132,6 +130,7 @@ describe('ImeAdditionalPropertiesComponent', () => {
   });
 
   @Component({
+    imports: [ImeAdditionalPropertiesComponent],
     selector: 'host-component',
     template: `
       <ime-additional-properties
