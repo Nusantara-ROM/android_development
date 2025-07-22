@@ -17,9 +17,9 @@
 import {searchSubarray, toUintLittleEndian} from 'common/array_utils';
 import {Timestamp} from 'common/time/time';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
-import {MediaBasedTraceEntry} from 'trace/media_based_trace_entry';
 import {ScreenRecordingUtils} from 'trace/screen_recording_utils';
-import {TraceType} from 'trace/trace_type';
+import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
+import {TraceType} from 'trace_api/trace_type';
 
 class ParserScreenRecordingLegacy extends AbstractParser<
   MediaBasedTraceEntry,

@@ -24,14 +24,14 @@ import {WmCustomQueryUtils} from 'parsers/window_manager/custom_query_utils';
 import {HierarchyTreeBuilderWm} from 'parsers/window_manager/hierarchy_tree_builder_wm';
 import {PropertiesProviderFactory} from 'parsers/window_manager/properties_provider_factory';
 import {perfetto} from 'protos/perfetto/trace/static';
+import {TraceFile} from 'trace/trace_file';
 import {
   CustomQueryParserResultTypeMap,
   CustomQueryType,
   VisitableParserCustomQuery,
-} from 'trace/custom_query';
-import {AbsoluteEntryIndex, EntriesRange} from 'trace/trace';
-import {TraceFile} from 'trace/trace_file';
-import {TraceType} from 'trace/trace_type';
+} from 'trace_api/custom_query';
+import {AbsoluteEntryIndex, EntriesRange} from 'trace_api/index_types';
+import {TraceType} from 'trace_api/trace_type';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertiesProvider} from 'tree_node/properties_provider';

@@ -17,7 +17,7 @@
 import {assertDefined} from 'common/assert_utils';
 import {Store} from 'common/store/store';
 import {ProtologColumnType} from 'trace/protolog/protolog_column_type';
-import {Trace} from 'trace/trace';
+import {Trace} from 'trace_api/trace';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {
   AbstractLogViewerPresenter,

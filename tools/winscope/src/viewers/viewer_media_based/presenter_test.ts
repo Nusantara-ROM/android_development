@@ -21,8 +21,8 @@ import {
   TracePositionUpdate,
 } from 'messaging/winscope_event';
 import {TraceBuilder} from 'test/unit/trace_builder';
-import {MediaBasedTraceEntry} from 'trace/media_based_trace_entry';
-import {TraceType} from 'trace/trace_type';
+import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
+import {TraceType} from 'trace_api/trace_type';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {Presenter} from './presenter';
 import {UiData} from './ui_data';

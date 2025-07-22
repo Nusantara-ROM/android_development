@@ -27,10 +27,10 @@ import {
   getParserWithLatestRealToBootTimeOffset,
   getParserWithLatestRealToMonotonicTimeOffset,
 } from 'parsers/parser_time_utils';
-import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
-import {TRACE_INFO} from 'trace/trace_info';
-import {TraceEntryTypeMap, TraceType} from 'trace/trace_type';
+import {Parser} from 'trace_api/parser';
+import {TRACE_INFO} from 'trace_api/trace_info';
+import {TraceEntryTypeMap, TraceType} from 'trace_api/trace_type';
 
 export class LoadedParsers {
   static readonly MAX_ALLOWED_TIME_GAP_BETWEEN_TRACES_NS = BigInt(

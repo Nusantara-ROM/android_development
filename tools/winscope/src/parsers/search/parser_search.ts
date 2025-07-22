@@ -21,14 +21,14 @@ import {TimestampConverter} from 'common/time/timestamp_converter';
 import {UserNotifier} from 'common/user_notifier';
 import {Analytics} from 'logging/analytics';
 import {TraceSearchQueryFailed} from 'messaging/user_warnings';
-import {CoarseVersion} from 'trace/coarse_version';
+import {CoarseVersion} from 'trace_api/coarse_version';
 import {
   CustomQueryParserResultTypeMap,
   CustomQueryType,
-} from 'trace/custom_query';
-import {AbsoluteEntryIndex, EntriesRange} from 'trace/index_types';
-import {Parser} from 'trace/parser';
-import {TraceType} from 'trace/trace_type';
+} from 'trace_api/custom_query';
+import {AbsoluteEntryIndex, EntriesRange} from 'trace_api/index_types';
+import {Parser} from 'trace_api/parser';
+import {TraceType} from 'trace_api/trace_type';
 import {QueryResult} from 'trace_processor/query_result';
 import {TraceProcessorFactory} from 'trace_processor/trace_processor_factory';
 

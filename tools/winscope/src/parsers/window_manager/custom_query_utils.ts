@@ -18,7 +18,7 @@ import {com} from 'protos/windowmanager/udc/static';
 import {
   CustomQueryParserResultTypeMap,
   CustomQueryType,
-} from 'trace/custom_query';
+} from 'trace_api/custom_query';
 
 type WindowsTokenAndTitle =
   CustomQueryParserResultTypeMap[CustomQueryType.WM_WINDOWS_TOKEN_AND_TITLE];

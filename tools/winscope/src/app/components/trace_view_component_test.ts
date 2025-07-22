@@ -41,7 +41,7 @@ import {
 import {checkTooltips, DOMTestHelper} from 'test/unit/dom_test_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {TraceType} from 'trace/trace_type';
+import {TraceType} from 'trace_api/trace_type';
 import {Viewer, ViewType} from 'viewers/viewer';
 import {ViewerStub} from 'viewers/viewer_stub';
 import {TraceViewComponent} from './trace_view_component';

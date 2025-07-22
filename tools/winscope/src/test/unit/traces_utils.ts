@@ -15,9 +15,10 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {AbsoluteFrameIndex, Trace} from 'trace/trace';
-import {TraceType} from 'trace/trace_type';
-import {Traces} from 'trace/traces';
+import {AbsoluteFrameIndex} from 'trace_api/index_types';
+import {Trace} from 'trace_api/trace';
+import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {extractEntries as extractTraceEntries} from './trace_utils';
 
 export function extractTraces(traces: Traces): Array<Trace<{}>> {

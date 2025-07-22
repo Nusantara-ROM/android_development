@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {Component, ViewChild} from '@angular/core';
-import {TraceType} from 'trace/trace_type';
+import {TraceType} from 'trace_api/trace_type';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
 import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {LogComponent} from 'viewers/components/log_component';

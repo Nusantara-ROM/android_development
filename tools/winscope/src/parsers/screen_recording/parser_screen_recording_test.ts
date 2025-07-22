@@ -20,10 +20,10 @@ import {
 } from 'common/time/test_utils';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
-import {CoarseVersion} from 'trace/coarse_version';
-import {MediaBasedTraceEntry} from 'trace/media_based_trace_entry';
-import {Parser} from 'trace/parser';
-import {TraceType} from 'trace/trace_type';
+import {CoarseVersion} from 'trace_api/coarse_version';
+import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
+import {Parser} from 'trace_api/parser';
+import {TraceType} from 'trace_api/trace_type';
 
 describe('ParserScreenRecording', () => {
   let parser: Parser<MediaBasedTraceEntry>;

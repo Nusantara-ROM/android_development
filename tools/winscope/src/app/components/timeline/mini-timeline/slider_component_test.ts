@@ -29,7 +29,7 @@ import {assertDefined} from 'common/assert_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {TimeRange} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
-import {TracePosition} from 'trace/trace_position';
+import {TracePosition} from 'trace_api/trace_position';
 import {MIN_SLIDER_WIDTH, SliderComponent} from './slider_component';
 
 describe('SliderComponent', () => {

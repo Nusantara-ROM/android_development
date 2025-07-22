@@ -34,9 +34,9 @@ import {ParserTransitionsWm} from 'parsers/transitions/legacy/parser_transitions
 import {ParserViewCapture} from 'parsers/view_capture/legacy/parser_view_capture';
 import {ParserWindowManager} from 'parsers/window_manager/legacy/parser_window_manager';
 import {ParserWindowManagerDump} from 'parsers/window_manager/legacy/parser_window_manager_dump';
-import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
-import {TraceMetadata} from 'trace/trace_metadata';
+import {Parser} from 'trace_api/parser';
+import {TraceMetadata} from 'trace_api/trace_metadata';
 
 export interface ProcessedFiles {
   parsers: FileAndParser[];

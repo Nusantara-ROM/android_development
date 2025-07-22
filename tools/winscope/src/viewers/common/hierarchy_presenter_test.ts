@@ -20,7 +20,7 @@ import {TimestampConverterUtils} from 'common/time/test_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
-import {TraceType} from 'trace/trace_type';
+import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertySource} from 'tree_node/property_tree_node';
 import {TextFilter} from 'viewers/common/text_filter';

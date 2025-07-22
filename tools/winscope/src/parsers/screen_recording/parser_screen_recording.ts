@@ -27,12 +27,12 @@ import {UserNotifier} from 'common/user_notifier';
 import {MonotonicScreenRecording} from 'messaging/user_warnings';
 import * as MP4Box from 'mp4box';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
-import {CoarseVersion} from 'trace/coarse_version';
-import {MediaBasedTraceEntry} from 'trace/media_based_trace_entry';
 import {ScreenRecordingUtils} from 'trace/screen_recording_utils';
 import {TraceFile} from 'trace/trace_file';
-import {ScreenRecordingOffsets, TraceMetadata} from 'trace/trace_metadata';
-import {TraceType} from 'trace/trace_type';
+import {CoarseVersion} from 'trace_api/coarse_version';
+import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
+import {ScreenRecordingOffsets, TraceMetadata} from 'trace_api/trace_metadata';
+import {TraceType} from 'trace_api/trace_type';
 
 export class ParserScreenRecording extends AbstractParser<
   MediaBasedTraceEntry,

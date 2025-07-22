@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
+import {Parser} from 'trace_api/parser';
 
 export class FileAndParser {
   constructor(readonly file: TraceFile, readonly parser: Parser<object>) {}

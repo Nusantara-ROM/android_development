@@ -31,7 +31,7 @@ import {TimeRange} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {waitToBeCalled} from 'test/unit/spy_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
-import {TraceType} from 'trace/trace_type';
+import {TraceType} from 'trace_api/trace_type';
 import {DefaultTimelineRowComponent} from './default_timeline_row_component';
 
 describe('DefaultTimelineRowComponent', () => {

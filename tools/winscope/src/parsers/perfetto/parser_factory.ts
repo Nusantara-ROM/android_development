@@ -30,8 +30,8 @@ import {ParserTransactions} from 'parsers/transactions/perfetto/parser_transacti
 import {ParserTransitions} from 'parsers/transitions/perfetto/parser_transitions';
 import {ParserViewCapture} from 'parsers/view_capture/perfetto/parser_view_capture';
 import {ParserWindowManager} from 'parsers/window_manager/perfetto/parser_window_manager';
-import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
+import {Parser} from 'trace_api/parser';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {TraceProcessorFactory} from 'trace_processor/trace_processor_factory';
 

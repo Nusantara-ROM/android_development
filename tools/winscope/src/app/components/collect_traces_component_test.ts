@@ -49,7 +49,7 @@ import {
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {waitToBeCalled} from 'test/unit/spy_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
-import {TraceType} from 'trace/trace_type';
+import {TraceType} from 'trace_api/trace_type';
 import {
   AdbDeviceConnection,
   AdbDeviceState,

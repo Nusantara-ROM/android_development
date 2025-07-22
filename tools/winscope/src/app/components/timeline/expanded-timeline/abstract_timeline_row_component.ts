@@ -26,9 +26,9 @@ import {assertDefined} from 'common/assert_utils';
 import {Point} from 'common/geometry/point';
 import {TimeRange} from 'common/time/time';
 import {ComponentTimestampConverter} from 'common/time/timestamp_converter';
-import {Trace, TraceEntry} from 'trace/trace';
-import {TracePosition} from 'trace/trace_position';
-import {TraceType} from 'trace/trace_type';
+import {Trace, TraceEntry} from 'trace_api/trace';
+import {TracePosition} from 'trace_api/trace_position';
+import {TraceType} from 'trace_api/trace_type';
 import {CanvasDrawer} from './canvas_drawer';
 
 export abstract class AbstractTimelineRowComponent<T extends {}> {

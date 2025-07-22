@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TraceType} from 'trace/trace_type';
+import {TraceType} from 'trace_api/trace_type';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 
 export abstract class AbstractSearchViewFactory {

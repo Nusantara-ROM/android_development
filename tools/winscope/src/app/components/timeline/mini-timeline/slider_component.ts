@@ -32,7 +32,7 @@ import {assertDefined} from 'common/assert_utils';
 import {Point} from 'common/geometry/point';
 import {TimeRange, Timestamp} from 'common/time/time';
 import {ComponentTimestampConverter} from 'common/time/timestamp_converter';
-import {TracePosition} from 'trace/trace_position';
+import {TracePosition} from 'trace_api/trace_position';
 import {Transformer} from './transformer';
 
 @Component({

@@ -17,7 +17,7 @@
 import {Transformer} from 'app/components/timeline/mini-timeline/transformer';
 import {Segment} from 'app/components/timeline/segment';
 import {TimeRange} from 'common/time/time';
-import {Trace} from 'trace/trace';
+import {Trace} from 'trace_api/trace';
 import {MiniTimelineDrawerOutput} from './mini_timeline_drawer_output';
 
 export type TimelineTraces = Map<Trace<object>, TimelineTrace>;

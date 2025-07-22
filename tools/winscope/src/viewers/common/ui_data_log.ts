@@ -15,7 +15,7 @@
  */
 
 import {Timestamp} from 'common/time/time';
-import {TraceEntry} from 'trace/trace';
+import {TraceEntry} from 'trace_api/trace';
 import {LazyPropertiesStrategyType} from 'tree_node/properties_provider';
 import {TextFilter} from 'viewers/common/text_filter';
 import {UserOptions} from 'viewers/common/user_options';

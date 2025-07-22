@@ -51,13 +51,17 @@ import {
 import {ParserFactory as PerfettoParserFactory} from 'parsers/perfetto/parser_factory';
 import {ParserSearch} from 'parsers/search/parser_search';
 import {TracesParserFactory} from 'parsers/traces/traces_parser_factory';
-import {FrameMapper} from 'trace/frame_mapper';
-import {Parser} from 'trace/parser';
-import {Trace} from 'trace/trace';
 import {TraceFile} from 'trace/trace_file';
-import {TraceMetadata} from 'trace/trace_metadata';
-import {TraceEntryTypeMap, TraceType, TraceTypeUtils} from 'trace/trace_type';
-import {Traces} from 'trace/traces';
+import {FrameMapper} from 'trace_api/frame_mapper';
+import {Parser} from 'trace_api/parser';
+import {Trace} from 'trace_api/trace';
+import {TraceMetadata} from 'trace_api/trace_metadata';
+import {
+  TraceEntryTypeMap,
+  TraceType,
+  TraceTypeUtils,
+} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {QueryResult} from 'trace_processor/query_result';
 import {TraceProcessorFactory} from 'trace_processor/trace_processor_factory';
 import {FilesSource} from './files_source';

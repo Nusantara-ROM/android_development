@@ -23,13 +23,13 @@ import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {Analytics} from 'logging/analytics';
 import {TabbedViewSwitchRequest} from 'messaging/winscope_event';
-import {CustomQueryType} from 'trace/custom_query';
 import {InputColumnType} from 'trace/input/input_column_type';
 import {InputEventType} from 'trace/input/input_event_type';
-import {Trace, TraceEntry, TraceEntryLazy} from 'trace/trace';
-import {TRACE_INFO} from 'trace/trace_info';
-import {TraceType} from 'trace/trace_type';
-import {Traces} from 'trace/traces';
+import {CustomQueryType} from 'trace_api/custom_query';
+import {Trace, TraceEntry, TraceEntryLazy} from 'trace_api/trace';
+import {TRACE_INFO} from 'trace_api/trace_info';
+import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {

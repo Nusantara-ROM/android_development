@@ -17,16 +17,17 @@
 import {assertDefined, assertTrue} from 'common/assert_utils';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {AbstractTracesParser} from 'parsers/traces/abstract_traces_parser';
-import {CoarseVersion} from 'trace/coarse_version';
+import {CoarseVersion} from 'trace_api/coarse_version';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
   VisitableParserCustomQuery,
-} from 'trace/custom_query';
-import {EntriesRange, Trace} from 'trace/trace';
-import {TraceType} from 'trace/trace_type';
-import {Traces} from 'trace/traces';
+} from 'trace_api/custom_query';
+import {EntriesRange} from 'trace_api/index_types';
+import {Trace} from 'trace_api/trace';
+import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 type OriginalTraceIndex = number;

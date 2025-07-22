@@ -20,7 +20,7 @@ import {SetFormatters} from 'parsers/operations/set_formatters';
 import {TranslateIntDef} from 'parsers/operations/translate_intdef';
 import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
 import {InputEventType} from 'trace/input/input_event_type';
-import {TraceType} from 'trace/trace_type';
+import {TraceType} from 'trace_api/trace_type';
 
 export class ParserMotionEvent extends AbstractInputEventParser {
   private static readonly MOTION_EVENT_FIELD =

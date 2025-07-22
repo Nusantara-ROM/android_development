@@ -34,14 +34,14 @@ import {TAMPERED_WINSCOPE_EXTENSIONS} from 'parsers/tampered_message_type';
 import {RectsComputation} from 'parsers/view_capture/computations/rects_computation';
 import {VisibilityComputation} from 'parsers/view_capture/computations/visibility_computation';
 import {perfetto} from 'protos/perfetto/trace/static';
+import {TraceFile} from 'trace/trace_file';
 import {
   CustomQueryParserResultTypeMap,
   CustomQueryType,
   VisitableParserCustomQuery,
-} from 'trace/custom_query';
-import {EntriesRange} from 'trace/index_types';
-import {TraceFile} from 'trace/trace_file';
-import {TraceType} from 'trace/trace_type';
+} from 'trace_api/custom_query';
+import {EntriesRange} from 'trace_api/index_types';
+import {TraceType} from 'trace_api/trace_type';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertiesProvider} from 'tree_node/properties_provider';

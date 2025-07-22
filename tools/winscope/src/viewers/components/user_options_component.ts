@@ -16,8 +16,8 @@
 
 import {Component, ElementRef, Inject, Input} from '@angular/core';
 import {FunctionUtils} from 'common/function_utils';
-import {TRACE_INFO} from 'trace/trace_info';
-import {TraceType} from 'trace/trace_type';
+import {TRACE_INFO} from 'trace_api/trace_info';
+import {TraceType} from 'trace_api/trace_type';
 import {UserOption, UserOptions} from 'viewers/common/user_options';
 import {userOptionStyle} from './styles/user_option.styles';
 

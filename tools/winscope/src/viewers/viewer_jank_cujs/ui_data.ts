@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TraceEntry} from 'trace/trace';
+import {TraceEntry} from 'trace_api/trace';
 import {LazyPropertiesStrategyType} from 'tree_node/properties_provider';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {TextFilter} from 'viewers/common/text_filter';

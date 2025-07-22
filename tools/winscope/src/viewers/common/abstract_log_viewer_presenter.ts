@@ -29,11 +29,11 @@ import {
   WinscopeEventType,
 } from 'messaging/winscope_event';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
-import {CustomQueryType} from 'trace/custom_query';
-import {Trace, TraceEntry} from 'trace/trace';
-import {TraceEntryFinder} from 'trace/trace_entry_finder';
-import {TRACE_INFO} from 'trace/trace_info';
-import {TracePosition} from 'trace/trace_position';
+import {CustomQueryType} from 'trace_api/custom_query';
+import {Trace, TraceEntry} from 'trace_api/trace';
+import {TraceEntryFinder} from 'trace_api/trace_entry_finder';
+import {TRACE_INFO} from 'trace_api/trace_info';
+import {TracePosition} from 'trace_api/trace_position';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {PropertiesPresenter} from 'viewers/common/properties_presenter';
 import {TextFilter} from 'viewers/common/text_filter';

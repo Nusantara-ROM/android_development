@@ -20,10 +20,10 @@ import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
-} from 'trace/custom_query';
-import {Parser} from 'trace/parser';
-import {ParserMock} from 'trace/parser_mock';
-import {TraceType} from 'trace/trace_type';
+} from 'trace_api/custom_query';
+import {Parser} from 'trace_api/parser';
+import {ParserMock} from 'trace_api/parser_mock';
+import {TraceType} from 'trace_api/trace_type';
 
 export class ParserBuilder<T> {
   private type = TraceType.SURFACE_FLINGER;

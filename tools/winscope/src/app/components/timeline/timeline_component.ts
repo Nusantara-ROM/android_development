@@ -56,11 +56,11 @@ import {
   WinscopeEventEmitter,
 } from 'messaging/winscope_event_emitter';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
-import {Trace} from 'trace/trace';
-import {TRACE_INFO} from 'trace/trace_info';
-import {TracePosition} from 'trace/trace_position';
-import {TraceType, TraceTypeUtils} from 'trace/trace_type';
-import {Traces} from 'trace/traces';
+import {Trace} from 'trace_api/trace';
+import {TRACE_INFO} from 'trace_api/trace_info';
+import {TracePosition} from 'trace_api/trace_position';
+import {TraceType, TraceTypeUtils} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {multlineTooltip} from 'viewers/components/styles/tooltip.styles';
 import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
 

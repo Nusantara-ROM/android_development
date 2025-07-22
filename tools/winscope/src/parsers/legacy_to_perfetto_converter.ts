@@ -21,8 +21,8 @@ import Long from 'long';
 import {FailedToConvertLegacyTraces} from 'messaging/user_warnings';
 import {Writer} from 'protobufjs';
 import {perfetto} from 'protos/perfetto/trace/static';
-import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
+import {Parser} from 'trace_api/parser';
 import {
   getParserWithLatestRealToBootTimeOffset,
   getParserWithLatestRealToMonotonicTimeOffset,

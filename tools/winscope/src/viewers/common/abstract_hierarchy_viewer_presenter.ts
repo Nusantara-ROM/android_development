@@ -26,11 +26,11 @@ import {
   WinscopeEventType,
 } from 'messaging/winscope_event';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
-import {Trace, TraceEntry} from 'trace/trace';
-import {TraceEntryFinder} from 'trace/trace_entry_finder';
-import {TRACE_INFO} from 'trace/trace_info';
-import {TraceType} from 'trace/trace_type';
-import {Traces} from 'trace/traces';
+import {Trace, TraceEntry} from 'trace_api/trace';
+import {TraceEntryFinder} from 'trace_api/trace_entry_finder';
+import {TRACE_INFO} from 'trace_api/trace_info';
+import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {PropertiesPresenter} from 'viewers/common/properties_presenter';

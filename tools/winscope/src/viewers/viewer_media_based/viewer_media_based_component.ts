@@ -27,7 +27,7 @@ import {MatSelectChange} from '@angular/material/select';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {assertDefined} from 'common/assert_utils';
 import {Size} from 'common/geometry/size';
-import {MediaBasedTraceEntry} from 'trace/media_based_trace_entry';
+import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 
 @Component({

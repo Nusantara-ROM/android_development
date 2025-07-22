@@ -42,7 +42,7 @@ import {FileAndParser} from 'parsers/file_and_parser';
 import {FileAndParsers} from 'parsers/file_and_parsers';
 import {ProcessedFiles} from 'parsers/legacy/parser_factory';
 import {TraceFile} from 'trace/trace_file';
-import {TraceMetadata} from 'trace/trace_metadata';
+import {TraceMetadata} from 'trace_api/trace_metadata';
 
 export enum BuildType {
   USER = 'user',

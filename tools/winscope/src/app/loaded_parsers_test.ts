@@ -24,9 +24,9 @@ import {FileAndParser} from 'parsers/file_and_parser';
 import {FileAndParsers} from 'parsers/file_and_parsers';
 import {ParserBuilder} from 'test/unit/parser_builder';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
-import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
-import {TraceType} from 'trace/trace_type';
+import {Parser} from 'trace_api/parser';
+import {TraceType} from 'trace_api/trace_type';
 import {LoadedParsers} from './loaded_parsers';
 
 describe('LoadedParsers', () => {

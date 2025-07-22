@@ -17,7 +17,7 @@
 import {FunctionUtils} from 'common/function_utils';
 import {WinscopeEvent} from 'messaging/winscope_event';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
-import {Trace} from 'trace/trace';
+import {Trace} from 'trace_api/trace';
 import {View, Viewer, ViewType} from './viewer';
 
 class ViewerStub implements Viewer {

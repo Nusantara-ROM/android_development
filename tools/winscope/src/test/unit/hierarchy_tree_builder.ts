@@ -65,6 +65,7 @@ export class HierarchyTreeBuilder extends TreeBuilder<
         .build();
       propertiesTree.addOrReplaceChild(childNode);
     });
+
     new SetFormatters().apply(propertiesTree);
     const provider = new PropertiesProvider(
       propertiesTree,

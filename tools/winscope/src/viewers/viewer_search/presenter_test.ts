@@ -28,9 +28,9 @@ import {
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
-import {Trace} from 'trace/trace';
-import {TraceType} from 'trace/trace_type';
-import {Traces} from 'trace/traces';
+import {Trace} from 'trace_api/trace';
+import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {QueryResult} from 'trace_processor/query_result';
 import {makeSearchTraceSpies} from 'trace_processor/test_utils';
 import {

@@ -24,8 +24,8 @@ import {FrameMapper} from './frame_mapper';
 import {AbsoluteFrameIndex} from './index_types';
 import {MediaBasedTraceEntry} from './media_based_trace_entry';
 import {Trace} from './trace';
-import {Traces} from './traces';
 import {TraceType} from './trace_type';
+import {Traces} from './traces';
 
 describe('FrameMapper', () => {
   const time0 = TimestampConverterUtils.makeRealTimestamp(0n);

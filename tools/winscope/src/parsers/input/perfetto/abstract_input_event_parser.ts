@@ -34,15 +34,15 @@ import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_p
 import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
 import {TAMPERED_WINSCOPE_EXTENSIONS} from 'parsers/tampered_message_type';
 import {perfetto} from 'protos/perfetto/trace/static';
+import {EnumFormatter} from 'trace/formatters';
+import {InputEventType} from 'trace/input/input_event_type';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
   VisitableParserCustomQuery,
-} from 'trace/custom_query';
-import {EnumFormatter} from 'trace/formatters';
-import {EntriesRange} from 'trace/index_types';
-import {InputEventType} from 'trace/input/input_event_type';
+} from 'trace_api/custom_query';
+import {EntriesRange} from 'trace_api/index_types';
 import {RowIterator} from 'trace_processor/query_result';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {Operation} from 'tree_node/operation';

@@ -19,7 +19,7 @@ import {assertDefined} from 'common/assert_utils';
 import {Point} from 'common/geometry/point';
 import {Rect} from 'common/geometry/rect';
 import {Timestamp} from 'common/time/time';
-import {Trace, TraceEntry} from 'trace/trace';
+import {Trace, TraceEntry} from 'trace_api/trace';
 import {AbstractTimelineRowComponent} from './abstract_timeline_row_component';
 
 @Component({

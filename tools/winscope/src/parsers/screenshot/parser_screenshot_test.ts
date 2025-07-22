@@ -21,10 +21,10 @@ import {
 } from 'common/time/test_utils';
 import {TimestampConverter} from 'common/time/timestamp_converter';
 import {getFixtureFile} from 'test/unit/fixture_utils';
-import {CoarseVersion} from 'trace/coarse_version';
-import {MediaBasedTraceEntry} from 'trace/media_based_trace_entry';
 import {TraceFile} from 'trace/trace_file';
-import {TraceType} from 'trace/trace_type';
+import {CoarseVersion} from 'trace_api/coarse_version';
+import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
+import {TraceType} from 'trace_api/trace_type';
 import {ParserScreenshot} from './parser_screenshot';
 
 describe('ParserScreenshot', () => {

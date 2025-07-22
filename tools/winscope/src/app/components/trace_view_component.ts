@@ -41,8 +41,8 @@ import {
   WinscopeEventEmitter,
 } from 'messaging/winscope_event_emitter';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
-import {TRACE_INFO} from 'trace/trace_info';
-import {TraceType} from 'trace/trace_type';
+import {TRACE_INFO} from 'trace_api/trace_info';
+import {TraceType} from 'trace_api/trace_type';
 import {inlineButtonStyle} from 'viewers/components/styles/clickable_property.styles';
 import {View, ViewType, Viewer} from 'viewers/viewer';
 

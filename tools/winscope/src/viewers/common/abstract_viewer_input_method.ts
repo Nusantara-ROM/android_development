@@ -15,8 +15,8 @@
  */
 
 import {Store} from 'common/store/store';
-import {Trace} from 'trace/trace';
-import {Traces} from 'trace/traces';
+import {Trace} from 'trace_api/trace';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {AbstractViewer} from 'viewers/abstract_viewer';
 import {AbstractPresenterInputMethod} from 'viewers/common/abstract_presenter_input_method';

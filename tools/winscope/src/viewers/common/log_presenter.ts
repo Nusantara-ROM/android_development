@@ -16,7 +16,7 @@
 
 import {binarySearchFirstGreaterOrEqual} from 'common/array_utils';
 import {assertDefined} from 'common/assert_utils';
-import {TraceEntry} from 'trace/trace';
+import {TraceEntry} from 'trace_api/trace';
 import {StringFilterPredicate} from 'viewers/common/string_filter_predicate';
 import {TextFilter} from 'viewers/common/text_filter';
 import {ColumnSpec, LogEntry, LogHeader} from './ui_data_log';

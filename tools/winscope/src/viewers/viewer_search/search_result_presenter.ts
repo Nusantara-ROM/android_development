@@ -16,7 +16,7 @@
 
 import {FunctionUtils} from 'common/function_utils';
 import {MakeTimestampStrategyType} from 'common/time/time';
-import {Trace, TraceEntry} from 'trace/trace';
+import {Trace, TraceEntry} from 'trace_api/trace';
 import {
   ColumnType,
   QueryResult,

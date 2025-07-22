@@ -31,9 +31,9 @@ import {
   WinscopeEventType,
 } from 'messaging/winscope_event';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
-import {Trace} from 'trace/trace';
-import {TRACE_INFO} from 'trace/trace_info';
-import {TraceTypeUtils} from 'trace/trace_type';
+import {Trace} from 'trace_api/trace';
+import {TRACE_INFO} from 'trace_api/trace_info';
+import {TraceTypeUtils} from 'trace_api/trace_type';
 import {LoadProgressComponent} from './load_progress_component';
 
 @Component({

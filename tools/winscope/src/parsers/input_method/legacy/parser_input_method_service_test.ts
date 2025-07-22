@@ -20,9 +20,9 @@ import {
 } from 'common/time/test_utils';
 import Long from 'long';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
-import {CoarseVersion} from 'trace/coarse_version';
-import {Parser} from 'trace/parser';
-import {TraceType} from 'trace/trace_type';
+import {CoarseVersion} from 'trace_api/coarse_version';
+import {Parser} from 'trace_api/parser';
+import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 describe('ParserInputMethodService', () => {

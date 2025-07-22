@@ -48,10 +48,10 @@ import {
 } from 'messaging/winscope_event';
 import {WinscopeEventEmitter} from 'messaging/winscope_event_emitter';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
-import {TraceEntry} from 'trace/trace';
-import {TRACE_INFO} from 'trace/trace_info';
-import {TracePosition} from 'trace/trace_position';
-import {TraceType} from 'trace/trace_type';
+import {TraceEntry} from 'trace_api/trace';
+import {TRACE_INFO} from 'trace_api/trace_info';
+import {TracePosition} from 'trace_api/trace_position';
+import {TraceType} from 'trace_api/trace_type';
 import {RequestedTraceTypes} from 'trace_collection/adb_files';
 import {View, ViewType, Viewer} from 'viewers/viewer';
 import {ViewerFactory} from 'viewers/viewer_factory';

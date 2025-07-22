@@ -38,28 +38,25 @@ import {
   TamperedProtoField,
 } from 'parsers/tampered_message_type';
 import {perfetto} from 'protos/perfetto/trace/static';
+import {EnumFormatter, FixedStringFormatter} from 'trace/formatters';
+import {TraceFile} from 'trace/trace_file';
+import {TransactionColumnType} from 'trace/transactions/transaction_column_type';
+import {TransactionType} from 'trace/transactions/transaction_type';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
   VisitableParserCustomQuery,
-} from 'trace/custom_query';
-import {
-  EnumFormatter,
-  FixedStringFormatter,
-  PropertyFormatter,
-} from 'trace/formatters';
-import {EntriesRange} from 'trace/index_types';
-import {TraceFile} from 'trace/trace_file';
-import {TraceType} from 'trace/trace_type';
-import {TransactionColumnType} from 'trace/transactions/transaction_column_type';
-import {TransactionType} from 'trace/transactions/transaction_type';
+} from 'trace_api/custom_query';
+import {EntriesRange} from 'trace_api/index_types';
+import {TraceType} from 'trace_api/trace_type';
 import {RowIterator} from 'trace_processor/query_result';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {Operation} from 'tree_node/operation';
 import {PropertiesProvider} from 'tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
+import {PropertyFormatter} from 'tree_node/property_formatter';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 
 export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {

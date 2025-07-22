@@ -35,7 +35,7 @@ import {
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {getFixtureFile} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
-import {Traces} from 'trace/traces';
+import {Traces} from 'trace_api/traces';
 import {LoadProgressComponent} from './load_progress_component';
 import {UploadTracesComponent} from './upload_traces_component';
 

@@ -28,7 +28,7 @@ import {FilterFlag} from 'common/filter_flag';
 import {PersistentStore} from 'common/store/persistent_store';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
-import {TraceType} from 'trace/trace_type';
+import {TraceType} from 'trace_api/trace_type';
 import {TextFilter} from 'viewers/common/text_filter';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
 import {ViewerEvents} from 'viewers/common/viewer_events';

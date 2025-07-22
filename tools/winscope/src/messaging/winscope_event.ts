@@ -16,9 +16,9 @@
 
 import {assertTrue} from 'common/assert_utils';
 import {Timestamp} from 'common/time/time';
-import {Trace, TraceEntry} from 'trace/trace';
-import {TracePosition} from 'trace/trace_position';
-import {TraceType} from 'trace/trace_type';
+import {Trace, TraceEntry} from 'trace_api/trace';
+import {TracePosition} from 'trace_api/trace_position';
+import {TraceType} from 'trace_api/trace_type';
 import {AdbFiles} from 'trace_collection/adb_files';
 import {View, ViewType, Viewer} from 'viewers/viewer';
 

@@ -17,15 +17,15 @@
 import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {Timestamp} from 'common/time/time';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
-import {CoarseVersion} from 'trace/coarse_version';
+import {CoarseVersion} from 'trace_api/coarse_version';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
-} from 'trace/custom_query';
-import {AbsoluteEntryIndex, EntriesRange} from 'trace/index_types';
-import {Parser} from 'trace/parser';
-import {TraceType} from 'trace/trace_type';
+} from 'trace_api/custom_query';
+import {AbsoluteEntryIndex, EntriesRange} from 'trace_api/index_types';
+import {Parser} from 'trace_api/parser';
+import {TraceType} from 'trace_api/trace_type';
 
 export abstract class AbstractTracesParser<T> implements Parser<T> {
   protected timestamps: Timestamp[] | undefined;

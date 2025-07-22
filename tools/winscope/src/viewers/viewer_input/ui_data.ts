@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {TraceEntry} from 'trace/trace';
-import {TraceType} from 'trace/trace_type';
+import {TraceEntry} from 'trace_api/trace';
+import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {LazyPropertiesStrategyType} from 'tree_node/properties_provider';
 import {DisplayIdentifier} from 'viewers/common/display_identifier';

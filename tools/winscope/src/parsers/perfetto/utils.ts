@@ -24,7 +24,7 @@ import {
 } from 'common/assert_utils';
 import {UserNotifier} from 'common/user_notifier';
 import {MissingVsyncId} from 'messaging/user_warnings';
-import {AbsoluteEntryIndex, EntriesRange} from 'trace/trace';
+import {AbsoluteEntryIndex, EntriesRange} from 'trace_api/index_types';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {FakeProto, FakeProtoBuilder} from './fake_proto_builder';
 

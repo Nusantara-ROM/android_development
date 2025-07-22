@@ -20,7 +20,7 @@ import {AbstractParser} from 'parsers/legacy/abstract_parser';
 import {perfetto} from 'protos/perfetto/trace/static';
 import root from 'protos/transactions/udc/json';
 import {android} from 'protos/transactions/udc/static';
-import {TraceType} from 'trace/trace_type';
+import {TraceType} from 'trace_api/trace_type';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 
 type TraceEntryProto = android.surfaceflinger.proto.ITransactionTraceEntry;

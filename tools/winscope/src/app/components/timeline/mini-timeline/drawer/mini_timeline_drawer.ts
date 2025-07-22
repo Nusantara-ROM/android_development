@@ -16,7 +16,7 @@
 
 import {Point} from 'common/geometry/point';
 import {Padding} from 'common/padding';
-import {Trace} from 'trace/trace';
+import {Trace} from 'trace_api/trace';
 import {CanvasMouseHandler} from './canvas_mouse_handler';
 
 export interface MiniTimelineDrawer {

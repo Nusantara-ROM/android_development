@@ -19,17 +19,17 @@ import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
   CustomQueryType,
-} from 'trace/custom_query';
-import {FrameMap} from 'trace/frame_map';
-import {FrameMapBuilder} from 'trace/frame_map_builder';
+} from 'trace_api/custom_query';
+import {FrameMap} from 'trace_api/frame_map';
+import {FrameMapBuilder} from 'trace_api/frame_map_builder';
 import {
   AbsoluteEntryIndex,
   AbsoluteFrameIndex,
   EntriesRange,
-} from 'trace/index_types';
-import {Parser} from 'trace/parser';
-import {Trace} from 'trace/trace';
-import {TraceType} from 'trace/trace_type';
+} from 'trace_api/index_types';
+import {Parser} from 'trace_api/parser';
+import {Trace} from 'trace_api/trace';
+import {TraceType} from 'trace_api/trace_type';
 import {ParserBuilder} from './parser_builder';
 
 export class TraceBuilder<T> {

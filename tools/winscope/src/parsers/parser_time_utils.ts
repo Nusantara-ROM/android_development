@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {Parser} from 'trace/parser';
+import {Parser} from 'trace_api/parser';
 
 export function getParserWithLatestRealToBootTimeOffset(
   parsers: Array<Parser<object>>,
