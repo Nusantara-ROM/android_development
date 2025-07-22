@@ -660,7 +660,10 @@ export class TimelineComponent
       this.sortedTraces.sort((a, b) =>
         TraceTypeUtils.compareByDisplayOrder(a.type, b.type),
       );
-      this.selectedTracesFormControl.setValue(this.sortedTraces);
+      const newSelection = [event.trace].concat(
+        this.selectedTracesFormControl.value ?? [],
+      );
+      this.selectedTracesFormControl.setValue(newSelection);
       this.applyNewTraceSelection(event.trace);
       await this.miniTimeline?.drawer?.draw();
     });

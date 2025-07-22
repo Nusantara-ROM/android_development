@@ -1025,6 +1025,11 @@ describe('TimelineComponent', () => {
     loadSfWmTraces();
     const timelineComponent = assertDefined(component.timeline);
     const initialTraces = timelineComponent.sortedTraces.slice();
+
+    await dom.openMatSelect();
+    dom.getMatSelectPanel().findAndClickByIndex('mat-option', 1);
+    expectSelectedTraceTypes([TraceType.SURFACE_FLINGER]);
+
     const spy = spyOn(
       assertDefined(timelineComponent.miniTimeline?.drawer),
       'draw',
@@ -1035,10 +1040,12 @@ describe('TimelineComponent', () => {
     expect(spy).toHaveBeenCalledTimes(1);
     expect(timelineComponent.sortedTraces).not.toEqual(initialTraces);
     expect(timelineComponent.sortedTraces[0]).toEqual(trace);
+    expectSelectedTraceTypes([TraceType.SEARCH, TraceType.SURFACE_FLINGER]);
 
     await timelineComponent.onWinscopeEvent(new TraceRemoveRequest(trace));
     expect(spy).toHaveBeenCalledTimes(2);
     expect(timelineComponent.sortedTraces).toEqual(initialTraces);
+    expectSelectedTraceTypes([TraceType.SURFACE_FLINGER]);
   });
 
   it('disables or enables timeline on winscope events', async () => {
