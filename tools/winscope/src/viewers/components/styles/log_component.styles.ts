@@ -143,8 +143,9 @@ export const logComponentStyles = `
   }
 
   .header {
-    display: flex;
     align-items: center;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
   }
 
   .transition-type {
