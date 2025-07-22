@@ -21,12 +21,12 @@ import {CornerRadii} from 'common/geometry/corner_radii';
 import {Distance} from 'common/geometry/distance';
 import {Point3D} from 'common/geometry/point3d';
 import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
-import * as THREE from 'three';
-import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
 import {
   TransformType,
   TransformTypeFlags,
-} from 'trace/surface_flinger/transform_utils';
+} from 'common/geometry/transform_utils';
+import * as THREE from 'three';
+import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {Camera} from './camera';
 import {Canvas} from './canvas';

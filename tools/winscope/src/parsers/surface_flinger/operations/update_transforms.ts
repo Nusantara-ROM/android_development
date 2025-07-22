@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import {Transform} from 'trace/surface_flinger/transform_utils';
+import {assertDefined} from 'common/assert_utils';
+import {TransformMatrix} from 'common/geometry/transform_matrix';
+import {Transform, TransformType} from 'common/geometry/transform_utils';
 import {Operation} from 'trace/tree_node/operations/operation';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
@@ -54,7 +56,10 @@ export class UpdateTransforms implements Operation<PropertyTreeNode> {
 
     this.adjustDeprecatedTransformNode(transformNode);
 
-    const newMatrix = Transform.from(transformNode, positionNode).matrix;
+    const newMatrix = UpdateTransforms.createTransform(
+      transformNode,
+      positionNode,
+    ).matrix;
     transformNode.addOrReplaceChild(
       DEFAULT_PROPERTY_TREE_NODE_FACTORY.makeCalculatedProperty(
         transformNode.id,
@@ -90,6 +95,49 @@ export class UpdateTransforms implements Operation<PropertyTreeNode> {
     );
     transformNode.addOrReplaceChild(
       DEFAULT_PROPERTY_TREE_NODE_FACTORY.makeProtoProperty(id, 'dsdy', dsdy),
+    );
+  }
+
+  static createTransform(
+    transformNode: PropertyTreeNode,
+    position?: PropertyTreeNode,
+  ): Transform {
+    if (transformNode.getAllChildren().length === 0) return Transform.EMPTY;
+
+    const transformType = transformNode.getChildByName('type')?.getValue() ?? 0;
+    const matrixNode = transformNode.getChildByName('matrix');
+
+    if (matrixNode) {
+      return new Transform(
+        transformType,
+        TransformMatrix.from({
+          dsdx: assertDefined(matrixNode.getChildByName('dsdx')).getValue(),
+          dtdx: assertDefined(matrixNode.getChildByName('dtdx')).getValue(),
+          tx: assertDefined(matrixNode.getChildByName('tx')).getValue(),
+          dtdy: assertDefined(matrixNode.getChildByName('dtdy')).getValue(),
+          dsdy: assertDefined(matrixNode.getChildByName('dsdy')).getValue(),
+          ty: assertDefined(matrixNode.getChildByName('ty')).getValue(),
+        }),
+      );
+    }
+
+    const x = position?.getChildByName('x')?.getValue() ?? 0;
+    const y = position?.getChildByName('y')?.getValue() ?? 0;
+
+    if (TransformType.isSimpleTransform(transformType)) {
+      return TransformType.getDefaultTransform(transformType, x, y);
+    }
+
+    return new Transform(
+      transformType,
+      TransformMatrix.from({
+        dsdx: transformNode.getChildByName('dsdx')?.getValue() ?? 0,
+        dtdx: transformNode.getChildByName('dtdx')?.getValue() ?? 0,
+        tx: x,
+        dtdy: transformNode.getChildByName('dtdy')?.getValue() ?? 0,
+        dsdy: transformNode.getChildByName('dsdy')?.getValue() ?? 0,
+        ty: y,
+      }),
     );
   }
 }

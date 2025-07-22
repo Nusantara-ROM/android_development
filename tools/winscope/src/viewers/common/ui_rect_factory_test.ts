@@ -15,9 +15,9 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
+import {Transform} from 'common/geometry/transform_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
-import {Transform} from 'trace/surface_flinger/transform_utils';
 import {TraceRectBuilder} from 'trace/trace_rect_builder';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {UiRect} from 'viewers/components/rects/ui_rect';

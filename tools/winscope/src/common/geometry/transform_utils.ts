@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  IDENTITY_MATRIX,
-  TransformMatrix,
-} from 'common/geometry/transform_matrix';
+import {IDENTITY_MATRIX, TransformMatrix} from './transform_matrix';
 
 export enum TransformTypeFlags {
   EMPTY = 0x0,

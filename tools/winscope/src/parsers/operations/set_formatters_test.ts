@@ -15,6 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
+import {TransformTypeFlags} from 'common/geometry/transform_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {
   TamperedMessageType,
@@ -23,7 +24,6 @@ import {
 import root from 'protos/test/fake_proto/json';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
-import {TransformTypeFlags} from 'trace/surface_flinger/transform_utils';
 import {EMPTY_OBJ_STRING, LAYER_ID_FORMATTER} from 'trace/tree_node/formatters';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {SetFormatters} from './set_formatters';

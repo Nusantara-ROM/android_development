@@ -17,7 +17,7 @@
 import {CornerRadii} from 'common/geometry/corner_radii';
 import {Region} from 'common/geometry/region';
 import {TransformMatrix} from 'common/geometry/transform_matrix';
-import {Transform} from 'trace/surface_flinger/transform_utils';
+import {Transform} from 'common/geometry/transform_utils';
 import {TraceRect} from './trace_rect';
 
 export class TraceRectBuilder {

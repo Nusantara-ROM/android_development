@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {ProgressListener} from 'messaging/progress_listener';
+import {ProgressListener} from './progress_listener';
 
 export class ProgressListenerStub implements ProgressListener {
   onProgressUpdate() {

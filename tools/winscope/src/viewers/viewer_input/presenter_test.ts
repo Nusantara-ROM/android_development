@@ -15,6 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
+import {Transform} from 'common/geometry/transform_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {TimeUtils} from 'common/time/time_utils';
@@ -30,7 +31,6 @@ import {CustomQueryType} from 'trace/custom_query';
 import {InputColumnType} from 'trace/input/input_column_type';
 import {InputEventType} from 'trace/input/input_event_type';
 import {Parser} from 'trace/parser';
-import {Transform} from 'trace/surface_flinger/transform_utils';
 import {Trace} from 'trace/trace';
 import {TRACE_INFO} from 'trace/trace_info';
 import {TraceRectBuilder} from 'trace/trace_rect_builder';
