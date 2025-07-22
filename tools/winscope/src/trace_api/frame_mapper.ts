@@ -17,7 +17,8 @@
 import {assertDefined} from 'common/assert_utils';
 import {CustomQueryType} from './custom_query';
 import {FrameMapBuilder} from './frame_map_builder';
-import {FramesRange, Trace, TraceEntry} from './trace';
+import {FramesRange} from './index_types';
+import {Trace, TraceEntry} from './trace';
 import {TraceType} from './trace_type';
 import {Traces} from './traces';
 

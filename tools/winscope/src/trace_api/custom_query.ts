@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {RelativeEntryIndex, TraceEntryEager} from './trace';
+import {RelativeEntryIndex} from './index_types';
+import {TraceEntryEager} from './trace';
 
 export enum CustomQueryType {
   SF_LAYERS_ID_AND_NAME,

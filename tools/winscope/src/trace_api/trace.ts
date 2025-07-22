@@ -42,14 +42,6 @@ import {Parser} from './parser';
 import {TRACE_INFO} from './trace_info';
 import {TraceType} from './trace_type';
 
-export {
-  AbsoluteEntryIndex,
-  AbsoluteFrameIndex,
-  EntriesRange,
-  FramesRange,
-  RelativeEntryIndex,
-} from './index_types';
-
 export abstract class TraceEntry<T> {
   constructor(
     protected readonly fullTrace: Trace<T>,
