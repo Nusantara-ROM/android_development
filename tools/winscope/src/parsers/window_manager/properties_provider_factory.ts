@@ -365,7 +365,7 @@ export class PropertiesProviderFactory {
   ): string {
     let nameOverride: string | undefined;
     if (child.displayContent) {
-      nameOverride = child.displayContent.displayInfo?.name;
+      nameOverride = child.displayContent.displayInfo?.name ?? undefined;
     } else if (child.displayArea) {
       nameOverride = child.displayArea.name ?? undefined;
     } else if (child.activity) {

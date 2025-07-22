@@ -17,7 +17,6 @@
 import {assertDefined, assertTrue} from 'common/assert_utils';
 import {getTimestampConverter} from 'common/time/test_utils';
 import {TimestampConverter} from 'common/time/timestamp_converter';
-import {getRootUrl} from 'common/url_utils';
 import {FileAndParser} from 'parsers/file_and_parser';
 import {ParserFactory as LegacyParserFactory} from 'parsers/legacy/parser_factory';
 import {LegacyToPerfettoConverter} from 'parsers/legacy_to_perfetto_converter';
@@ -27,6 +26,7 @@ import {
 } from 'parsers/parser_time_utils';
 import {ParserFactory as PerfettoParserFactory} from 'parsers/perfetto/parser_factory';
 import {TracesParserFactory} from 'parsers/traces/traces_parser_factory';
+import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {TraceFile} from 'trace/trace_file';
 import {Parser} from 'trace_api/parser';
 import {Trace} from 'trace_api/trace';
@@ -35,18 +35,6 @@ import {TraceEntryTypeMap, TraceType} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {TraceBuilder} from './trace_builder';
-
-export async function getFixtureFile(
-  srcFilename: string,
-  dstFilename: string = srcFilename,
-): Promise<File> {
-  const url = getRootUrl() + 'base/src/test/fixtures/' + srcFilename;
-  const response = await fetch(url);
-  expect(response.ok).toBeTrue();
-  const blob = await response.blob();
-  const file = new File([blob], dstFilename);
-  return file;
-}
 
 export class LegacyParserProvider {
   private files: Array<{src: string; dst?: string}> = [];

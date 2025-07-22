@@ -66,11 +66,12 @@ import {
   WinscopeEvent,
   WinscopeEventType,
 } from 'messaging/winscope_event';
+
 import {WinscopeEventEmitter} from 'messaging/winscope_event_emitter';
 import {WinscopeEventEmitterStub} from 'messaging/winscope_event_emitter_stub';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
 import {WinscopeEventListenerStub} from 'messaging/winscope_event_listener_stub';
-import {getFixtureFile} from 'test/unit/fixture_utils';
+import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {Trace} from 'trace_api/trace';

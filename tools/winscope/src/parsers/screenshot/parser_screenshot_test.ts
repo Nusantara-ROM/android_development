@@ -20,7 +20,7 @@ import {
   timestampEqualityTester,
 } from 'common/time/test_utils';
 import {TimestampConverter} from 'common/time/timestamp_converter';
-import {getFixtureFile} from 'test/unit/fixture_utils';
+import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {TraceFile} from 'trace/trace_file';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';

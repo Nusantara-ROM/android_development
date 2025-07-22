@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {getFixtureFile} from 'test/unit/fixture_utils';
-import {FileUtils} from './file_utils';
+import {FileUtils} from 'common/file_utils';
+import {getFixtureFile} from 'test/unit/fixture_file_utils';
 
 describe('FileUtils', () => {
   it('extracts file extensions', () => {

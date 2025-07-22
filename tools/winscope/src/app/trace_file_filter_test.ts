@@ -28,7 +28,7 @@ import {
 import {FileAndParser} from 'parsers/file_and_parser';
 import {FileAndParsers} from 'parsers/file_and_parsers';
 import {ProcessedFiles} from 'parsers/legacy/parser_factory';
-import {getFixtureFile} from 'test/unit/fixture_utils';
+import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {TraceFile} from 'trace/trace_file';
 import {TraceMetadata} from 'trace_api/trace_metadata';

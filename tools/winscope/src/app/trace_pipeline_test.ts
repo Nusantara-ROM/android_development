@@ -31,7 +31,7 @@ import {
 } from 'messaging/user_warnings';
 import {BugreportFileSelected} from 'messaging/winscope_event';
 import {LegacyToPerfettoConverter} from 'parsers/legacy_to_perfetto_converter';
-import {getFixtureFile} from 'test/unit/fixture_utils';
+import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {extractEntries} from 'test/unit/traces_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {TraceFile} from 'trace/trace_file';
