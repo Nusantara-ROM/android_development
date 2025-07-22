@@ -16,10 +16,13 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
+// TODO(b/311642700): Not compatible with google3
 import {UserNotifier} from 'common/user_notifier';
 import Long from 'long';
 import {FailedToConvertLegacyTraces} from 'messaging/user_warnings';
+// TODO(b/311642700): Not compatible with google3
 import {Writer} from 'protobufjs';
+// TODO(b/311642700): Perfetto import needs update for google3
 import {perfetto} from 'protos/perfetto/trace/static';
 import {TraceFile} from 'trace/trace_file';
 import {Parser} from 'trace_api/parser';

@@ -21,8 +21,6 @@ import {
 import {assertDefined} from 'common/assert_utils';
 import {INVALID_TIME_NS, Timestamp} from 'common/time/time';
 import {TimestampUtils} from 'common/time/timestamp_utils';
-import {TracesParserInput} from 'parsers/input/perfetto/traces_parser_input';
-import {AbstractParser as AbstractPerfettoParser} from 'parsers/perfetto/abstract_parser';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
@@ -175,9 +173,7 @@ export class Trace<T> {
   }
 
   isPerfetto(): boolean {
-    return [AbstractPerfettoParser, TracesParserInput].some(
-      (ParserType) => this.parser instanceof ParserType,
-    );
+    return this.parser.isPerfetto();
   }
 
   setFrameInfo(frameMap: FrameMap, framesRange: FramesRange | undefined) {

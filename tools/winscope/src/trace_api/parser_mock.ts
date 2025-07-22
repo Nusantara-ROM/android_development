@@ -107,6 +107,10 @@ export class ParserMock<T> implements Parser<T> {
     >;
   }
 
+  isPerfetto(): boolean {
+    return true;
+  }
+
   getDescriptors(): string[] {
     return this.descriptors;
   }

@@ -47,4 +47,5 @@ export interface Parser<T> {
     trustedUid?: number,
     trustedPid?: number,
   ): perfetto.protos.TracePacket[];
+  isPerfetto(): boolean;
 }

@@ -49,6 +49,10 @@ export class ParserSearch implements Parser<QueryResult> {
     return TraceType.SEARCH;
   }
 
+  isPerfetto(): boolean {
+    return true;
+  }
+
   getLengthEntries(): number {
     const queryResult = this.validateQueryResult();
     const numRows = queryResult.numRows();

@@ -53,6 +53,10 @@ export abstract class AbstractParser<T> implements Parser<T> {
     this.timestampConverter = timestampConverter;
   }
 
+  isPerfetto(): boolean {
+    return true;
+  }
+
   async parse() {
     const module = this.getStdLibModuleName();
     if (module) {

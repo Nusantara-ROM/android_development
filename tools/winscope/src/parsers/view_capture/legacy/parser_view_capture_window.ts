@@ -52,6 +52,10 @@ export class ParserViewCaptureWindow implements Parser<HierarchyTreeNode> {
     throw NOT_IMPLEMENTED_ERROR;
   }
 
+  isPerfetto(): boolean {
+    return false;
+  }
+
   getTraceType(): TraceType {
     return TraceType.VIEW_CAPTURE;
   }

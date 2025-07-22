@@ -43,6 +43,10 @@ export abstract class AbstractTracesParser<T> implements Parser<T> {
     throw NOT_IMPLEMENTED_ERROR;
   }
 
+  isPerfetto(): boolean {
+    return false;
+  }
+
   getTimestamps(): Timestamp[] | undefined {
     return this.timestamps;
   }

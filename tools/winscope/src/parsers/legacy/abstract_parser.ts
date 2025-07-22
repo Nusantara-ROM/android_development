@@ -56,6 +56,10 @@ export abstract class AbstractParser<
     this.metadata = metadata;
   }
 
+  isPerfetto(): boolean {
+    return false;
+  }
+
   async parse() {
     const traceBuffer = new Uint8Array(await this.traceFile.file.arrayBuffer());
     ParsingUtils.throwIfMagicNumberDoesNotMatch(
