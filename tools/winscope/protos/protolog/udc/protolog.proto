@@ -18,9 +18,9 @@ syntax = "proto2";
 
 package com.android.internal.protolog;
 
-option java_multiple_files = true;
+import "privacy.proto";
 
-import "frameworks/base/core/proto/android/privacy.proto";
+option java_multiple_files = true;
 
 /* represents a single log entry */
 message ProtoLogMessage {

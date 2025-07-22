@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2018 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,19 @@
 
 syntax = "proto2";
 
-package perfetto.protos;
+import "android.proto";
+import "surfaceanimator.proto";
 
-import "protos/perfetto/trace/android/android_input_event.proto";
+package com.android.server.wm;
+option java_multiple_files = true;
 
-message InputEventWrapper {
-  oneof input_event {
-    AndroidMotionEvent motion_event = 1;
-    AndroidKeyEvent key_event = 2;
-  }
-  repeated AndroidWindowInputDispatchEvent window_dispatch_events = 3;
+/**
+ * Represents a {@link com.android.server.wm.WindowContainerThumbnailProto} object.
+ */
+message WindowContainerThumbnailProto {
+    option (.android.msg_privacy).dest = DEST_AUTOMATIC;
+
+    optional int32 width = 1;
+    optional int32 height = 2;
+    optional SurfaceAnimatorProto surface_animator = 3;
 }

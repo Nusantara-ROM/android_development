@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,19 @@
 
 syntax = "proto2";
 
-package perfetto.protos;
+package android.view.inputmethod;
 
-import "protos/perfetto/trace/android/windowmanager.proto";
+option java_multiple_files = true;
 
-message Wrapper {
-  optional WindowManagerTraceEntry windowmanager_trace_entry = 1;
+/**
+ * Represents a {@link android.view.inputmethod.InputMethodManager} object.
+ */
+message InputMethodManagerProto {
+    optional string cur_id = 1;
+    optional bool fullscreen_mode = 2;
+    optional int32 display_id = 3;
+    optional bool active = 4;
+    optional bool served_connecting = 5;
+    optional string served_view = 6;
+    optional string next_served_view = 7;
 }
