@@ -24,7 +24,7 @@ import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {CoarseVersion} from 'trace/coarse_version';
 import {Parser} from 'trace/parser';
 import {TraceType} from 'trace/trace_type';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {EventTag} from './event_tag';
 
 describe('ParserEventLog', () => {

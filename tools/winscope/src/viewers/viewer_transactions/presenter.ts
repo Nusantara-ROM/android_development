@@ -20,9 +20,9 @@ import {Store} from 'common/store/store';
 import {Trace} from 'trace/trace';
 import {TransactionColumnType} from 'trace/transactions/transaction_column_type';
 import {TransactionType} from 'trace/transactions/transaction_type';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {LazyPropertiesStrategyType} from 'trace/tree_node/properties_provider';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {LazyPropertiesStrategyType} from 'tree_node/properties_provider';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {
   AbstractLogViewerPresenter,
   NotifyLogViewCallbackType,

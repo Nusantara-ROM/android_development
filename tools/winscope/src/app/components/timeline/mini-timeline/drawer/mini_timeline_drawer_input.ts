@@ -26,7 +26,7 @@ import {assertDefined} from 'common/assert_utils';
 import {TimeRange, Timestamp} from 'common/time/time';
 import {Trace, TraceEntry} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {
   MiniCanvasDrawerData,
   TimelineTrace,

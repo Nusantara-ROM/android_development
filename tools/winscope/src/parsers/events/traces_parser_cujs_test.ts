@@ -22,14 +22,14 @@ import {
 import {getTracesParser} from 'test/unit/fixture_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {CoarseVersion} from 'trace/coarse_version';
-import {Parser} from 'trace/parser';
-import {TraceType} from 'trace/trace_type';
 import {
   CUJ_TYPE_FORMATTER,
   DEFAULT_PROPERTY_FORMATTER,
   TIMESTAMP_NODE_FORMATTER,
-} from 'trace/tree_node/formatters';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+} from 'trace/formatters';
+import {Parser} from 'trace/parser';
+import {TraceType} from 'trace/trace_type';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 
 describe('TracesParserCujs', () => {
   let parser: Parser<PropertyTreeNode>;

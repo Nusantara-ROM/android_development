@@ -24,7 +24,7 @@ import {CustomQueryType} from 'trace/custom_query';
 import {Parser} from 'trace/parser';
 import {ProtologColumnType} from 'trace/protolog/protolog_column_type';
 import {TraceType} from 'trace/trace_type';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 describe('PerfettoParserProtolog', () => {
   let parser: Parser<HierarchyTreeNode>;

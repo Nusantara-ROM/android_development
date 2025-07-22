@@ -24,7 +24,7 @@ import {Parser} from 'trace/parser';
 import {Trace} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
 import {Traces} from 'trace/traces';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {NotifyLogViewCallbackType} from 'viewers/common/abstract_log_viewer_presenter';
 import {AbstractLogViewerPresenterTest} from 'viewers/common/abstract_log_viewer_presenter_test';
 import {LogHeader} from 'viewers/common/ui_data_log';

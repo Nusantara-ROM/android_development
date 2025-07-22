@@ -40,16 +40,16 @@ import {
   CustomQueryType,
   VisitableParserCustomQuery,
 } from 'trace/custom_query';
+import {EnumFormatter} from 'trace/formatters';
 import {EntriesRange} from 'trace/index_types';
 import {InputEventType} from 'trace/input/input_event_type';
-import {EnumFormatter} from 'trace/tree_node/formatters';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {Operation} from 'trace/tree_node/operations/operation';
-import {PropertiesProvider} from 'trace/tree_node/properties_provider';
-import {PropertiesProviderBuilder} from 'trace/tree_node/properties_provider_builder';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
 import {RowIterator} from 'trace_processor/query_result';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {Operation} from 'tree_node/operation';
+import {PropertiesProvider} from 'tree_node/properties_provider';
+import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 
 export abstract class AbstractInputEventParser extends AbstractParser<HierarchyTreeNode> {
   protected static readonly WRAPPER_PROTO = assertDefined(

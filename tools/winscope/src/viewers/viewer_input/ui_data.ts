@@ -16,8 +16,8 @@
 
 import {TraceEntry} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {LazyPropertiesStrategyType} from 'trace/tree_node/properties_provider';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {LazyPropertiesStrategyType} from 'tree_node/properties_provider';
 import {DisplayIdentifier} from 'viewers/common/display_identifier';
 import {RectShowState} from 'viewers/common/rect_show_state';
 import {TextFilter} from 'viewers/common/text_filter';

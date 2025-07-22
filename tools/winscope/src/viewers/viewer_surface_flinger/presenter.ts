@@ -27,21 +27,15 @@ import {
   TracePositionUpdate,
 } from 'messaging/winscope_event';
 import {CustomQueryType} from 'trace/custom_query';
+import {EMPTY_OBJ_STRING, FixedStringFormatter} from 'trace/formatters';
 import {LayerFlag} from 'trace/surface_flinger/layer_flag';
 import {Trace} from 'trace/trace';
 import {TraceEntryFinder} from 'trace/trace_entry_finder';
 import {TRACE_INFO} from 'trace/trace_info';
 import {TraceType} from 'trace/trace_type';
 import {Traces} from 'trace/traces';
-import {
-  EMPTY_OBJ_STRING,
-  FixedStringFormatter,
-} from 'trace/tree_node/formatters';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {
-  PropertySource,
-  PropertyTreeNode,
-} from 'trace/tree_node/property_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {
   AbstractHierarchyViewerPresenter,
   NotifyHierarchyViewCallbackType,

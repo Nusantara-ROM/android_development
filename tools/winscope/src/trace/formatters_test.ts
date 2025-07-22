@@ -27,7 +27,6 @@ import {
   DEFAULT_PROPERTY_FORMATTER,
   EMPTY_ARRAY_STRING,
   EMPTY_OBJ_STRING,
-  formatAsHex,
   HEX_FORMATTER,
   LAYER_ID_FORMATTER,
   MATRIX_FORMATTER,
@@ -36,6 +35,7 @@ import {
   REGION_FORMATTER,
   SIZE_FORMATTER,
   TRANSFORM_FORMATTER,
+  formatAsHex,
 } from './formatters';
 
 describe('Formatters', () => {

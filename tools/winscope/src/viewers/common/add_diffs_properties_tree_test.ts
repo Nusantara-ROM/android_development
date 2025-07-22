@@ -15,7 +15,7 @@
  */
 
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
-import {TreeNode} from 'trace/tree_node/tree_node';
+import {TreeNode} from 'tree_node/tree_node';
 import {AddDiffsPropertiesTree} from './add_diffs_properties_tree';
 import {executeAddDiffsTests} from './add_diffs_test_utils';
 import {UiPropertyTreeNode} from './ui_property_tree_node';

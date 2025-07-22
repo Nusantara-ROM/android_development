@@ -22,8 +22,8 @@ import {
 } from 'common/assert_utils';
 import {Rect} from 'common/geometry/rect';
 import {TraceRectBuilderFromQueryRow} from 'parsers/trace_rect_builder_from_query_row';
-import {TraceRect} from 'trace/trace_rect';
 import {QueryResult, RowIterator} from 'trace_processor/query_result';
+import {TraceRect} from 'tree_node/trace_rect';
 
 export class RectExtractor {
   static extractDisplayRects(snapshotResult: QueryResult): TraceRect[] {

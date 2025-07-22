@@ -15,7 +15,7 @@
  */
 
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
-import {TreeNode} from 'trace/tree_node/tree_node';
+import {TreeNode} from 'tree_node/tree_node';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {AddDiffsHierarchyTree} from './add_diffs_hierarchy_tree';
 import {executeAddDiffsTests} from './add_diffs_test_utils';

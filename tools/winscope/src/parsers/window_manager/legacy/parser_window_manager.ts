@@ -31,8 +31,8 @@ import {
 } from 'trace/custom_query';
 import {EntriesRange} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {PropertiesProvider} from 'trace/tree_node/properties_provider';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {PropertiesProvider} from 'tree_node/properties_provider';
 import {TAMPERED_PROTOS_UDC} from './tampered_protos_udc';
 
 type WindowManagerProto = com.android.server.wm.IWindowManagerTraceProto;

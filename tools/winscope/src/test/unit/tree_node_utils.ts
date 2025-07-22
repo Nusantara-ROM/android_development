@@ -15,10 +15,10 @@
  */
 
 import {TransformTypeFlags} from 'common/geometry/transform_utils';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
-import {TreeNode} from 'trace/tree_node/tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
+import {TreeNode} from 'tree_node/tree_node';
 import {DiffNode} from 'viewers/common/diff_node';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';

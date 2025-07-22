@@ -15,7 +15,7 @@
  */
 
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {UpdateTransitionTargets} from './update_transition_targets';
 
 describe('UpdateTransitionTargets', () => {

@@ -25,7 +25,7 @@ import {CustomQueryType} from 'trace/custom_query';
 import {ProtologColumnType} from 'trace/protolog/protolog_column_type';
 import {Trace} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {NotifyLogViewCallbackType} from 'viewers/common/abstract_log_viewer_presenter';
 import {AbstractLogViewerPresenterTest} from 'viewers/common/abstract_log_viewer_presenter_test';
 import {LogSelectFilter, LogTextFilter} from 'viewers/common/log_filters';

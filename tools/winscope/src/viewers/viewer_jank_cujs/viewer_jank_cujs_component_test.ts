@@ -21,7 +21,7 @@ import {TraceBuilder} from 'test/unit/trace_builder';
 import {Parser} from 'trace/parser';
 import {TraceEntry} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AbstractLogViewerComponentTest} from 'viewers/common/abstract_log_viewer_component_test';
 import {LogEntry, LogHeader} from 'viewers/common/ui_data_log';
 import {CujEntry, UiData} from './ui_data';

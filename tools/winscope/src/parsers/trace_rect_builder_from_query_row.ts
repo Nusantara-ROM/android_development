@@ -27,9 +27,9 @@ import {
   IDENTITY_MATRIX,
   TransformMatrix,
 } from 'common/geometry/transform_matrix';
-import {TraceRect} from 'trace/trace_rect';
-import {TraceRectBuilder} from 'trace/trace_rect_builder';
 import {RowIterator} from 'trace_processor/query_result';
+import {TraceRect} from 'tree_node/trace_rect';
+import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
 
 export class TraceRectBuilderFromQueryRow {
   private row: RowIterator | undefined;

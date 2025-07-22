@@ -27,7 +27,7 @@ import {TimeRange, Timestamp} from 'common/time/time';
 import {AbsoluteEntryIndex, Trace, TraceEntry} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
 import {TransitionStatus} from 'trace/transitions/status';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {AbstractTimelineRowComponent} from './abstract_timeline_row_component';
 
 @Component({

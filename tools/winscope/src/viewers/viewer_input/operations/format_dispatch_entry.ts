@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import {FixedStringFormatter} from 'trace/formatters';
 import {DispatchedPointerAxis} from 'trace/input/dispatched_pointer_axis';
-import {FixedStringFormatter} from 'trace/tree_node/formatters';
-import {Operation} from 'trace/tree_node/operations/operation';
+import {Operation} from 'tree_node/operation';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
 
 export class FormatDispatchEntry implements Operation<UiPropertyTreeNode> {

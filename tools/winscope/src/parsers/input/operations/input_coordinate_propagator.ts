@@ -16,9 +16,9 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {DispatchedPointerAxis} from 'trace/input/dispatched_pointer_axis';
-import {Operation} from 'trace/tree_node/operations/operation';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
+import {Operation} from 'tree_node/operation';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 
 /**
  * A single input event can be dispatched to multiple windows, where each dispatch

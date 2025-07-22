@@ -21,10 +21,10 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import {EMPTY_OBJ_STRING} from 'trace/tree_node/formatters';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {TreeNode} from 'trace/tree_node/tree_node';
+import {EMPTY_OBJ_STRING} from 'trace/formatters';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {TreeNode} from 'tree_node/tree_node';
 import {ImeAdditionalProperties} from 'viewers/common/ime_additional_properties';
 import {
   ImeContainerProperties,

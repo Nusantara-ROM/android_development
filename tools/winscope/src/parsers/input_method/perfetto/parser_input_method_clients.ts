@@ -23,8 +23,8 @@ import {queryEntry} from 'parsers/perfetto/utils';
 import {TAMPERED_WINSCOPE_EXTENSIONS} from 'parsers/tampered_message_type';
 import {TraceFile} from 'trace/trace_file';
 import {TraceType} from 'trace/trace_type';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {TraceProcessor} from 'trace_processor/trace_processor';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 export class ParserInputMethodClients extends AbstractParser<HierarchyTreeNode> {
   private static readonly ENTRY_FIELD = assertDefined(

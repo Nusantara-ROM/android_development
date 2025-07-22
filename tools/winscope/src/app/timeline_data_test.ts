@@ -28,7 +28,7 @@ import {Trace} from 'trace/trace';
 import {TracePosition} from 'trace/trace_position';
 import {TraceType} from 'trace/trace_type';
 import {Traces} from 'trace/traces';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {TimelineData} from './timeline_data';
 
 describe('TimelineData', () => {

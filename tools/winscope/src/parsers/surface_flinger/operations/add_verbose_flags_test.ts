@@ -15,10 +15,7 @@
  */
 
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
-import {
-  PropertySource,
-  PropertyTreeNode,
-} from 'trace/tree_node/property_tree_node';
+import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AddVerboseFlags} from './add_verbose_flags';
 
 describe('AddVerboseFlags', () => {

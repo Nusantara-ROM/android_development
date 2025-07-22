@@ -15,9 +15,9 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TraceRect} from 'trace/trace_rect';
-import {TraceRectBuilder} from 'trace/trace_rect_builder';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {TraceRect} from 'tree_node/trace_rect';
+import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
 
 class RectVcFactory {
   private static DEPTH_MAGNIFICATION = 4;

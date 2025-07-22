@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Operation} from 'trace/tree_node/operations/operation';
+import {Operation} from 'tree_node/operation';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
 
 export class PropagateHashCodes implements Operation<UiPropertyTreeNode> {

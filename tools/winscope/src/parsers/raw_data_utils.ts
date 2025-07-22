@@ -15,7 +15,7 @@
  */
 
 import {GeometryFactory} from 'trace/geometry_factory';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 
 export class RawDataUtils {
   static isEmptyObj(obj: PropertyTreeNode): boolean {

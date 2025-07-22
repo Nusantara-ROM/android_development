@@ -37,7 +37,7 @@ import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {TraceEntry} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {LogSelectFilter, LogTextFilter} from 'viewers/common/log_filters';
 import {TextFilter} from 'viewers/common/text_filter';
 import {

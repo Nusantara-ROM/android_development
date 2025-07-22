@@ -21,10 +21,7 @@ import {
 } from 'parsers/tampered_message_type';
 import root from 'protos/test/fake_proto/json';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
-import {
-  PropertySource,
-  PropertyTreeNode,
-} from 'trace/tree_node/property_tree_node';
+import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AddDefaults} from './add_defaults';
 
 describe('AddDefaults', () => {

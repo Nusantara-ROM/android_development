@@ -19,7 +19,7 @@ import {Store} from 'common/store/store';
 import {Timestamp} from 'common/time/time';
 import {TimeDuration} from 'common/time/time_duration';
 import {Trace} from 'trace/trace';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {
   AbstractLogViewerPresenter,
   NotifyLogViewCallbackType,

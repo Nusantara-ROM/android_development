@@ -15,11 +15,12 @@
  */
 
 import {Timestamp} from 'common/time/time';
-import {RawDataUtils} from 'parsers/raw_data_utils';
 import {
   TamperedMessageType,
   TamperedProtoField,
 } from 'parsers/tampered_message_type';
+import {RawDataUtils} from 'tree_node/raw_data_utils';
+// TODO(b/311642700) Not compatible with google3 migration
 import * as protobuf from 'protobufjs';
 import {
   BUFFER_FORMATTER,
@@ -34,9 +35,9 @@ import {
   SIZE_FORMATTER,
   TIMESTAMP_NODE_FORMATTER,
   TRANSFORM_FORMATTER,
-} from 'trace/tree_node/formatters';
-import {Operation} from 'trace/tree_node/operations/operation';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+} from 'trace/formatters';
+import {Operation} from 'tree_node/operation';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 
 export class SetFormatters implements Operation<PropertyTreeNode> {
   private static readonly TransformRegExp = new RegExp('transform', 'i');

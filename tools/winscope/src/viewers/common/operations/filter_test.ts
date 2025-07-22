@@ -16,7 +16,7 @@
 
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
-import {TreeNode} from 'trace/tree_node/tree_node';
+import {TreeNode} from 'tree_node/tree_node';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {Filter} from './filter';
 

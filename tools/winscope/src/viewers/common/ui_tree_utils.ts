@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  PropertySource,
-  PropertyTreeNode,
-} from 'trace/tree_node/property_tree_node';
-import {TreeNode} from 'trace/tree_node/tree_node';
+import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
+import {TreeNode} from 'tree_node/tree_node';
 import {StringFilterPredicate} from 'viewers/common/string_filter_predicate';
 import {DiffType} from './diff_type';
 import {UiHierarchyTreeNode} from './ui_hierarchy_tree_node';

@@ -17,10 +17,7 @@
 import {perfetto} from 'protos/perfetto/trace/static';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
 import {LayerCompositionType} from 'trace/surface_flinger/layer_composition_type';
-import {
-  PropertySource,
-  PropertyTreeNode,
-} from 'trace/tree_node/property_tree_node';
+import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AddCompositionType} from './add_composition_type';
 
 describe('AddCompositionType', () => {

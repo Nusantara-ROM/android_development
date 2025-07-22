@@ -20,7 +20,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
-import {EMPTY_OBJ_STRING} from 'trace/tree_node/formatters';
+import {EMPTY_OBJ_STRING} from 'trace/formatters';
 import {SfCuratedProperties} from 'viewers/common/curated_properties';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {CollapsibleSectionTitleComponent} from './collapsible_section_title_component';

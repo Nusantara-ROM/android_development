@@ -19,9 +19,9 @@ import {
   TamperedMessageType,
   TamperedProtoField,
 } from 'parsers/tampered_message_type';
-import {AddOperation} from 'trace/tree_node/operations/add_operation';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
+import {AddOperation} from 'tree_node/add_operation';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 
 export class AddDefaults extends AddOperation<PropertyTreeNode> {
   private readonly protoType: TamperedMessageType;

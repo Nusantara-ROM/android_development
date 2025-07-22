@@ -22,9 +22,9 @@ import {DENYLIST_PROPERTIES} from 'parsers/window_manager/denylist_properties';
 import {EAGER_PROPERTIES} from 'parsers/window_manager/eager_properties';
 import {ProtoType} from 'parsers/window_manager/proto_type';
 import {TamperedProtos} from 'parsers/window_manager/tampered_protos';
-import {HEX_FORMATTER, RECT_FORMATTER} from 'trace/tree_node/formatters';
-import {Operation} from 'trace/tree_node/operations/operation';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {HEX_FORMATTER, RECT_FORMATTER} from 'trace/formatters';
+import {Operation} from 'tree_node/operation';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AddIsVisible} from './add_is_visible';
 import {AddWindowType} from './add_window_type';
 

@@ -16,9 +16,9 @@
 
 import {assertDefined, assertTrue} from 'common/assert_utils';
 import {UINT32_MAX} from 'common/math_utils';
-import {Operation} from 'trace/tree_node/operations/operation';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
+import {Operation} from 'tree_node/operation';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 
 export class AddDisplayProperties implements Operation<PropertyTreeNode> {
   apply(value: PropertyTreeNode): void {

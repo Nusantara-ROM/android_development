@@ -19,7 +19,7 @@ import {Store} from 'common/store/store';
 import {Trace} from 'trace/trace';
 import {TraceType} from 'trace/trace_type';
 import {Traces} from 'trace/traces';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {AbstractViewer} from 'viewers/abstract_viewer';
 import {Presenter} from './presenter';
 import {UiData} from './ui_data';

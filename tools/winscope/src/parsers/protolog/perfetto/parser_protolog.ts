@@ -30,8 +30,8 @@ import {
 import {EntriesRange} from 'trace/index_types';
 import {ProtologColumnType} from 'trace/protolog/protolog_column_type';
 import {TraceType} from 'trace/trace_type';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {PropertiesProviderBuilder} from 'trace/tree_node/properties_provider_builder';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
 
 export class ParserProtolog extends AbstractParser<HierarchyTreeNode> {
   override getTraceType(): TraceType {

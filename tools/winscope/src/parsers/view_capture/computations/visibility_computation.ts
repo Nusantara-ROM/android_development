@@ -15,9 +15,9 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {Computation} from 'trace/tree_node/computation';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
+import {Computation} from 'tree_node/computation';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 
 export class VisibilityComputation implements Computation {
   private static readonly VISIBLE = 0;

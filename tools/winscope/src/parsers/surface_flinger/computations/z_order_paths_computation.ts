@@ -15,8 +15,8 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {Computation} from 'trace/tree_node/computation';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {Computation} from 'tree_node/computation';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 export class ZOrderPathsComputation implements Computation {
   private root: HierarchyTreeNode | undefined;

@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AddDisplayProperties} from './add_display_properties';
 
 describe('AddDisplayProperties', () => {

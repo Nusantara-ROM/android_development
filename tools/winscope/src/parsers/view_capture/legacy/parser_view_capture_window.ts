@@ -30,7 +30,7 @@ import {
 import {EntriesRange} from 'trace/index_types';
 import {Parser} from 'trace/parser';
 import {TraceType} from 'trace/trace_type';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 export class ParserViewCaptureWindow implements Parser<HierarchyTreeNode> {
   private static readonly PACKAGE_OR_WINDOW_IID = 1;

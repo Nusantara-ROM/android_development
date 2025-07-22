@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {AddOperation} from 'trace/tree_node/operations/add_operation';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
-import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'trace/tree_node/property_tree_node_factory';
+import {AddOperation} from 'tree_node/add_operation';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 
 export class AddIsVisible extends AddOperation<PropertyTreeNode> {
   protected override makeProperties(

@@ -15,7 +15,7 @@
  */
 
 import {Trace} from 'trace/trace';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {DisplayIdentifier} from './display_identifier';
 import {TraceAndTrees} from './hierarchy_presenter';

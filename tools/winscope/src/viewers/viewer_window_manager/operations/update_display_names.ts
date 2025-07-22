@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {Operation} from 'trace/tree_node/operations/operation';
+import {Operation} from 'tree_node/operation';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 
 export class UpdateDisplayNames implements Operation<UiHierarchyTreeNode> {

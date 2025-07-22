@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TreeNode} from 'trace/tree_node/tree_node';
+import {TreeNode} from 'tree_node/tree_node';
 import {DiffNode} from 'viewers/common/diff_node';
 import {DiffType} from 'viewers/common/diff_type';
 

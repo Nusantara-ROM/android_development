@@ -21,7 +21,7 @@ import {
 import {LegacyParserProvider, getFixtureFile} from 'test/unit/fixture_utils';
 import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {ParserFactory} from './parser_factory';
 
 describe('Parser', () => {

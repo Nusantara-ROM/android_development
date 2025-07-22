@@ -15,8 +15,8 @@
  */
 
 import {TraceEntry} from 'trace/trace';
-import {LazyPropertiesStrategyType} from 'trace/tree_node/properties_provider';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {LazyPropertiesStrategyType} from 'tree_node/properties_provider';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {TextFilter} from 'viewers/common/text_filter';
 import {
   LogEntry,

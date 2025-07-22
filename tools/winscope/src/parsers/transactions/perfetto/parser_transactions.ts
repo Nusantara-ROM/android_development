@@ -44,23 +44,23 @@ import {
   CustomQueryType,
   VisitableParserCustomQuery,
 } from 'trace/custom_query';
+import {
+  EnumFormatter,
+  FixedStringFormatter,
+  PropertyFormatter,
+} from 'trace/formatters';
 import {EntriesRange} from 'trace/index_types';
 import {TraceFile} from 'trace/trace_file';
 import {TraceType} from 'trace/trace_type';
 import {TransactionColumnType} from 'trace/transactions/transaction_column_type';
 import {TransactionType} from 'trace/transactions/transaction_type';
-import {
-  EnumFormatter,
-  FixedStringFormatter,
-  PropertyFormatter,
-} from 'trace/tree_node/formatters';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {Operation} from 'trace/tree_node/operations/operation';
-import {PropertiesProvider} from 'trace/tree_node/properties_provider';
-import {PropertiesProviderBuilder} from 'trace/tree_node/properties_provider_builder';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {RowIterator} from 'trace_processor/query_result';
 import {TraceProcessor} from 'trace_processor/trace_processor';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {Operation} from 'tree_node/operation';
+import {PropertiesProvider} from 'tree_node/properties_provider';
+import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 
 export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
   private static readonly TransactionsTraceEntryField =

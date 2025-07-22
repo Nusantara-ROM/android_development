@@ -18,7 +18,7 @@ import {assertDefined} from 'common/assert_utils';
 import {TimeRange, Timestamp} from 'common/time/time';
 import {ComponentTimestampConverter} from 'common/time/timestamp_converter';
 import {TransitionStatus} from 'trace/transitions/status';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 export function isTransitionWithUnknownStart(
   transition: HierarchyTreeNode,

@@ -22,11 +22,11 @@ import {
   MissingLayerIds,
   RecursiveLayerIds,
 } from 'messaging/user_warnings';
-import {TraceRect} from 'trace/trace_rect';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {makeSpyRowIterator} from 'trace_processor/test_utils';
 import {TraceProcessor} from 'trace_processor/trace_processor';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {TraceRect} from 'tree_node/trace_rect';
 import {EntryHierarchyTreeFactory} from './entry_hierarchy_tree_factory';
 import {RectExtractor} from './rect_extractor';
 

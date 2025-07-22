@@ -16,8 +16,8 @@
 
 import {assertDefined, assertNumber} from 'common/assert_utils';
 import {HierarchyTreeBuilder} from 'parsers/hierarchy_tree_builder';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {PropertiesProvider} from 'trace/tree_node/properties_provider';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {PropertiesProvider} from 'tree_node/properties_provider';
 
 export class HierarchyTreeBuilderVc extends HierarchyTreeBuilder {
   protected override buildIdentifierToChildrenMap(

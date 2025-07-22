@@ -21,10 +21,10 @@ import {TranslateIntDef} from 'parsers/operations/translate_intdef';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {TamperedProtoField} from 'parsers/tampered_message_type';
 import {perfetto} from 'protos/perfetto/trace/static';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {LazyPropertiesStrategyType} from 'trace/tree_node/properties_provider';
-import {PropertiesProviderBuilder} from 'trace/tree_node/properties_provider_builder';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {LazyPropertiesStrategyType} from 'tree_node/properties_provider';
+import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
+import {PropertyTreeNode} from 'tree_node/property_tree_node';
 
 export class HierarchyTreeClientsFactory {
   private static readonly ENTRY_DENYLIST_PROPERTIES = ['client'];

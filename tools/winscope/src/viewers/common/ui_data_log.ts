@@ -16,7 +16,7 @@
 
 import {Timestamp} from 'common/time/time';
 import {TraceEntry} from 'trace/trace';
-import {LazyPropertiesStrategyType} from 'trace/tree_node/properties_provider';
+import {LazyPropertiesStrategyType} from 'tree_node/properties_provider';
 import {TextFilter} from 'viewers/common/text_filter';
 import {UserOptions} from 'viewers/common/user_options';
 import {LogFilter} from './log_filters';

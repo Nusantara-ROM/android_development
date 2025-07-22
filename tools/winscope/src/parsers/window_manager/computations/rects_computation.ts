@@ -15,10 +15,10 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TraceRect} from 'trace/trace_rect';
-import {TraceRectBuilder} from 'trace/trace_rect_builder';
-import {Computation} from 'trace/tree_node/computation';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {Computation} from 'tree_node/computation';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {TraceRect} from 'tree_node/trace_rect';
+import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
 
 class RectWmFactory {
   makeDisplayRect(

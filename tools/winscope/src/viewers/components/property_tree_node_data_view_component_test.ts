@@ -21,10 +21,7 @@ import {TimestampConverterUtils} from 'common/time/test_utils';
 import {Timestamp} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
-import {
-  HEX_FORMATTER,
-  TIMESTAMP_NODE_FORMATTER,
-} from 'trace/tree_node/formatters';
+import {HEX_FORMATTER, TIMESTAMP_NODE_FORMATTER} from 'trace/formatters';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {PropertyTreeNodeDataViewComponent} from './property_tree_node_data_view_component';

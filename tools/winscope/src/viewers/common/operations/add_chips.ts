@@ -16,7 +16,7 @@
 
 import {assertNumberOrUndefined} from 'common/assert_utils';
 import {LayerCompositionType} from 'trace/surface_flinger/layer_composition_type';
-import {Operation} from 'trace/tree_node/operations/operation';
+import {Operation} from 'tree_node/operation';
 import {
   DUPLICATE_CHIP,
   GPU_CHIP,

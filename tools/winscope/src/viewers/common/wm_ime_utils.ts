@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 class WindowManagerImeUtils {
   getFocusedActivity(entry: HierarchyTreeNode): HierarchyTreeNode | undefined {
