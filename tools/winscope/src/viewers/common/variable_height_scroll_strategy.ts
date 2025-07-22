@@ -23,6 +23,7 @@ import {distinctUntilChanged, Observable, Subject} from 'rxjs';
 import {TraceType} from 'trace/trace_type';
 import {InputHeightPredictor} from 'viewers/viewer_input/input_height_predictor';
 import {ProtologHeightPredictor} from 'viewers/viewer_protolog/protolog_height_predictor';
+import {SearchHeightPredictor} from 'viewers/viewer_search/search_height_predictor';
 import {TransactionsHeightPredictor} from 'viewers/viewer_transactions/transactions_height_predictor';
 import {TransitionsHeightPredictor} from 'viewers/viewer_transitions/transitions_height_predictor';
 import {ItemHeightPredictor} from './item_height_predictor';
@@ -94,6 +95,9 @@ export class VariableHeightScrollStrategy implements VirtualScrollStrategy {
         break;
       case TraceType.INPUT_EVENT_MERGED:
         this.itemHeightPredictor = new InputHeightPredictor();
+        break;
+      case TraceType.SEARCH:
+        this.itemHeightPredictor = new SearchHeightPredictor();
         break;
       default:
         throw new Error(
