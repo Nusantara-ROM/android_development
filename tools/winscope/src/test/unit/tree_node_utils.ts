@@ -18,10 +18,6 @@ import {TransformTypeFlags} from 'common/geometry/transform_utils';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
-import {TreeNode} from 'tree_node/tree_node';
-import {DiffNode} from 'viewers/common/diff_node';
-import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
-import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
 import {ChildHierarchy, HierarchyTreeBuilder} from './hierarchy_tree_builder';
 import {PropertyTreeBuilder} from './property_tree_builder';
 
@@ -166,79 +162,5 @@ export class TreeNodeUtils {
       name,
       value,
     );
-  }
-
-  static makeUiHierarchyNode(proto: object): UiHierarchyTreeNode {
-    return UiHierarchyTreeNode.from(TreeNodeUtils.makeHierarchyNode(proto));
-  }
-
-  static makeUiPropertyNode(
-    rootId: string,
-    name: string,
-    value: any,
-  ): UiPropertyTreeNode {
-    return UiPropertyTreeNode.from(
-      TreeNodeUtils.makePropertyNode(rootId, name, value),
-    );
-  }
-
-  static treeNodeEqualityTester(
-    first: unknown,
-    second: unknown,
-  ): boolean | undefined {
-    if (first instanceof TreeNode && second instanceof TreeNode) {
-      return TreeNodeUtils.testTreeNodes(first, second);
-    }
-    return undefined;
-  }
-
-  private static testTreeNodes(
-    node: TreeNode,
-    expectedNode: TreeNode,
-  ): boolean {
-    if (node.id !== expectedNode.id) return false;
-    if (node.name !== expectedNode.name) return false;
-
-    if ((node as DiffNode).getDiff && (expectedNode as DiffNode).getDiff) {
-      if (
-        (node as DiffNode).getDiff() !== (expectedNode as DiffNode).getDiff()
-      ) {
-        return false;
-      }
-    }
-
-    if (
-      node instanceof UiHierarchyTreeNode &&
-      expectedNode instanceof UiHierarchyTreeNode
-    ) {
-      if (node.heading() !== expectedNode.heading()) {
-        return false;
-      }
-      if (node.getDisplayName() !== expectedNode.getDisplayName()) {
-        return false;
-      }
-      const chips = node.getChips();
-      const expChips = expectedNode.getChips();
-      if (
-        chips.length !== expChips.length ||
-        !chips.every((chip, i) => chip === expChips[i])
-      ) {
-        return false;
-      }
-    }
-
-    const nodeChildren = node.getAllChildren();
-    const expectedChildren = expectedNode.getAllChildren();
-    if (nodeChildren.length !== expectedChildren.length) return false;
-
-    for (let i = 0; i < nodeChildren.length; i++) {
-      const nodeChild = nodeChildren[i];
-      const expectedChild = expectedChildren[i];
-
-      if (!TreeNodeUtils.testTreeNodes(nodeChild, expectedChild)) {
-        return false;
-      }
-    }
-    return true;
   }
 }

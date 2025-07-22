@@ -28,7 +28,7 @@ import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {MockPresenter} from 'test/unit/mock_hierarchy_viewer_presenter';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {TreeNodeUtils} from 'test/unit/tree_node_utils';
+import {UiTreeNodeUtils} from 'test/unit/ui_tree_node_utils';
 import {Trace} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';
@@ -55,7 +55,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
   let storage: InMemoryStorage;
 
   beforeAll(async () => {
-    jasmine.addCustomEqualityTester(TreeNodeUtils.treeNodeEqualityTester);
+    jasmine.addCustomEqualityTester(UiTreeNodeUtils.treeNodeEqualityTester);
     trace = new TraceBuilder<HierarchyTreeNode>()
       .setType(TraceType.SURFACE_FLINGER)
       .setEntries([
@@ -196,7 +196,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
     presenter.addEventListeners(element);
 
     let spy: jasmine.Spy = spyOn(presenter, 'onPinnedItemChange');
-    const node = TreeNodeUtils.makeUiHierarchyNode({name: 'test'});
+    const node = UiTreeNodeUtils.makeUiHierarchyNode({name: 'test'});
     element.dispatchEvent(
       new CustomEvent(ViewerEvents.HierarchyPinnedChange, {
         detail: {pinnedItem: node},
@@ -383,7 +383,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
 
   it('handles pinned item change', () => {
     expect(uiData.pinnedItems).toEqual([]);
-    const item = TreeNodeUtils.makeUiHierarchyNode({id: '', name: ''});
+    const item = UiTreeNodeUtils.makeUiHierarchyNode({id: '', name: ''});
     presenter.onPinnedItemChange(item);
     expect(uiData.pinnedItems).toEqual([item]);
     presenter.onPinnedItemChange(item);

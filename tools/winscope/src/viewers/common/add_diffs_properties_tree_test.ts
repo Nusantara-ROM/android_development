@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TreeNodeUtils} from 'test/unit/tree_node_utils';
+import {UiTreeNodeUtils} from 'test/unit/ui_tree_node_utils';
 import {TreeNode} from 'tree_node/tree_node';
 import {AddDiffsPropertiesTree} from './add_diffs_properties_tree';
 import {executeAddDiffsTests} from './add_diffs_test_utils';
@@ -39,7 +39,7 @@ describe('AddDiffsPropertiesTree', () => {
 
   describe('AddDiffs tests', () => {
     executeAddDiffsTests(
-      TreeNodeUtils.treeNodeEqualityTester,
+      UiTreeNodeUtils.treeNodeEqualityTester,
       makeRoot,
       makeChildAndAddToRoot,
       addDiffs,
@@ -48,7 +48,7 @@ describe('AddDiffsPropertiesTree', () => {
 
   describe('Property tree tests', () => {
     beforeEach(() => {
-      jasmine.addCustomEqualityTester(TreeNodeUtils.treeNodeEqualityTester);
+      jasmine.addCustomEqualityTester(UiTreeNodeUtils.treeNodeEqualityTester);
       newRoot = makeRoot();
       oldRoot = makeRoot();
       expectedRoot = makeRoot();
@@ -67,7 +67,7 @@ describe('AddDiffsPropertiesTree', () => {
   });
 
   function makeRoot(value = 'value'): UiPropertyTreeNode {
-    const root = TreeNodeUtils.makeUiPropertyNode('test', 'root', value);
+    const root = UiTreeNodeUtils.makeUiPropertyNode('test', 'root', value);
     root.setIsRoot(true);
     return root;
   }
@@ -76,7 +76,11 @@ describe('AddDiffsPropertiesTree', () => {
     rootNode: UiPropertyTreeNode,
     value = 'value',
   ): UiPropertyTreeNode {
-    const child = TreeNodeUtils.makeUiPropertyNode('test node', 'child', value);
+    const child = UiTreeNodeUtils.makeUiPropertyNode(
+      'test node',
+      'child',
+      value,
+    );
     rootNode.addOrReplaceChild(child);
     return child;
   }
