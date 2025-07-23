@@ -34,6 +34,7 @@ import {TRACE_INFO} from 'trace/trace_info';
 import {TraceType} from 'trace/trace_type';
 import {EMPTY_OBJ_STRING} from 'trace/tree_node/formatters';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
+import {PropertySource} from 'trace/tree_node/property_tree_node';
 import {NotifyHierarchyViewCallbackType} from 'viewers/common/abstract_hierarchy_viewer_presenter';
 import {AbstractHierarchyViewerPresenterTest} from 'viewers/common/abstract_hierarchy_viewer_presenter_test';
 import {VISIBLE_CHIP} from 'viewers/common/chip';
@@ -587,6 +588,7 @@ the default for its data type.`,
         const layer2Props = getPropertiesForCuratedPanel(2n);
         Object.assign(layer2Props, {
           cornerRadius: 6,
+          cornerRadii: {tl: 0, tr: 0, bl: 0, br: 0},
           requestedCornerRadii: {bl: 3},
         });
 
@@ -621,6 +623,12 @@ the default for its data type.`,
           .setType(TraceType.SURFACE_FLINGER)
           .setEntries([tree])
           .build();
+        const cornerRadii = (await traceSf.getEntry(0).getValue())
+          .getChildByName('layer2')
+          ?.getEagerPropertyByName('cornerRadii');
+        cornerRadii?.getAllChildren().forEach((child) => {
+          Object.assign(child, {source: PropertySource.DEFAULT});
+        });
         traces.addTrace(traceSf);
         const notifyViewCallback = (newData: UiData) => {
           uiData = newData;
