@@ -63,11 +63,6 @@ export class GraphComponent implements AfterViewInit, OnChanges {
       this.updateData();
       this.createChart();
     }
-    if(
-      changes['showTestList']
-    ){
-      this.graphId = `graph-${this.featureName}-${Date.now()}`;
-    }
   }
 
   private setupResizeObserver(): void {
