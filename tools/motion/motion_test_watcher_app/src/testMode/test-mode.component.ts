@@ -1,7 +1,9 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import {
   Component,
+  ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   OnChanges,
   Output,
@@ -26,6 +28,8 @@ import { MatMenuModule } from '@angular/material/menu';
   templateUrl: './test-mode.component.html',
 })
 export class TestModeComponent implements OnChanges{
+  constructor(private elementRef: ElementRef) {}
+
   @Input() testModes: String[] = [];
   @Input() testMode: String = "";  // will either be GERRIT OR PRESUBMIT (special cases that cannot come in test modes api response)
   @Output() selectedTestMode = new EventEmitter<String>();
@@ -36,6 +40,13 @@ export class TestModeComponent implements OnChanges{
 
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.showDropdown = false;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
