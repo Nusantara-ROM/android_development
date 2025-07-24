@@ -52,8 +52,8 @@ import com.android.mechanics.demo.tuneable.Demo
 import com.android.mechanics.demo.tuneable.HasMotionValueVisualization
 import com.android.mechanics.effects.MagneticDetach
 import com.android.mechanics.rememberDistanceGestureContext
+import com.android.mechanics.rememberMotionSpecAsState
 import com.android.mechanics.rememberMotionValue
-import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 import com.android.mechanics.spec.builder.spatialMotionSpec
 
 object MagneticDetachDemo : Demo<Unit>, HasMotionValueVisualization {
@@ -64,12 +64,15 @@ object MagneticDetachDemo : Demo<Unit>, HasMotionValueVisualization {
         val colors = MaterialTheme.colorScheme
 
         val gestureContext = rememberDistanceGestureContext()
-        val motionBuilderContext = rememberMotionBuilderContext()
-        val spec =
-            remember(motionBuilderContext) {
-                motionBuilderContext.spatialMotionSpec { after(50.dp.toPx(), MagneticDetach()) }
-            }
-        val motionValue = rememberMotionValue(gestureContext::dragOffset, { spec }, gestureContext)
+        val motionValue =
+            rememberMotionValue(
+                input = { gestureContext.dragOffset },
+                gestureContext = gestureContext,
+                spec =
+                    rememberMotionSpecAsState {
+                        spatialMotionSpec { after(50.dp.toPx(), MagneticDetach()) }
+                    },
+            )
 
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp),
