@@ -28,6 +28,7 @@ import {TimeRange} from 'common/time/time';
 import {ComponentTimestampConverter} from 'common/time/timestamp_converter';
 import {Trace, TraceEntry} from 'trace/trace';
 import {TracePosition} from 'trace/trace_position';
+import {TraceType} from 'trace/trace_type';
 import {CanvasDrawer} from './canvas_drawer';
 
 export abstract class AbstractTimelineRowComponent<T extends {}> {
@@ -57,8 +58,14 @@ export abstract class AbstractTimelineRowComponent<T extends {}> {
     return this.canvasRef?.nativeElement;
   }
 
-  getBackgroundColor() {
-    return this.isActive ? 'var(--selected-element-color)' : undefined;
+  getBackgroundColor(): string | undefined {
+    if (this.isActive) {
+      return 'var(--selected-element-color)';
+    }
+    if (this.trace?.type === TraceType.SEARCH) {
+      return 'var(--search-background-color)';
+    }
+    return undefined;
   }
 
   ngAfterViewInit() {
