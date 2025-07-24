@@ -38,7 +38,10 @@ import {
   FixedStringFormatter,
 } from 'trace/tree_node/formatters';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
-import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
+import {
+  PropertySource,
+  PropertyTreeNode,
+} from 'trace/tree_node/property_tree_node';
 import {
   AbstractHierarchyViewerPresenter,
   NotifyHierarchyViewCallbackType,
@@ -513,12 +516,15 @@ the default for its data type.`,
     cornerRadiiLabel: string,
     cornerRadiusLabel: string,
   ): string {
-    const cornerRadii =
-      tree.getChildByName(cornerRadiiLabel)?.getAllChildren() ?? [];
-    let [tl, tr, bl, br] = [0, 0, 0, 0];
-    if (cornerRadii.length > 0) {
-      cornerRadii.forEach((r) => {
-        const value = r.getValue();
+    let [tl, tr, bl, br] = ['0', '0', '0', '0'];
+    const radiiNode = assertDefined(tree.getChildByName(cornerRadiiLabel));
+    const radii = radiiNode.getAllChildren();
+    if (
+      radii.length > 0 &&
+      radii.every((r) => r.source !== PropertySource.DEFAULT)
+    ) {
+      radii.forEach((r) => {
+        const value = r.formattedValue();
         switch (r.name) {
           case 'tl':
             tl = value;
@@ -539,14 +545,13 @@ the default for its data type.`,
         }
       });
     } else {
-      const r = assertNumberOrUndefined(
-        tree.getChildByName(cornerRadiusLabel)?.getValue(),
-      );
+      const rNode = tree.getChildByName(cornerRadiusLabel);
+      const r = assertNumberOrUndefined(rNode?.getValue());
       if (r !== undefined && r > 0) {
-        [tl, tr, bl, br] = [r, r, r, r];
+        const rString = assertDefined(rNode).formattedValue();
+        [tl, tr, bl, br] = [rString, rString, rString, rString];
       }
     }
-
     return `(${tl}, ${tr}, ${bl}, ${br})`;
   }
 
