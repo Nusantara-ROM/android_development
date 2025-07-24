@@ -23,6 +23,7 @@ import {Padding} from 'common/padding';
 import {Timestamp} from 'common/time/time';
 import {Trace} from 'trace/trace';
 import {TRACE_INFO} from 'trace/trace_info';
+import {TraceType} from 'trace/trace_type';
 import {CanvasMouseHandler} from './canvas_mouse_handler';
 import {CanvasMouseHandlerImpl} from './canvas_mouse_handler_impl';
 import {DraggableCanvasObject} from './draggable_canvas_object';
@@ -256,6 +257,8 @@ export class MiniTimelineDrawerImpl implements MiniTimelineDrawer {
         this.pointWithinTimeline(this.lastMousePoint?.y, fromTop, lineHeight)
       ) {
         this.fillHoverTimelineBackground(fromTop, lineHeight);
+      } else if (trace.type === TraceType.SEARCH) {
+        this.fillSearchTimelineBackground(fromTop, lineHeight);
       }
 
       this.drawTraceEntries(trace, timelineTrace, fromTop, lineHeight);
@@ -434,6 +437,14 @@ export class MiniTimelineDrawerImpl implements MiniTimelineDrawer {
     this.ctx.globalAlpha = 1.0;
     this.ctx.fillStyle = getComputedStyle(this.canvas).getPropertyValue(
       '--hover-element-color',
+    );
+    this.ctx.fillRect(0, fromTop, this.getUsableRange().to, lineHeight);
+  }
+
+  private fillSearchTimelineBackground(fromTop: number, lineHeight: number) {
+    this.ctx.globalAlpha = 1.0;
+    this.ctx.fillStyle = getComputedStyle(this.canvas).getPropertyValue(
+      '--search-background-color',
     );
     this.ctx.fillRect(0, fromTop, this.getUsableRange().to, lineHeight);
   }
