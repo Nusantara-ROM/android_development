@@ -37,7 +37,7 @@ import {
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
-import {KeyboardEventKey} from 'common/dom_utils';
+import {isInputTextField, KeyboardEventKey} from 'common/dom_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {PersistentStore} from 'common/store/persistent_store';
 import {parseBigIntStrippingUnit} from 'common/string_utils';
@@ -747,22 +747,14 @@ export class TimelineComponent
 
   @HostListener('document:focusin', ['$event'])
   handleFocusInEvent(event: FocusEvent) {
-    if (
-      (event.target as HTMLInputElement)?.tagName === 'INPUT' &&
-      (event.target as HTMLInputElement)?.type === 'text'
-    ) {
-      //check if text input field focused
+    if (event.target instanceof HTMLElement && isInputTextField(event.target)) {
       this.isInputFormFocused = true;
     }
   }
 
   @HostListener('document:focusout', ['$event'])
   handleFocusOutEvent(event: FocusEvent) {
-    if (
-      (event.target as HTMLInputElement)?.tagName === 'INPUT' &&
-      (event.target as HTMLInputElement)?.type === 'text'
-    ) {
-      //check if text input field focused
+    if (event.target instanceof HTMLElement && isInputTextField(event.target)) {
       this.isInputFormFocused = false;
     }
   }
