@@ -33,6 +33,14 @@ export function isElementOverflowing(element: HTMLElement) {
   return element.scrollWidth > element.clientWidth;
 }
 
+export function isInputTextField(element: HTMLElement): boolean {
+  return (
+    element instanceof HTMLInputElement &&
+    element.tagName === 'INPUT' &&
+    element.type === 'text'
+  );
+}
+
 export enum KeyboardEventCode {
   A = 'KeyA',
   D = 'KeyD',

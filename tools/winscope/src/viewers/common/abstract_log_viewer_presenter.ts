@@ -15,7 +15,11 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {isElementVisible, KeyboardEventKey} from 'common/dom_utils';
+import {
+  isElementVisible,
+  isInputTextField,
+  KeyboardEventKey,
+} from 'common/dom_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {Timestamp} from 'common/time/time';
 import {Analytics} from 'logging/analytics';
@@ -121,10 +125,12 @@ export abstract class AbstractLogViewerPresenter<
 
     document.addEventListener('keydown', async (event: KeyboardEvent) => {
       const isViewerVisible = isElementVisible(htmlElement);
+      const keydownOnInputField =
+        event.target instanceof HTMLElement && isInputTextField(event.target);
       const isPositionChange =
         event.key === KeyboardEventKey.ARROW_RIGHT ||
         event.key === KeyboardEventKey.ARROW_LEFT;
-      if (!isViewerVisible || !isPositionChange) {
+      if (!isViewerVisible || keydownOnInputField || !isPositionChange) {
         return;
       }
       event.preventDefault();
