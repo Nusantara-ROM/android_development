@@ -19,8 +19,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {assertDefined} from 'common/assert_utils';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
-import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
+import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsedSectionsComponent} from './collapsed_sections_component';
 
 describe('CollapsedSectionsComponent', () => {

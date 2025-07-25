@@ -29,10 +29,10 @@ import {ParserFactory as PerfettoParserFactory} from 'parsers/perfetto/parser_fa
 import {TracesParserFactory} from 'parsers/traces/traces_parser_factory';
 import {Parser} from 'trace/parser';
 import {Trace} from 'trace/trace';
-import {Traces} from 'trace/traces';
 import {TraceFile} from 'trace/trace_file';
 import {TraceMetadata} from 'trace/trace_metadata';
 import {TraceEntryTypeMap, TraceType} from 'trace/trace_type';
+import {Traces} from 'trace/traces';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {TraceBuilder} from './trace_builder';
 

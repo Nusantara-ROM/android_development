@@ -25,8 +25,8 @@ import {
   VisitableParserCustomQuery,
 } from 'trace/custom_query';
 import {EntriesRange, Trace} from 'trace/trace';
-import {Traces} from 'trace/traces';
 import {TraceType} from 'trace/trace_type';
+import {Traces} from 'trace/traces';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 
 type OriginalTraceIndex = number;

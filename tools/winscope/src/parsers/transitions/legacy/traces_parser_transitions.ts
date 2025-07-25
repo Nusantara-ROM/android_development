@@ -24,8 +24,8 @@ import {perfetto} from 'protos/perfetto/trace/static';
 import {com} from 'protos/transitions/udc/static';
 import {CoarseVersion} from 'trace/coarse_version';
 import {Trace} from 'trace/trace';
-import {Traces} from 'trace/traces';
 import {TraceType} from 'trace/trace_type';
+import {Traces} from 'trace/traces';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {ParserTransitionsShell} from './parser_transitions_shell';
 

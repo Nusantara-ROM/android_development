@@ -19,8 +19,8 @@ import {Store} from 'common/store/store';
 import {Timestamp} from 'common/time/time';
 import {CustomQueryType} from 'trace/custom_query';
 import {Trace} from 'trace/trace';
-import {Traces} from 'trace/traces';
 import {TraceType} from 'trace/trace_type';
+import {Traces} from 'trace/traces';
 import {TransitionStatus} from 'trace/transitions/status';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {

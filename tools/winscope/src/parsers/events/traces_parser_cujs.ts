@@ -22,8 +22,8 @@ import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_p
 import {AbstractTracesParser} from 'parsers/traces/abstract_traces_parser';
 import {CoarseVersion} from 'trace/coarse_version';
 import {Trace} from 'trace/trace';
-import {Traces} from 'trace/traces';
 import {TraceType} from 'trace/trace_type';
+import {Traces} from 'trace/traces';
 import {CUJ_TYPE_FORMATTER} from 'trace/tree_node/formatters';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {EventTag} from './event_tag';

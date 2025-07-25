@@ -16,6 +16,7 @@
 
 import {browser, by, element} from 'protractor';
 import {
+  WINSCOPE_URL,
   areMessagesEmitted,
   clickClearAllButton,
   clickCloseIcon,
@@ -23,7 +24,6 @@ import {
   loadBugReport,
   setTimeouts,
   uploadFixture,
-  WINSCOPE_URL,
 } from './utils';
 
 describe('Upload traces', () => {

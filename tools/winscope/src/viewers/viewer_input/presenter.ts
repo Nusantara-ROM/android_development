@@ -27,9 +27,9 @@ import {CustomQueryType} from 'trace/custom_query';
 import {InputColumnType} from 'trace/input/input_column_type';
 import {InputEventType} from 'trace/input/input_event_type';
 import {Trace, TraceEntry, TraceEntryLazy} from 'trace/trace';
-import {Traces} from 'trace/traces';
 import {TRACE_INFO} from 'trace/trace_info';
 import {TraceType} from 'trace/trace_type';
+import {Traces} from 'trace/traces';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from 'trace/tree_node/property_tree_node';
 import {

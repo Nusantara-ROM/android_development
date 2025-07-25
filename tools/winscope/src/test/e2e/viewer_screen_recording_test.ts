@@ -15,11 +15,11 @@
  */
 import {browser, by, element} from 'protractor';
 import {
+  WINSCOPE_URL,
   clickViewTracesButton,
   closeSnackBar,
   setTimeouts,
   uploadFixture,
-  WINSCOPE_URL,
 } from './utils';
 
 describe('Viewer ScreenRecording', () => {

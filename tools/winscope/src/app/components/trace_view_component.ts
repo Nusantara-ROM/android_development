@@ -44,7 +44,7 @@ import {WinscopeEventListener} from 'messaging/winscope_event_listener';
 import {TRACE_INFO} from 'trace/trace_info';
 import {TraceType} from 'trace/trace_type';
 import {inlineButtonStyle} from 'viewers/components/styles/clickable_property.styles';
-import {View, Viewer, ViewType} from 'viewers/viewer';
+import {View, ViewType, Viewer} from 'viewers/viewer';
 
 interface Tab {
   view: View;

@@ -20,7 +20,7 @@ import {Trace, TraceEntry} from 'trace/trace';
 import {TracePosition} from 'trace/trace_position';
 import {TraceType} from 'trace/trace_type';
 import {AdbFiles} from 'trace_collection/adb_files';
-import {View, Viewer, ViewType} from 'viewers/viewer';
+import {View, ViewType, Viewer} from 'viewers/viewer';
 
 export enum WinscopeEventType {
   APP_INITIALIZED,

@@ -17,7 +17,7 @@
 import {Clipboard, ClipboardModule} from '@angular/cdk/clipboard';
 import {TestBed} from '@angular/core/testing';
 import {MatButtonModule} from '@angular/material/button';
-import {MatSnackBarRef, MAT_SNACK_BAR_DATA} from '@angular/material/snack-bar';
+import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from '@angular/material/snack-bar';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {SnackBarComponent} from './snack_bar_component';
 

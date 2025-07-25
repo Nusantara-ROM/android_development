@@ -20,9 +20,9 @@ import {TimestampConverter} from 'common/time/timestamp_converter';
 import {WinscopeEvent} from 'messaging/winscope_event';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
 import {Trace} from 'trace/trace';
-import {Traces} from 'trace/traces';
 import {TRACE_INFO} from 'trace/trace_info';
 import {TraceType} from 'trace/trace_type';
+import {Traces} from 'trace/traces';
 import {ViewerComponent} from './components/viewer_component';
 import {View, Viewer, ViewType} from './viewer';
 

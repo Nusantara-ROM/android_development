@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {browser, by, element} from 'protractor';
-import {checkServerIsUp, WINSCOPE_URL} from './utils';
+import {WINSCOPE_URL, checkServerIsUp} from './utils';
 
 describe('winscope', () => {
   beforeAll(async () => {

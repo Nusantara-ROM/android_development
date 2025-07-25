@@ -34,8 +34,8 @@ import {
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
 import {
-  TamperedProtoField,
   TAMPERED_TRACE_PACKET,
+  TamperedProtoField,
 } from 'parsers/tampered_message_type';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {

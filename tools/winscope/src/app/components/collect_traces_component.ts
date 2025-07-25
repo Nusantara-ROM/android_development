@@ -59,12 +59,12 @@ import {ConnectionStateListener} from 'trace_collection/connection_state_listene
 import {TraceCollectionController} from 'trace_collection/controller/trace_collection_controller';
 import {
   CheckboxConfiguration,
+  SelectionConfiguration,
+  TraceConfigurationMap,
   makeDefaultDumpConfigMap,
   makeDefaultTraceConfigMap,
   makeProtologGroupOptions,
   makeScreenRecordingSelectionConfigs,
-  SelectionConfiguration,
-  TraceConfigurationMap,
   updateConfigsFromStore,
 } from 'trace_collection/ui/ui_trace_configuration';
 import {UiTraceTarget} from 'trace_collection/ui/ui_trace_target';

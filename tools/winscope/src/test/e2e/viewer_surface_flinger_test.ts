@@ -16,6 +16,7 @@
 
 import {browser, by, element} from 'protractor';
 import {
+  WINSCOPE_URL,
   changeRealTimestampInWinscope,
   checkFinalRealTimestamp,
   checkInitialRealTimestamp,
@@ -25,7 +26,6 @@ import {
   loadTraceAndCheckViewer,
   selectItemInHierarchy,
   setTimeouts,
-  WINSCOPE_URL,
 } from './utils';
 
 describe('Viewer Surface Flinger', () => {

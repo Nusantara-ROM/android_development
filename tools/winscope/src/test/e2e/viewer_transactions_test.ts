@@ -16,6 +16,7 @@
 
 import {browser, by, element} from 'protractor';
 import {
+  WINSCOPE_URL,
   changeRealTimestampInWinscope,
   checkFinalRealTimestamp,
   checkInitialRealTimestamp,
@@ -27,7 +28,6 @@ import {
   checkWinscopeRealTimestamp,
   loadTraceAndCheckViewer,
   setTimeouts,
-  WINSCOPE_URL,
 } from './utils';
 
 describe('Viewer Transactions', () => {

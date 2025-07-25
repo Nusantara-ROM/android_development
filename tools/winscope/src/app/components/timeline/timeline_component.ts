@@ -37,7 +37,7 @@ import {
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
-import {isInputTextField, KeyboardEventKey} from 'common/dom_utils';
+import {KeyboardEventKey, isInputTextField} from 'common/dom_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {PersistentStore} from 'common/store/persistent_store';
 import {parseBigIntStrippingUnit} from 'common/string_utils';
@@ -57,10 +57,10 @@ import {
 } from 'messaging/winscope_event_emitter';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
 import {Trace} from 'trace/trace';
-import {Traces} from 'trace/traces';
 import {TRACE_INFO} from 'trace/trace_info';
 import {TracePosition} from 'trace/trace_position';
 import {TraceType, TraceTypeUtils} from 'trace/trace_type';
+import {Traces} from 'trace/traces';
 import {multlineTooltip} from 'viewers/components/styles/tooltip.styles';
 import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
 

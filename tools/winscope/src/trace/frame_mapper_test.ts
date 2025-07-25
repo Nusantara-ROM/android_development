@@ -15,15 +15,15 @@
  */
 
 import {TimestampConverterUtils} from 'common/time/test_utils';
-import {extractFrames} from 'test/unit/traces_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
+import {extractFrames} from 'test/unit/traces_utils';
 import {CustomQueryType} from './custom_query';
 import {FrameMapper} from './frame_mapper';
 import {AbsoluteFrameIndex} from './index_types';
 import {MediaBasedTraceEntry} from './media_based_trace_entry';
 import {Trace} from './trace';
-import {Traces} from './traces';
 import {TraceType} from './trace_type';
+import {Traces} from './traces';
 import {HierarchyTreeNode} from './tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from './tree_node/property_tree_node';
 

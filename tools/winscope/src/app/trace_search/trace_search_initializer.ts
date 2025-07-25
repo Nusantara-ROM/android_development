@@ -15,8 +15,8 @@
  */
 
 import {Analytics} from 'logging/analytics';
-import {Traces} from 'trace/traces';
 import {TRACE_INFO} from 'trace/trace_info';
+import {Traces} from 'trace/traces';
 import {TraceProcessorFactory} from 'trace_processor/trace_processor_factory';
 import {SearchViewFactoryProtoLog} from './search_view_factory_protolog';
 import {SearchViewFactorySf} from './search_view_factory_sf';

@@ -67,8 +67,8 @@ import {TransformMatrixComponent} from 'viewers/components/transform_matrix_comp
 import {TreeComponent} from 'viewers/components/tree_component';
 import {TreeNodeComponent} from 'viewers/components/tree_node_component';
 import {UserOptionsComponent} from 'viewers/components/user_options_component';
-import {ViewerInputMethodComponent} from 'viewers/components/viewer_input_method_component';
 import {ViewCapturePropertyGroupsComponent} from 'viewers/components/view_capture_property_groups_component';
+import {ViewerInputMethodComponent} from 'viewers/components/viewer_input_method_component';
 import {ViewerInputComponent} from 'viewers/viewer_input/viewer_input_component';
 import {ViewerJankCujsComponent} from 'viewers/viewer_jank_cujs/viewer_jank_cujs_component';
 import {ViewerMediaBasedComponent} from 'viewers/viewer_media_based/viewer_media_based_component';

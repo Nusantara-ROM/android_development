@@ -18,7 +18,7 @@ import {
   TimestampConverterUtils,
   timestampEqualityTester,
 } from 'common/time/test_utils';
-import {getFixtureFile, LegacyParserProvider} from 'test/unit/fixture_utils';
+import {LegacyParserProvider, getFixtureFile} from 'test/unit/fixture_utils';
 import {Parser} from 'trace/parser';
 import {TraceFile} from 'trace/trace_file';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';

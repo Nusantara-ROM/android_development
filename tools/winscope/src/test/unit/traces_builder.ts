@@ -16,8 +16,8 @@
 
 import {Timestamp} from 'common/time/time';
 import {FrameMap} from 'trace/frame_map';
-import {Traces} from 'trace/traces';
 import {TraceType} from 'trace/trace_type';
+import {Traces} from 'trace/traces';
 import {TraceBuilder} from './trace_builder';
 
 export class TracesBuilder {

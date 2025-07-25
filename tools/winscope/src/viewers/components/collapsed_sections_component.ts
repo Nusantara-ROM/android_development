@@ -15,8 +15,8 @@
  */
 
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
+import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 
 @Component({
   selector: 'collapsed-sections',
