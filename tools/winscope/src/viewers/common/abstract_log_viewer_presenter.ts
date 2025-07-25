@@ -233,6 +233,9 @@ export abstract class AbstractLogViewerPresenter<
     this.logPresenter.applyLogEntryClick(index);
     this.updateIndicesUiData();
     await this.updatePropertiesTree();
+    if (this.handleSpecificEntryClicks) {
+      await this.handleSpecificEntryClicks();
+    }
     this.notifyViewChanged();
   }
 
@@ -324,7 +327,6 @@ export abstract class AbstractLogViewerPresenter<
     this.uiData.selectedIndex = this.logPresenter.getSelectedIndex();
     this.uiData.scrollToIndex = this.logPresenter.getScrollToIndex();
     this.uiData.currentIndex = this.logPresenter.getCurrentIndex();
-
     if (this.propertiesPresenter) {
       await this.updatePropertiesTree();
       this.uiData.propertiesTree = this.propertiesPresenter.getFormattedTree();
@@ -413,6 +415,7 @@ export abstract class AbstractLogViewerPresenter<
     headers: LogHeader[],
   ): Promise<LogEntry[]>;
   protected initializeTraceSpecificData?(): Promise<void>;
+  protected async handleSpecificEntryClicks?(): Promise<void>;
   protected async updateFiltersInHeaders?(
     headers: LogHeader[],
     allEntries: LogEntry[],

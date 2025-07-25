@@ -140,7 +140,12 @@ export class TreeNodeComponent {
     }
     const rect = this.el.getBoundingClientRect();
     const parentRect = this.treeWrapper.getBoundingClientRect();
-    return rect.top >= parentRect.top && rect.bottom <= parentRect.bottom;
+    return (
+      rect.top >= parentRect.top &&
+      rect.bottom <= parentRect.bottom &&
+      rect.left >= parentRect.left &&
+      rect.right <= parentRect.right
+    );
   }
 
   getTreeWrapper(): HTMLElement | undefined {
