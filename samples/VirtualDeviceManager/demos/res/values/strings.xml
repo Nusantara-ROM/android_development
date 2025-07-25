@@ -12,6 +12,9 @@
     <string name="latency_demo" translatable="false">VDM Latency Demo</string>
     <string name="stylus_demo" translatable="false">VDM Stylus Demo</string>
     <string name="recorder_demo" translatable="false">VDM Recorder Demo</string>
+    <string name="sound_demo" translatable="false">VDM Sound Demo</string>
+    <string name="play_sound_1" translatable="false">Play Sound One</string>
+    <string name="play_sound_2" translatable="false">Play Sound Two</string>
 
     <string name="start_opted_out_activity" translatable="false">Start opted out activity</string>
     <string name="start_blocked_activity" translatable="false">Start blocked activity</string>

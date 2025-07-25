@@ -148,6 +148,11 @@
             android:exported="true"
             android:label="@string/recorder_demo" />
 
+        <activity
+            android:name=".SoundDemoActivity"
+            android:exported="true"
+            android:label="@string/sound_demo" />
+
     </application>
     <!-- LINT.ThenChange(/samples/VirtualDeviceManager/README.md:demos) -->
 </manifest>
