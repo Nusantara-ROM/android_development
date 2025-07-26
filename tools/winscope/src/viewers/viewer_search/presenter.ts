@@ -54,11 +54,7 @@ export class Presenter {
   private uiData = UiData.createEmpty();
   private activeSearchUid = 0;
   private activeSearches: ActiveSearch[] = [];
-  private savedSearches = PersistentStoreProxy.new<{searches: ListedSearch[]}>(
-    'savedSearches',
-    {searches: []},
-    this.storage,
-  );
+  private savedSearches: { searches: ListedSearch[] };
   private viewerElement: HTMLElement | undefined;
   private runningSearch: CurrentSearch | undefined;
 
@@ -68,6 +64,11 @@ export class Presenter {
     private readonly notifyViewCallback: (uiData: UiData) => void,
     private readonly timestampConverter: TimestampConverter,
   ) {
+    this.savedSearches = PersistentStoreProxy.new<{ searches: ListedSearch[] }>(
+      'savedSearches',
+      { searches: [] },
+      this.storage,
+    );
     this.uiData.savedSearches = Array.from(this.savedSearches.searches);
     this.addSearch();
   }

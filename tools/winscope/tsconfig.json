@@ -22,15 +22,14 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2020",
-    "module": "es2020",
+    "target": "es2022",
+    "module": "es2022",
     "lib": [
-      "es2020",
+      "es2022",
       "dom"
     ],
     "resolveJsonModule": true
   },
-  "include": ["src"],
   "include": ["src"],
   "exclude": ["src/test/e2e"],
   "angularCompilerOptions": {

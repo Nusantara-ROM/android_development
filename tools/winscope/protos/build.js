@@ -125,6 +125,10 @@ async function buildProtos(protoPaths, outSubdir) {
     await runCommand(commandBuildJson);
     await runCommand(commandBuildJs);
     await runCommand(commandBuildTs);
+
+    // Fix proto compilation erorr because of Winscope extensions
+    await runCommand(`sed -i 's/interface IWinscopeExtensions/class IWinscopeExtensions/g' ${outDir}/static.d.ts`);
+    await runCommand(`sed -i 's/class WinscopeExtensions implements IWinscopeExtensions/class WinscopeExtensions extends IWinscopeExtensions/g' ${outDir}/static.d.ts`);
 }
 
 function runCommand(command) {

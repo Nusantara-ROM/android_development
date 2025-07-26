@@ -71,11 +71,7 @@ export class Canvas {
   };
   private static readonly RECT_EDGE_BOLD_WIDTH = 10;
 
-  renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    canvas: this.canvasRects,
-    alpha: true,
-  });
+  renderer: THREE.WebGLRenderer
   labelRenderer?: CSS2DRenderer;
 
   private camera = new THREE.OrthographicCamera(
@@ -90,18 +86,25 @@ export class Canvas {
   private pinnedIdToColorMap = new Map<string, THREE.Color>();
   private lastAssignedDefaultPinnedColor = false;
   private firstDraw = true;
-  private lastScene: SceneState = {
-    isDarkMode: this.isDarkMode(),
-    translatedPos: undefined,
-    rectIdToRectGraphics: new Map<string, RectGraphics>(),
-    rectIdToLabelGraphics: new Map<string, LabelGraphics>(),
-  };
+  private lastScene: SceneState;
 
   constructor(
     private canvasRects: HTMLElement,
     private canvasLabels?: HTMLElement,
     private isDarkMode = () => false,
   ) {
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      canvas: this.canvasRects,
+      alpha: true,
+    });
+    this.lastScene = {
+      isDarkMode: this.isDarkMode(),
+      translatedPos: undefined,
+      rectIdToRectGraphics: new Map<string, RectGraphics>(),
+      rectIdToLabelGraphics: new Map<string, LabelGraphics>(),
+    };
+
     if (this.canvasLabels) {
       this.labelRenderer = new CSS2DRenderer({element: this.canvasLabels});
     }

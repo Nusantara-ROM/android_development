@@ -130,33 +130,7 @@ export class Presenter extends AbstractLogViewerPresenter<
   private shouldHandleSpecificClicks = false;
   private shouldHandleWindowPropertyHighlight = false;
 
-  private readonly rectsPresenter = new RectsPresenter(
-    PersistentStoreProxy.new<UserOptions>(
-      'InputWindowRectsOptions',
-      {
-        showOnlyWithContent: {
-          name: 'Has input',
-          icon: 'pan_tool_alt',
-          enabled: false,
-        },
-        showOnlyVisible: {
-          name: 'Show only',
-          chip: VISIBLE_CHIP,
-          enabled: true,
-        },
-      },
-      this.storage,
-    ),
-    (tree: HierarchyTreeNode) => {
-      return UI_RECT_FACTORY.makeInputRects(
-        tree,
-        (id) => this.currentTargetWindowIds.has(id.split(' ')[0]),
-        this.currDispatchProperties,
-      );
-    },
-    makeDisplayIdentifiers,
-    convertRectIdToLayerorDisplayName,
-  );
+  private readonly rectsPresenter: RectsPresenter;
 
   constructor(
     traces: Traces,
@@ -178,6 +152,33 @@ export class Presenter extends AbstractLogViewerPresenter<
     );
     this.traces = traces;
     this.surfaceFlingerTrace = this.traces.getTrace(TraceType.SURFACE_FLINGER);
+    this.rectsPresenter = new RectsPresenter(
+      PersistentStoreProxy.new<UserOptions>(
+        'InputWindowRectsOptions',
+        {
+          showOnlyWithContent: {
+            name: 'Has input',
+            icon: 'pan_tool_alt',
+            enabled: false,
+          },
+          showOnlyVisible: {
+            name: 'Show only',
+            chip: VISIBLE_CHIP,
+            enabled: true,
+          },
+        },
+        this.storage,
+      ),
+      (tree: HierarchyTreeNode) => {
+        return UI_RECT_FACTORY.makeInputRects(
+          tree,
+          (id) => this.currentTargetWindowIds.has(id.split(' ')[0]),
+          this.currDispatchProperties,
+        );
+      },
+      makeDisplayIdentifiers,
+      convertRectIdToLayerorDisplayName,
+    );
   }
 
   async onDispatchPropertiesFilterChange(textFilter: TextFilter) {

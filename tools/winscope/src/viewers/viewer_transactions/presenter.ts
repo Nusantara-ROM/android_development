@@ -85,25 +85,7 @@ export class Presenter extends AbstractLogViewerPresenter<
 
   protected override keepCalculated = true;
   protected override logPresenter = new LogPresenter<TransactionsEntry>();
-  protected override propertiesPresenter = new PropertiesPresenter(
-    PersistentStoreProxy.new<UserOptions>(
-      'TransactionsPropertyOptions',
-      {
-        showDefaults: {
-          name: 'Show defaults',
-          enabled: false,
-          tooltip: `
-                If checked, shows the value of all properties.
-                Otherwise, hides all properties whose value is
-                the default for its data type.
-              `,
-        },
-      },
-      this.storage,
-    ),
-    new TextFilter(),
-    [],
-  );
+  protected override propertiesPresenter: PropertiesPresenter;
 
   constructor(
     trace: Trace<HierarchyTreeNode>,
@@ -111,6 +93,25 @@ export class Presenter extends AbstractLogViewerPresenter<
     notifyViewCallback: NotifyLogViewCallbackType<UiData>,
   ) {
     super(trace, notifyViewCallback, UiData.createEmpty());
+    this.propertiesPresenter = new PropertiesPresenter(
+      PersistentStoreProxy.new<UserOptions>(
+        'TransactionsPropertyOptions',
+        {
+          showDefaults: {
+            name: 'Show defaults',
+            enabled: false,
+            tooltip: `
+                  If checked, shows the value of all properties.
+                  Otherwise, hides all properties whose value is
+                  the default for its data type.
+                `,
+          },
+        },
+        this.storage,
+      ),
+      new TextFilter(),
+      [],
+    );
   }
 
   protected override makeHeaders(): LogHeader[] {
