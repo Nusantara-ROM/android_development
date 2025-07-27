@@ -48,7 +48,6 @@ import {PersistentStore} from 'common/store/persistent_store';
 import {Store} from 'common/store/store';
 import {Timestamp} from 'common/time/time';
 import {getRootUrl} from 'common/url_utils';
-import {UserNotifier} from 'common/user_notifier';
 import {CrossToolProtocol} from 'cross_tool/cross_tool_protocol';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';
@@ -65,6 +64,7 @@ import {
   WinscopeEventType,
 } from 'messaging/winscope_event';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
+import {UserNotifier} from 'services/user_notifier';
 import {AdbFiles} from 'trace_collection/adb_files';
 import {iconDividerStyle} from 'viewers/components/styles/icon_divider.styles';
 import {ViewerInputMethodComponent} from 'viewers/components/viewer_input_method_component';

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TamperedProtoField} from 'parsers/tampered_message_type';
+import {TamperedProtoField} from 'trace/protoutils/tampered_message_type';
 
 export interface TamperedProtos {
   entryField: TamperedProtoField;

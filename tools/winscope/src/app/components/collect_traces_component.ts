@@ -42,7 +42,6 @@ import {
 } from 'common/assert_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {Store} from 'common/store/store';
-import {UserNotifier} from 'common/user_notifier';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';
 import {ProxyTraceTimeout} from 'messaging/user_warnings';
@@ -56,6 +55,7 @@ import {
   WinscopeEventEmitter,
 } from 'messaging/winscope_event_emitter';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
+import {UserNotifier} from 'services/user_notifier';
 import {
   AdbDeviceConnection,
   AdbDeviceState,

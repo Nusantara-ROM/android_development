@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {UserNotifier} from 'common/user_notifier';
 import {ProxyTracingWarnings} from 'messaging/user_warnings';
+import {UserNotifier} from 'services/user_notifier';
 import {AdbDeviceConnection} from 'trace_collection/adb/adb_device_connection';
 import {AdbFileIdentifier, TraceTarget} from 'trace_collection/trace_target';
 import {TracingSession} from './tracing_session';

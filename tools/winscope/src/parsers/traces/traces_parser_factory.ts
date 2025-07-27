@@ -16,11 +16,11 @@
 
 import {assertTrue} from 'common/assert_utils';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
-import {UserNotifier} from 'common/user_notifier';
 import {FailedToCreateTracesParser} from 'messaging/user_warnings';
 import {TracesParserCujs} from 'parsers/events/traces_parser_cujs';
 import {TracesParserInput} from 'parsers/input/perfetto/traces_parser_input';
 import {TracesParserTransitions} from 'parsers/transitions/legacy/traces_parser_transitions';
+import {UserNotifier} from 'services/user_notifier';
 import {Parser} from 'trace_api/parser';
 import {Traces} from 'trace_api/traces';
 

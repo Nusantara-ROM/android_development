@@ -19,7 +19,6 @@ import {FileUtils} from 'common/file_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {utf8Decode} from 'common/string_utils';
 import {TimezoneInfo} from 'common/time/time';
-import {UserNotifier} from 'common/user_notifier';
 import {Analytics} from 'logging/analytics';
 import {UserWarning} from 'messaging/user_warning';
 import {
@@ -41,6 +40,7 @@ import {WinscopeEventListener} from 'messaging/winscope_event_listener';
 import {FileAndParser} from 'parsers/file_and_parser';
 import {FileAndParsers} from 'parsers/file_and_parsers';
 import {ProcessedFiles} from 'parsers/legacy/parser_factory';
+import {UserNotifier} from 'services/user_notifier';
 import {TraceFile} from 'trace/trace_file';
 import {TraceMetadata} from 'trace_api/trace_metadata';
 

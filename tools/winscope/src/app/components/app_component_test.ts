@@ -50,7 +50,6 @@ import {assertDefined} from 'common/assert_utils';
 import {Download} from 'common/download';
 import {FileUtils} from 'common/file_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
-import {UserNotifier} from 'common/user_notifier';
 import {
   FailedToInitializeTimelineData,
   NoValidFiles,
@@ -62,6 +61,7 @@ import {
   ViewersLoaded,
   ViewersUnloaded,
 } from 'messaging/winscope_event';
+import {UserNotifier} from 'services/user_notifier';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {waitToBeCalled} from 'test/unit/spy_utils';
 import {TracesBuilder} from 'test/unit/traces_builder';

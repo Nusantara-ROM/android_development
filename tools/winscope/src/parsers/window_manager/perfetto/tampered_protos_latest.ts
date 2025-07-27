@@ -15,8 +15,8 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TAMPERED_WINSCOPE_EXTENSIONS} from 'parsers/tampered_message_type';
 import {TamperedProtos} from 'parsers/window_manager/tampered_protos';
+import {TAMPERED_WINSCOPE_EXTENSIONS} from 'trace/protoutils/tampered_message_type';
 
 const entryField = assertDefined(
   TAMPERED_WINSCOPE_EXTENSIONS.fields[

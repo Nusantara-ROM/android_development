@@ -16,9 +16,9 @@
 
 import {FileUtils} from 'common/file_utils';
 import {TimeUtils} from 'common/time/time_utils';
-import {UserNotifier} from 'common/user_notifier';
 import {ProgressListener} from 'messaging/progress_listener';
 import {ProxyTracingWarnings} from 'messaging/user_warnings';
+import {UserNotifier} from 'services/user_notifier';
 import {AdbDeviceConnection} from 'trace_collection/adb/adb_device_connection';
 import {AdbHostConnection} from 'trace_collection/adb/adb_host_connection';
 import {AdbConnectionType} from 'trace_collection/adb_connection_type';

@@ -19,7 +19,6 @@ import {FileUtils} from 'common/file_utils';
 import {OnProgressUpdateType} from 'common/function_utils';
 import {INVALID_TIME_NS, TimeRange, Timestamp} from 'common/time/time';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
-import {UserNotifier} from 'common/user_notifier';
 import {TraceHasOldData, TraceOverridden} from 'messaging/user_warnings';
 import {FileAndParser} from 'parsers/file_and_parser';
 import {FileAndParsers} from 'parsers/file_and_parsers';
@@ -27,6 +26,7 @@ import {
   getParserWithLatestRealToBootTimeOffset,
   getParserWithLatestRealToMonotonicTimeOffset,
 } from 'parsers/parser_time_utils';
+import {UserNotifier} from 'services/user_notifier';
 import {TraceFile} from 'trace/trace_file';
 import {Parser} from 'trace_api/parser';
 import {TRACE_INFO} from 'trace_api/trace_info';

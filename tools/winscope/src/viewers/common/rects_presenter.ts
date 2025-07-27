@@ -24,7 +24,7 @@ import {RectShowState} from './rect_show_state';
 import {UserOptions} from './user_options';
 
 export class RectsPresenter {
-  private readonly rectFilter: RectFilter
+  private readonly rectFilter: RectFilter;
   private allCurrentRects: UiRect[] = [];
   private rectsToDraw: UiRect[] = [];
   private displays: DisplayIdentifier[] = [];

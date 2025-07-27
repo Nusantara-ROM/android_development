@@ -71,7 +71,7 @@ export class Canvas {
   };
   private static readonly RECT_EDGE_BOLD_WIDTH = 10;
 
-  renderer: THREE.WebGLRenderer
+  renderer: THREE.WebGLRenderer;
   labelRenderer?: CSS2DRenderer;
 
   private camera = new THREE.OrthographicCamera(

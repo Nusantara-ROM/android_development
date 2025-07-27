@@ -18,7 +18,6 @@ import {assertDefined} from 'common/assert_utils';
 import {Timestamp} from 'common/time/time';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {AddCujProperties} from 'parsers/events/operations/add_cuj_properties';
-import {SetFormatters} from 'parsers/operations/set_formatters';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {AbstractTracesParser} from 'parsers/traces/abstract_traces_parser';
 import {CUJ_TYPE_FORMATTER} from 'trace/formatters';
@@ -27,6 +26,7 @@ import {Trace} from 'trace_api/trace';
 import {Traces} from 'trace_api/traces';
 import {TraceType} from 'trace_api/trace_type';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {SetFormatters} from 'viewers/operations/set_formatters';
 import {EventTag} from './event_tag';
 
 export class TracesParserCujs extends AbstractTracesParser<PropertyTreeNode> {

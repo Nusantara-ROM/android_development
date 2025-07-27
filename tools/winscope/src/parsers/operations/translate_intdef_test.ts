@@ -15,9 +15,9 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TamperedMessageType} from 'parsers/tampered_message_type';
 import root from 'protos/test/intdef_translation/json';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
+import {TamperedMessageType} from 'trace/protoutils/tampered_message_type';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {TranslateIntDef} from './translate_intdef';
 

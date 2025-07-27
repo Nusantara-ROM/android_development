@@ -16,7 +16,6 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {AddDefaults} from 'parsers/operations/add_defaults';
-import {SetFormatters} from 'parsers/operations/set_formatters';
 import {TranslateIntDef} from 'parsers/operations/translate_intdef';
 import {DENYLIST_PROPERTIES} from 'parsers/window_manager/denylist_properties';
 import {EAGER_PROPERTIES} from 'parsers/window_manager/eager_properties';
@@ -25,6 +24,7 @@ import {TamperedProtos} from 'parsers/window_manager/tampered_protos';
 import {HEX_FORMATTER, RECT_FORMATTER} from 'trace/formatters';
 import {Operation} from 'tree_node/operation';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {SetFormatters} from 'viewers/operations/set_formatters';
 import {AddIsVisible} from './add_is_visible';
 import {AddWindowType} from './add_window_type';
 

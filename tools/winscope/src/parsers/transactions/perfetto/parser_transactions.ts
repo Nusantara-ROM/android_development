@@ -23,7 +23,6 @@ import {
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {HierarchyTreeBuilderLog} from 'parsers/hierarchy_tree_builder_log';
 import {AddDefaults} from 'parsers/operations/add_defaults';
-import {SetFormatters} from 'parsers/operations/set_formatters';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
 import {
@@ -33,12 +32,9 @@ import {
 } from 'parsers/perfetto/utils';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
-import {
-  TamperedProtoField,
-  TAMPERED_TRACE_PACKET,
-} from 'parsers/tampered_message_type';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {EnumFormatter, FixedStringFormatter} from 'trace/formatters';
+import {TAMPERED_TRACE_PACKET, TamperedProtoField} from 'trace/protoutils/tampered_message_type';
 import {TraceFile} from 'trace/trace_file';
 import {TransactionColumnType} from 'trace/transactions/transaction_column_type';
 import {TransactionType} from 'trace/transactions/transaction_type';
@@ -58,6 +54,7 @@ import {PropertiesProvider} from 'tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
 import {PropertyFormatter} from 'tree_node/property_formatter';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {SetFormatters} from 'viewers/operations/set_formatters';
 
 export class ParserTransactions extends AbstractParser<HierarchyTreeNode> {
   private static readonly TransactionsTraceEntryField =

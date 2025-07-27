@@ -20,7 +20,7 @@ import {HierarchyTreeManagerServiceFactory} from 'parsers/input_method/hierarchy
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
 import {queryEntry} from 'parsers/perfetto/utils';
-import {TAMPERED_WINSCOPE_EXTENSIONS} from 'parsers/tampered_message_type';
+import {TAMPERED_WINSCOPE_EXTENSIONS} from 'trace/protoutils/tampered_message_type';
 import {TraceFile} from 'trace/trace_file';
 import {TraceType} from 'trace_api/trace_type';
 import {TraceProcessor} from 'trace_processor/trace_processor';

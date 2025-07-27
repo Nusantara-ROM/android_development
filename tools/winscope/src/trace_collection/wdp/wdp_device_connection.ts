@@ -16,12 +16,12 @@
 
 import {ResizableBuffer} from 'common/buffer_utils';
 import {binaryEncode, utf8Decode} from 'common/string_utils';
-import {UserNotifier} from 'common/user_notifier';
 import {WindowUtils} from 'common/window_utils';
 import {
   ProxyTracingErrors,
   ProxyTracingWarnings,
 } from 'messaging/user_warnings';
+import {UserNotifier} from 'services/user_notifier';
 import {
   AdbDeviceConnection,
   AdbDeviceConnectionListener,

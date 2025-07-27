@@ -18,7 +18,7 @@ import {Timestamp} from 'common/time/time';
 import {
   TamperedMessageType,
   TamperedProtoField,
-} from 'parsers/tampered_message_type';
+} from 'trace/protoutils/tampered_message_type';
 import {RawDataUtils} from 'tree_node/raw_data_utils';
 // TODO(b/311642700) Not compatible with google3 migration
 import * as protobuf from 'protobufjs';

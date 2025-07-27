@@ -31,8 +31,8 @@ import {Color} from 'app/colors';
 import {isElementOverflowing, KeyboardEventKey} from 'common/dom_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {PersistentStore} from 'common/store/persistent_store';
+import {Warning} from 'common/warning';
 import {Analytics} from 'logging/analytics';
-import {UserWarning} from 'messaging/user_warning';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TraceType} from 'trace_api/trace_type';
 import {RectShowState} from 'viewers/common/rect_show_state';
@@ -206,7 +206,7 @@ export class HierarchyComponent {
     return this.trees.length === 0 && !!this.placeholderText;
   }
 
-  getWarnings(): UserWarning[] {
+  getWarnings(): Warning[] {
     return this.trees.flatMap((tree) => tree.getWarnings());
   }
 
