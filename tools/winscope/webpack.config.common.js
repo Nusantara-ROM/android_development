@@ -87,8 +87,11 @@ module.exports = {
   },
 
   optimization: {
+    minimize: true,
     minimizer: [
       new TerserPlugin({
+        minify: TerserPlugin.swcMinify,
+        parallel: true,
         terserOptions: {
           keep_fnames: true,
         },
