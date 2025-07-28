@@ -87,24 +87,10 @@ export abstract class AbstractHierarchyViewerComponentTest<T extends object> {
     }
   }
 
-  // TODO(natanieljr): Probably we need to either inject imports or remove this entirely here.
   protected async initializeTestEnvironment<U extends T>(
     typeofViewer: Type<U>,
     addedDeclarations: object[] = [],
   ): Promise<[DOMTestHelper<U>, U]> {
-    /*const declarations: object[] = [
-      typeofViewer,
-      HierarchyComponent,
-      PropertiesComponent,
-      RectsComponent,
-      CollapsedSectionsComponent,
-      CollapsibleSectionTitleComponent,
-      UserOptionsComponent,
-      SearchBoxComponent,
-    ];
-    if (addedDeclarations) {
-      declarations.push(...addedDeclarations);
-    }*/
     await TestBed.configureTestingModule({
       providers: [{provide: ComponentFixtureAutoDetect, useValue: true}],
       imports: [
@@ -122,7 +108,6 @@ export abstract class AbstractHierarchyViewerComponentTest<T extends object> {
         MatSelectModule,
         HttpClientModule,
       ],
-      // declarations,
     }).compileComponents();
 
     const fixture = TestBed.createComponent<U>(typeofViewer);

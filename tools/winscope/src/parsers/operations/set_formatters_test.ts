@@ -24,7 +24,7 @@ import {EMPTY_OBJ_STRING, LAYER_ID_FORMATTER} from 'trace/formatters';
 import {
   TamperedMessageType,
   TamperedProtoField,
-} from 'trace/protoutils/tampered_message_type';
+} from 'trace/proto_utils/tampered_message_type';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {SetFormatters} from 'viewers/operations/set_formatters';
 

@@ -44,11 +44,11 @@ export class TraceEntryFinder {
           return frame.getEntry(0);
         }
       } catch (e) {
-        const message = (e as Error).message
+        const message = (e as Error).message;
         console.warn(`Could not retrieve frame: ${message}`);
-        Analytics.analitycsLogEvent('frame_map_error', {
-          message
-        } as Gtag.CustomParams);
+        Analytics.analyticsLogEvent('frame_map_error', {
+          message,
+        });
       }
     }
 

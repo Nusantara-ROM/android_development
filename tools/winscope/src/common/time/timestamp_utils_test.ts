@@ -18,11 +18,6 @@ import {TimestampConverterUtils, timestampEqualityTester} from './test_utils';
 import {TimestampUtils} from './timestamp_utils';
 
 describe('TimestampUtils', () => {
-  const MILLISECOND = BigInt(1000000);
-  const SECOND = BigInt(1000) * MILLISECOND;
-  const MINUTE = BigInt(60) * SECOND;
-  const HOUR = BigInt(60) * MINUTE;
-
   beforeAll(() => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
   });

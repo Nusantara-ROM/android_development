@@ -37,7 +37,7 @@ import {
   TIMESTAMP_NODE_FORMATTER,
   UPPER_CASE_FORMATTER,
 } from 'trace/formatters';
-import {TAMPERED_TRACE_PACKET} from 'trace/protoutils/tampered_message_type';
+import {TAMPERED_TRACE_PACKET} from 'trace/proto_utils/tampered_message_type';
 import {TraceType} from 'trace_api/trace_type';
 import {ColumnType, RowIterator} from 'trace_processor/query_result';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';

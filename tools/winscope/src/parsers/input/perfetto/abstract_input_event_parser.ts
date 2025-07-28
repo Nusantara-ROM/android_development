@@ -34,7 +34,7 @@ import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_fro
 import {perfetto} from 'protos/perfetto/trace/static';
 import {EnumFormatter} from 'trace/formatters';
 import {InputEventType} from 'trace/input/input_event_type';
-import {TAMPERED_WINSCOPE_EXTENSIONS} from 'trace/protoutils/tampered_message_type';
+import {TAMPERED_WINSCOPE_EXTENSIONS} from 'trace/proto_utils/tampered_message_type';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,

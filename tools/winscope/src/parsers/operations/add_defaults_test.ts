@@ -20,7 +20,7 @@ import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {
   TamperedMessageType,
   TamperedProtoField,
-} from 'trace/protoutils/tampered_message_type';
+} from 'trace/proto_utils/tampered_message_type';
 import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AddDefaults} from './add_defaults';
 

@@ -27,12 +27,11 @@ import {AddDefaults} from 'parsers/operations/add_defaults';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {FakeProto, FakeProtoBuilder} from 'parsers/perfetto/fake_proto_builder';
 import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
-import {queryEntry} from 'parsers/perfetto/utils';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {RectsComputation} from 'parsers/view_capture/computations/rects_computation';
 import {VisibilityComputation} from 'parsers/view_capture/computations/visibility_computation';
 import {perfetto} from 'protos/perfetto/trace/static';
-import {TAMPERED_WINSCOPE_EXTENSIONS} from 'trace/protoutils/tampered_message_type';
+import {TAMPERED_WINSCOPE_EXTENSIONS} from 'trace/proto_utils/tampered_message_type';
 import {TraceFile} from 'trace/trace_file';
 import {
   CustomQueryParserResultTypeMap,
@@ -102,14 +101,6 @@ export class ParserViewCaptureWindow extends AbstractParser<HierarchyTreeNode> {
   }
 
   override async getEntry(index: number): Promise<HierarchyTreeNode> {
-    let snapshotProto = (await queryEntry(
-      this.traceProcessor,
-      this.getTableName(),
-      this.entryIndexToRowIdMap,
-      index,
-    )) as perfetto.protos.IViewCapture;
-    snapshotProto = this.snapshotProtoTransformer.transform(snapshotProto);
-
     const viewProtos = (await this.queryViews(index)).map((viewProto) =>
       this.viewProtoTransformer.transform(viewProto),
     );

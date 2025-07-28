@@ -56,7 +56,7 @@ export class TimelineData {
     this.timestampConverter = timestampConverter;
 
     this.traces = new Traces();
-    traces.forEachTrace((trace, type) => {
+    traces.forEachTrace((trace) => {
       // Filter out empty traces or dumps with invalid timestamp (would mess up the timeline)
       if (trace.lengthEntries === 0 || trace.isDumpWithoutTimestamp()) {
         return;

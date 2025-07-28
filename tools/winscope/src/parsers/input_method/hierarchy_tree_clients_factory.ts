@@ -19,7 +19,7 @@ import {AddDefaults} from 'parsers/operations/add_defaults';
 import {TranslateIntDef} from 'parsers/operations/translate_intdef';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {perfetto} from 'protos/perfetto/trace/static';
-import {TamperedProtoField} from 'trace/protoutils/tampered_message_type';
+import {TamperedProtoField} from 'trace/proto_utils/tampered_message_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {LazyPropertiesStrategyType} from 'tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';

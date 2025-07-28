@@ -68,17 +68,17 @@ export class Analytics {
 
   static Error = class {
     static logGlobalException(description: string) {
-      CommonAnalytics.analitycsLogEvent(Analytics.GLOBAL_EXCEPTION, {
+      CommonAnalytics.analyticsLogEvent(Analytics.GLOBAL_EXCEPTION, {
         description,
       } as Gtag.CustomParams);
     }
     static logProxyError(description: string) {
-      CommonAnalytics.analitycsLogEvent(Analytics.PROXY_ERROR, {
+      CommonAnalytics.analyticsLogEvent(Analytics.PROXY_ERROR, {
         description,
       } as Gtag.CustomParams);
     }
     static logFrameMapError(description: string) {
-      CommonAnalytics.analitycsLogEvent(Analytics.FRAME_MAP_ERROR, {
+      CommonAnalytics.analyticsLogEvent(Analytics.FRAME_MAP_ERROR, {
         description,
       } as Gtag.CustomParams);
     }
@@ -86,11 +86,11 @@ export class Analytics {
 
   static Help = class {
     static logDocumentationOpened() {
-      CommonAnalytics.analitycsLogEvent(Analytics.DOCUMENTATION_OPENED);
+      CommonAnalytics.analyticsLogEvent(Analytics.DOCUMENTATION_OPENED);
     }
 
     static logBuganizerOpened() {
-      CommonAnalytics.analitycsLogEvent(Analytics.BUGANIZER_OPENED);
+      CommonAnalytics.analyticsLogEvent(Analytics.BUGANIZER_OPENED);
     }
   };
 
@@ -153,7 +153,7 @@ export class Analytics {
           usedHeapSize: memory.usedJSHeapSize,
           fractionUsed: memory.usedJSHeapSize / memory.jsHeapSizeLimit,
         });
-        CommonAnalytics.analitycsLogEvent(Analytics.JS_MEMORY_USAGE, params);
+        CommonAnalytics.analyticsLogEvent(Analytics.JS_MEMORY_USAGE, params);
       }
     }
   };
@@ -171,7 +171,7 @@ export class Analytics {
     }
 
     static logExpandedTimelineOpened() {
-      CommonAnalytics.analitycsLogEvent(Analytics.EXPANDED_TIMELINE_OPENED);
+      CommonAnalytics.analyticsLogEvent(Analytics.EXPANDED_TIMELINE_OPENED);
     }
 
     static logFetchComponentDataTime(
@@ -192,7 +192,7 @@ export class Analytics {
       value: boolean,
       traceType: string,
     ) {
-      CommonAnalytics.analitycsLogEvent(Analytics.HIERARCHY_SETTINGS, {
+      CommonAnalytics.analyticsLogEvent(Analytics.HIERARCHY_SETTINGS, {
         option,
         value,
         traceType,
@@ -204,7 +204,7 @@ export class Analytics {
       value: boolean,
       traceType: string,
     ) {
-      CommonAnalytics.analitycsLogEvent(Analytics.PROPERTIES_SETTINGS, {
+      CommonAnalytics.analyticsLogEvent(Analytics.PROPERTIES_SETTINGS, {
         option,
         value,
         traceType,
@@ -216,7 +216,7 @@ export class Analytics {
       value: string | number | boolean,
       traceType: string,
     ) {
-      CommonAnalytics.analitycsLogEvent(Analytics.RECT_SETTINGS, {
+      CommonAnalytics.analyticsLogEvent(Analytics.RECT_SETTINGS, {
         option,
         value,
         traceType,
@@ -235,17 +235,17 @@ export class Analytics {
     }
 
     static logTimeBookmark() {
-      CommonAnalytics.analitycsLogEvent(Analytics.TIME_BOOKMARK);
+      CommonAnalytics.analyticsLogEvent(Analytics.TIME_BOOKMARK);
     }
 
     static logTimeCopied(type: 'ns' | 'human') {
-      CommonAnalytics.analitycsLogEvent(Analytics.TIME_COPIED, {
+      CommonAnalytics.analyticsLogEvent(Analytics.TIME_COPIED, {
         type,
       } as Gtag.CustomParams);
     }
 
     static logTimeInput(type: 'ns' | 'human') {
-      CommonAnalytics.analitycsLogEvent(Analytics.TIME_INPUT, {
+      CommonAnalytics.analyticsLogEvent(Analytics.TIME_INPUT, {
         type,
       } as Gtag.CustomParams);
     }
@@ -255,7 +255,7 @@ export class Analytics {
     }
 
     static logTraceTimelineDeselected(type: string) {
-      CommonAnalytics.analitycsLogEvent(Analytics.TRACE_TIMELINE_DESELECTED, {
+      CommonAnalytics.analyticsLogEvent(Analytics.TRACE_TIMELINE_DESELECTED, {
         type,
       } as Gtag.CustomParams);
     }
@@ -265,7 +265,7 @@ export class Analytics {
       component: 'rects' | 'timeline',
       direction?: 'in' | 'out',
     ) {
-      CommonAnalytics.analitycsLogEvent(Analytics.NAVIGATION_ZOOM_EVENT, {
+      CommonAnalytics.analyticsLogEvent(Analytics.NAVIGATION_ZOOM_EVENT, {
         direction,
         component,
         type,
@@ -275,22 +275,22 @@ export class Analytics {
 
   static Proxy = class {
     static logServerNotFound(connectionType: string) {
-      CommonAnalytics.analitycsLogEvent(Analytics.PROXY_SERVER_NOT_FOUND, {
+      CommonAnalytics.analyticsLogEvent(Analytics.PROXY_SERVER_NOT_FOUND, {
         connectionType,
       });
     }
 
     static logNoFilesFound() {
-      CommonAnalytics.analitycsLogEvent(Analytics.PROXY_NO_FILES_FOUND);
+      CommonAnalytics.analyticsLogEvent(Analytics.PROXY_NO_FILES_FOUND);
     }
   };
 
   static Settings = class {
     static logDarkModeEnabled() {
-      CommonAnalytics.analitycsLogEvent(Analytics.DARK_MODE_ENABLED);
+      CommonAnalytics.analyticsLogEvent(Analytics.DARK_MODE_ENABLED);
     }
     static logCrossToolSync(value: boolean) {
-      CommonAnalytics.analitycsLogEvent(Analytics.CROSS_TOOL_SYNC, {
+      CommonAnalytics.analyticsLogEvent(Analytics.CROSS_TOOL_SYNC, {
         value,
       } as Gtag.CustomParams);
     }
@@ -312,21 +312,21 @@ export class Analytics {
       Analytics.logTimeMs(Analytics.TP_QUERY_EXECUTION_TIME, ms);
     }
     static logQueryFailure() {
-      CommonAnalytics.analitycsLogEvent(Analytics.TP_QUERY_FAILED);
+      CommonAnalytics.analyticsLogEvent(Analytics.TP_QUERY_FAILED);
     }
     static logQueryRequested(type: 'new' | 'saved' | 'recent') {
-      CommonAnalytics.analitycsLogEvent(Analytics.TP_QUERY_REQUESTED, {
+      CommonAnalytics.analyticsLogEvent(Analytics.TP_QUERY_REQUESTED, {
         type,
       } as Gtag.CustomParams);
     }
     static logQuerySaved() {
-      CommonAnalytics.analitycsLogEvent(Analytics.TP_QUERY_SAVED);
+      CommonAnalytics.analyticsLogEvent(Analytics.TP_QUERY_SAVED);
     }
   };
 
   static Tracing = class {
     static logTraceLoaded(parser: Parser<object>) {
-      CommonAnalytics.analitycsLogEvent(Analytics.TRACING_LOADED_EVENT, {
+      CommonAnalytics.analyticsLogEvent(Analytics.TRACING_LOADED_EVENT, {
         type: TraceType[parser.getTraceType()],
         coarse_version: CoarseVersion[parser.getCoarseVersion()],
       } as Gtag.CustomParams);
@@ -334,7 +334,7 @@ export class Analytics {
 
     static logCollectDumps(requestedDumps: string[], connectionType?: string) {
       requestedDumps.forEach((dumpType) => {
-        CommonAnalytics.analitycsLogEvent(Analytics.TRACING_COLLECT_DUMP, {
+        CommonAnalytics.analyticsLogEvent(Analytics.TRACING_COLLECT_DUMP, {
           type: dumpType,
           connectionType,
         } as Gtag.CustomParams);
@@ -346,7 +346,7 @@ export class Analytics {
       connectionType?: string,
     ) {
       requestedTraces.forEach((traceType) => {
-        CommonAnalytics.analitycsLogEvent(Analytics.TRACING_COLLECT_TRACE, {
+        CommonAnalytics.analyticsLogEvent(Analytics.TRACING_COLLECT_TRACE, {
           type: traceType,
           connectionType,
         } as Gtag.CustomParams);
@@ -358,17 +358,17 @@ export class Analytics {
     }
 
     static logOpenFromABT() {
-      CommonAnalytics.analitycsLogEvent(Analytics.TRACING_OPEN_FROM_ABT);
+      CommonAnalytics.analyticsLogEvent(Analytics.TRACING_OPEN_FROM_ABT);
     }
 
     static logRefreshDumps() {
-      CommonAnalytics.analitycsLogEvent(Analytics.REFRESH_DUMPS);
+      CommonAnalytics.analyticsLogEvent(Analytics.REFRESH_DUMPS);
     }
   };
 
   static UserNotification = class {
     static logUserWarning(description: string, message: string) {
-      CommonAnalytics.analitycsLogEvent(Analytics.USER_WARNING, {
+      CommonAnalytics.analyticsLogEvent(Analytics.USER_WARNING, {
         description,
         message,
       } as Gtag.CustomParams);
@@ -382,7 +382,7 @@ export class Analytics {
   ) {
     if (ms > 0) {
       const finalParams = Object.assign({value: ms}, params);
-      CommonAnalytics.analitycsLogEvent(eventName, finalParams);
+      CommonAnalytics.analyticsLogEvent(eventName, finalParams);
     }
   }
 }

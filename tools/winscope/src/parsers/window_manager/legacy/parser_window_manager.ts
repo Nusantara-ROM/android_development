@@ -23,7 +23,7 @@ import {HierarchyTreeBuilderWm} from 'parsers/window_manager/hierarchy_tree_buil
 import {PropertiesProviderFactory} from 'parsers/window_manager/properties_provider_factory';
 import root from 'protos/windowmanager/udc/json';
 import {com} from 'protos/windowmanager/udc/static';
-import {TamperedMessageType} from 'trace/protoutils/tampered_message_type';
+import {TamperedMessageType} from 'trace/proto_utils/tampered_message_type';
 import {
   CustomQueryParserResultTypeMap,
   CustomQueryType,

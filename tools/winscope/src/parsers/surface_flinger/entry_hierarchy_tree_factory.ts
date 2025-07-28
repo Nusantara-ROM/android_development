@@ -34,7 +34,7 @@ import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_p
 import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {EnumFormatter, LAYER_ID_FORMATTER} from 'trace/formatters';
-import {TAMPERED_TRACE_PACKET} from 'trace/protoutils/tampered_message_type';
+import {TAMPERED_TRACE_PACKET} from 'trace/proto_utils/tampered_message_type';
 import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';

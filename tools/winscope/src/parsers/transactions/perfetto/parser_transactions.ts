@@ -34,7 +34,10 @@ import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_p
 import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {EnumFormatter, FixedStringFormatter} from 'trace/formatters';
-import {TAMPERED_TRACE_PACKET, TamperedProtoField} from 'trace/protoutils/tampered_message_type';
+import {
+  TAMPERED_TRACE_PACKET,
+  TamperedProtoField,
+} from 'trace/proto_utils/tampered_message_type';
 import {TraceFile} from 'trace/trace_file';
 import {TransactionColumnType} from 'trace/transactions/transaction_column_type';
 import {TransactionType} from 'trace/transactions/transaction_type';

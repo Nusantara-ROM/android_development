@@ -934,7 +934,7 @@ describe('RectsComponent', () => {
     expandButton.click(); // click again to show expanded view
 
     wrapperEl.style.width = '';
-    dom.detectChanges(); // button disappears now that options all it in available space
+    dom.detectChanges(); // button disappears now that options all fit in available space
     expect(legendEl.find('.rect-legend-expand-button')).toBeUndefined();
   });
 

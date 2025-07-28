@@ -15,7 +15,7 @@
  */
 
 import root from 'protos/test/fake_proto/json';
-import {TamperedMessageType} from 'trace/protoutils/tampered_message_type';
+import {TamperedMessageType} from 'trace/proto_utils/tampered_message_type';
 import {FakeProto, FakeProtoBuilder} from './fake_proto_builder';
 import {FakeProtoTransformer} from './fake_proto_transformer';
 

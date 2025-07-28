@@ -15,12 +15,12 @@
  */
 
 import intDefMapping from 'common/intDefMapping.json';
+import {TamperedProtoField} from 'trace/proto_utils/tampered_message_type';
 import {
   FixedStringFormatter,
   FLAG_SEPARATOR,
   formatAsHex,
 } from 'trace/formatters';
-import {TamperedProtoField} from 'trace/protoutils/tampered_message_type';
 import {Operation} from 'tree_node/operation';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 

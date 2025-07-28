@@ -29,7 +29,7 @@ export class TraceProcessor {
   async query(sqlQuery: string): Promise<QueryResult> {
     const startTimeMs = Date.now();
     const result = await this.wasmEngine.query(sqlQuery);
-    Analytics.analitycsLogEvent('tp_general_query_time', {
+    Analytics.analyticsLogEvent('tp_general_query_time', {
       value: Date.now() - startTimeMs,
     });
     return result;

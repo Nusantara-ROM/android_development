@@ -82,7 +82,7 @@ export class Traces {
   }
 
   forEachTrace(callback: (trace: Trace<{}>, type: TraceType) => void): void {
-    this.traces.forEach((trace, type) => {
+    this.traces.forEach((trace) => {
       callback(trace, trace.type);
     });
   }

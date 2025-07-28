@@ -326,7 +326,7 @@ Request body: undefined`,
     }
 
     function checkStartTraceRequested(times = 1) {
-      expect(postSpy).toHaveBeenCalledTimes(1);
+      expect(postSpy).toHaveBeenCalledTimes(times);
       expect(postSpy).toHaveBeenCalledWith(
         WINSCOPE_PROXY_URL + Endpoint.START_TRACE + `${testId}/`,
         securityHeader,

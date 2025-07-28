@@ -24,13 +24,11 @@ import {perfetto} from 'protos/perfetto/trace/static';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
-import {Trace} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 describe('ParserViewCapture', () => {
   let parser: Parser<HierarchyTreeNode>;
-  let trace: Trace<HierarchyTreeNode>;
 
   beforeAll(async () => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
@@ -39,7 +37,6 @@ describe('ParserViewCapture', () => {
         'traces/elapsed_and_real_timestamp/com.google.android.apps.nexuslauncher_0.vc',
       )
       .getParser<HierarchyTreeNode>();
-    trace = Trace.fromParser(parser);
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
   });
 
