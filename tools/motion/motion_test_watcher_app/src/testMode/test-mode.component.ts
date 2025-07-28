@@ -71,7 +71,7 @@ export class TestModeComponent implements OnChanges{
   }
 
   setFirstTestModeAsDefaultMode() {
-    if (this.testModes[0] != null) {
+    if (this.testModes && this.testModes.length > 0 && this.testModes[0] != null) {
       this.selectedMode = this.testModes[0]
       this.switchMode(this.selectedMode)
     }

@@ -130,7 +130,6 @@ export class AppComponent implements DoCheck, OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(invocationID => {
       if (invocationID) {
         this.showLoaderBar()
-        this.goldenService.refreshGoldens(true)
         this.goldenService.getTestArtifacts(invocationID)
         .pipe(finalize(() => this.hideLoaderBar()))
         .subscribe({
@@ -197,11 +196,15 @@ export class AppComponent implements DoCheck, OnInit, OnDestroy {
     const leftLink = searchParams.get('leftLink') ?? ""
     const rightLink = searchParams.get('rightLink') ?? ""
 
-    this.errorSubscription = this.errorService.error$.subscribe(message => {
-      this.snackBar.open(message, undefined, {
+    this.errorSubscription = this.errorService.error$.subscribe(error => {
+      const config: any = {
         horizontalPosition: 'left',
         verticalPosition: 'bottom',
-      });
+      }
+      if(error.displayDuration != null){
+        config.duration = error.displayDuration
+      }
+      this.snackBar.open(error.message, undefined, config);
     });
 
     if(leftLink || rightLink){

@@ -48,7 +48,7 @@
         {{ showTestList ? 'Close Test List' : 'Open Test List' }}
       </span>
     </div>
-    <div *ngIf="goldens[0]?.dataSource===undefined" (click)="toggleCheckBoxes()"
+    <div *ngIf="goldens && goldens.length > 0 && goldens[0]?.dataSource===undefined" (click)="toggleCheckBoxes()"
       class="p-2 mx-auto cursor-pointer rounded hover:bg-gray-400 transition-colors relative group">
       <button>
         <span class="google-symbols">check_box</span>

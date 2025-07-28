@@ -27,6 +27,7 @@ import { checkNotNull } from '../util/preconditions';
 import { Feature, recordedFeatureFactory } from '../model/feature';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ErrorService } from './error.service';
+import { Error } from '../model/error';
 
 export const ACCESS_TOKEN = new InjectionToken<string>('token');
 export const SERVICE_PORT = new InjectionToken<string>('port');
@@ -238,7 +239,14 @@ export class GoldensService {
     return (error: any): Observable<T> => {
       console.error(error);
       if (error.status == 0){
-        this.errorService.handleError('Server is not connected. Run the server and try again.');
+        this.showNoServerError();
+      }else{
+        const apiError: Error= {
+          displayDuration: 5000,
+          statusCode: error.status,
+          message: error.error?.message
+        }
+        this.errorService.handleError(apiError);
       }
       // Let the app keep running by returning an empty result.
       return of(result as T);
@@ -249,10 +257,18 @@ export class GoldensService {
     return (error: any): Observable<T> => {
       console.error(error);
       if (error.status == 0){
-        this.errorService.handleError('Server is not connected. Run the server and try again.');
+        this.showNoServerError();
       }
       const response = error.error;
       return of(response as T);
     };
+  }
+
+  private showNoServerError(){
+    const serverError: Error= {
+      statusCode: 0,
+      message: 'Server is not connected. Run the server and try again.'
+    }
+    this.errorService.handleError(serverError);
   }
 }
