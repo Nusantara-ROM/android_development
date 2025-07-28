@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-import {assertBigInt, assertDefined} from 'common/assert_utils';
-import {FunctionUtils} from 'common/function_utils';
+import {
+  assertBigInt,
+  assertDefined,
+  assertStringOrUndefined,
+} from 'common/assert_utils';
 import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {Analytics} from 'logging/analytics';
@@ -122,6 +125,10 @@ export class Presenter extends AbstractLogViewerPresenter<
   protected override keepCalculated = true;
   private readonly currentTargetWindowIds = new Set<string>();
   private currDispatchProperties: PropertyTreeNode | undefined;
+  private lastClickedId: bigint | undefined;
+  private lastClickedName: string | undefined;
+  private shouldHandleSpecificClicks = false;
+  private shouldHandleWindowPropertyHighlight = false;
 
   private readonly rectsPresenter = new RectsPresenter(
     PersistentStoreProxy.new<UserOptions>(
@@ -181,6 +188,12 @@ export class Presenter extends AbstractLogViewerPresenter<
   }
 
   onHighlightedPropertyChange(id: string) {
+    if (
+      this.uiData.highlightedProperty === id &&
+      this.shouldHandleWindowPropertyHighlight
+    ) {
+      return;
+    }
     this.propertiesPresenter.applyHighlightedPropertyChange(id);
     this.dispatchPropertiesPresenter.applyHighlightedPropertyChange(id);
     this.uiData.highlightedProperty =
@@ -188,7 +201,19 @@ export class Presenter extends AbstractLogViewerPresenter<
     this.notifyViewChanged();
   }
 
+  onTargetWindowClicked(windowId: bigint, windowName: string | undefined) {
+    if (this.lastClickedId !== windowId) {
+      this.lastClickedId = windowId;
+      this.lastClickedName = windowName;
+      this.shouldHandleSpecificClicks = true;
+      this.shouldHandleWindowPropertyHighlight = true;
+    }
+  }
+
   async onHighlightedIdChange(id: string) {
+    if (this.uiData.highlightedRect === id && this.shouldHandleSpecificClicks) {
+      return;
+    }
     this.uiData.highlightedRect = id === this.uiData.highlightedRect ? '' : id;
     await this.updateRects();
     this.notifyViewChanged();
@@ -213,6 +238,18 @@ export class Presenter extends AbstractLogViewerPresenter<
       );
       layerMappings.forEach(({id, name}) => this.layerIdToName.set(id, name));
     }
+  }
+
+  protected override async handleSpecificEntryClicks() {
+    if (!this.shouldHandleSpecificClicks) {
+      return;
+    }
+    const id =
+      assertStringOrUndefined(this.lastClickedId?.toString()) +
+      ' ' +
+      this.lastClickedName;
+    this.onHighlightedIdChange(id);
+    this.shouldHandleSpecificClicks = false;
   }
 
   protected override makeHeaders(): LogHeader[] {
@@ -287,14 +324,19 @@ export class Presenter extends AbstractLogViewerPresenter<
   protected override async updatePropertiesTree() {
     await super.updatePropertiesTree();
     await this.updateDispatchPropertiesTree();
+    if (this.shouldHandleWindowPropertyHighlight) {
+      this.handleWindowPropertyHighlight();
+    }
     await this.updateRects();
   }
 
   protected override addViewerSpecificListeners(htmlElement: HTMLElement) {
     htmlElement.addEventListener(
       ViewerEvents.HighlightedPropertyChange,
-      (event) =>
-        this.onHighlightedPropertyChange((event as CustomEvent).detail.id),
+      (event) => {
+        this.shouldHandleWindowPropertyHighlight = false;
+        this.onHighlightedPropertyChange((event as CustomEvent).detail.id);
+      },
     );
 
     htmlElement.addEventListener(ViewerEvents.HighlightedIdChange, (event) =>
@@ -339,6 +381,25 @@ export class Presenter extends AbstractLogViewerPresenter<
       this.dispatchPropertiesPresenter.getFormattedTree();
   }
 
+  private async handleWindowPropertyHighlight() {
+    const inputEntry = this.getCurrentEntry();
+    const dispatchProperties = await inputEntry?.getDispatchPropertiesTree?.();
+    if (dispatchProperties) {
+      let foundMatch = false;
+      for (const dispatchEntry of dispatchProperties.getAllChildren()) {
+        const winId = dispatchEntry.getChildByName('windowId');
+        if (winId?.getValue() === this.lastClickedId && winId !== undefined) {
+          foundMatch = true;
+          this.onHighlightedPropertyChange(winId.id);
+          break;
+        }
+      }
+      if (!foundMatch) {
+        this.onHighlightedPropertyChange('');
+      }
+    }
+  }
+
   private makeInputEntry(
     traceEntry: TraceEntryLazy<HierarchyTreeNode>,
     wrapperTree: HierarchyTreeNode,
@@ -379,6 +440,9 @@ export class Presenter extends AbstractLogViewerPresenter<
       }
     }
 
+    const onWindowClicked = (id: bigint) =>
+      this.onTargetWindowClicked(id, this.layerIdToName.get(Number(id)));
+
     return new InputEntry(
       traceEntry,
       [
@@ -417,11 +481,15 @@ export class Presenter extends AbstractLogViewerPresenter<
           spec: Presenter.COLUMNS.details,
           value:
             type.getValue() === InputEventType.KEY
-              ? Presenter.extractKeyDetails(wrapperTree, (id) =>
-                  this.getLayerDisplayName(id),
+              ? Presenter.extractKeyDetails(
+                  wrapperTree,
+                  (id) => this.getLayerDisplayName(id),
+                  onWindowClicked,
                 )
-              : Presenter.createDispatchArray(wrapperTree, (id) =>
-                  this.getLayerDisplayName(id),
+              : Presenter.createDispatchArray(
+                  wrapperTree,
+                  (id) => this.getLayerDisplayName(id),
+                  onWindowClicked,
                 ),
         },
         {
@@ -520,6 +588,7 @@ export class Presenter extends AbstractLogViewerPresenter<
   private static extractKeyDetails(
     wrapperTree: HierarchyTreeNode,
     displayNameGetter: (id: number) => string,
+    onWindowClick: (windowId: bigint, windowName: string) => void,
   ): Array<string | ClickableProperty> {
     const keyDetails =
       'Keycode: ' +
@@ -530,6 +599,7 @@ export class Presenter extends AbstractLogViewerPresenter<
     const windows = Presenter.createDispatchArray(
       wrapperTree,
       displayNameGetter,
+      onWindowClick,
     );
     return [keyDetails, ' ', ...windows];
   }
@@ -537,10 +607,12 @@ export class Presenter extends AbstractLogViewerPresenter<
   private static createDispatchArray(
     wrapperTree: HierarchyTreeNode,
     displayNameGetter: (id: number) => string,
+    onWindowClick: (windowId: bigint, windowName: string) => void,
   ): Array<string | ClickableProperty> {
     const windows = Presenter.extractDispatchDetails(
       wrapperTree,
       displayNameGetter,
+      onWindowClick,
     );
     const finalArray: Array<string | ClickableProperty> = ['['];
     windows.forEach((window, index) => {
@@ -557,6 +629,7 @@ export class Presenter extends AbstractLogViewerPresenter<
   private static extractDispatchDetails(
     wrapperTree: HierarchyTreeNode,
     displayNameGetter: (id: number) => string,
+    onWindowClick: (windowId: bigint, windowName: string) => void,
   ): ClickableProperty[] {
     const windows =
       wrapperTree.getEagerPropertyByName('windows')?.getAllChildren() ?? [];
@@ -567,7 +640,7 @@ export class Presenter extends AbstractLogViewerPresenter<
         return {
           propertyValue: windowId.toString(),
           tooltip: displayNameGetter(Number(windowId)),
-          onClick: () => FunctionUtils.DO_NOTHING,
+          onClick: () => onWindowClick(windowId, windowId.toString()),
         };
       });
   }
