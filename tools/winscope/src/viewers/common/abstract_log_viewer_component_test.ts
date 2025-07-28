@@ -19,7 +19,7 @@ import {
   CdkVirtualScrollViewport,
   ScrollingModule,
 } from '@angular/cdk/scrolling';
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {Type} from '@angular/core';
 import {ComponentFixtureAutoDetect, TestBed} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
@@ -253,7 +253,6 @@ export abstract class AbstractLogViewerComponentTest<
       FormsModule,
       MatSelectModule,
       MatTooltipModule,
-      HttpClientModule,
       MatSliderModule,
       MatProgressSpinnerModule,
       MatIconTestingModule,
@@ -271,7 +270,10 @@ export abstract class AbstractLogViewerComponentTest<
       );
     }
     await TestBed.configureTestingModule({
-      providers: [{provide: ComponentFixtureAutoDetect, useValue: true}],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        {provide: ComponentFixtureAutoDetect, useValue: true},
+      ],
       imports,
     }).compileComponents();
 

@@ -50,6 +50,7 @@ describe('TranslateIntDef', () => {
       .setChildren([
         {name: 'inputConfig', value: 1},
         {name: 'testAndroidTypedef', value: 1},
+        {name: 'testAndroidCommonTypedef', value: 1},
       ])
       .build();
 
@@ -58,6 +59,13 @@ describe('TranslateIntDef', () => {
     // Applies android.content.pm.ActivityInfo.ScreenOrientation translation
     // from proto .android.typedef specification
     checkValue('testAndroidTypedef', 'SCREEN_ORIENTATION_PORTRAIT');
+
+    // Applies android.view.WindowManager.TransitionFlags translation from
+    // proto .android_common.typedef specification
+    checkValue(
+      'testAndroidCommonTypedef',
+      'TRANSIT_FLAG_KEYGUARD_GOING_AWAY_TO_SHADE',
+    );
 
     // Applies android.view.WindowInsets.Side.InsetsSide translation from
     // proto .perfetto.protos.typedef specification over the hardcoded mapping

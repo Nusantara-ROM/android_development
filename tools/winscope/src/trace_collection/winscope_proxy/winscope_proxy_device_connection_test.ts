@@ -258,7 +258,7 @@ describe('WinscopeProxyDeviceConnection', () => {
         }),
       );
       await startTrace();
-      checkStartTraceRequested(2);
+      checkStartTraceRequested();
       expect(listener.onConnectionStateChange.calls.mostRecent().args).toEqual([
         ConnectionState.TRACE_TIMEOUT,
       ]);
@@ -325,8 +325,8 @@ Request body: undefined`,
       await connection.startTrace(mockTarget);
     }
 
-    function checkStartTraceRequested(times = 1) {
-      expect(postSpy).toHaveBeenCalledTimes(times);
+    function checkStartTraceRequested() {
+      expect(postSpy).toHaveBeenCalledTimes(1);
       expect(postSpy).toHaveBeenCalledWith(
         WINSCOPE_PROXY_URL + Endpoint.START_TRACE + `${testId}/`,
         securityHeader,

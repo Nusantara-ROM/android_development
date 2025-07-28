@@ -45,7 +45,7 @@ export class ViewerSearch extends AbstractViewer<QueryResult> {
   }
 
   protected override initializePresenter(
-    trace: Trace<QueryResult>,
+    trace: Trace<QueryResult> | undefined,
     traces: Traces,
     store: Store,
     timestampConverter: TimestampConverter,

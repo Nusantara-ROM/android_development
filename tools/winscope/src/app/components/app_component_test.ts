@@ -16,7 +16,7 @@
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {CommonModule} from '@angular/common';
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ChangeDetectionStrategy} from '@angular/core';
 import {ComponentFixtureAutoDetect, TestBed} from '@angular/core/testing';
 import {
@@ -91,7 +91,11 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [Title, {provide: ComponentFixtureAutoDetect, useValue: true}],
+      providers: [
+        Title,
+        provideHttpClient(withInterceptorsFromDi()),
+        {provide: ComponentFixtureAutoDetect, useValue: true},
+      ],
       imports: [
         NoopAnimationsModule,
         CommonModule,
@@ -111,7 +115,6 @@ describe('AppComponent', () => {
         BrowserAnimationsModule,
         ClipboardModule,
         MatDialogModule,
-        HttpClientModule,
         MatListModule,
         OverlayModule,
         MatSnackBarModule,

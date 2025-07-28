@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
@@ -27,10 +27,10 @@ describe('ShortcutsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [provideHttpClient(withInterceptorsFromDi())],
       imports: [
         NoopAnimationsModule,
         MatIconModule,
-        HttpClientModule,
         MatDialogModule,
         ShortcutsComponent,
       ],

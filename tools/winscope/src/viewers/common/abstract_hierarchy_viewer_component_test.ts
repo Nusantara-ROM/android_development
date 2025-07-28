@@ -15,7 +15,7 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {Type} from '@angular/core';
 import {ComponentFixtureAutoDetect, TestBed} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
@@ -92,7 +92,10 @@ export abstract class AbstractHierarchyViewerComponentTest<T extends object> {
     addedDeclarations: object[] = [],
   ): Promise<[DOMTestHelper<U>, U]> {
     await TestBed.configureTestingModule({
-      providers: [{provide: ComponentFixtureAutoDetect, useValue: true}],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        {provide: ComponentFixtureAutoDetect, useValue: true},
+      ],
       imports: [
         CommonModule,
         MatIconModule,
@@ -106,7 +109,6 @@ export abstract class AbstractHierarchyViewerComponentTest<T extends object> {
         MatTooltipModule,
         MatButtonModule,
         MatSelectModule,
-        HttpClientModule,
       ],
     }).compileComponents();
 

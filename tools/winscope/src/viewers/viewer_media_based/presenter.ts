@@ -31,12 +31,16 @@ export type NotifyHierarchyViewCallbackType<UiData> = (uiData: UiData) => void;
 
 export class Presenter {
   private readonly uiData: UiData;
+  private readonly traces: Array<Trace<MediaBasedTraceEntry>>;
+  private readonly notifyViewCallback: NotifyHierarchyViewCallbackType<UiData>;
   private emitWinscopeEvent: EmitEvent = FunctionUtils.DO_NOTHING_ASYNC;
 
   constructor(
-    private readonly traces: Array<Trace<MediaBasedTraceEntry>>,
-    private readonly notifyViewCallback: NotifyHierarchyViewCallbackType<UiData>,
+    traces: Array<Trace<MediaBasedTraceEntry>>,
+    notifyViewCallback: NotifyHierarchyViewCallbackType<UiData>,
   ) {
+    this.traces = traces;
+    this.notifyViewCallback = notifyViewCallback;
     this.uiData = new UiData(
       this.traces.map((trace) => trace.getDescriptors().join(', ')),
     );

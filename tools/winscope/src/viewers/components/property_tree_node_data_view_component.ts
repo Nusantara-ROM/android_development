@@ -55,7 +55,7 @@ import {
           </div>
           <span
             *ngIf="!node.canPropagate()"
-            [class]="[valueClass()]"
+            [class]="valueClass()"
             class="mat-body-2 value new-value">{{ node.formattedValue() }}</span>
           <s *ngIf="isModified()" class="mat-body-2 old-value">{{ node.getOldValue() }}</s>
         </ng-container>
@@ -123,7 +123,7 @@ export class PropertyTreeNodeDataViewComponent {
     this.elementRef.nativeElement.dispatchEvent(event);
   }
 
-  valueClass() {
+  valueClass(): string | undefined {
     const property = assertDefined(this.node).formattedValue();
     if (property === 'null') {
       return property;
@@ -137,7 +137,7 @@ export class PropertyTreeNodeDataViewComponent {
     if (!isNaN(Number(property))) {
       return 'number';
     }
-    return null;
+    return undefined;
   }
 
   timeClass() {
