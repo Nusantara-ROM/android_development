@@ -88,6 +88,9 @@ final class PreferenceController {
 
             new BoolRule(R.string.pref_enable_display_category, UPSIDE_DOWN_CAKE),
 
+            new BoolRule(R.string.pref_public_displays, TIRAMISU)
+                    .withDefaultValue(true),
+
             new BoolRule(R.string.pref_always_unlocked_device, TIRAMISU)
                     .withRequiredPermissions(ADD_ALWAYS_UNLOCKED_DISPLAY),
 

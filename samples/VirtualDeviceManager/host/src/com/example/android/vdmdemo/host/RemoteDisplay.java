@@ -89,11 +89,6 @@ class RemoteDisplay implements AutoCloseable {
     // Froce lower DPI on desktop displays to simulate large screen experience.
     private static final int MAX_DESKTOP_DPI = 180;
 
-    private static final int DEFAULT_VIRTUAL_DISPLAY_FLAGS =
-            DisplayManager.VIRTUAL_DISPLAY_FLAG_TRUSTED
-                    | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC
-                    | DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY;
-
     private static final float DEFAULT_CLIENT_BRIGHTNESS = 0.3f;
     private static final float DIM_CLIENT_BRIGHTNESS = 0.15f;
 
@@ -177,7 +172,11 @@ class RemoteDisplay implements AutoCloseable {
 
         setCapabilities(width, height, dpi);
 
-        int flags = DEFAULT_VIRTUAL_DISPLAY_FLAGS;
+        int flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_TRUSTED;
+        if (mPreferenceController.getBoolean(R.string.pref_public_displays)) {
+            flags |= DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC
+                    | DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY;
+        }
         if (mPreferenceController.getBoolean(R.string.pref_enable_display_rotation)) {
             flags |= DisplayManager.VIRTUAL_DISPLAY_FLAG_ROTATES_WITH_CONTENT;
         }
