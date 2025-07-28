@@ -15,7 +15,6 @@
  */
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
-const AngularWebpackPlugin = require('@ngtools/webpack').AngularWebpackPlugin;
 
 module.exports = {
   devtool: 'inline-source-map',
@@ -33,12 +32,6 @@ module.exports = {
   resolveLoader: {
     modules: ['node_modules', path.resolve(__dirname, 'loaders')],
   },
-
-  plugins: [
-    new AngularWebpackPlugin({
-      jitMode: '@angular/compiler',
-    }),
-  ],
 
   module: {
     rules: [

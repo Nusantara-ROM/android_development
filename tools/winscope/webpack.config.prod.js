@@ -17,6 +17,7 @@ const {merge} = require('webpack-merge');
 const configCommon = require('./webpack.config.common');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const AngularWebpackPlugin = require('@ngtools/webpack').AngularWebpackPlugin;
 
 const configProd = {
   mode: 'production',
@@ -27,7 +28,7 @@ const configProd = {
   },
   output: {
     path: path.resolve(__dirname, 'dist/prod'),
-    publicPath: '/',
+    publicPath: './',
     filename: 'js/[name].[hash].js',
     chunkFilename: 'js/[name].[id].[hash].chunk.js',
   },
@@ -57,6 +58,10 @@ const configProd = {
     },
   },
   plugins: [
+    new AngularWebpackPlugin({
+      tsconfig: 'tsconfig.prod.json',
+      jitMode: '@angular/compiler',
+    }),
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       inject: 'body',

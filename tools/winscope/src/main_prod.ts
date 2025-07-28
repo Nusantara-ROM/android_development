@@ -16,6 +16,7 @@
 
 // organize-imports-ignore
 import 'app/global_init';
+import '@angular/compiler';
 import {globalConfig} from './common/global_config';
 globalConfig.set({
   MODE: 'PROD',
@@ -23,8 +24,11 @@ globalConfig.set({
 
 import {enableProdMode} from '@angular/core';
 import {bootstrapApplication} from '@angular/platform-browser';
+import {provideAnimations} from '@angular/platform-browser/animations';
 import {AppComponent} from 'app/components/app_component';
 
 enableProdMode();
 
-bootstrapApplication(AppComponent).catch((e) => console.error(e));
+bootstrapApplication(AppComponent, {
+  providers: [provideAnimations()],
+}).catch((e) => console.error(e));

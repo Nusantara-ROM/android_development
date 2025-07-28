@@ -18,6 +18,7 @@ import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  ErrorHandler,
   Inject,
   Injector,
   NgZone,
@@ -37,6 +38,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {Title} from '@angular/platform-browser';
 import {AbtChromeExtensionProtocol} from 'abt_chrome_extension/abt_chrome_extension_protocol';
+import {GlobalErrorHandler} from 'app/global_error_handler';
 import {Mediator} from 'app/mediator';
 import {TimelineData} from 'app/timeline_data';
 import {TracePipeline} from 'app/trace_pipeline';
@@ -122,6 +124,7 @@ import {
     ShortcutsComponent,
     WarningDialogComponent,
   ],
+  providers: [Title, {provide: ErrorHandler, useClass: GlobalErrorHandler}],
   template: `
     <mat-toolbar class="toolbar">
       <div class="horizontal-align vertical-align fixed">

@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const path = require('path');
+const {merge} = require('webpack-merge');
 const webpackConfig = require('./webpack.config.common');
-delete webpackConfig.entry;
-delete webpackConfig.output;
+const AngularWebpackPlugin = require('@ngtools/webpack').AngularWebpackPlugin;
 
 module.exports = (config) => {
   config.set({
@@ -77,6 +76,13 @@ module.exports = (config) => {
       'src/main_unit_test.ts': ['webpack', 'sourcemap'],
     },
     verbose: true, // output config used by istanbul for debugging
-    webpack: webpackConfig,
+    webpack: merge(webpackConfig, {
+      plugins: [
+        new AngularWebpackPlugin({
+          tsconfig: 'tsconfig.karma.json',
+          jitMode: '@angular/compiler',
+        }),
+      ],
+    }),
   });
 };
