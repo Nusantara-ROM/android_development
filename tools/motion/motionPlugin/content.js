@@ -14,7 +14,6 @@ function findAndLogGerritLinks(sendResponseCallback) {
         linkLeft: null,
         linkRight: null
     }
-
     try {
         let currentElement = document.querySelector("#pg-app");
         if (!currentElement) {
@@ -72,27 +71,41 @@ function findAndLogGerritLinks(sendResponseCallback) {
         }
         const dropdownShadowRoot = grDropdownElement.shadowRoot;
 
-        const allLinkItems = dropdownShadowRoot.querySelectorAll("#dropdown > div > ul > li");
-        allLinkItems.forEach(item => {
-            const text = item.textContent || '';
-            const linkElement = item.querySelector("gr-tooltip-content > a");
-            if (linkElement && linkElement.href) {
-                if (text.includes('Left Content')) {
-                    responseData.linkLeft = linkElement.href;
-                    console.log("Motion: Left link found ", linkElement.href);
-                }
+        const dropdownContent = dropdownShadowRoot.querySelector(".dropdown-content");
 
-                if (text.includes('Right Content')) {
-                    responseData.linkRight = linkElement.href;
-                    console.log("Motion: Right link found ", linkElement.href);
+        if (!dropdownContent) {
+            console.log("Motion: Element 'div.dropdown-content' not found. Aborting.");
+            responseData.message = "div.dropdown-content not found";
+            sendResponseCallback(responseData);
+            return;
+        }
+
+        const allLinkItems = dropdownContent.querySelectorAll("gr-tooltip-content");
+        allLinkItems.forEach(item => {
+            const linkElement = item.querySelector("a.itemAction");
+            if (linkElement && linkElement.href) {
+                const menuItem = linkElement.querySelector("md-menu-item");
+                if (menuItem) {
+                    const text = menuItem.textContent || '';
+                    if (text.includes('Left Content')) {
+                        responseData.linkLeft = linkElement.href;
+                        console.log("Motion: Left link found ", linkElement.href);
+                    }
+
+                    if (text.includes('Right Content')) {
+                        responseData.linkRight = linkElement.href;
+                        console.log("Motion: Right link found ", linkElement.href);
+                    }
                 }
             }
         })
 
         if(responseData.linkLeft || responseData.linkRight){
+            console.log("Motion: Links Found")
             responseData.status = "success";
             responseData.message = "Links found";
         } else {
+            console.log("Motion: No links found")
             responseData.message = "No relevant links found";
         }
     } catch (error) {
