@@ -336,7 +336,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         .setY(0)
         .setWidth(1)
         .setHeight(1)
-        .setId('layerRect')
+        .setId('1 layerRect')
         .setName('layerRect')
         .setTransform(Transform.EMPTY.matrix)
         .setDepth(1)
@@ -351,7 +351,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         .setY(2)
         .setWidth(3)
         .setHeight(3)
-        .setId('inputRect')
+        .setId('1 inputRect')
         .setName('inputRect')
         .setTransform(Transform.EMPTY.matrix)
         .setDepth(1)
@@ -681,20 +681,20 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         expect(spyArgs.length).toEqual(1);
         expect(spyArgs[0][2]).toEqual(dispatchEvents);
         expect(uiData.rectsToDraw).toHaveSize(1);
-        expect(uiData.rectsToDraw?.at(0)?.id).toEqual('inputRect');
+        expect(uiData.rectsToDraw?.at(0)?.id).toEqual('1 inputRect');
 
         await presenter.onAppEvent(
           TracePositionUpdate.fromTraceEntry(trace.getEntry(2)),
         );
         expect(uiData.rectsToDraw).toHaveSize(1);
-        expect(uiData.rectsToDraw?.at(0)?.id).toEqual('inputRect');
+        expect(uiData.rectsToDraw?.at(0)?.id).toEqual('1 inputRect');
 
         await presenter.onAppEvent(
           TracePositionUpdate.fromTraceEntry(trace.getEntry(3)),
         );
         expect(uiData.rectsToDraw).toHaveSize(3);
         uiData.rectsToDraw?.forEach((rect) =>
-          expect(rect.id).toEqual('inputRect'),
+          expect(rect.id).toEqual('1 inputRect'),
         );
       });
 
@@ -725,6 +725,49 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         expect(uiData.highlightedProperty).toEqual(id);
         presenter.onHighlightedPropertyChange(id);
         expect(uiData.highlightedProperty).toEqual('');
+      });
+
+      it('highlights the proper selected node', async () => {
+        const presenter = (
+          await setupAndAssertInitialHighlight(this.trace, this.layerIdToName)
+        ).presenter;
+        const testLogId = (
+          await setupAndAssertInitialHighlight(this.trace, this.layerIdToName)
+        ).testLogId;
+
+        const element = document.createElement('div');
+        presenter.addEventListeners(element);
+        element.dispatchEvent(
+          new CustomEvent(ViewerEvents.HighlightedPropertyChange, {
+            detail: {id: '2'},
+          }),
+        );
+        await presenter.onLogEntryClick(testLogId);
+        expect(uiData.highlightedProperty).toEqual('2');
+      });
+
+      it('updates highlighted property on target window click', async () => {
+        const expectedPropertyId = (
+          await setupAndAssertInitialHighlight(this.trace, this.layerIdToName)
+        ).expectedPropertyId;
+        expect(uiData.highlightedProperty).toEqual(expectedPropertyId);
+      });
+
+      it('updates highlighted rect on target window click', async () => {
+        const {presenter, testLogId} =
+          await setupInitialHighlightTestingEnvironment(
+            this.trace,
+            this.layerIdToName,
+          );
+        const windowId = BigInt(this.layerIdToName[1].id);
+        const windowName = this.layerIdToName[1].name;
+
+        expect(uiData.highlightedRect).toEqual(assertDefined(''));
+        presenter.onTargetWindowClicked(windowId, windowName);
+        await presenter.onLogEntryClick(testLogId);
+        expect(uiData.highlightedRect).toEqual(
+          assertDefined(windowId + ' ' + windowName),
+        );
       });
 
       it('updates highlighted rect', async () => {
@@ -864,6 +907,65 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         );
         await sendFirstPositionUpdate(this.getPositionUpdate(), presenter);
       });
+
+      async function setupAndAssertInitialHighlight(
+        presenterTrace: Trace<HierarchyTreeNode> | undefined,
+        layerIdToName: Array<{
+          id: number;
+          name: string;
+        }>,
+      ) {
+        const {presenter, testLogId} =
+          await setupInitialHighlightTestingEnvironment(
+            presenterTrace,
+            layerIdToName,
+          );
+        const windowId = BigInt(layerIdToName[1].id);
+        const windowName = layerIdToName[1].name;
+        const dispatchTree = assertDefined(uiData.dispatchPropertiesTree);
+
+        const expectedPropertyId = assertDefined(
+          dispatchTree
+            .getAllChildren()
+            .find(
+              (dispatchEntry) =>
+                dispatchEntry.getChildByName('windowId')?.getValue() ===
+                windowId,
+            )
+            ?.getChildByName('windowId')?.id,
+        );
+
+        expect(uiData.highlightedProperty).toEqual(assertDefined(''));
+        presenter.onTargetWindowClicked(windowId, windowName);
+        await presenter.onLogEntryClick(testLogId);
+
+        return {presenter, testLogId, expectedPropertyId};
+      }
+
+      async function setupInitialHighlightTestingEnvironment(
+        presenterTrace: Trace<HierarchyTreeNode> | undefined,
+        layerIdToName: Array<{
+          id: number;
+          name: string;
+        }>,
+      ) {
+        const parser = assertDefined(presenterTrace).getParser();
+        const traces = await getTracesWithSf(parser, layerIdToName);
+        const trace = assertDefined(
+          traces.getTrace(TraceType.INPUT_EVENT_MERGED),
+        );
+        const presenter = PresenterInputTest.createPresenterWithTraces(
+          traces,
+          (uiDataLog) => (uiData = uiDataLog as UiData),
+        );
+        await sendFirstPositionUpdate(
+          TracePositionUpdate.fromTraceEntry(trace.getEntry(0)),
+          presenter,
+        );
+        const testLogId = 3;
+        await presenter.onLogEntryClick(testLogId);
+        return {presenter, testLogId};
+      }
 
       async function getTracesWithSf(
         parser: Parser<HierarchyTreeNode>,
