@@ -241,6 +241,10 @@ Each input screen has a "Back", "Home" and "Forward" buttons.
     launched on that display. \
     *Changing this will recreate the virtual device.*
 
+-   **Public displays**: Whether to make the virtual displays public. \
+    *This can be changed dynamically but only applies to newly created
+    displays.*
+
 -   **Always unlocked**: Whether the virtual displays should remain unlocked and
     interactive when the host device is locked. Disabling this will result in a
     simple lock screen shown on these displays when the host device is locked. \

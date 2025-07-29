@@ -55,6 +55,11 @@
             android:defaultValue="true"
             app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat
+            android:key="@string/pref_public_displays"
+            android:title="Public displays"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:key="@string/pref_always_unlocked_device"
             android:title="Always unlocked"
             android:summary="Remote displays remain unlocked even when the host is locked"
