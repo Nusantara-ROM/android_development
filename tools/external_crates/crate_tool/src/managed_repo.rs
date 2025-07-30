@@ -29,7 +29,7 @@ use crates_io_util::{
 use google_metadata::GoogleMetadata;
 use itertools::Itertools;
 use license_checker::find_licenses;
-use log::debug;
+use log::{debug, error};
 use name_and_version::{NameAndVersion, NameAndVersionRef, NamedAndVersioned};
 use repo_config::RepoConfig;
 use rooted_path::RootedPath;
@@ -569,7 +569,13 @@ We apologize for the inconvenience."#,
 
         for krate in managed_crates.values() {
             debug!("Checking for updates to {}", krate.name());
-            let cio_crate = self.crates_io.get_crate(krate.name())?;
+            let cio_crate = match self.crates_io.get_crate(krate.name()) {
+                Ok(k) => k,
+                Err(_) => {
+                    error!("Failed to fetch crates.io data for {}", krate.name());
+                    continue;
+                }
+            };
 
             let base_version = cio_crate.get_version(krate.version());
             if base_version.is_none() {
