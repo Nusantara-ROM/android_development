@@ -177,12 +177,23 @@ describe('EntryHierarchyTreeFactory', () => {
           return;
         }
         calls++;
+        layersIter.get.withArgs('id').and.returnValue(1n);
         layersIter.get.withArgs('layer_id').and.returnValue(7n);
         layersIter.get.withArgs('parent').and.returnValue(7n);
       });
 
       const tree = makeEntryHierarchyTree();
-      expect(tree.getAllChildren().length).toEqual(0);
+      const recursiveLayers = tree.getAllChildren()[0].getAllChildren();
+      expect(
+        recursiveLayers.map((c) =>
+          c.getEagerPropertyByName('layerId')?.getValue(),
+        ),
+      ).toEqual([1n, 7n]);
+      expect(
+        recursiveLayers.map((c) =>
+          c.getEagerPropertyByName('parent')?.getValue(),
+        ),
+      ).toEqual([1n, 7n]);
       expect(tree.getWarnings()).toEqual([new RecursiveLayerIds([1, 7])]);
     });
   });

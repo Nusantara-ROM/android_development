@@ -571,6 +571,19 @@ the default for its data type.`,
         expect(uiData.curatedProperties).toBeUndefined();
       });
 
+      it('sets properties tree but no curated properties for recursive root node', async () => {
+        await presenter.onAppEvent(this.getPositionUpdate());
+        const hierarchyTree = assertDefined(uiData.hierarchyTrees?.[0]);
+        Object.assign(hierarchyTree.getAllChildren()[0], {
+          name: 'WinscopeRecursiveLayerRoot',
+        });
+        await presenter.onHighlightedNodeChange(
+          hierarchyTree.getAllChildren()[0],
+        );
+        expect(uiData.propertiesTree).toBeDefined();
+        expect(uiData.curatedProperties).toBeUndefined();
+      });
+
       it('formats summary, color, pixel and crop correctly in curated properties', async () => {
         const layer1Props = getPropertiesForCuratedPanel(1n);
         Object.assign(layer1Props, {

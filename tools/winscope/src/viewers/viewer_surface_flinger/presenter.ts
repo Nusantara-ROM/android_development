@@ -285,7 +285,10 @@ the default for its data type.`,
     const propertiesTree = this.propertiesPresenter.getPropertiesTree();
 
     if (selectedHierarchyTree && propertiesTree) {
-      if (selectedHierarchyTree.tree.isRoot()) {
+      if (
+        selectedHierarchyTree.tree.isRoot() ||
+        selectedHierarchyTree.tree.name === 'WinscopeRecursiveLayerRoot'
+      ) {
         this.curatedProperties = undefined;
       } else {
         const layerIdToNodeId = this.makeLayerIdToNodeIdMap();

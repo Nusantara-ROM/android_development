@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
+import {assertDefined} from 'common/assert_utils';
+import {
+  ChildProperty,
+  PropertyTreeBuilder,
+} from 'test/unit/property_tree_builder';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
-import {LayerFlag} from 'trace/surface_flinger/layer_flag';
 import {HierarchyTreeNode} from 'trace/tree_node/hierarchy_tree_node';
 import {OperationChain} from 'trace/tree_node/operations/operation_chain';
 import {PropertiesProvider} from 'trace/tree_node/properties_provider';
@@ -59,82 +62,24 @@ describe('HierarchyTreeBuilderSf', () => {
   });
 
   it('builds root with children correctly', () => {
-    const layer1Props = new PropertyTreeBuilder()
-      .setIsRoot(true)
-      .setRootId('1')
-      .setName('layer1')
-      .setChildren([
-        {name: 'layerId', value: 1},
-        {name: 'name', value: 'layer1'},
-        {name: 'parent', value: -1},
-        {name: 'children', value: []},
-        {name: 'flags', value: LayerFlag.HIDDEN},
-      ])
-      .build();
-    const layer1Provider = makePropertiesProvider(layer1Props);
-
+    const layer1Provider = makeLayerProperties(1, -1);
     const root = builder.setRoot(entry).setChildren([layer1Provider]).build();
-
-    expectedRoot.addOrReplaceChild(
-      new HierarchyTreeNode('1 layer1', 'layer1', layer1Provider),
-    );
-
+    expectedRoot.addOrReplaceChild(makeHierarchyNode(layer1Provider));
     expect(root).toEqual(expectedRoot);
   });
 
   it('builds root with nested children correctly', () => {
-    const layer1Props = new PropertyTreeBuilder()
-      .setIsRoot(true)
-      .setRootId('1')
-      .setName('layer1')
-      .setChildren([
-        {name: 'layerId', value: 1},
-        {name: 'name', value: 'layer1'},
-        {name: 'parent', value: -1},
-        {
-          name: 'children',
-          value: undefined,
-          children: [
-            {
-              name: '0',
-              value: 2,
-            },
-          ],
-        },
-        {name: 'flags', value: LayerFlag.HIDDEN},
-      ])
-      .build();
-    const layer1Provider = makePropertiesProvider(layer1Props);
-
-    const layer2Props = new PropertyTreeBuilder()
-      .setIsRoot(true)
-      .setRootId('2')
-      .setName('layer2')
-      .setChildren([
-        {name: 'layerId', value: 2},
-        {name: 'name', value: 'layer2'},
-        {name: 'parent', value: 1},
-        {name: 'children', value: []},
-        {name: 'flags', value: LayerFlag.HIDDEN},
-      ])
-      .build();
-    const layer2Provider = makePropertiesProvider(layer2Props);
+    const layer1Provider = makeLayerProperties(1, -1, [{name: '0', value: 2}]);
+    const layer2Provider = makeLayerProperties(2, 1, [{name: '1', value: 1}]);
 
     const root = builder
       .setRoot(entry)
       .setChildren([layer1Provider, layer2Provider])
       .build();
 
-    const expectedRootLayer = new HierarchyTreeNode(
-      '1 layer1',
-      'layer1',
-      layer1Provider,
-    );
-    const expectedNestedLayer = new HierarchyTreeNode(
-      '2 layer2',
-      'layer2',
-      layer2Provider,
-    );
+    const expectedRootLayer = makeHierarchyNode(layer1Provider);
+    const expectedNestedLayer = makeHierarchyNode(layer2Provider);
+
     expectedRootLayer.addOrReplaceChild(expectedNestedLayer);
     expectedRoot.addOrReplaceChild(expectedRootLayer);
 
@@ -142,77 +87,19 @@ describe('HierarchyTreeBuilderSf', () => {
   });
 
   it('builds root with duplicate id layers', () => {
-    const layer1Props = new PropertyTreeBuilder()
-      .setIsRoot(true)
-      .setRootId('1')
-      .setName('layer1')
-      .setChildren([
-        {name: 'layerId', value: 1},
-        {name: 'name', value: 'layer1'},
-        {name: 'parent', value: -1},
-        {
-          name: 'children',
-          value: undefined,
-          children: [
-            {
-              name: '0',
-              value: 2,
-            },
-          ],
-        },
-        {name: 'flags', value: LayerFlag.HIDDEN},
-      ])
-      .build();
-    const layer1Provider = makePropertiesProvider(layer1Props);
-
-    const layer2Props = new PropertyTreeBuilder()
-      .setIsRoot(true)
-      .setRootId('2')
-      .setName('layer2')
-      .setChildren([
-        {name: 'layerId', value: 2},
-        {name: 'name', value: 'layer2'},
-        {name: 'parent', value: 1},
-        {name: 'children', value: []},
-        {name: 'flags', value: LayerFlag.HIDDEN},
-      ])
-      .build();
-    const layer2Provider = makePropertiesProvider(layer2Props);
-
-    const layer2DupProps = new PropertyTreeBuilder()
-      .setIsRoot(true)
-      .setRootId('2')
-      .setName('layer2 duplicate(1)')
-      .setChildren([
-        {name: 'layerId', value: 2},
-        {name: 'name', value: 'layer2'},
-        {name: 'parent', value: 1},
-        {name: 'children', value: []},
-        {name: 'flags', value: LayerFlag.HIDDEN},
-      ])
-      .build();
-    const layer2DupProvider = makePropertiesProvider(layer2DupProps);
+    const layer1Provider = makeLayerProperties(1, -1);
+    const layer2Provider = makeLayerProperties(2, 1);
+    const layer2Provider2 = makeLayerProperties(2, 1, undefined, true);
 
     const root = builder
       .setRoot(entry)
-      .setChildren([layer1Provider, layer2Provider, layer2DupProvider])
+      .setChildren([layer1Provider, layer2Provider, layer2Provider2])
       .build();
 
-    const expectedRootLayer = new HierarchyTreeNode(
-      '1 layer1',
-      'layer1',
-      layer1Provider,
-    );
-    const expectedNestedLayer = new HierarchyTreeNode(
-      '2 layer2',
-      'layer2',
-      layer2Provider,
-    );
-    const expectedDupNestedLayer = new HierarchyTreeNode(
-      '2 layer2 duplicate(1)',
-      'layer2 duplicate(1)',
-      layer2Provider,
-    );
+    const expectedRootLayer = makeHierarchyNode(layer1Provider);
+    const expectedNestedLayer = makeHierarchyNode(layer2Provider);
+    const expectedDupNestedLayer = makeHierarchyNode(layer2Provider2);
+
     expectedRootLayer.addOrReplaceChild(expectedNestedLayer);
     expectedRootLayer.addOrReplaceChild(expectedDupNestedLayer);
     expectedRoot.addOrReplaceChild(expectedRootLayer);
@@ -221,28 +108,7 @@ describe('HierarchyTreeBuilderSf', () => {
   });
 
   it('builds root with default parent values correctly', () => {
-    const layer1Props = new PropertyTreeBuilder()
-      .setIsRoot(true)
-      .setRootId('1')
-      .setName('layer1')
-      .setChildren([
-        {name: 'layerId', value: 1},
-        {name: 'name', value: 'layer1'},
-        {name: 'parent', value: -1},
-        {
-          name: 'children',
-          value: undefined,
-          children: [
-            {
-              name: '0',
-              value: 2,
-            },
-          ],
-        },
-        {name: 'flags', value: LayerFlag.HIDDEN},
-      ])
-      .build();
-    const layer1Provider = makePropertiesProvider(layer1Props);
+    const layer1Provider = makeLayerProperties(1, -1);
 
     const layer2Props = new PropertyTreeBuilder()
       .setIsRoot(true)
@@ -252,8 +118,6 @@ describe('HierarchyTreeBuilderSf', () => {
         {name: 'layerId', value: 2},
         {name: 'name', value: 'layer2'},
         {name: 'parent', value: 1, source: PropertySource.DEFAULT},
-        {name: 'children', value: []},
-        {name: 'flags', value: LayerFlag.HIDDEN},
       ])
       .build();
     const layer2Provider = makePropertiesProvider(layer2Props);
@@ -263,16 +127,9 @@ describe('HierarchyTreeBuilderSf', () => {
       .setChildren([layer1Provider, layer2Provider])
       .build();
 
-    const expectedLayer1 = new HierarchyTreeNode(
-      '1 layer1',
-      'layer1',
-      layer1Provider,
-    );
-    const expectedLayer2 = new HierarchyTreeNode(
-      '2 layer2',
-      'layer2',
-      layer2Provider,
-    );
+    const expectedLayer1 = makeHierarchyNode(layer1Provider);
+    const expectedLayer2 = makeHierarchyNode(layer2Provider);
+
     expectedRoot.addOrReplaceChild(expectedLayer1);
     expectedRoot.addOrReplaceChild(expectedLayer2);
 
@@ -280,27 +137,83 @@ describe('HierarchyTreeBuilderSf', () => {
   });
 
   it('handles missing parent values', () => {
-    const layer1Props = new PropertyTreeBuilder()
-      .setIsRoot(true)
-      .setRootId('1')
-      .setName('layer1')
-      .setChildren([
-        {name: 'layerId', value: 1},
-        {name: 'name', value: 'layer1'},
-        {name: 'children', value: []},
-        {name: 'flags', value: LayerFlag.HIDDEN},
-      ])
-      .build();
-    const layer1Provider = makePropertiesProvider(layer1Props);
-
+    const layer1Provider = makeLayerProperties(1);
     const root = builder.setRoot(entry).setChildren([layer1Provider]).build();
-
-    expectedRoot.addOrReplaceChild(
-      new HierarchyTreeNode('1 layer1', 'layer1', layer1Provider),
-    );
-
+    expectedRoot.addOrReplaceChild(makeHierarchyNode(layer1Provider));
     expect(root).toEqual(expectedRoot);
   });
+
+  it('builds separate root layer with unique id for recursive layers', async () => {
+    const layer1Provider = makeLayerProperties(1, 1);
+    const layer3Provider = makeLayerProperties(3, 3);
+    const layer4Provider = makeLayerProperties(4, -1);
+
+    const root = builder
+      .setRoot(entry)
+      .setChildren([layer1Provider, layer3Provider, layer4Provider])
+      .build();
+
+    const expectedRootLayer = makeHierarchyNode(layer4Provider);
+    expectedRoot.addOrReplaceChild(expectedRootLayer);
+
+    const expRecurRootProps = new PropertyTreeBuilder()
+      .setIsRoot(true)
+      .setRootId('2')
+      .setName('WinscopeRecursiveLayerRoot')
+      .setChildren([])
+      .build();
+    const expRecurRootProvider = makePropertiesProvider(expRecurRootProps);
+    const expectedRecursiveRoot = makeHierarchyNode(expRecurRootProvider);
+    expectedRoot.addOrReplaceChild(expectedRecursiveRoot);
+
+    const expectedRecursiveLayer1 = makeHierarchyNode(layer1Provider);
+    expectedRecursiveRoot.addOrReplaceChild(expectedRecursiveLayer1);
+
+    const expectedRecursiveLayer3 = makeHierarchyNode(layer3Provider);
+    expectedRecursiveRoot.addOrReplaceChild(expectedRecursiveLayer3);
+
+    expect(root).toEqual(expectedRoot);
+
+    const recursiveRootProps = assertDefined(
+      await root.getChildByName(expRecurRootProps.name)?.getAllProperties(),
+    );
+    expect(recursiveRootProps.getAllChildren().length).toEqual(2);
+
+    const recursiveRootId = assertDefined(
+      recursiveRootProps.getChildByName('layerId'),
+    );
+    expect(recursiveRootId.getValue()).toEqual(2n);
+    expect(recursiveRootId.formattedValue()).toEqual('2');
+    expect(recursiveRootProps.getChildByName('detail')?.getValue()).toEqual(
+      'This node was artificially created by Winscope as a parent for all recursive layers',
+    );
+  });
+
+  function makeLayerProperties(
+    id: number,
+    parent?: number,
+    children?: ChildProperty[],
+    isDuplicate = false,
+  ): PropertiesProvider {
+    const name = 'layer' + id;
+    const properties: ChildProperty[] = [
+      {name: 'layerId', value: id},
+      {name: 'name', value: name},
+    ];
+    if (parent !== undefined) {
+      properties.push({name: 'parent', value: parent});
+    }
+    if (children) {
+      properties.push({name: 'children', children});
+    }
+    const props = new PropertyTreeBuilder()
+      .setIsRoot(true)
+      .setRootId(id.toString())
+      .setName(name + (isDuplicate ? ' duplicate(1)' : ''))
+      .setChildren(properties)
+      .build();
+    return makePropertiesProvider(props);
+  }
 
   function makePropertiesProvider(node: PropertyTreeNode): PropertiesProvider {
     return new PropertiesProvider(
@@ -310,5 +223,10 @@ describe('HierarchyTreeBuilderSf', () => {
       OperationChain.emptyChain<PropertyTreeNode>(),
       OperationChain.emptyChain<PropertyTreeNode>(),
     );
+  }
+
+  function makeHierarchyNode(provider: PropertiesProvider): HierarchyTreeNode {
+    const props = provider.getEagerProperties();
+    return new HierarchyTreeNode(props.id, props.name, provider);
   }
 });
