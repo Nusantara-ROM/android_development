@@ -45,7 +45,6 @@ import {
 } from 'viewers/components/rects/rect_spec';
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {PropagateHashCodes} from './operations/propagate_hash_codes';
-import {UpdateDisplayNames} from './operations/update_display_names';
 import {UiData} from './ui_data';
 
 export class Presenter extends AbstractHierarchyViewerPresenter<UiData> {
@@ -86,7 +85,6 @@ export class Presenter extends AbstractHierarchyViewerPresenter<UiData> {
     true,
     false,
     this.getEntryFormattedTimestamp,
-    [[TraceType.WINDOW_MANAGER, [new UpdateDisplayNames()]]],
   );
   protected override rectsPresenter = new RectsPresenter(
     PersistentStoreProxy.new<UserOptions>(
