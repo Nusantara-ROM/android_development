@@ -382,7 +382,7 @@ LEFT JOIN ranked_process_matches AS rpm
       .setRootName(field?.type ?? transactionType)
       .build();
 
-    const flagsIdFormatter = new EnumFormatter(assertDefined(this.flags));
+    const flagsIdFormatter = new EnumFormatter(assertDefined(this.flags), '0');
     const builder = new PropertiesProviderBuilder()
       .setEagerProperties(eagerProperties)
       .setEagerOperations([

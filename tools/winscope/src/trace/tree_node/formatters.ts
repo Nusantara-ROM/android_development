@@ -206,7 +206,10 @@ class RegionFormatter implements PropertyFormatter {
 const REGION_FORMATTER = new RegionFormatter();
 
 class EnumFormatter implements PropertyFormatter {
-  constructor(private readonly valuesById: {[key: number]: string}) {}
+  constructor(
+    private readonly valuesById: {[key: number]: string},
+    private readonly overrideValue?: string,
+  ) {}
 
   format(node: PropertyTreeNode): string {
     const value = node.getValue();
@@ -216,7 +219,7 @@ class EnumFormatter implements PropertyFormatter {
     if (typeof value === 'bigint' && this.valuesById[Number(value)]) {
       return this.valuesById[Number(value)];
     }
-    return `${value}`;
+    return this.overrideValue ?? `${value}`;
   }
 }
 
