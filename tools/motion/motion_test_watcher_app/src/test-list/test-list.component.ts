@@ -38,6 +38,7 @@ export class TestListComponent implements OnChanges{
   @Input() testNames: String[] = [];
   @Input() showCheckBoxes: boolean = false;
   @Input() isRefreshing: boolean = false;
+  @Input() testMode: String = "";
   @Output() showCheckBoxesChange = new EventEmitter<boolean>();
   @Output() selectedTestNameChange = new EventEmitter<String>();
   @Output() refreshRequest = new EventEmitter<boolean>();
@@ -337,6 +338,10 @@ export class TestListComponent implements OnChanges{
         },
       });
     }
+  }
+
+  get shouldShowRefreshButton(): boolean {
+    return this.testMode !== 'GERRIT' && this.testMode !== 'PRESUBMIT';
   }
 }
 

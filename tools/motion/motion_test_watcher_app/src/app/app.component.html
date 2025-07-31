@@ -68,6 +68,7 @@
   <div *ngIf="showTestList" [@sidebarMenuAnimation] class="w-1/4 bg-white rounded-r-md overflow-y-auto mr-2 2xl:mr-4">
       <app-test-list
         [goldens]="goldens"
+        [testMode]="testMode"
         (refreshRequest)="refreshGoldens($event)"
         (selectedGoldenChange)="setSelectedGolden($event)"
         [testNames]="testNames"
