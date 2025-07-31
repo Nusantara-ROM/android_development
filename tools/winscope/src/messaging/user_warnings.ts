@@ -328,7 +328,10 @@ export class RecursiveLayerIds extends UserWarning {
   getMessage(): string {
     const optionalPlural = this.layerIds.length > 1 ? 's' : '';
     const layerIds = this.layerIds.join(', ');
-    return `Recursive SF layer id${optionalPlural} ${layerIds} found - same value set for id and parent, so omitted from the hierarchy`;
+    return (
+      `Recursive SF layer${optionalPlural} ${layerIds} found - same value set for id and parent,` +
+      ` so added to separate root in hierarchy.`
+    );
   }
 }
 

@@ -205,7 +205,6 @@ export class EntryHierarchyTreeFactory {
 
       if (layerIdBigint === it.get('parent')) {
         recursiveIds.push(layerId);
-        continue;
       }
 
       const uniqueRowId = assertBigInt(it.get('id'));
