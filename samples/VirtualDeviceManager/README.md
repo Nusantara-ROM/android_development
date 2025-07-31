@@ -330,6 +330,10 @@ Each input screen has a "Back", "Home" and "Forward" buttons.
 -   **Use AudioPolicy.updateMixingRules**: Updates the dynamic AudiPolicy mixing rules
     instead of unregistering and re-registering the AudioPolicy.
 
+-   **Use legacy playback state**: Audio playback streaming to remote device is based on the
+    playback state changes of the apps running on the virtual device. When disabled,
+    the audio streaming to the remote client is based on silence detection (also the default).
+
 #### Input method
 
 Note: The virtual keyboard acts like a physically connected keyboard to the host
