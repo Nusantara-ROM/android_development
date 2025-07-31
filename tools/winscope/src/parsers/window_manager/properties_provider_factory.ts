@@ -383,6 +383,11 @@ export class PropertiesProviderFactory {
       } else if (nameOverride.startsWith(WindowTypePrefix.DEBUGGER)) {
         nameOverride = nameOverride.substring(WindowTypePrefix.DEBUGGER.length);
       }
+    } else if (child.task) {
+      nameOverride = child.task.id?.toString();
+      if (child.task.taskName) {
+        nameOverride += `(${child.task.taskName})`;
+      }
     }
 
     return nameOverride ?? identifier?.title ?? '';
