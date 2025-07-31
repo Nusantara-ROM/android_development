@@ -50,17 +50,6 @@ export class GoldensService {
     };
   }
 
-  getGoldens(): Observable<MotionGolden[]> {
-    return this.http
-      .get<MotionGolden[]>(`${this.serverRoot}/service/list`, {
-        headers: this.defaultHeaders,
-      })
-      .pipe(
-        tap((x) => console.log(`listed goldens, got ${x.length} results`)),
-        catchError(this.handleError<MotionGolden[]>('e'))
-      );
-  }
-
   loadRecordedMotion(golden: MotionGolden): Observable<RecordedMotion> {
     const videoUrl = checkNotNull(golden.videoUrl);
     return this.getActualGoldenData(golden).pipe(

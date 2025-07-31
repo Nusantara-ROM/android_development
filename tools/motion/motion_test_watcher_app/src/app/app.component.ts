@@ -230,14 +230,6 @@ export class AppComponent implements DoCheck, OnInit, OnDestroy {
       })
   }
 
-  fetchGoldens(): void {
-    this.progressTracker.beginProgress;
-    this.goldenService
-      .getGoldens()
-      .pipe(finalize(() => this.progressTracker.endProgress))
-      .subscribe((goldens) => (this.goldens = goldens));
-  }
-
   refreshGoldens(clear: boolean): void {
     this.isRefreshing = true;
     this.progressTracker.beginProgress();
