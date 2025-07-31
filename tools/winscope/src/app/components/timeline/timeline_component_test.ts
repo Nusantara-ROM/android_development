@@ -49,15 +49,15 @@ import {
   TraceSearchRequest,
   WinscopeEvent,
 } from 'messaging/winscope_event';
-import {DOMTestHelper, checkTooltips} from 'test/unit/dom_test_utils';
+import {checkTooltips, DOMTestHelper} from 'test/unit/dom_test_utils';
+import {TracesBuilder} from 'test/unit/traces_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {TracesBuilder} from 'test/unit/traces_builder';
 import {Trace} from 'trace_api/trace';
+import {Traces} from 'trace_api/traces';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType} from 'trace_api/trace_type';
-import {Traces} from 'trace_api/traces';
 import {QueryResult} from 'trace_processor/query_result';
 import {makeSearchTraceSpies} from 'trace_processor/test_utils';
 import {CanvasDrawer} from './expanded-timeline/canvas_drawer';

@@ -18,8 +18,8 @@ import {assertDefined} from 'common/assert_utils';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
 import {Parser} from 'trace_api/parser';
 import {Trace} from 'trace_api/trace';
-import {TraceType} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';
+import {TraceType} from 'trace_api/trace_type';
 import {runQueryAndGetResult} from 'trace_processor/test_utils';
 import {SEARCH_VIEWS, TraceSearchInitializer} from './trace_search_initializer';
 

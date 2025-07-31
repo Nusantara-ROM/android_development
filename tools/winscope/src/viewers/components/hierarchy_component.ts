@@ -24,7 +24,7 @@ import {
   Output,
 } from '@angular/core';
 import {Color} from 'app/colors';
-import {KeyboardEventKey, isElementOverflowing} from 'common/dom_utils';
+import {isElementOverflowing, KeyboardEventKey} from 'common/dom_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {PersistentStore} from 'common/store/persistent_store';
 import {Analytics} from 'logging/analytics';

@@ -20,10 +20,10 @@ import {UserNotifier} from 'common/user_notifier';
 import {CannotParseAllTransitions} from 'messaging/user_warnings';
 import {ScreenRecordingUtils} from 'trace/screen_recording_utils';
 import {Trace, TraceEntry} from 'trace_api/trace';
+import {Traces} from 'trace_api/traces';
 import {TraceEntryFinder} from 'trace_api/trace_entry_finder';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType, TraceTypeUtils} from 'trace_api/trace_type';
-import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 export class TimelineData {

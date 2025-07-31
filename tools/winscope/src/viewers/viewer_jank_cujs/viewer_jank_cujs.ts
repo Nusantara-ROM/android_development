@@ -16,8 +16,8 @@
 
 import {Store} from 'common/store/store';
 import {Trace} from 'trace_api/trace';
-import {TraceType} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';
+import {TraceType} from 'trace_api/trace_type';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AbstractViewer} from 'viewers/abstract_viewer';
 import {ViewerComponent} from 'viewers/components/viewer_component';

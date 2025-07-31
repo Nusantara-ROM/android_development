@@ -26,8 +26,8 @@ import {
 } from 'trace_api/custom_query';
 import {EntriesRange} from 'trace_api/index_types';
 import {Trace} from 'trace_api/trace';
-import {TraceType} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';
+import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 type OriginalTraceIndex = number;

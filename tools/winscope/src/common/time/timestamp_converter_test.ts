@@ -15,8 +15,8 @@
  */
 
 import {TimestampConverterUtils, timestampEqualityTester} from './test_utils';
-import {TIME_UNIT_TO_NANO} from './time_units';
 import {TimestampConverter} from './timestamp_converter';
+import {TIME_UNIT_TO_NANO} from './time_units';
 
 describe('TimestampConverter', () => {
   const MILLISECOND = BigInt(TIME_UNIT_TO_NANO.ms);

@@ -30,9 +30,9 @@ import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {TraceFile} from 'trace/trace_file';
 import {Parser} from 'trace_api/parser';
 import {Trace} from 'trace_api/trace';
+import {Traces} from 'trace_api/traces';
 import {TraceMetadata} from 'trace_api/trace_metadata';
 import {TraceEntryTypeMap, TraceType} from 'trace_api/trace_type';
-import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {TraceBuilder} from './trace_builder';
 

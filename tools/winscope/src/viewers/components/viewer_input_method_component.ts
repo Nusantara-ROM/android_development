@@ -15,8 +15,8 @@
  */
 import {Component, Input} from '@angular/core';
 import {TraceType} from 'trace_api/trace_type';
-import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
 import {CollapsibleSections} from 'viewers/common/collapsible_sections';
+import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
 import {ImeUiData} from 'viewers/common/ime_ui_data';
 import {ViewerComponent} from 'viewers/components/viewer_component';
 import {viewerCardStyle} from './styles/viewer_card.styles';

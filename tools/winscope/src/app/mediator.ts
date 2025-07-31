@@ -53,7 +53,7 @@ import {TRACE_INFO} from 'trace_api/trace_info';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType} from 'trace_api/trace_type';
 import {RequestedTraceTypes} from 'trace_collection/adb_files';
-import {View, ViewType, Viewer} from 'viewers/viewer';
+import {View, Viewer, ViewType} from 'viewers/viewer';
 import {ViewerFactory} from 'viewers/viewer_factory';
 import {FilesSource} from './files_source';
 import {TimelineData} from './timeline_data';

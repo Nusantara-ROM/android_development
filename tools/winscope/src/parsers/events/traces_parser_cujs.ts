@@ -24,8 +24,8 @@ import {AbstractTracesParser} from 'parsers/traces/abstract_traces_parser';
 import {CUJ_TYPE_FORMATTER} from 'trace/formatters';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Trace} from 'trace_api/trace';
-import {TraceType} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';
+import {TraceType} from 'trace_api/trace_type';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {EventTag} from './event_tag';
 

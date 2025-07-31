@@ -19,8 +19,8 @@ import {CustomQueryType} from './custom_query';
 import {FrameMapBuilder} from './frame_map_builder';
 import {FramesRange} from './index_types';
 import {Trace, TraceEntry} from './trace';
-import {TraceType} from './trace_type';
 import {Traces} from './traces';
+import {TraceType} from './trace_type';
 
 export class FrameMapper {
   // Value used to narrow time-based searches of corresponding trace entries

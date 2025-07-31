@@ -16,8 +16,8 @@
 
 import {Component, Input, ViewChild} from '@angular/core';
 import {TraceType} from 'trace_api/trace_type';
-import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
 import {CollapsibleSections} from 'viewers/common/collapsible_sections';
+import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {LogComponent} from 'viewers/components/log_component';
 import {ShadingMode} from 'viewers/components/rects/shading_mode';

@@ -17,21 +17,21 @@
 import {assertDefined} from 'common/assert_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
-import {TraceBuilder} from 'test/unit/trace_builder';
-import {
-  extractEntries as extractTraceEntries,
-  makeEmptyTrace,
-} from 'test/unit/trace_utils';
 import {TracesBuilder} from 'test/unit/traces_builder';
 import {
   extractEntries,
   extractFrames,
   extractTraces,
 } from 'test/unit/traces_utils';
+import {TraceBuilder} from 'test/unit/trace_builder';
+import {
+  extractEntries as extractTraceEntries,
+  makeEmptyTrace,
+} from 'test/unit/trace_utils';
 import {FrameMapBuilder} from './frame_map_builder';
 import {AbsoluteFrameIndex} from './index_types';
-import {TraceType} from './trace_type';
 import {Traces} from './traces';
+import {TraceType} from './trace_type';
 
 describe('Traces', () => {
   let traces: Traces;

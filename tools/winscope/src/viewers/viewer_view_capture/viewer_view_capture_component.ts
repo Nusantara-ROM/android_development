@@ -16,8 +16,8 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {TraceType} from 'trace_api/trace_type';
-import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
 import {CollapsibleSections} from 'viewers/common/collapsible_sections';
+import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
 import {ShadingMode} from 'viewers/components/rects/shading_mode';
 
 import {viewerCardStyle} from 'viewers/components/styles/viewer_card.styles';

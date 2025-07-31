@@ -22,16 +22,16 @@ import {
   TracePositionUpdate,
 } from 'messaging/winscope_event';
 import {getFixtureFile} from 'test/unit/fixture_file_utils';
-import {LegacyParserProvider, getPerfettoParser} from 'test/unit/fixture_utils';
+import {getPerfettoParser, LegacyParserProvider} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {TraceFile} from 'trace/trace_file';
 import {CustomQueryType} from 'trace_api/custom_query';
 import {Parser} from 'trace_api/parser';
 import {Trace} from 'trace_api/trace';
+import {Traces} from 'trace_api/traces';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TraceType} from 'trace_api/trace_type';
-import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {NotifyHierarchyViewCallbackType} from 'viewers/common/abstract_hierarchy_viewer_presenter';
 import {AbstractHierarchyViewerPresenterTest} from 'viewers/common/abstract_hierarchy_viewer_presenter_test';

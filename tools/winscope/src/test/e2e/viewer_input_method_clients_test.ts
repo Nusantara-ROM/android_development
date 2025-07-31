@@ -16,7 +16,6 @@
 
 import {browser, by, element} from 'protractor';
 import {
-  WINSCOPE_URL,
   applyStateToHierarchyOptions,
   changeRealTimestampInWinscope,
   checkFinalRealTimestamp,
@@ -27,6 +26,7 @@ import {
   loadTraceAndCheckViewer,
   selectItemInHierarchy,
   setTimeouts,
+  WINSCOPE_URL,
 } from './utils';
 
 describe('Viewer Input Method Clients', () => {

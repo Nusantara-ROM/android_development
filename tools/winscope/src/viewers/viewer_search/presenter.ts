@@ -29,8 +29,8 @@ import {
 } from 'messaging/winscope_event';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
 import {Trace} from 'trace_api/trace';
-import {TraceType} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';
+import {TraceType} from 'trace_api/trace_type';
 import {QueryResult} from 'trace_processor/query_result';
 import {
   AddQueryClickDetail,
