@@ -15,10 +15,12 @@
  */
 
 import {UiTreeNodeUtils} from 'test/unit/ui_tree_node_utils';
+import {DEFAULT_PROPERTY_FORMATTER} from 'trace/formatters';
 import {TreeNode} from 'tree_node/tree_node';
 import {AbstractAddDiffsTest} from './abstract_add_diffs_test';
 import {AddDiffs} from './add_diffs';
 import {AddDiffsPropertiesTree} from './add_diffs_properties_tree';
+import {DiffType} from './diff_type';
 import {UiPropertyTreeNode} from './ui_property_tree_node';
 
 class AddDiffsPropertiesTreeTest extends AbstractAddDiffsTest<UiPropertyTreeNode> {
@@ -79,6 +81,76 @@ class AddDiffsPropertiesTreeTest extends AbstractAddDiffsTest<UiPropertyTreeNode
         await addDiffs.executeInPlace(newRoot, undefined);
         expect(newRoot).toEqual(expectedRoot);
       });
+
+      it('processes MODIFIED node by setting old value to null', async () => {
+        this.makeChildAndAddToRoot(newRoot, 'new');
+        this.makeChildAndAddToRoot(oldRoot, 'old');
+        const expectedChild = this.makeChildAndAddToRoot(expectedRoot);
+        expectedChild.setDiff(DiffType.MODIFIED);
+
+        await addDiffs.executeInPlace(newRoot, oldRoot);
+        expect(newRoot).toEqual(expectedRoot);
+        expect(newRoot.getChildByName('child')?.getOldValue()).toEqual('null');
+      });
+
+      it('processes MODIFIED node by setting old value to old formatted value', async () => {
+        this.makeChildAndAddToRoot(newRoot, 'new');
+        const oldChild = this.makeChildAndAddToRoot(oldRoot, 'old');
+        oldChild.setFormatter(DEFAULT_PROPERTY_FORMATTER);
+        const expectedChild = this.makeChildAndAddToRoot(expectedRoot);
+        expectedChild.setDiff(DiffType.MODIFIED);
+
+        await addDiffs.executeInPlace(newRoot, oldRoot);
+        expect(newRoot).toEqual(expectedRoot);
+        expect(newRoot.getChildByName('child')?.getOldValue()).toEqual('old');
+      });
+
+      it('processes MODIFIED flag values into diff value parts', async () => {
+        const newValue = 'flag1 | flag2 | flag3 | flag4 | flag6';
+        const newChild = this.makeChildAndAddToRoot(newRoot, newValue);
+        const oldValue = 'flag1 | flag4 | flag5';
+        const oldChild = this.makeChildAndAddToRoot(oldRoot, oldValue);
+        const expectedChild = this.makeChildAndAddToRoot(expectedRoot);
+        await checkModifiedWithDiffValueParts(
+          newChild,
+          oldChild,
+          expectedChild,
+        );
+      });
+
+      it('processes MODIFIED flag values ignoring raw values', async () => {
+        const newValue = 'flag1 | flag2 | flag3 | flag4 | flag6 (0x100)';
+        const newChild = this.makeChildAndAddToRoot(newRoot, newValue);
+        const oldValue = 'flag1 | flag4 | flag5 (0x80)';
+        const oldChild = this.makeChildAndAddToRoot(oldRoot, oldValue);
+        const expectedChild = this.makeChildAndAddToRoot(expectedRoot);
+        await checkModifiedWithDiffValueParts(
+          newChild,
+          oldChild,
+          expectedChild,
+        );
+      });
+
+      async function checkModifiedWithDiffValueParts(
+        newChild: UiPropertyTreeNode,
+        oldChild: UiPropertyTreeNode,
+        expectedChild: UiPropertyTreeNode,
+      ) {
+        newChild.setFormatter(DEFAULT_PROPERTY_FORMATTER);
+        oldChild.setFormatter(DEFAULT_PROPERTY_FORMATTER);
+        expectedChild.setDiff(DiffType.MODIFIED);
+
+        await addDiffs.executeInPlace(newRoot, oldRoot);
+        expect(newRoot).toEqual(expectedRoot);
+        expect(newRoot.getChildByName('child')?.getDiffValueParts()).toEqual([
+          {isOld: false, isNew: false, value: 'flag1'},
+          {isOld: false, isNew: true, value: 'flag2'},
+          {isOld: false, isNew: true, value: 'flag3'},
+          {isOld: false, isNew: false, value: 'flag4'},
+          {isOld: false, isNew: true, value: 'flag6'},
+          {isOld: true, isNew: false, value: 'flag5'},
+        ]);
+      }
     });
   }
 }
