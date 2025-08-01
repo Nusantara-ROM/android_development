@@ -276,6 +276,7 @@ export {
   EMPTY_OBJ_STRING,
   EnumFormatter,
   FixedStringFormatter,
+  formatAsHex,
   HEX_FORMATTER,
   LAYER_ID_FORMATTER,
   MATRIX_FORMATTER,
@@ -287,5 +288,4 @@ export {
   TIMESTAMP_NODE_FORMATTER,
   TRANSFORM_FORMATTER,
   UPPER_CASE_FORMATTER,
-  formatAsHex,
 };

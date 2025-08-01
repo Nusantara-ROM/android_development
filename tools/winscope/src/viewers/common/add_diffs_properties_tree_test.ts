@@ -16,72 +16,73 @@
 
 import {UiTreeNodeUtils} from 'test/unit/ui_tree_node_utils';
 import {TreeNode} from 'tree_node/tree_node';
+import {AbstractAddDiffsTest} from './abstract_add_diffs_test';
+import {AddDiffs} from './add_diffs';
 import {AddDiffsPropertiesTree} from './add_diffs_properties_tree';
-import {executeAddDiffsTests} from './add_diffs_test_utils';
 import {UiPropertyTreeNode} from './ui_property_tree_node';
 
-describe('AddDiffsPropertiesTree', () => {
-  let newRoot: UiPropertyTreeNode;
-  let oldRoot: UiPropertyTreeNode;
-  let expectedRoot: UiPropertyTreeNode;
+class AddDiffsPropertiesTreeTest extends AbstractAddDiffsTest<UiPropertyTreeNode> {
+  override makeAddDiffsOperation(): AddDiffs<UiPropertyTreeNode> {
+    const isModified = async (
+      newTree: TreeNode | undefined,
+      oldTree: TreeNode | undefined,
+    ) => {
+      return (
+        (newTree as UiPropertyTreeNode)?.getValue() !==
+        (oldTree as UiPropertyTreeNode)?.getValue()
+      );
+    };
+    return new AddDiffsPropertiesTree(isModified, []);
+  }
 
-  const isModified = async (
-    newTree: TreeNode | undefined,
-    oldTree: TreeNode | undefined,
-    denylistProperties: string[],
-  ) => {
-    return (
-      (newTree as UiPropertyTreeNode)?.getValue() !==
-      (oldTree as UiPropertyTreeNode)?.getValue()
-    );
-  };
-  const addDiffs = new AddDiffsPropertiesTree(isModified, []);
-
-  describe('AddDiffs tests', () => {
-    executeAddDiffsTests(
-      UiTreeNodeUtils.treeNodeEqualityTester,
-      makeRoot,
-      makeChildAndAddToRoot,
-      addDiffs,
-    );
-  });
-
-  describe('Property tree tests', () => {
-    beforeEach(() => {
-      jasmine.addCustomEqualityTester(UiTreeNodeUtils.treeNodeEqualityTester);
-      newRoot = makeRoot();
-      oldRoot = makeRoot();
-      expectedRoot = makeRoot();
-    });
-
-    it('does not add MODIFIED to property tree root', async () => {
-      oldRoot = makeRoot('oldValue');
-      await addDiffs.executeInPlace(newRoot, oldRoot);
-      expect(newRoot).toEqual(expectedRoot);
-    });
-
-    it('does not add any diffs to property tree that has no old tree', async () => {
-      await addDiffs.executeInPlace(newRoot, undefined);
-      expect(newRoot).toEqual(expectedRoot);
-    });
-  });
-
-  function makeRoot(value = 'value'): UiPropertyTreeNode {
+  makeRoot(value = 'value'): UiPropertyTreeNode {
     const root = UiTreeNodeUtils.makeUiPropertyNode('test', 'root', value);
     root.setIsRoot(true);
     return root;
   }
 
-  function makeChildAndAddToRoot(
+  makeChildAndAddToRoot(
     rootNode: UiPropertyTreeNode,
     value = 'value',
+    name = 'child',
   ): UiPropertyTreeNode {
-    const child = UiTreeNodeUtils.makeUiPropertyNode(
-      'test node',
-      'child',
-      value,
-    );
+    const child = UiTreeNodeUtils.makeUiPropertyNode('test node', name, value);
     rootNode.addOrReplaceChild(child);
     return child;
   }
+
+  override executeSpecializedTests(): void {
+    describe('Specialized tests', () => {
+      let newRoot: UiPropertyTreeNode;
+      let oldRoot: UiPropertyTreeNode;
+      let expectedRoot: UiPropertyTreeNode;
+      let addDiffs: AddDiffs<UiPropertyTreeNode>;
+
+      beforeAll(() => {
+        addDiffs = this.makeAddDiffsOperation();
+      });
+
+      beforeEach(() => {
+        jasmine.addCustomEqualityTester(UiTreeNodeUtils.treeNodeEqualityTester);
+        newRoot = this.makeRoot();
+        oldRoot = this.makeRoot();
+        expectedRoot = this.makeRoot();
+      });
+
+      it('does not add MODIFIED to property tree root', async () => {
+        oldRoot = this.makeRoot('oldValue');
+        await addDiffs.executeInPlace(newRoot, oldRoot);
+        expect(newRoot).toEqual(expectedRoot);
+      });
+
+      it('does not add any diffs to property tree that has no old tree', async () => {
+        await addDiffs.executeInPlace(newRoot, undefined);
+        expect(newRoot).toEqual(expectedRoot);
+      });
+    });
+  }
+}
+
+describe('AddDiffsPropertiesTree', () => {
+  new AddDiffsPropertiesTreeTest().execute();
 });
