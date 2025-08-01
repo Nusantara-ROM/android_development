@@ -24,6 +24,7 @@ import {CujType} from './cuj_type';
 
 const EMPTY_OBJ_STRING = '{empty}';
 const EMPTY_ARRAY_STRING = '[empty]';
+const FLAG_SEPARATOR = ' | ';
 
 function formatAsDecimal(value: number): string {
   if (!Number.isInteger(value)) {
@@ -43,23 +44,16 @@ function formatAsHex(value: number, upperCase = false): string {
   return '0x' + hexValue;
 }
 
-class DefaultPropertyFormatter implements PropertyFormatter {
+class BufferFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
-    const value = node.getValue();
-    if (Array.isArray(value) && value.length === 0) {
-      return EMPTY_ARRAY_STRING;
-    }
-
-    if (typeof value === 'number') {
-      return formatAsDecimal(value);
-    }
-
-    if (value?.toString) return value.toString();
-
-    return `${value}`;
+    return `w: ${node.getChildByName('width')?.getValue() ?? 0}, h: ${
+      node.getChildByName('height')?.getValue() ?? 0
+    }, stride: ${node.getChildByName('stride')?.getValue()}, format: ${node
+      .getChildByName('format')
+      ?.getValue()}`;
   }
 }
-const DEFAULT_PROPERTY_FORMATTER = new DefaultPropertyFormatter();
+const BUFFER_FORMATTER = new BufferFormatter();
 
 class ColorFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
@@ -86,35 +80,70 @@ class ColorFormatter implements PropertyFormatter {
 }
 const COLOR_FORMATTER = new ColorFormatter();
 
-class RectFormatter implements PropertyFormatter {
+class CujTypeFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
-    if (!RawDataUtils.isRect(node) || RawDataUtils.isEmptyObj(node)) {
-      return EMPTY_OBJ_STRING;
+    const cujTypeId: string = `${node.getValue()}`;
+    let cujTypeString: string | undefined;
+    if (cujTypeId in CujType) {
+      cujTypeString = CujType[cujTypeId as keyof typeof CujType];
+    } else {
+      cujTypeString = 'UNKNOWN';
     }
-    const left = formatAsDecimal(node.getChildByName('left')?.getValue() ?? 0);
-    const top = formatAsDecimal(node.getChildByName('top')?.getValue() ?? 0);
-    const right = formatAsDecimal(
-      node.getChildByName('right')?.getValue() ?? 0,
-    );
-    const bottom = formatAsDecimal(
-      node.getChildByName('bottom')?.getValue() ?? 0,
-    );
-
-    return `(${left}, ${top}) - (${right}, ${bottom})`;
+    return `${cujTypeString} (${cujTypeId})`;
   }
 }
-const RECT_FORMATTER = new RectFormatter();
+const CUJ_TYPE_FORMATTER = new CujTypeFormatter();
 
-class BufferFormatter implements PropertyFormatter {
+class DefaultPropertyFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
-    return `w: ${node.getChildByName('width')?.getValue() ?? 0}, h: ${
-      node.getChildByName('height')?.getValue() ?? 0
-    }, stride: ${node.getChildByName('stride')?.getValue()}, format: ${node
-      .getChildByName('format')
-      ?.getValue()}`;
+    const value = node.getValue();
+    if (Array.isArray(value) && value.length === 0) {
+      return EMPTY_ARRAY_STRING;
+    }
+
+    if (typeof value === 'number') {
+      return formatAsDecimal(value);
+    }
+
+    if (value?.toString) return value.toString();
+
+    return `${value}`;
   }
 }
-const BUFFER_FORMATTER = new BufferFormatter();
+const DEFAULT_PROPERTY_FORMATTER = new DefaultPropertyFormatter();
+
+class EnumFormatter implements PropertyFormatter {
+  constructor(
+    private readonly valuesById: {[key: number]: string},
+    private readonly overrideValue?: string,
+  ) {}
+
+  format(node: PropertyTreeNode): string {
+    const value = node.getValue();
+    if (typeof value === 'number' && this.valuesById[value]) {
+      return this.valuesById[value];
+    }
+    if (typeof value === 'bigint' && this.valuesById[Number(value)]) {
+      return this.valuesById[Number(value)];
+    }
+    return this.overrideValue ?? `${value}`;
+  }
+}
+
+class FixedStringFormatter implements PropertyFormatter {
+  constructor(private readonly fixedStringValue: string) {}
+
+  format(node: PropertyTreeNode): string {
+    return this.fixedStringValue;
+  }
+}
+
+class HexFormatter implements PropertyFormatter {
+  format(node: PropertyTreeNode): string {
+    return formatAsHex(node.getValue() ?? 0);
+  }
+}
+const HEX_FORMATTER = new HexFormatter();
 
 class LayerIdFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
@@ -156,25 +185,6 @@ class MatrixFormatter implements PropertyFormatter {
 }
 const MATRIX_FORMATTER = new MatrixFormatter();
 
-class TransformFormatter implements PropertyFormatter {
-  format(node: PropertyTreeNode): string {
-    const type = node.getChildByName('type');
-    return type !== undefined
-      ? TransformType.getTypeFlags(type.getValue() ?? 0)
-      : 'null';
-  }
-}
-const TRANSFORM_FORMATTER = new TransformFormatter();
-
-class SizeFormatter implements PropertyFormatter {
-  format(node: PropertyTreeNode): string {
-    return `${node.getChildByName('w')?.getValue() ?? 0} x ${
-      node.getChildByName('h')?.getValue() ?? 0
-    }`;
-  }
-}
-const SIZE_FORMATTER = new SizeFormatter();
-
 class PositionFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
     const x = formatAsDecimal(node.getChildByName('x')?.getValue() ?? 0);
@@ -183,6 +193,25 @@ class PositionFormatter implements PropertyFormatter {
   }
 }
 const POSITION_FORMATTER = new PositionFormatter();
+
+class RectFormatter implements PropertyFormatter {
+  format(node: PropertyTreeNode): string {
+    if (!RawDataUtils.isRect(node) || RawDataUtils.isEmptyObj(node)) {
+      return EMPTY_OBJ_STRING;
+    }
+    const left = formatAsDecimal(node.getChildByName('left')?.getValue() ?? 0);
+    const top = formatAsDecimal(node.getChildByName('top')?.getValue() ?? 0);
+    const right = formatAsDecimal(
+      node.getChildByName('right')?.getValue() ?? 0,
+    );
+    const bottom = formatAsDecimal(
+      node.getChildByName('bottom')?.getValue() ?? 0,
+    );
+
+    return `(${left}, ${top}) - (${right}, ${bottom})`;
+  }
+}
+const RECT_FORMATTER = new RectFormatter();
 
 class RegionFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
@@ -202,31 +231,14 @@ class RegionFormatter implements PropertyFormatter {
 }
 const REGION_FORMATTER = new RegionFormatter();
 
-class EnumFormatter implements PropertyFormatter {
-  constructor(
-    private readonly valuesById: {[key: number]: string},
-    private readonly overrideValue?: string,
-  ) {}
-
+class SizeFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
-    const value = node.getValue();
-    if (typeof value === 'number' && this.valuesById[value]) {
-      return this.valuesById[value];
-    }
-    if (typeof value === 'bigint' && this.valuesById[Number(value)]) {
-      return this.valuesById[Number(value)];
-    }
-    return this.overrideValue ?? `${value}`;
+    return `${node.getChildByName('w')?.getValue() ?? 0} x ${
+      node.getChildByName('h')?.getValue() ?? 0
+    }`;
   }
 }
-
-class FixedStringFormatter implements PropertyFormatter {
-  constructor(private readonly fixedStringValue: string) {}
-
-  format(node: PropertyTreeNode): string {
-    return this.fixedStringValue;
-  }
-}
+const SIZE_FORMATTER = new SizeFormatter();
 
 class TimestampNodeFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
@@ -239,26 +251,15 @@ class TimestampNodeFormatter implements PropertyFormatter {
 }
 const TIMESTAMP_NODE_FORMATTER = new TimestampNodeFormatter();
 
-class CujTypeFormatter implements PropertyFormatter {
+class TransformFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
-    const cujTypeId: string = `${node.getValue()}`;
-    let cujTypeString: string | undefined;
-    if (cujTypeId in CujType) {
-      cujTypeString = CujType[cujTypeId as keyof typeof CujType];
-    } else {
-      cujTypeString = 'UNKNOWN';
-    }
-    return `${cujTypeString} (${cujTypeId})`;
+    const type = node.getChildByName('type');
+    return type !== undefined
+      ? TransformType.getTypeFlags(type.getValue() ?? 0)
+      : 'null';
   }
 }
-const CUJ_TYPE_FORMATTER = new CujTypeFormatter();
-
-class HexFormatter implements PropertyFormatter {
-  format(node: PropertyTreeNode): string {
-    return formatAsHex(node.getValue() ?? 0);
-  }
-}
-const HEX_FORMATTER = new HexFormatter();
+const TRANSFORM_FORMATTER = new TransformFormatter();
 
 class UpperCaseFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
@@ -268,15 +269,16 @@ class UpperCaseFormatter implements PropertyFormatter {
 const UPPER_CASE_FORMATTER = new UpperCaseFormatter();
 
 export {
+  EMPTY_ARRAY_STRING,
+  EMPTY_OBJ_STRING,
+  FLAG_SEPARATOR,
+  formatAsHex,
   BUFFER_FORMATTER,
   COLOR_FORMATTER,
   CUJ_TYPE_FORMATTER,
   DEFAULT_PROPERTY_FORMATTER,
-  EMPTY_ARRAY_STRING,
-  EMPTY_OBJ_STRING,
   EnumFormatter,
   FixedStringFormatter,
-  formatAsHex,
   HEX_FORMATTER,
   LAYER_ID_FORMATTER,
   MATRIX_FORMATTER,

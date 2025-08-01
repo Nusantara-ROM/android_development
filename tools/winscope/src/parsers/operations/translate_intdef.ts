@@ -16,7 +16,11 @@
 
 import intDefMapping from 'common/intDefMapping.json';
 import {TamperedProtoField} from 'parsers/tampered_message_type';
-import {FixedStringFormatter, formatAsHex} from 'trace/formatters';
+import {
+  FixedStringFormatter,
+  FLAG_SEPARATOR,
+  formatAsHex,
+} from 'trace/formatters';
 import {Operation} from 'tree_node/operation';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 
@@ -139,7 +143,7 @@ export class TranslateIntDef implements Operation<PropertyTreeNode> {
       return 'ALL';
     }
 
-    return flags.join(' | ');
+    return flags.join(FLAG_SEPARATOR);
   }
 
   private formatUnknownFlag(value: number): string {

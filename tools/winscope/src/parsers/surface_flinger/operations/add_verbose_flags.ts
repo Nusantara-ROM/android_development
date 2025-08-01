@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {formatAsHex} from 'trace/formatters';
+import {FLAG_SEPARATOR, formatAsHex} from 'trace/formatters';
 import {LayerFlag} from 'trace/surface_flinger/layer_flag';
 import {AddOperation} from 'tree_node/add_operation';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
@@ -43,7 +43,7 @@ export class AddVerboseFlags extends AddOperation<PropertyTreeNode> {
 
     let verboseFlagsStr = '';
     if (tokens.length > 0) {
-      verboseFlagsStr = `${tokens.join(' | ')} (${formatAsHex(flags)})`;
+      verboseFlagsStr = `${tokens.join(FLAG_SEPARATOR)} (${formatAsHex(flags)})`;
     }
 
     return [
