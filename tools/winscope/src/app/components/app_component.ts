@@ -159,7 +159,7 @@ import {
 
         <div *ngIf="showDataLoadedElements" class="icon-divider toolbar-icon-divider"></div>
         <button
-          *ngIf="showDataLoadedElements && dumpsUploaded()"
+          *ngIf="showDataLoadedElements && allTracesAreDumps()"
           color="primary"
           mat-icon-button
           matTooltip="Refresh dumps"
@@ -657,8 +657,13 @@ export class AppComponent implements WinscopeEventListener {
     this.setDarkMode(!this.isDarkModeOn);
   }
 
-  dumpsUploaded(): boolean {
-    return !this.timelineData.hasMoreThanOneDistinctTimestamp();
+  allTracesAreDumps(): boolean {
+    for (const trace of this.timelineData.getTraces()) {
+      if (!trace.isDump()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   showCrossToolSyncButton(): boolean {

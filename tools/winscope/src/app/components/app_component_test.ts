@@ -174,7 +174,7 @@ describe('AppComponent', () => {
     goToTraceView();
     checkTraceViewPage();
 
-    spyOn(component, 'dumpsUploaded').and.returnValue(true);
+    spyOn(component, 'allTracesAreDumps').and.returnValue(true);
     dom.detectChanges();
     expect(dom.find('.refresh-dumps')).toBeTruthy();
   });
@@ -188,7 +188,7 @@ describe('AppComponent', () => {
   });
 
   it('sends event on refresh dumps button click', async () => {
-    spyOn(component, 'dumpsUploaded').and.returnValue(true);
+    spyOn(component, 'allTracesAreDumps').and.returnValue(true);
     goToTraceView();
     checkTraceViewPage();
 
