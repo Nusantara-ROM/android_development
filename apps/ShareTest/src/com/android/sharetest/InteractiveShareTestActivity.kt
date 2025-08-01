@@ -116,6 +116,9 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
                     .scan<ChooserSession?, ChooserSession?>(null) { prevSession, newSession ->
                         prevSession?.endSession()
                         newSession?.addStateListener(mainExecutor, sessionStateListener)
+                        if (newSession == null || !newSession.isActive) {
+                            chooserWindowTopOffset.value = -1
+                        }
                         newSession
                     }
                     .collect {}
@@ -274,7 +277,6 @@ class InteractiveShareTestActivity : Hilt_InteractiveShareTestActivity() {
 
     private fun closeChooser() {
         chooserSession.value = null
-        chooserWindowTopOffset.value = -1
     }
 
     private fun setTargetsEnabled(isEnabled: Boolean) {
