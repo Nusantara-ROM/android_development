@@ -193,15 +193,23 @@ export class Canvas {
 
   updateRects(rects: UiRect3D[]) {
     for (const key of this.lastScene.rectIdToRectGraphics.keys()) {
-      if (!rects.some((rect) => rect.id === key)) {
-        const lastObj = assertDefined(
-          this.lastScene.rectIdToRectGraphics.get(key),
-        );
-        this.lastScene.rectIdToRectGraphics.delete(key);
-        this.scene.remove(assertDefined(this.scene.getObjectByName(key)));
-        this.removeRays(key); // rays are added directly to the scene
-        this.disposeMesh(lastObj.mesh, lastObj.rect.id);
+      const lastObj = assertDefined(
+        this.lastScene.rectIdToRectGraphics.get(key),
+      );
+
+      // We cannot guarantee that the rect mesh matrix has not been changed
+      // under the hood. Applying the inverse of the last manually applied
+      // transform does not guarantee that the rect state will be reversed.
+      // When transforms change we should completely redraw the rect.
+      const newRect = rects.find((rect) => rect.id === key);
+      if (newRect?.transform.isEqual(lastObj.rect.transform)) {
+        continue;
       }
+
+      this.lastScene.rectIdToRectGraphics.delete(key);
+      this.scene.remove(assertDefined(this.scene.getObjectByName(key)));
+      this.removeRays(key); // rays are added directly to the scene
+      this.disposeMesh(lastObj.mesh, lastObj.rect.id);
     }
     rects.forEach((rect) => {
       const existingGraphics = this.lastScene.rectIdToRectGraphics.get(rect.id);
@@ -834,13 +842,6 @@ export class Canvas {
       existingMesh.remove(existingBorder);
       this.disposeObj(existingBorder);
       this.addRectBorders(newRect, existingMesh);
-    }
-
-    if (!newRect.transform.isEqual(existingRect.transform)) {
-      existingMesh.applyMatrix4(
-        this.toMatrix4(existingRect.transform.inverse()),
-      );
-      existingMesh.applyMatrix4(this.toMatrix4(newRect.transform));
     }
   }
 
