@@ -329,12 +329,7 @@ the default for its data type.`,
         ).formattedValue()
       : '-1';
 
-    const verboseFlags = pTree.getChildByName('verboseFlags')?.formattedValue();
     const flags = assertDefined(pTree.getChildByName('flags'));
-    const curatedFlags =
-      verboseFlags !== '' && verboseFlags !== undefined
-        ? verboseFlags
-        : flags.formattedValue();
 
     const bufferTransform = pTree.getChildByName('bufferTransform');
     const bufferTransformTypeFlags =
@@ -357,7 +352,7 @@ the default for its data type.`,
 
     const curated: SfCuratedProperties = {
       summary: this.getSummaryOfVisibility(layerIdToNodeId, pTree),
-      flags: curatedFlags,
+      flags: flags.formattedValue(),
       calcTransform: pTree.getChildByName('transform'),
       calcCrop: this.getRectPropertyValue(pTree, 'bounds'),
       finalBounds: assertDefined(

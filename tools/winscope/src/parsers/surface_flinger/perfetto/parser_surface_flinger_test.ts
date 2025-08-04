@@ -159,9 +159,6 @@ describe('PerfettoParserSurfaceFlinger', () => {
         expect(
           assertDefined(props.getChildByName('flags')).formattedValue(),
         ).toEqual('0');
-        expect(
-          assertDefined(props.getChildByName('verboseFlags')).formattedValue(),
-        ).toEqual('');
       }
       {
         const layer = assertDefined(
@@ -172,9 +169,6 @@ describe('PerfettoParserSurfaceFlinger', () => {
         const props = await layer.getAllProperties();
         expect(
           assertDefined(props.getChildByName('flags')).formattedValue(),
-        ).toEqual('1');
-        expect(
-          assertDefined(props.getChildByName('verboseFlags')).formattedValue(),
         ).toEqual('HIDDEN (0x1)');
       }
       {
@@ -188,9 +182,6 @@ describe('PerfettoParserSurfaceFlinger', () => {
         const props = await layer.getAllProperties();
         expect(
           assertDefined(props.getChildByName('flags')).formattedValue(),
-        ).toEqual('256');
-        expect(
-          assertDefined(props.getChildByName('verboseFlags')).formattedValue(),
         ).toEqual('ENABLE_BACKPRESSURE (0x100)');
       }
     });

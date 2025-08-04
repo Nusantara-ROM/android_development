@@ -17,6 +17,7 @@
 import {assertDefined} from 'common/assert_utils';
 import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
+import {FLAG_SEPARATOR} from 'trace/formatters';
 import {TransactionColumnType} from 'trace/transactions/transaction_column_type';
 import {TransactionType} from 'trace/transactions/transaction_type';
 import {Trace} from 'trace_api/trace';
@@ -150,7 +151,7 @@ export class Presenter extends AbstractLogViewerPresenter<
     tree
       .getChildByName('what')
       ?.formattedValue()
-      .split(' | ')
+      .split(FLAG_SEPARATOR)
       .forEach((flag) => {
         const properties = layerChangeFlagToPropertiesMap.get(flag);
         if (properties !== undefined) {

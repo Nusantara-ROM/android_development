@@ -50,7 +50,7 @@ import {DENYLIST_PROPERTIES} from './denylist_properties';
 import {HierarchyTreeBuilderSf} from './hierarchy_tree_builder_sf';
 import {AddCompositionType} from './operations/add_composition_type';
 import {AddDisplayProperties} from './operations/add_display_properties';
-import {AddVerboseFlags} from './operations/add_verbose_flags';
+import {TranslateFlags} from './operations/translate_flags';
 import {UpdateCornerRadii} from './operations/update_corner_radii';
 import {UpdateTransforms} from './operations/update_transforms';
 import {LayerRects, RectExtractor} from './rect_extractor';
@@ -104,7 +104,7 @@ export class EntryHierarchyTreeFactory {
       DENYLIST_PROPERTIES,
     ),
     UpdateTransforms: new UpdateTransforms(),
-    AddVerboseFlags: new AddVerboseFlags(),
+    TranslateFlags: new TranslateFlags(),
     AddDisplayProperties: new AddDisplayProperties(),
     AddCompositionType: new AddCompositionType(),
     UpdateCornerRadii: new UpdateCornerRadii(),
@@ -290,9 +290,9 @@ export class EntryHierarchyTreeFactory {
         EntryHierarchyTreeFactory.Operations.AddDefaultsLayer,
         EntryHierarchyTreeFactory.Operations.UpdateTransforms,
         EntryHierarchyTreeFactory.Operations.UpdateCornerRadii,
-        EntryHierarchyTreeFactory.Operations.AddVerboseFlags,
         EntryHierarchyTreeFactory.Operations.SetFormattersLayer,
         EntryHierarchyTreeFactory.Operations.TranslateIntDefLayer,
+        EntryHierarchyTreeFactory.Operations.TranslateFlags,
       ])
       .build();
   }

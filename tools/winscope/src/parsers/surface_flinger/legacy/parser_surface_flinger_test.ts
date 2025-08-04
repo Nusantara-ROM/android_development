@@ -128,9 +128,6 @@ describe('ParserSurfaceFlinger', () => {
         const props = await layer.getAllProperties();
         expect(
           assertDefined(props.getChildByName('flags')).formattedValue(),
-        ).toEqual('1');
-        expect(
-          assertDefined(props.getChildByName('verboseFlags')).formattedValue(),
         ).toEqual('HIDDEN (0x1)');
       });
 
