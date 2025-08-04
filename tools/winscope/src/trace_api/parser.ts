@@ -31,6 +31,7 @@ export interface Parser<T> {
   getLengthEntries(): number;
   getTimestamps(): Timestamp[] | undefined;
   getEntry(index: AbsoluteEntryIndex): Promise<T>;
+  getRangeOfEntries(entriesRange: EntriesRange): Promise<Array<T | undefined>>;
   getAllEntries(): Promise<Array<T | undefined>>;
   customQuery<Q extends CustomQueryType>(
     type: Q,

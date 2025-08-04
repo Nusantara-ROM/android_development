@@ -59,6 +59,10 @@ export abstract class AbstractTracesParser<T> implements Parser<T> {
     throw NOT_IMPLEMENTED_ERROR;
   }
 
+  getRangeOfEntries(entriesRange: EntriesRange): Promise<Array<T | undefined>> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   abstract getCoarseVersion(): CoarseVersion;
   abstract parse(): Promise<void>;
   abstract createTimestamps(): Promise<void>;

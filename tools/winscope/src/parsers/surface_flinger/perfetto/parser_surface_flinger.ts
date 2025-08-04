@@ -39,10 +39,38 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
   }
 
   override async getEntry(index: number): Promise<HierarchyTreeNode> {
-    const snapshotId = this.entryIndexToRowIdMap[index];
-    const snapshotResult = await this.querySnapshot(snapshotId);
-    const layersResult = await this.queryLayers(snapshotId);
-    return this.factory.makeEntryHierarchyTree(
+    const range: EntriesRange = {
+      start: index,
+      end: index + 1,
+    };
+    return this.getRangeOfEntries(range).then((trees) => {
+      const entry = trees[0];
+      if (entry === undefined) {
+        throw new Error(
+          `Entry at index ${index} not found or could not be parsed.`,
+        );
+      }
+      return entry;
+    });
+  }
+
+  override async getRangeOfEntries(
+    entriesRange: EntriesRange,
+  ): Promise<Array<HierarchyTreeNode | undefined>> {
+    // assuming the entryIndex monotically increases, true for SurfaceFlinger
+    const entriesSnapshotRangeStart =
+      this.entryIndexToRowIdMap[entriesRange.start];
+    const entriesSnapshotRangeEnd =
+      entriesSnapshotRangeStart + entriesRange.end - entriesRange.start;
+    const snapshotResult = await this.queryRangeSnapshots(
+      entriesSnapshotRangeStart,
+      entriesSnapshotRangeEnd,
+    );
+    const layersResult = await this.queryRangeLayers(
+      entriesSnapshotRangeStart,
+      entriesSnapshotRangeEnd,
+    );
+    return this.factory.makeEntryHierarchyTrees(
       snapshotResult,
       layersResult,
       this.traceProcessor,
@@ -91,9 +119,13 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
     return 'android.winscope.surfaceflinger';
   }
 
-  private async querySnapshot(snapshotId: number): Promise<QueryResult> {
+  private async queryRangeSnapshots(
+    start: number,
+    end: number,
+  ): Promise<QueryResult> {
     const snapshotQuery = `
-        SELECT
+  SELECT
+          sfs.id,
           sfs.arg_set_id,
           display.is_on,
           display.is_virtual,
@@ -110,14 +142,18 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
           ON sfs.id = display.snapshot_id
         LEFT JOIN winscope_rect AS trace_rect
           ON display.trace_rect_id = trace_rect.trace_rect_id
-        WHERE sfs.id = ${snapshotId}
-        ORDER BY display.id;`;
+        WHERE sfs.id >= ${start} AND sfs.id < ${end}
+          ORDER BY sfs.id, display.id;`;
     return await this.traceProcessor.query(snapshotQuery);
   }
 
-  private async queryLayers(snapshotId: number): Promise<QueryResult> {
+  private async queryRangeLayers(
+    start: number,
+    end: number,
+  ): Promise<QueryResult> {
     const layersQuery = `
-        SELECT
+  SELECT
+          sfl.snapshot_id,
           sfl.id,
           sfl.arg_set_id,
           sfl.layer_id,
@@ -169,7 +205,8 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
           ON sfl.input_rect_id = fr.trace_rect_id
         LEFT JOIN android_winscope_rect AS frr
           ON fr.rect_id = frr.id
-        WHERE sfl.snapshot_id = ${snapshotId};`;
+          WHERE sfl.snapshot_id >= ${start} AND sfl.snapshot_id < ${end}
+          ORDER BY sfl.id`;
     return await this.traceProcessor.query(layersQuery);
   }
 }

@@ -45,6 +45,7 @@ import {
 } from 'tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {TraceRect} from 'tree_node/trace_rect';
 import {ZOrderPathsComputation} from './computations/z_order_paths_computation';
 import {DENYLIST_PROPERTIES} from './denylist_properties';
 import {HierarchyTreeBuilderSf} from './hierarchy_tree_builder_sf';
@@ -110,20 +111,55 @@ export class EntryHierarchyTreeFactory {
     UpdateCornerRadii: new UpdateCornerRadii(),
   };
 
-  makeEntryHierarchyTree(
-    snapshotResult: QueryResult,
-    layersResult: QueryResult,
+  makeEntryHierarchyTrees(
+    snapshotResults: QueryResult,
+    layersResults: QueryResult,
     traceProcessor: TraceProcessor,
+  ): HierarchyTreeNode[] {
+    const currLayer = layersResults.iter({});
+    const currSnapshot = snapshotResults.iter({});
+    const trees: HierarchyTreeNode[] = [];
+
+    while (currSnapshot.valid()) {
+      const currentId = assertBigInt(currSnapshot.get('id'));
+
+      const currSnapshotProperties = this.makeEntryProperties(
+        currSnapshot,
+        traceProcessor,
+      );
+
+      const {displayRects} = RectExtractor.extractDisplayRectsForSnapshot(
+        currSnapshot,
+        currentId,
+      );
+
+      const {layers, rects, warnings} = this.makeLayersAndRects(
+        currLayer,
+        traceProcessor,
+        currentId,
+      );
+      const tree = this.buildHierarchyTree(
+        currSnapshotProperties,
+        layers,
+        warnings,
+        rects,
+        displayRects,
+      );
+      trees.push(tree);
+    }
+
+    return trees;
+  }
+
+  private buildHierarchyTree(
+    root: PropertiesProvider,
+    layers: PropertiesProvider[],
+    warnings: UserWarning[],
+    rects: Map<bigint, LayerRects>,
+    displayRects: TraceRect[],
   ): HierarchyTreeNode {
-    const entry = this.makeEntryProperties(snapshotResult, traceProcessor);
-
-    const {layers, rects, warnings} = this.makeLayerPropertiesAndRects(
-      layersResult,
-      traceProcessor,
-    );
-
     const tree = new HierarchyTreeBuilderSf()
-      .setRoot(entry)
+      .setRoot(root)
       .setChildren(layers)
       .setComputations([new ZOrderPathsComputation()])
       .build();
@@ -132,8 +168,7 @@ export class EntryHierarchyTreeFactory {
 
     tree.forEachNodeDfs((node) => {
       if (node.isRoot()) {
-        const displays = RectExtractor.extractDisplayRects(snapshotResult);
-        node.setRects(displays);
+        node.setRects(displayRects);
         return;
       }
       const layerRects = rects.get(
@@ -146,12 +181,11 @@ export class EntryHierarchyTreeFactory {
         node.setSecondaryRects([layerRects.input]);
       }
     });
-
     return tree;
   }
 
   private makeEntryProperties(
-    snapshotResult: QueryResult,
+    snapshotResult: RowIterator,
     traceProcessor: TraceProcessor,
   ): PropertiesProvider {
     const eagerProperties = new PropertyTreeBuilderFromProto()
@@ -159,7 +193,7 @@ export class EntryHierarchyTreeFactory {
       .setRootId('LayerTraceEntry')
       .setRootName('root')
       .build();
-    const argSetId = assertDefined(snapshotResult.iter({}).get('arg_set_id'));
+    const argSetId = assertDefined(snapshotResult.get('arg_set_id'));
     const entryProps = new PropertiesProviderBuilder()
       .setEagerProperties(eagerProperties)
       .setLazyPropertiesStrategy(
@@ -176,23 +210,31 @@ export class EntryHierarchyTreeFactory {
     return entryProps;
   }
 
-  private makeLayerPropertiesAndRects(
-    layersResult: QueryResult,
+  private makeLayersAndRects(
+    layersIter: RowIterator,
     traceProcessor: TraceProcessor,
+    currSnapshotId: bigint | undefined,
   ): {
     layers: PropertiesProvider[];
     rects: Map<bigint, LayerRects>;
     warnings: UserWarning[];
   } {
-    const processed = new Map<number, number>();
     let missingLayerIds = false;
-    const recursiveIds: number[] = [];
-
-    const layers: PropertiesProvider[] = [];
-    const rects = new Map<bigint, LayerRects>();
     let prevUniqueRowId: bigint | undefined;
+    const rects = new Map<bigint, LayerRects>();
+    const layers: PropertiesProvider[] = [];
+    const recursiveIds: number[] = [];
+    const processed = new Map<number, number>();
 
-    for (const it = layersResult.iter({}); it.valid(); it.next()) {
+    for (const it = layersIter; it.valid(); it.next()) {
+      if (currSnapshotId !== undefined) {
+        const snapshotId = assertBigIntOrUndefined(
+          it.get('snapshot_id') ?? undefined,
+        );
+        if (snapshotId !== currSnapshotId) {
+          break;
+        }
+      }
       const layerIdBigint = assertBigIntOrUndefined(
         it.get('layer_id') ?? undefined,
       );
@@ -223,7 +265,6 @@ export class EntryHierarchyTreeFactory {
       processed.set(assertDefined(layerId), duplicateCount + 1);
 
       const layerName = assertString(it.get('layer_name'));
-
       const layerProps = this.makeLayerPropertiesProvider(
         it,
         layerId,
@@ -239,7 +280,6 @@ export class EntryHierarchyTreeFactory {
         rects.set(layerIdBigint, layerRects);
       }
     }
-
     const warnings = [];
     if (missingLayerIds) {
       warnings.push(new MissingLayerIds());
@@ -254,7 +294,11 @@ export class EntryHierarchyTreeFactory {
       warnings.push(new RecursiveLayerIds(recursiveIds));
     }
 
-    return {layers, rects, warnings};
+    return {
+      layers,
+      rects,
+      warnings,
+    };
   }
 
   private makeLayerPropertiesProvider(

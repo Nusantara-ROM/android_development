@@ -88,6 +88,12 @@ export class ParserViewCaptureWindow implements Parser<HierarchyTreeNode> {
     throw NOT_IMPLEMENTED_ERROR;
   }
 
+  getRangeOfEntries(
+    entriesRange: EntriesRange,
+  ): Promise<Array<HierarchyTreeNode | undefined>> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   canConvertToPerfetto(): boolean {
     return true;
   }

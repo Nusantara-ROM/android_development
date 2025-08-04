@@ -224,6 +224,13 @@ describe('SurfaceFlinger RectExtractor', () => {
       snapshotIter = makeSpyRowIterator();
       snapshotResult = jasmine.createSpyObj<QueryResult>('result', ['iter']);
       snapshotResult.iter.and.returnValue(snapshotIter);
+      snapshotIter.get.withArgs('id').and.returnValue(1n);
+
+      let callCount = 0;
+      snapshotIter.valid.and.callFake(() => callCount === 0);
+      snapshotIter.next.and.callFake(() => {
+        callCount++;
+      });
     });
 
     it('skips display with null id', () => {
@@ -287,8 +294,11 @@ describe('SurfaceFlinger RectExtractor', () => {
     }
 
     function checkDisplaysExtracted(expected: TraceRect[]) {
-      const rects = RectExtractor.extractDisplayRects(snapshotResult);
-      expect(rects).toEqual(expected);
+      const {displayRects} = RectExtractor.extractDisplayRectsForSnapshot(
+        snapshotResult.iter({}),
+        1n,
+      );
+      expect(displayRects).toEqual(expected);
     }
   });
 });

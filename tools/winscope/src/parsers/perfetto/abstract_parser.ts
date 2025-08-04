@@ -140,6 +140,10 @@ export abstract class AbstractParser<T> implements Parser<T> {
     throw NOT_IMPLEMENTED_ERROR;
   }
 
+  getRangeOfEntries(entriesRange: EntriesRange): Promise<Array<T | undefined>> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   protected async buildEntryIndexToRowIdMap(): Promise<AbsoluteEntryIndex[]> {
     const sqlRowIdAndTimestamp = `
      SELECT DISTINCT tbl.id AS id, tbl.ts

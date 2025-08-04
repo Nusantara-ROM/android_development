@@ -81,6 +81,10 @@ export abstract class AbstractParser<
     throw NOT_IMPLEMENTED_ERROR;
   }
 
+  getRangeOfEntries(entriesRange: EntriesRange): Promise<Array<T | undefined>> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   createTimestamps() {
     this.timestamps = this.decodeTimestamps();
   }

@@ -37,7 +37,6 @@ describe('EntryHierarchyTreeFactory', () => {
     ['query'],
   );
   const layerName1 = 'Layer1';
-
   let displaysSpy: jasmine.Spy;
   let layerRectsSpy: jasmine.Spy;
   let snapshotResult: jasmine.SpyObj<QueryResult>;
@@ -48,20 +47,34 @@ describe('EntryHierarchyTreeFactory', () => {
   beforeEach(() => {
     snapshotIter = makeSpyRowIterator();
     snapshotIter.get.withArgs('arg_set_id').and.returnValue(1n);
+    snapshotIter.get.withArgs('id').and.returnValue(100n);
     snapshotResult = jasmine.createSpyObj<QueryResult>('result', ['iter']);
     snapshotResult.iter.and.returnValue(snapshotIter);
 
+    let snapshotIterValidCallCount = 0;
+    snapshotIter.valid.and.callFake(() => {
+      return snapshotIterValidCallCount++ === 0;
+    });
     layersIter = makeSpyRowIterator();
     setColumnValuesForLayer();
     layersResult = jasmine.createSpyObj<QueryResult>('result', ['iter']);
     layersResult.iter.and.returnValue(layersIter);
 
-    displaysSpy = spyOn(RectExtractor, 'extractDisplayRects').and.returnValue(
-      [],
-    );
+    displaysSpy = spyOn(
+      RectExtractor,
+      'extractDisplayRectsForSnapshot',
+    ).and.returnValue({
+      displayRects: [],
+    });
     layerRectsSpy = spyOn(RectExtractor, 'extractLayerRects').and.returnValue(
       undefined,
     );
+
+    let layersIterCallCount = 0;
+    layersIter.valid.and.callFake(() => layersIterCallCount === 0);
+    layersIter.next.and.callFake(() => {
+      layersIterCallCount++;
+    });
   });
 
   describe('rects', () => {
@@ -125,9 +138,12 @@ describe('EntryHierarchyTreeFactory', () => {
     });
 
     it('sets display rects to root', () => {
-      displaysSpy.and.returnValue([spyRect, spyRect]);
+      const expectedRects = [spyRect, spyRect];
+      displaysSpy.and.returnValue({
+        displayRects: expectedRects,
+      });
       const tree = makeEntryHierarchyTree();
-      expect(tree.getRects()).toEqual([spyRect, spyRect]);
+      expect(tree.getRects()).toEqual(expectedRects);
     });
   });
 
@@ -199,6 +215,7 @@ describe('EntryHierarchyTreeFactory', () => {
   });
 
   function setColumnValuesForLayer() {
+    layersIter.get.withArgs('snapshot_id').and.returnValue(100n);
     layersIter.get.withArgs('id').and.returnValue(0n);
     layersIter.get.withArgs('layer_id').and.returnValue(1n);
     layersIter.get.withArgs('layer_name').and.returnValue(layerName1);
@@ -212,10 +229,11 @@ describe('EntryHierarchyTreeFactory', () => {
   }
 
   function makeEntryHierarchyTree(): HierarchyTreeNode {
-    return factory.makeEntryHierarchyTree(
+    const trees = factory.makeEntryHierarchyTrees(
       snapshotResult,
       layersResult,
       traceProcessor,
     );
+    return trees[0];
   }
 });

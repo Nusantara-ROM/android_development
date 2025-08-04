@@ -82,6 +82,10 @@ export class ParserMock<T> implements Parser<T> {
     throw NOT_IMPLEMENTED_ERROR;
   }
 
+  getRangeOfEntries(entriesRange: EntriesRange): Promise<Array<T | undefined>> {
+    throw NOT_IMPLEMENTED_ERROR;
+  }
+
   customQuery<Q extends CustomQueryType>(
     type: Q,
     entriesRange: EntriesRange,

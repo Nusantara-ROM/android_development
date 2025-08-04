@@ -22,25 +22,40 @@ import {
 } from 'common/assert_utils';
 import {Rect} from 'common/geometry/rect';
 import {TraceRectBuilderFromQueryRow} from 'parsers/trace_rect_builder_from_query_row';
-import {QueryResult, RowIterator} from 'trace_processor/query_result';
+import {RowIterator} from 'trace_processor/query_result';
 import {TraceRect} from 'tree_node/trace_rect';
 
 export class RectExtractor {
-  static extractDisplayRects(snapshotResult: QueryResult): TraceRect[] {
-    const displayRects = [];
-    for (const it = snapshotResult.iter({}); it.valid(); it.next()) {
+  static extractDisplayRectsForSnapshot(
+    snapshotIter: RowIterator,
+    targetSnapshotId: bigint | undefined,
+  ): {displayRects: TraceRect[]} {
+    const displayRects: TraceRect[] = [];
+
+    for (snapshotIter; snapshotIter.valid(); snapshotIter.next()) {
+      const snapshotId = assertBigIntOrUndefined(
+        snapshotIter.get('id') ?? undefined,
+      );
+
+      if (snapshotId !== targetSnapshotId) {
+        break;
+      }
+
       const displayId = assertBigIntOrUndefined(
-        it.get('display_id') ?? undefined,
+        snapshotIter.get('display_id') ?? undefined,
       );
       if (displayId === undefined) {
         continue;
       }
       const displayIdString = displayId.toString();
-      const isActiveDisplay = it.get('is_on') && !it.get('is_virtual');
-      const name = assertStringOrUndefined(it.get('display_name') ?? undefined);
+      const isActiveDisplay =
+        snapshotIter.get('is_on') && !snapshotIter.get('is_virtual');
+      const name = assertStringOrUndefined(
+        snapshotIter.get('display_name') ?? undefined,
+      );
 
       const rect = new TraceRectBuilderFromQueryRow()
-        .setRow(it)
+        .setRow(snapshotIter)
         .setId('Display - ' + displayIdString)
         .setName(name ?? 'Unknown Display')
         .setIsDisplay(true)
@@ -49,7 +64,7 @@ export class RectExtractor {
         .build();
       displayRects.push(rect);
     }
-    return displayRects;
+    return {displayRects};
   }
 
   static extractFillRegionRect(row: RowIterator): Rect | undefined {

@@ -212,6 +212,20 @@ export class Trace<T> {
     }
   }
 
+  async getRangeEntryValues(
+    entriesRange: EntriesRange,
+  ): Promise<Array<T | undefined>> {
+    try {
+      return await this.parser.getRangeOfEntries(entriesRange);
+    } catch (e) {
+      const result: Array<Promise<T | undefined>> = [];
+      for (let index = entriesRange.start; index < entriesRange.end; index++) {
+        result.push(this.getEntry(index - this.entriesRange.start).getValue());
+      }
+      return await Promise.all(result);
+    }
+  }
+
   async customQuery<Q extends CustomQueryType>(
     type: Q,
     param?: CustomQueryParamTypeMap[Q],
