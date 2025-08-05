@@ -23,8 +23,8 @@ import {
   TimestampFormatType,
   TimezoneInfo,
 } from './time';
+import {TIME_UNIT_TO_NANO, TIME_UNITS} from './time_units';
 import {TimestampUtils} from './timestamp_utils';
-import {TIME_UNITS, TIME_UNIT_TO_NANO} from './time_units';
 import {UTCOffset} from './utc_offset';
 
 // Pre-T traces do not provide real-to-boottime or real-to-monotonic offsets,so

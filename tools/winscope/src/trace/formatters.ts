@@ -269,16 +269,16 @@ class UpperCaseFormatter implements PropertyFormatter {
 const UPPER_CASE_FORMATTER = new UpperCaseFormatter();
 
 export {
-  EMPTY_ARRAY_STRING,
-  EMPTY_OBJ_STRING,
-  FLAG_SEPARATOR,
-  formatAsHex,
   BUFFER_FORMATTER,
   COLOR_FORMATTER,
   CUJ_TYPE_FORMATTER,
   DEFAULT_PROPERTY_FORMATTER,
+  EMPTY_ARRAY_STRING,
+  EMPTY_OBJ_STRING,
   EnumFormatter,
   FixedStringFormatter,
+  FLAG_SEPARATOR,
+  formatAsHex,
   HEX_FORMATTER,
   LAYER_ID_FORMATTER,
   MATRIX_FORMATTER,

@@ -66,10 +66,10 @@ import {
 } from 'messaging/winscope_event_emitter';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
 import {Trace} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType, TraceTypeUtils} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {multlineTooltip} from 'viewers/components/styles/tooltip.styles';
 import {ExpandedTimelineComponent} from './expanded-timeline/expanded_timeline_component';
 import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';

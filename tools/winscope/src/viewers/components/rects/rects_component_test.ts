@@ -40,12 +40,12 @@ import {DisplayIdentifier} from 'viewers/common/display_identifier';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {RectDblClickDetail, ViewerEvents} from 'viewers/common/viewer_events';
 import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
-import {RectsComponent} from 'viewers/components/rects/rects_component';
 import {
   RectLegendOption,
   RectSpec,
   TraceRectType,
 } from 'viewers/components/rects/rect_spec';
+import {RectsComponent} from 'viewers/components/rects/rects_component';
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {UserOptionsComponent} from 'viewers/components/user_options_component';
 import {Camera} from './camera';

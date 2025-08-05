@@ -18,8 +18,8 @@ import {CommonModule} from '@angular/common';
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
+import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 
 @Component({
   selector: 'collapsed-sections',

@@ -55,13 +55,13 @@ import {TraceFile} from 'trace/trace_file';
 import {FrameMapper} from 'trace_api/frame_mapper';
 import {Parser} from 'trace_api/parser';
 import {Trace} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TraceMetadata} from 'trace_api/trace_metadata';
 import {
   TraceEntryTypeMap,
   TraceType,
   TraceTypeUtils,
 } from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {QueryResult} from 'trace_processor/query_result';
 import {TraceProcessorFactory} from 'trace_processor/trace_processor_factory';
 import {FilesSource} from './files_source';

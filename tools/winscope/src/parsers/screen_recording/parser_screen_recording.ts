@@ -21,8 +21,8 @@ import {
 } from 'common/array_utils';
 import {FileUtils} from 'common/file_utils';
 import {Timestamp} from 'common/time/time';
-import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
+import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {MonotonicScreenRecording} from 'messaging/user_warnings';
 import * as MP4Box from 'mp4box';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';

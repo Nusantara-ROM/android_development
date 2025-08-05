@@ -20,8 +20,8 @@ import {Timestamp} from 'common/time/time';
 import {TransitionStatus} from 'trace/transitions/status';
 import {CustomQueryType} from 'trace_api/custom_query';
 import {Trace} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {
   AbstractLogViewerPresenter,

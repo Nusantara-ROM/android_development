@@ -16,8 +16,8 @@
 import {CommonModule} from '@angular/common';
 import {Component, ViewChild} from '@angular/core';
 import {TraceType} from 'trace_api/trace_type';
-import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
+import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsedSectionsComponent} from 'viewers/components/collapsed_sections_component';
 import {LogComponent} from 'viewers/components/log_component';
 import {PropertiesComponent} from 'viewers/components/properties_component';
