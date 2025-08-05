@@ -156,8 +156,10 @@ export class MiniTimelineComponent {
   >();
 
   @ViewChild('miniTimelineWrapper', {static: false})
-  miniTimelineWrapper: ElementRef | undefined;
-  @ViewChild('canvas', {static: false}) canvasRef: ElementRef | undefined;
+  miniTimelineWrapper: ElementRef<HTMLElement> | undefined;
+  @ViewChild('canvas', {static: false}) canvasRef:
+    | ElementRef<HTMLCanvasElement>
+    | undefined;
 
   getCanvas(): HTMLCanvasElement {
     return assertDefined(this.canvasRef).nativeElement;
@@ -431,15 +433,15 @@ export class MiniTimelineComponent {
     canvas.style.height = 'auto';
 
     const miniTimelineWrapper = assertDefined(this.miniTimelineWrapper);
-    const width = miniTimelineWrapper.nativeElement.offsetWidth;
-    const height = miniTimelineWrapper.nativeElement.offsetHeight;
+    const width = miniTimelineWrapper.nativeElement.clientWidth;
+    const height = miniTimelineWrapper.nativeElement.clientHeight;
 
     const HiPPIwidth = window.devicePixelRatio * width;
     const HiPPIheight = window.devicePixelRatio * height;
 
     canvas.width = HiPPIwidth;
     canvas.height = HiPPIheight;
-    canvas.style.width = width + 'px';
+    canvas.style.width = '100%';
     canvas.style.height = height + 'px';
 
     // ensure all drawing operations are scaled

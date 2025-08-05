@@ -38,6 +38,7 @@ import {
   Validators,
 } from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
+import {MatRippleModule} from '@angular/material/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
@@ -90,6 +91,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
     MatTooltipModule,
     ClipboardModule,
     MatSelectModule,
+    MatRippleModule,
   ],
   template: `
     <div
@@ -139,12 +141,14 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
                   (keydown.enter)="onKeydownEnterTimeInputField($event)"
                   (change)="onHumanTimeInputChange($event)">
                   <mat-icon
+                    class="prefix"
                     [matTooltip]="getHumanTimeTooltip()"
                     matTooltipClass="multline-tooltip"
-                    matPrefix>schedule</mat-icon>
+                    matIconPrefix>schedule</mat-icon>
                   <input
                     matInput
                     name="humanTimeInput"
+                    class="mat-body-2"
                     [formControl]="selectedTimeFormControl" />
                   <div class="field-suffix" matTextSuffix>
                     <span class="time-difference"> {{ getUTCOffset() }} </span>
@@ -166,11 +170,14 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
                   (keydown.enter)="onKeydownEnterNanosecondsTimeInputField($event)"
                   (change)="onNanosecondsInputTimeChange($event)">
                   <mat-icon
-                    class="bookmark-icon"
+                    class="bookmark-icon prefix"
                     [class.material-symbols-outlined]="!currentPositionBookmarked()"
                     matTooltip="bookmark timestamp"
                     (click)="toggleBookmarkCurrentPosition($event)"
-                    matPrefix>flag</mat-icon>
+                    matRipple
+                    [matRippleCentered]="true"
+                    [matRippleRadius]="10"
+                    matIconPrefix>flag</mat-icon>
                   <input matInput name="nsTimeInput" [formControl]="selectedNsFormControl" />
                   <div class="field-suffix" matTextSuffix>
                     <button
@@ -207,8 +214,8 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
               </div>
             </div>
             <div id="trace-selector">
-              <mat-form-field>
-                <mat-select #traceSelector [formControl]="selectedTracesFormControl" multiple>
+              <mat-form-field class="mat-form-field-appearance-none no-bottom-padding-field no-ripple-field">
+                <mat-select #traceSelector [formControl]="selectedTracesFormControl" panelWidth="340px" multiple>
                   <div class="select-traces-panel">
                     <div class="tip">Filter traces in the timeline</div>
                     <mat-option
@@ -217,7 +224,6 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
                       [matTooltip]="trace.getDescriptors().join(', ')"
                       matTooltipPosition="right"
                       [style]="{
-                        color: 'var(--blue-text-color)',
                         opacity: isOptionDisabled(trace) ? 0.5 : 1.0
                       }"
                       [disabled]="isOptionDisabled(trace)"
@@ -235,7 +241,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
                       </button>
                     </div>
                   </div>
-                  <mat-select-trigger class="shown-selection">
+                  <mat-select-trigger matRipple class="shown-selection">
                     <div class="filter-header">
                       <span class="mat-body-2"> Filter </span>
                       <mat-icon class="material-symbols-outlined">expand_circle_up</mat-icon>
@@ -347,9 +353,8 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
       #time-selector .mat-mdc-text-field-wrapper {
         width: 100%;
       }
-      #time-selector .mat-mdc-form-field-infix, #trace-selector .mat-mdc-form-field-infix {
-        padding: 0 0.75rem 0 0.5rem !important;
-        border-top: unset;
+      #time-selector .mat-mdc-form-field-infix {
+        padding: 0;
       }
       #time-selector .mat-mdc-form-field-flex, #time-selector .field-suffix {
         border-radius: 0;
@@ -367,7 +372,6 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
         width: 90%;
         justify-content: center;
         align-items: center;
-        gap: 5px;
       }
       .time-selector-form mat-form-field {
         margin-bottom: -1.34375em;
@@ -377,7 +381,6 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
       }
       .time-selector-form input {
         text-overflow: ellipsis;
-        font-weight: bold;
       }
       .time-selector-form .time-difference {
         padding-right: 2px;
@@ -396,19 +399,21 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
         height: 24px;
         padding-left: 3px;
         padding-right: 3px;
+        display: flex;
+        align-items: center;
       }
       #time-selector .mat-icon {
+        display: flex;
         font-size: 18px;
         width: 18px;
         height: 18px;
         line-height: 18px;
-        display: flex;
       }
       .shown-selection .trace-icon {
         font-size: 18px;
         width: 18px;
         height: 18px;
-        padding-left: 4px;
+        padding-left: 4px;fweb
         padding-right: 4px;
         padding-top: 2px;
       }
@@ -441,7 +446,8 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
         overflow-x: hidden;
       }
       #trace-selector .mat-mdc-form-field-infix {
-        width: 80px;
+        width: 90px;
+        padding: 0 0 0 10px;
       }
       #trace-selector .shown-selection {
         height: 116px;
@@ -455,6 +461,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
       #trace-selector .filter-header {
         padding-top: 4px;
         display: flex;
+        align-items: center;
         gap: 2px;
       }
       .shown-selection .trace-icons {
@@ -921,7 +928,7 @@ export class TimelineComponent
       .split(', ');
     return `
       Date: ${date}
-      Time: ${time}\xa0\xa0\xa0\xa0${this.getUTCOffset()}
+      Time: ${time}\xa0\xa0${this.getUTCOffset()}
 
       Edit field to update position by inputting time as
       "hh:mm:ss.zz", "YYYY-MM-DDThh:mm:ss.zz", or "YYYY-MM-DD, hh:mm:ss.zz"

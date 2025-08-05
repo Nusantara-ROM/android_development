@@ -517,7 +517,7 @@ export class RectsComponent implements OnInit, OnDestroy {
 
     const canvasContainer = assertDefined(
       this.elementRef.nativeElement.querySelector<HTMLElement>(
-        '.canvas-container',
+        '.rects-content',
       ),
     );
     this.resizeObserver.observe(canvasContainer);
