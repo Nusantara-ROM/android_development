@@ -436,8 +436,13 @@ describe('Canvas', () => {
       updateRectsAndCheckGeometryId(topLeftChanged, rectMesh, rectGeometryId);
       rectGeometryId = rectMesh.geometry.id;
 
+      const noRadii = makeUiRect3D(rectId);
+      noRadii.bottomRight = new Point3D(5, 5, 5);
+      noRadii.topLeft = new Point3D(0, 0, 5);
+      updateRectsAndCheckGeometryId(noRadii, rectMesh, rectGeometryId);
+
+      const prevRectMeshId = rectMesh.id;
       const rotated = makeUiRect3D(rectId);
-      rotated.cornerRadii = new CornerRadii(0.5, 0.4, 0.3, 0.2);
       rotated.bottomRight = new Point3D(5, 5, 5);
       rotated.topLeft = new Point3D(0, 0, 5);
       rotated.transform = TransformType.getDefaultTransform(
@@ -445,15 +450,8 @@ describe('Canvas', () => {
         2,
         2,
       ).matrix;
-      const prevRotation = rectMesh.rotation.clone();
       canvas.updateRects([rotated]);
-      expect(rectMesh.geometry.id).toEqual(rectGeometryId);
-      expect(rectMesh.rotation.equals(prevRotation)).toBeFalse();
-
-      const noRadii = makeUiRect3D(rectId);
-      noRadii.bottomRight = new Point3D(5, 5, 5);
-      noRadii.topLeft = new Point3D(0, 0, 5);
-      updateRectsAndCheckGeometryId(noRadii, rectMesh, rectGeometryId);
+      expect(getRectMesh(rectId).id).not.toEqual(prevRectMeshId);
     });
 
     it('handles changes in fill region', () => {
