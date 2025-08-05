@@ -666,6 +666,7 @@ export class CollectTracesComponent
       const optionText = 'Do not show again';
       const data: WarningDialogData = {
         message: `Cannot build frame mapping for IME with selected traces - some Winscope features may not work properly.
+
         Consider the following selection for valid frame mapping:
         Surface Flinger, Transactions, Window Manager, IME`,
         actions: ['Go back'],
@@ -675,6 +676,7 @@ export class CollectTracesComponent
       const dialogRef = this.dialog.open(WarningDialogComponent, {
         data,
         disableClose: true,
+        panelClass: 'warning-panel',
       });
       dialogRef
         .beforeClosed()

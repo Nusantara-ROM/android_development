@@ -56,7 +56,7 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
         [(ngModel)]="textFilter.filterString"
         (ngModelChange)="onFilterChange()"
         [name]="filterName" />
-      <div class="field-suffix" matSuffix>
+      <div class="field-suffix" matTextSuffix>
         <button
           mat-icon-button
           matTooltip="Match case"

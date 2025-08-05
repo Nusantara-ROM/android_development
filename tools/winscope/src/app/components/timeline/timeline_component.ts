@@ -146,7 +146,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
                     matInput
                     name="humanTimeInput"
                     [formControl]="selectedTimeFormControl" />
-                  <div class="field-suffix" matSuffix>
+                  <div class="field-suffix" matTextSuffix>
                     <span class="time-difference"> {{ getUTCOffset() }} </span>
                     <button
                       mat-icon-button
@@ -154,7 +154,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
                       matTooltipClass="multline-tooltip"
                       [cdkCopyToClipboard]="getHumanTime()"
                       (cdkCopyToClipboardCopied)="onTimeCopied('human')"
-                      matSuffix>
+                      matIconSuffix>
                       <mat-icon>content_copy</mat-icon>
                     </button>
                   </div>
@@ -172,14 +172,14 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
                     (click)="toggleBookmarkCurrentPosition($event)"
                     matPrefix>flag</mat-icon>
                   <input matInput name="nsTimeInput" [formControl]="selectedNsFormControl" />
-                  <div class="field-suffix" matSuffix>
+                  <div class="field-suffix" matTextSuffix>
                     <button
                       mat-icon-button
                       [matTooltip]="getCopyPositionTooltip(selectedNsFormControl.value)"
                       matTooltipClass="multline-tooltip"
                       [cdkCopyToClipboard]="selectedNsFormControl.value"
                       (cdkCopyToClipboardCopied)="onTimeCopied('ns')"
-                      matSuffix>
+                      matIconSuffix>
                       <mat-icon>content_copy</mat-icon>
                     </button>
                   </div>

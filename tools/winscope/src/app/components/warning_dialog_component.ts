@@ -28,7 +28,7 @@ import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
       <span> Warning </span>
     </h2>
     <mat-dialog-content class="warning-content">
-      <p class="warning-message mat-body-1"> {{data.message}} </p>
+      <p class="warning-message"> {{data.message}} </p>
 
       <div class="warning-actions">
         <div class="warning-action-boxes">
@@ -57,7 +57,6 @@ import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
     `
       .warning-dialog-title {
         display: flex;
-        justify-content: space-between;
       }
       .warning-close-button {
         width: 24px;
@@ -70,6 +69,7 @@ import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
       .warning-message {
         white-space: pre-line;
         font-size: 16px;
+        line-height: 16px;
       }
       .warning-actions {
         display: flex;

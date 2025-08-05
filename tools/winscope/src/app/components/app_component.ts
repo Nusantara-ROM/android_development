@@ -131,7 +131,7 @@ import {
         <img class="app-title" [src]="getLogoUrl()"/>
       </div>
 
-      <div class="horizontal-align vertical-align">
+      <div class="horizontal-align vertical-align icon-actions">
         <div *ngIf="showDataLoadedElements" class="download-files-section">
           <div
             class="file-descriptor vertical-align"
@@ -149,12 +149,12 @@ import {
               *ngIf="packetLossWarning()"
               [matTooltip]="packetLossWarning()"
               class="warning-icon fixed">warning</mat-icon>
-            <span *ngIf="!isEditingFilename" class="download-file-info mat-body-2">
+            <span *ngIf="!isEditingFilename" class="download-file-info text-no-overflow mat-body-2">
               {{ filenameFormControl.value }}
             </span>
             <span *ngIf="!isEditingFilename" class="download-file-ext mat-body-2">.zip</span>
             <mat-form-field
-              class="file-name-input-field"
+              class="file-name-input-field no-bottom-padding-field"
               *ngIf="isEditingFilename"
               floatLabel="always"
               (keydown.esc)="trySubmitFilename()"
@@ -163,12 +163,12 @@ import {
               matTooltip="Allowed: A-Z a-z 0-9 . _ - #">
               <mat-label>Edit file name</mat-label>
               <input matInput class="right-align" [formControl]="filenameFormControl" />
-              <span matSuffix>.zip</span>
+              <span matTextSuffix>.zip</span>
             </mat-form-field>
             <button
               *ngIf="isEditingFilename"
               mat-icon-button
-              class="check-button"
+              class="check-button no-touch-target-button"
               matTooltip="Submit file name"
               (click)="trySubmitFilename()">
               <mat-icon>check</mat-icon>
@@ -176,7 +176,7 @@ import {
             <button
               *ngIf="!isEditingFilename"
               mat-icon-button
-              class="edit-button"
+              class="edit-button no-touch-target-button"
               matTooltip="Edit file name"
               (click)="onPencilIconClick()">
               <mat-icon>edit</mat-icon>
@@ -185,7 +185,7 @@ import {
               mat-icon-button
               [disabled]="isEditingFilename"
               matTooltip="Download all traces"
-              class="save-button"
+              class="save-button no-touch-target-button"
               (click)="onDownloadTracesButtonClick()">
               <mat-icon class="material-symbols-outlined">download</mat-icon>
             </button>
@@ -332,6 +332,9 @@ import {
       .fixed {
         min-width: fit-content;
       }
+      .icon-actions {
+        height: 100%;
+      }
       .download-files-section {
         overflow-x: hidden;
       }
@@ -339,6 +342,7 @@ import {
         font-size: 14px;
         padding-left: 10px;
         max-width: 750px;
+        height: 100%;
       }
       .file-warning  {
         border: solid 2px var(--warning-color);
@@ -348,8 +352,6 @@ import {
         padding-inline-end: 4px;
       }
       .download-file-info {
-        text-overflow: ellipsis;
-        overflow-x: hidden;
         padding-top: 3px;
         max-width: 650px;
       }
@@ -360,8 +362,8 @@ import {
         text-align: right;
       }
       .file-name-input-field .mat-mdc-text-field-wrapper {
-        padding-bottom: 10px;
         width: 600px;
+        max-width: 100%;
       }
       .toolbar-icon-divider {
         margin-right: 6px;
@@ -676,6 +678,7 @@ export class AppComponent implements WinscopeEventListener {
     this.dialog.open(ShortcutsComponent, {
       height: 'fit-content',
       maxWidth: '860px',
+      panelClass: 'shortcuts-panel',
     });
   }
 
@@ -757,6 +760,7 @@ export class AppComponent implements WinscopeEventListener {
         const dialogRef = this.dialog.open(WarningDialogComponent, {
           data,
           disableClose: true,
+          panelClass: 'warning-panel',
         });
         dialogRef
           .beforeClosed()
