@@ -30,7 +30,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
         (click)="onCollapseButtonClick()">
         <mat-icon class="material-symbols-outlined"> left_panel_close </mat-icon>
       </button>
-      <h2 class="mat-title">{{title.toUpperCase()}}</h2>
+      <span class="mat-headline-6 section-title">{{title.toUpperCase()}}</span>
     `,
   styles: [
     `
@@ -39,12 +39,11 @@ import {MatTooltipModule} from '@angular/material/tooltip';
         flex-direction: row;
       }
       :host button {
-        padding-top: 8px;
-        margin-right: 4px;
-        width: 24px;
-      }
-      .mat-title {
         padding-top: 12px;
+      }
+      .section-title {
+        padding-top: 14px;
+        margin-bottom: 14px;
       }
     `,
   ],

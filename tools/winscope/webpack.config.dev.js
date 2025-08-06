@@ -40,6 +40,17 @@ const configDev = {
     __dirname: false,
   },
 
+  devServer: {
+    client: {
+      overlay: {
+        runtimeErrors: (error) => {
+          console.error(error);
+          return false;
+        },
+      },
+    },
+  },
+
   plugins: [
     new AngularWebpackPlugin({
       tsconfig: 'tsconfig.dev.json',

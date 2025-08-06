@@ -34,7 +34,9 @@ import {
   MatButtonToggleModule,
 } from '@angular/material/button-toggle';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -75,6 +77,8 @@ interface CanColor {
     MatDividerModule,
     MatIconModule,
     MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatSliderModule,
     MatTooltipModule,
     CollapsibleSectionTitleComponent,
@@ -199,8 +203,9 @@ interface CanColor {
             *ngIf="allRectSpecs"
             [value]="rectSpec"
             (change)="onRectTypeButtonClicked($event)"
-            appearance="rect-type-toggle"
-            class="rect-type-toggle">
+            appearance="legacy"
+            class="rect-type-toggle"
+            [hideSingleSelectionIndicator]="true">
             <mat-button-toggle *ngFor="let spec of allRectSpecs" [value]="spec">
               <mat-icon
                 [color]="spec === rectSpec ? 'primary' : 'accent'"
@@ -209,13 +214,16 @@ interface CanColor {
             </mat-button-toggle>
           </mat-button-toggle-group>
           <span class="mat-body-1">{{groupLabel}}:</span>
-          <mat-form-field appearance="fill" class="displays-select">
+          <mat-form-field
+            class="displays-select no-bottom-padding-field"
+            appearance="outline">
             <mat-select
               #displaySelect
               disableOptionCentering
               (selectionChange)="onDisplaySelectChange($event)"
               [value]="currentDisplays"
               [disabled]="internalDisplays.length === 1"
+              panelWidth="340px"
               multiple>
               <mat-select-trigger>
                 <span>
@@ -227,12 +235,12 @@ interface CanColor {
                 [value]="display"
                 [matTooltip]="'Display Id: ' + display.displayId"
                 matTooltipPosition="right">
-                <div class="option-label">
+                <div class="option-with-chip">
                   <button
                     mat-flat-button
                     class="option-only-button"
-                    (click)="onOnlyButtonClick($event, display)"> Only </button>
-                  <span class="option-label-text"> {{ display.name }} </span>
+                    (click)="onOnlyButtonClick($event, display)">Only</button>
+                  <span class="option-label-text text-no-overflow">{{ display.name }}</span>
                 </div>
               </mat-option>
             </mat-select>
@@ -245,7 +253,7 @@ interface CanColor {
       *ngIf="showRectSpecWarning()"
       class="mat-body-1 warning">
       <mat-icon class="warning-icon"> warning </mat-icon>
-      <span class="warning-message">
+      <span class="warning-message text-no-overflow">
         Showing {{rectSpec.type}} - change rect type via toggle above
       </span>
     </span>
@@ -302,10 +310,13 @@ interface CanColor {
       .right-btn-container {
         display: flex;
         align-items: center;
-        padding: 2px 0px;
       }
-      .right-btn-container .mat-slider-horizontal {
-        min-width: 64px !important;
+      .right-btn-container .mat-mdc-slider {
+        min-width: 48px;
+      }
+      .right-btn-container .mdc-slider__input {
+        padding: 0px !important;
+        margin: 0 16px;
       }
       .icon-divider {
         height: 50%;
@@ -329,6 +340,7 @@ interface CanColor {
         display: flex;
         flex-direction: row;
         align-items: baseline;
+        flex-shrink: 0;
       }
       .displays-section {
         display: flex;
@@ -338,11 +350,9 @@ interface CanColor {
         flex-wrap: nowrap;
       }
       .displays-select {
-        font-size: 14px;
-        background-color: var(--disabled-color);
         border-radius: 4px;
-        height: 24px;
         margin-left: 5px;
+        background-color: var(--disabled-color);
       }
       .rect-type-toggle {
         margin: 0 4px;
@@ -383,10 +393,11 @@ interface CanColor {
         position: absolute;
         z-index: 1000;
       }
-      .option-label {
+      .option-with-chip {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        width: 100%;
       }
       .option-only-button {
         padding: 0 10px;
@@ -397,10 +408,6 @@ interface CanColor {
         height: 18px;
         align-items: center;
         display: flex;
-      }
-      .option-label-text {
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
       .rect-legend {
         display: flex;
@@ -435,8 +442,7 @@ interface CanColor {
       .rect-legend-expand-button {
         height: 24px;
         width: 24px;
-        line-height: 24px;
-        font-size: 24px;
+        padding: 0px;
       }
     `,
     multlineTooltip,

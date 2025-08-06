@@ -316,7 +316,7 @@ export class DOMTestHelper<T> {
   checkSectionCollapseAndExpand(selector: string, sectionTitle: string) {
     const section = this.get(selector);
     section
-      .get('collapsible-section-title .mat-title')
+      .get('collapsible-section-title .section-title')
       .checkTextExact(sectionTitle);
     section.findAndClick('collapsible-section-title button');
     section.checkClassName('collapsed');

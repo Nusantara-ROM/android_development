@@ -45,7 +45,7 @@ describe('CollapsibleSectionTitleComponent', () => {
 
   it('displays button and title', () => {
     expect(dom.find('button')).toBeDefined();
-    dom.get('.mat-title').checkText('COLLAPSIBLE SECTION');
+    dom.get('.section-title').checkText('COLLAPSIBLE SECTION');
   });
 
   it('emits collapseButtonClicked event', () => {

@@ -59,7 +59,7 @@ import {ViewerEvents} from 'viewers/common/viewer_events';
           #titleText
           *ngIf="titles.length <= 1"
           cdkDragHandle
-          class="mat-body-2 overlay-title draggable"
+          class="mat-body-2 overlay-title text-no-overflow draggable"
           [matTooltip]="titles.at(index)"
           matTooltipPosition="above"
           [matTooltipShowDelay]="300"
@@ -67,7 +67,7 @@ import {ViewerEvents} from 'viewers/common/viewer_events';
 
         <mat-select
           *ngIf="titles.length > 1"
-          class="overlay-title select-title"
+          class="overlay-title text-no-overflow select-title"
           [matTooltip]="titles.at(index)"
           matTooltipPosition="above"
           [matTooltipShowDelay]="300"
@@ -163,8 +163,6 @@ import {ViewerEvents} from 'viewers/common/viewer_events';
       }
 
       .overlay-title {
-        overflow: hidden;
-        text-overflow: ellipsis;
         font-size: 14px;
         width: unset;
       }
