@@ -15,12 +15,6 @@
  */
 
 export const overlayPanelStyles = `
-  .close-button {
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-  }
-
   .overlay-panel {
     font-family: 'Roboto', sans-serif;
     background: var(--overlay-panel-background-color);
@@ -32,7 +26,6 @@ export const overlayPanelStyles = `
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 15px;
     font-size: 20px;
   }
 
@@ -43,7 +36,7 @@ export const overlayPanelStyles = `
   }
 
   .overlay-panel-section {
-    margin: 10px 0px;
+    margin-top: 10px;
   }
 
   .overlay-panel-section-title {

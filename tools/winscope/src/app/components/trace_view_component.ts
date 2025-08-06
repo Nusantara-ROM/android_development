@@ -100,7 +100,7 @@ interface Tab {
                 (focus)="$event.target.blur()"
                 (mouseenter)="onTabHover($event, tab)"
                 [class.last]="isLast"
-                class="tab">
+                class="tab text-no-overflow">
               <mat-icon
                 class="icon"
                 [style]="{color: getTabIconColor(tab), marginRight: '0.5rem'}">
@@ -146,8 +146,8 @@ interface Tab {
 
               <div class="overlay-panel-section save-section">
                 <span class="mat-body-2 overlay-panel-section-title"> Preset Name </span>
-                <div class="save-field outline-field">
-                  <mat-form-field appearance="outline">
+                <div class="outline-field save-field">
+                  <mat-form-field class="no-bottom-padding-field" appearance="outline">
                     <input matInput [formControl]="filterPresetNameControl" (keydown.enter)="savePreset()"/>
                     <mat-error *ngIf="filterPresetNameControl.invalid && filterPresetNameControl.value">Preset with that name already exists.</mat-error>
                   </mat-form-field>
@@ -208,11 +208,6 @@ interface Tab {
         background-color: var(--trace-view-background-color);
       }
 
-      .tab {
-        overflow-x: hidden;
-        text-overflow: ellipsis;
-      }
-
       .tab:not(.last):after {
         content: '';
         position: absolute;
@@ -220,6 +215,7 @@ interface Tab {
         height: 60%;
         width: 1px;
         background-color: #C4C0C0;
+        align-self: center;
       }
 
       .filter-presets {
@@ -227,7 +223,7 @@ interface Tab {
         padding: 0 10px;
         margin-inline: 10px;
         min-width: fit-content;
-        min-height: fit-content;
+        height: fit-content;
       }
 
       .filter-presets-label {
@@ -247,6 +243,10 @@ interface Tab {
         border-radius: 15px;
       }
 
+      .filter-presets-panel .overlay-panel-title {
+        margin: 5px 5px 5px 15px;
+      }
+
       .existing-preset {
         display: flex;
         flex-direction: row;
@@ -261,6 +261,10 @@ interface Tab {
 
       .existing-preset:not(:hover) .delete-button {
         opacity: 0.5;
+      }
+
+      .save-section {
+        padding-bottom: 10px;
       }
     `,
     overlayPanelStyles,
