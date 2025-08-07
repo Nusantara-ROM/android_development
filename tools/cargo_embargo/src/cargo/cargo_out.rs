@@ -51,7 +51,7 @@ fn parse_cargo_out_str(
     base_directory: impl AsRef<Path>,
 ) -> Result<Vec<Crate>> {
     let cargo_out = CargoOut::parse(cargo_out).context("failed to parse cargo.out")?;
-    debug!("Parsed cargo output: {:?}", cargo_out);
+    debug!("Parsed cargo output: {cargo_out:?}");
 
     assert!(cargo_out.cc_invocations.is_empty(), "cc not supported yet");
     assert!(cargo_out.ar_invocations.is_empty(), "ar not supported yet");
@@ -360,7 +360,7 @@ impl Crate {
                             extern_type,
                         });
                     } else if arg != "proc_macro" {
-                        panic!("No filename for {}", arg);
+                        panic!("No filename for {arg}");
                     }
                 }
                 _ if arg.starts_with("-C") => {
@@ -501,7 +501,7 @@ fn split_src_path(src_path: &Path) -> Result<(PathBuf, PathBuf)> {
     //    directory to the android 3p directories).
     let src_path = src_path
         .canonicalize()
-        .unwrap_or_else(|e| panic!("failed to canonicalize {src_path:?}: {}", e));
+        .unwrap_or_else(|e| panic!("failed to canonicalize {src_path:?}: {e}"));
     let package_dir = find_cargo_toml(&src_path)?;
     let main_src = src_path.strip_prefix(&package_dir).unwrap().to_path_buf();
 

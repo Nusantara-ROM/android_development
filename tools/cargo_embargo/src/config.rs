@@ -83,7 +83,7 @@ impl Config {
     /// Parses an instance of this config from the given JSON file.
     pub fn from_file(filename: &Path) -> Result<Self> {
         let json_string = std::fs::read_to_string(filename)
-            .with_context(|| format!("failed to read file: {:?}", filename))?;
+            .with_context(|| format!("failed to read file: {filename:?}"))?;
         Self::from_json_str(&json_string)
     }
 
