@@ -62,7 +62,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           [title]="title"
           (collapseButtonClicked)="collapseButtonClicked.emit()"></collapsible-section-title>
         <search-box
-          formFieldClass="applied-field"
+          formFieldClass="applied-field no-bottom-padding-field mat-form-field-appearance-none"
           [textFilter]="textFilter"
           (filterChange)="onFilterChange($event)"></search-box>
       </div>
@@ -117,6 +117,10 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
         flex-direction: column;
         overflow-y: auto;
         padding: 0px 12px;
+      }
+
+      search-box {
+        margin-top: 8px;
       }
     `,
     nodeStyles,

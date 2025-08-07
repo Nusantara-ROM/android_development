@@ -74,7 +74,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           title="HIERARCHY"
           (collapseButtonClicked)="collapseButtonClicked.emit()"></collapsible-section-title>
         <search-box
-          formFieldClass="applied-field"
+          formFieldClass="applied-field no-bottom-padding-field mat-form-field-appearance-none"
           [textFilter]="textFilter"
           (filterChange)="onFilterChange($event)"></search-box>
       </div>
@@ -92,7 +92,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           [matTooltip]="warning.getMessage()"
           [matTooltipDisabled]="disableTooltip(warningEl)">
           <mat-icon class="warning-icon"> warning </mat-icon>
-          <span class="warning-message" #warningEl>{{warning.getMessage()}}</span>
+          <span class="warning-message text-no-overflow" #warningEl>{{warning.getMessage()}}</span>
         </span>
       </ng-container>
       <properties-table
@@ -165,6 +165,10 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
 
       tree-view {
         overflow: auto;
+      }
+
+      search-box {
+        margin-top: 8px;
       }
     `,
     nodeStyles,

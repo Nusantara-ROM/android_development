@@ -44,7 +44,6 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
       *ngIf="textFilter"
       [class]="getFormFieldClasses()"
       [appearance]="appearance"
-      [style.height]="height"
       (keydown.esc)="$event.target.blur()"
       (keydown.enter)="$event.target.blur()"
       [matTooltip]="label"
@@ -83,12 +82,31 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
   `,
   styles: [
     `
+    :host {
+      height: 48px;
+      margin-left: 8px;
+      max-width: 100%;
+    }
     .search-box {
       font-size: 14px;
-      margin-top: 4px;
+      margin-top: 8px;
+      max-width: 100%;
+    }
+    .search-box .field-suffix {
+      top: 4px;
+      position: relative;
+      display: flex;
+      flex-wrap: nowrap;
+    }
+    .search-box button {
+      padding: 0px;
+      height: 24px;
+      width: 24px;
     }
     .search-box .mat-icon {
       font-size: 18px;
+      height: 18px;
+      width: 18px;
     }
     .wide-field {
       width: 100%;
@@ -101,7 +119,6 @@ export class SearchBoxComponent extends AbstractFormFieldComponent {
 
   @Input() textFilter: TextFilter | undefined = new TextFilter();
   @Input() filterName = 'filter';
-  @Input() height = '48px';
 
   @Output() readonly filterChange = new EventEmitter<TextFilter>();
 

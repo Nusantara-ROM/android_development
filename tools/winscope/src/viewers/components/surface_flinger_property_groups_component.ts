@@ -345,9 +345,6 @@ import {TransformMatrixComponent} from './transform_matrix_component';
   `,
   styles: [
     `
-      :host collapsible-section-title {
-        padding-bottom: 8px;
-      }
       .placeholder-text {
         padding: 8px 12px;
       }

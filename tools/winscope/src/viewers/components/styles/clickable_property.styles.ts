@@ -39,7 +39,6 @@ export const inlineButtonStyle = `
       padding: 0px;
       min-width: fit-content;
       width: fit-content;
-      line-height: normal;
       text-align: left;
     }
 `;

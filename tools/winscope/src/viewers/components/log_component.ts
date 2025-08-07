@@ -168,7 +168,6 @@ import {
                  + header.spec.cssClass
                  + (header.filter.textFilter.filterString?.length === 0 ? ' mat-body-2' : '')
               "
-              height="fit-content"
               (filterChange)="onSearchBoxChange($event, header)"></search-box>
           </div>
         </ng-container>
