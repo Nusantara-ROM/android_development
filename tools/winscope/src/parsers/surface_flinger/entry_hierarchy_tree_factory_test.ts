@@ -46,8 +46,6 @@ describe('EntryHierarchyTreeFactory', () => {
 
   beforeEach(() => {
     snapshotIter = makeSpyRowIterator();
-    snapshotIter.get.withArgs('arg_set_id').and.returnValue(1n);
-    snapshotIter.get.withArgs('id').and.returnValue(100n);
     snapshotResult = jasmine.createSpyObj<QueryResult>('result', ['iter']);
     snapshotResult.iter.and.returnValue(snapshotIter);
 
@@ -79,7 +77,10 @@ describe('EntryHierarchyTreeFactory', () => {
 
   describe('rects', () => {
     const spyRect = jasmine.createSpyObj<TraceRect>('rect', [], ['x']);
-
+    beforeEach(() => {
+      snapshotIter.get.withArgs('arg_set_id').and.returnValue(1n);
+      snapshotIter.get.withArgs('id').and.returnValue(100n);
+    });
     it('sets bounds rect to node', () => {
       layerRectsSpy.and.returnValue({bounds: spyRect});
       const tree = makeEntryHierarchyTree();
@@ -148,6 +149,10 @@ describe('EntryHierarchyTreeFactory', () => {
   });
 
   describe('warnings', () => {
+    beforeEach(() => {
+      snapshotIter.get.withArgs('arg_set_id').and.returnValue(1n);
+      snapshotIter.get.withArgs('id').and.returnValue(100n);
+    });
     it('handles missing layer ids', () => {
       layersIter.get.withArgs('layer_id').and.returnValue(null);
       let calls = 0;
@@ -214,6 +219,116 @@ describe('EntryHierarchyTreeFactory', () => {
     });
   });
 
+  describe('multiple trees', () => {
+    it('generates multiple trees', () => {
+      const snapshots = [
+        defaultSnapshotData({'id': 1n, 'arg_set_id': 0n}),
+        defaultSnapshotData({'id': 1n, 'arg_set_id': 1n, 'display_id': 1n}),
+        defaultSnapshotData({'id': 2n, 'arg_set_id': 1n}),
+      ];
+      setupSnapshotIterator(snapshots);
+      snapshotResult.iter.and.returnValue(snapshotIter);
+      const allLayers = [
+        defaultLayerData({
+          'snapshot_id': 1n,
+          'layer_id': 1n,
+          'layer_name': 'Layer-1',
+        }),
+        defaultLayerData({
+          'snapshot_id': 2n,
+          'layer_id': 2n,
+          'layer_name': 'Layer-2',
+        }),
+      ];
+
+      const mockLayersIter = setupLayerIterator(allLayers);
+      layersResult.iter.and.returnValue(mockLayersIter);
+      displaysSpy.and.callFake((iter, targetSnapshotId) => {
+        while (iter.valid()) {
+          const currentId = iter.get('id');
+          if (currentId !== targetSnapshotId) {
+            break;
+          }
+          iter.next();
+        }
+        return {displayRects: []};
+      });
+      const trees = makeEntryHierarchyTrees();
+      expect(trees.length).toBe(2);
+    });
+  });
+
+  function setupSnapshotIterator(rows: Array<{[key: string]: any}>) {
+    let currentRow = 0;
+    snapshotIter.valid.and.callFake(() => currentRow < rows.length);
+
+    snapshotIter.next.and.callFake(() => {
+      currentRow++;
+    });
+
+    snapshotIter.get.and.callFake((key: string) => {
+      if (currentRow < 0 || currentRow >= rows.length) {
+        return undefined;
+      }
+      return rows[currentRow][key];
+    });
+  }
+
+  function setupLayerIterator(
+    rows: Array<{[key: string]: any}>,
+  ): jasmine.SpyObj<RowIterator> {
+    const iter = makeSpyRowIterator();
+    let currentRow = 0;
+
+    iter.valid.and.callFake(() => currentRow < rows.length);
+
+    iter.next.and.callFake(() => {
+      currentRow++;
+    });
+
+    iter.get.and.callFake((key: string) => {
+      if (currentRow < 0 || currentRow >= rows.length) {
+        return undefined;
+      }
+      const rowData = rows[currentRow];
+      return rowData ? rowData[key] : undefined;
+    });
+
+    return iter;
+  }
+
+  function defaultLayerData(overrides: {[key: string]: any} = {}): {
+    [key: string]: any;
+  } {
+    const defaults = {
+      'snapshot_id': 1n,
+      'id': 0n,
+      'layer_id': 1n,
+      'layer_name': layerName1,
+      'arg_set_id': 2n,
+      'is_visible': 0n,
+      'parent': -1n,
+      'z_order_relative_of': -1n,
+      'hwc_composition_type': 0,
+      'is_hidden_by_policy': 0n,
+      'is_missing_z_parent': 0n,
+    };
+    return {...defaults, ...overrides};
+  }
+
+  function defaultSnapshotData(overrides: {[key: string]: any} = {}): {
+    [key: string]: any;
+  } {
+    const defaults = {
+      'id': 1n,
+      'arg_set_id': 1n,
+      'ts': 0n,
+      'cursor_x': 0,
+      'cursor_y': 0,
+    };
+    return {...defaults, ...overrides};
+  }
+
   function setColumnValuesForLayer() {
     layersIter.get.withArgs('snapshot_id').and.returnValue(100n);
     layersIter.get.withArgs('id').and.returnValue(0n);
@@ -235,5 +350,12 @@ describe('EntryHierarchyTreeFactory', () => {
       traceProcessor,
     );
     return trees[0];
+  }
+  function makeEntryHierarchyTrees(): HierarchyTreeNode[] {
+    return factory.makeEntryHierarchyTrees(
+      snapshotResult,
+      layersResult,
+      traceProcessor,
+    );
   }
 });

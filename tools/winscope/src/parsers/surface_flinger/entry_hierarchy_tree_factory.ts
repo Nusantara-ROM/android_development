@@ -119,7 +119,6 @@ export class EntryHierarchyTreeFactory {
     const currLayer = layersResults.iter({});
     const currSnapshot = snapshotResults.iter({});
     const trees: HierarchyTreeNode[] = [];
-
     while (currSnapshot.valid()) {
       const currentId = assertBigInt(currSnapshot.get('id'));
 
@@ -127,7 +126,7 @@ export class EntryHierarchyTreeFactory {
         currSnapshot,
         traceProcessor,
       );
-
+      // currSnapshot is being iterated in the extractDisplayRectsForSnapshot
       const {displayRects} = RectExtractor.extractDisplayRectsForSnapshot(
         currSnapshot,
         currentId,

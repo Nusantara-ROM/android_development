@@ -26,6 +26,7 @@ import {TraceBuilder} from 'test/unit/trace_builder';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {CustomQueryType} from 'trace_api/custom_query';
+import {EntriesRange} from 'trace_api/index_types';
 import {Parser} from 'trace_api/parser';
 import {Trace} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';
@@ -82,6 +83,18 @@ describe('PerfettoParserSurfaceFlinger', () => {
       const entry = await parser.getEntry(1);
       expect(entry.id).toEqual('LayerTraceEntry root');
       expect(entry.name).toEqual('root');
+    });
+
+    it('gets a range of entries that excludes the end index', async () => {
+      const index = 1;
+      const amountOfTrees = 6;
+      const range: EntriesRange = {
+        start: index,
+        end: index + amountOfTrees,
+      };
+      const entries = await parser.getRangeOfEntries(range);
+      expect(entries.length).toEqual(amountOfTrees);
+      expect(entries.length).not.toEqual(amountOfTrees + 1);
     });
 
     it('provides eager properties', async () => {
