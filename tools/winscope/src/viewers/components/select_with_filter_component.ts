@@ -71,15 +71,16 @@ import {AbstractSelectComponent} from './abstract_select_component';
         (closed)="onSelectClosed()"
         (selectionChange)="onSelectChange($event)"
         [multiple]="true"
+        panelWidth="''"
         #select>
-        <mat-form-field class="select-filter" [style]="getInnerFormFieldStyle()">
+        <mat-form-field class="select-filter mat-form-field-appearance-none" [style]="getInnerFormFieldStyle()">
           <mat-label>Filter options</mat-label>
           <input matInput #filter [(ngModel)]="filterString" />
         </mat-form-field>
         <div *ngIf="(select.value?.length ?? 0) > 0" class="selected-options">
-          <span class="mat-option mat-active">Selected:</span>
+          <span class="mat-mdc-option mat-mdc-option-active mdc-list-item mdc-list-item--selected">Selected:</span>
           <div
-            class="mat-option mat-selected mat-option-multiple mat-active selected-option"
+            class="mat-mdc-option mat-mdc-option-active mat-mdc-option-multiple mdc-list-item mdc-list-item--selected selected-option"
             *ngFor="let option of selectedOptions(select)"
             (click)="onSelectedOptionClick(option, select)">
           <mat-pseudo-checkbox

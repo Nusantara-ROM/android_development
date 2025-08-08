@@ -102,7 +102,7 @@ import {
 
     <div class="entries" [class.padded]="padEntries">
       <div class="headers table-header" *ngIf="headers.length > 0">
-        <div *ngIf="showTraceEntryTimes" class="time time-controls">
+        <div *ngIf="showTraceEntryTimes" class="time time-controls cell">
           <button
               color="primary"
               mat-icon-button
@@ -154,7 +154,7 @@ import {
                 [options]="header.filter.options"
                 [outerFilterWidth]="header.filter.outerFilterWidthCss"
                 [innerFilterWidth]="header.filter.innerFilterWidthCss"
-                formFieldClass="no-padding-field"
+                formFieldClass="log-select-filter no-bottom-padding-field mat-form-field-appearance-none no-ripple-field"
                 (selectChange)="onFilterChange($event, header)">
             </select-with-filter>
 
@@ -164,7 +164,7 @@ import {
               [label]="header.spec.name"
               [filterName]="header.spec.name"
               [formFieldClass]="
-                'wide-field no-padding-field center-field '
+                'wide-field no-bottom-padding-field center-field mat-form-field-appearance-none no-ripple-field '
                  + header.spec.cssClass
                  + (header.filter.textFilter.filterString?.length === 0 ? ' mat-body-2' : '')
               "
@@ -213,7 +213,7 @@ import {
             [class.current]="isCurrentEntry(i)"
             [class.selected]="isSelectedEntry(i)"
             (click)="onEntryClicked(i)">
-          <div *ngIf="showTraceEntryTimes" class="time">
+          <div *ngIf="showTraceEntryTimes" class="time cell">
             <button
                 mat-button
                 class="time-button"

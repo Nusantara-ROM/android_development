@@ -83,20 +83,21 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
   styles: [
     `
     :host {
-      height: 48px;
+      height: 40px;
       margin-left: 8px;
       max-width: 100%;
     }
     .search-box {
       font-size: 14px;
-      margin-top: 8px;
       max-width: 100%;
     }
     .search-box .field-suffix {
-      top: 4px;
-      position: relative;
       display: flex;
       flex-wrap: nowrap;
+    }
+    .search-box.applied-field .field-suffix {
+      top: 4px;
+      position: relative;
     }
     .search-box button {
       padding: 0px;
