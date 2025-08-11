@@ -137,7 +137,7 @@ import {
           <div
             #headerEl
             *ngIf="!isHeaderWithFilter(header)"
-            class="mat-body-2 header"
+            class="mat-body-2 header text-no-overflow"
             [class]="header.spec.cssClass"
             [matTooltip]="header.spec.name"
             [matTooltipDisabled]="disableHeaderTooltip(headerEl)"
