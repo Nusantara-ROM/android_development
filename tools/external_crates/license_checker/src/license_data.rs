@@ -48,6 +48,7 @@ pub(crate) static LICENSES: &[License] = &[
         file_names: &[
             "LICENSE-APACHE",
             "LICENSE-APACHE-2.0",
+            "license-apache-2.0",
             "LICENSES/Apache-2.0",
             "docs/LICENSE-APACHE",
         ],
@@ -87,7 +88,7 @@ pub(crate) static LICENSES: &[License] = &[
     License {
         name: "MIT",
         text: Some(include_str!("licenses/MIT.txt")),
-        file_names: &["LICENSE-MIT", "LICENSES/MIT", "docs/LICENSE-MIT"],
+        file_names: &["LICENSE-MIT", "license-mit", "LICENSES/MIT", "docs/LICENSE-MIT"],
         module_license_file_name: "MODULE_LICENSE_MIT",
         license_type: LicenseType::NOTICE,
     },
