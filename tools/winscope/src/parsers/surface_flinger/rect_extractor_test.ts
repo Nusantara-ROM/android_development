@@ -36,8 +36,510 @@ describe('SurfaceFlinger RectExtractor', () => {
     dsdy: 5,
     ty: 6,
   });
+
   const rectId1 = 'RectId1';
   const rectName1 = 'RectName1';
+
+  describe('extractAllRects', () => {
+    let snapshotResult: jasmine.SpyObj<QueryResult>;
+    let rectsResult: jasmine.SpyObj<QueryResult>;
+    let snapshotIter: jasmine.SpyObj<RowIterator>;
+    let rectsIter: jasmine.SpyObj<RowIterator>;
+
+    let extractDisplayRectsSpy: jasmine.Spy;
+    let extractLayerInputRectsSpy: jasmine.Spy;
+
+    const snapshotId = 100n;
+    beforeEach(() => {
+      snapshotIter = makeSpyRowIterator();
+      snapshotResult = jasmine.createSpyObj<QueryResult>('snapshotResult', [
+        'iter',
+      ]);
+      snapshotResult.iter.and.returnValue(snapshotIter);
+      rectsIter = makeSpyRowIterator();
+      rectsResult = jasmine.createSpyObj<QueryResult>('rectsResult', ['iter']);
+      rectsResult.iter.and.returnValue(rectsIter);
+      let snapshotValidCalls = 0;
+      snapshotIter.valid.and.callFake(() => snapshotValidCalls === 0);
+      snapshotIter.get.and.callFake((key: string) => {
+        if (key === 'id') return snapshotId;
+        return null;
+      });
+      snapshotIter.next.and.callFake(() => {
+        snapshotValidCalls++;
+      });
+      extractDisplayRectsSpy = spyOn(
+        RectExtractor,
+        'extractDisplayRectsForSnapshot',
+      );
+      extractLayerInputRectsSpy = spyOn(
+        RectExtractor,
+        'extractLayerInputRectsForSnapshot',
+      );
+      extractDisplayRectsSpy.and.callFake(
+        (iter: RowIterator, currentId: bigint) => {
+          if (iter.valid() && iter.get('id') === currentId) {
+            iter.next();
+          }
+          return {
+            displayRects: [],
+            nextSnapshotId: undefined,
+          };
+        },
+      );
+
+      extractLayerInputRectsSpy.and.returnValue({
+        rects: [],
+      });
+    });
+
+    it('extracts 1 display rect for 1 snapshot id', () => {
+      const displayRect = makeMinimalDisplayRect('display1', 1n);
+      checkExtractedMap([displayRect], new Map(), snapshotId);
+    });
+
+    it('extracts 2 display rects for 1 snapshot id', () => {
+      const displayRect1 = makeMinimalDisplayRect('display1', 1n);
+      const displayRect2 = makeMinimalDisplayRect('display2', 1n);
+      checkExtractedMap([displayRect1, displayRect2], new Map(), snapshotId);
+    });
+
+    it('extracts 1 input rect for 1 snapshot id', () => {
+      const layerRects = new Map<bigint, any>();
+      layerRects.set(1n, {input: makeExpectedInputRect()});
+      checkExtractedMap([], layerRects, snapshotId);
+    });
+
+    it('extracts 2 input rects for 1 snapshot id', () => {
+      const layerRects = new Map<bigint, any>();
+      layerRects.set(1n, {input: makeExpectedInputRect()});
+      layerRects.set(2n, {input: makeExpectedInputRect()});
+      checkExtractedMap([], layerRects, snapshotId);
+    });
+
+    it('extracts 1 layer rect for 1 snapshot id', () => {
+      const layerRects = new Map<bigint, any>();
+      layerRects.set(1n, {bounds: makeMinimalLayerRect('layer1')});
+      checkExtractedMap([], layerRects, snapshotId);
+    });
+
+    it('extracts 2 layer rects for 1 snapshot id', () => {
+      const layerRects = new Map<bigint, any>();
+      layerRects.set(1n, {bounds: makeMinimalLayerRect('layer1')});
+      layerRects.set(2n, {bounds: makeMinimalLayerRect('layer2')});
+      checkExtractedMap([], layerRects, snapshotId);
+    });
+
+    it('extracts 1 display rect and 1 layer rect and 1 input rect for 1 snapshot id', () => {
+      const displayRect = makeMinimalDisplayRect('display1', 1n);
+      const layerRects = new Map<bigint, any>();
+      layerRects.set(1n, {
+        bounds: makeMinimalLayerRect('layer1_bounds'),
+        input: makeExpectedInputRect(),
+      });
+      checkExtractedMap([displayRect], layerRects, snapshotId);
+    });
+
+    it('extracts 1 display rect and 1 layer rect and 1 input rect for multiple snapshot ids', () => {
+      const snapshotId1 = 100n;
+      const snapshotId2 = 200n;
+
+      const displayRows = [
+        {id: snapshotId1, name: 'display1'},
+        {id: snapshotId2, name: 'display2'},
+      ];
+      let displayIndex = 0;
+      snapshotIter.valid.and.callFake(() => displayIndex < displayRows.length);
+      snapshotIter.get.and.callFake(
+        (key: string) => (displayRows[displayIndex] as any)?.[key],
+      );
+      snapshotIter.next.and.callFake(() => {
+        displayIndex++;
+      });
+
+      const layerRows = [
+        {snapshot_id: snapshotId1, name: 'layer1', layer_id: 1n},
+        {snapshot_id: snapshotId2, name: 'layer2', layer_id: 2n},
+      ];
+      let layerIndex = 0;
+      rectsIter.valid.and.callFake(() => layerIndex < layerRows.length);
+      rectsIter.get.and.callFake(
+        (key: string) => (layerRows[layerIndex] as any)?.[key],
+      );
+      rectsIter.next.and.callFake(() => {
+        layerIndex++;
+      });
+
+      const displayRect1 = makeMinimalDisplayRect('display1', 1n);
+      const displayRect2 = makeMinimalDisplayRect('display2', 2n);
+      extractDisplayRectsSpy.and.callFake(
+        (iter: jasmine.SpyObj<RowIterator>, currentId: bigint) => {
+          const displayRects: TraceRect[] = [];
+          while (iter.valid() && iter.get('id') === currentId) {
+            if (currentId === snapshotId1) displayRects.push(displayRect1);
+            if (currentId === snapshotId2) displayRects.push(displayRect2);
+            iter.next();
+          }
+          return {displayRects};
+        },
+      );
+
+      const layerRects1 = new Map<bigint, any>();
+      layerRects1.set(1n, {bounds: makeMinimalLayerRect('layer1')});
+      const layerRects2 = new Map<bigint, any>();
+      layerRects2.set(2n, {bounds: makeMinimalLayerRect('layer2')});
+
+      extractLayerInputRectsSpy.and.callFake(
+        (iter: jasmine.SpyObj<RowIterator>, currentId: bigint) => {
+          const rects = new Map<bigint, any>();
+          while (iter.valid() && iter.get('snapshot_id') === currentId) {
+            const layerId = iter.get('layer_id') as bigint;
+            if (currentId === snapshotId1) {
+              rects.set(layerId, {bounds: makeMinimalLayerRect('layer1')});
+            }
+            if (currentId === snapshotId2) {
+              rects.set(layerId, {bounds: makeMinimalLayerRect('layer2')});
+            }
+            iter.next();
+          }
+          return {rects};
+        },
+      );
+
+      const result = RectExtractor.extractAllVisibleRects(
+        snapshotResult,
+        rectsResult,
+      );
+
+      const expectedMap = new Map();
+      expectedMap.set(snapshotId1, {
+        displayRects: [displayRect1],
+        layerRects: layerRects1,
+      });
+      expectedMap.set(snapshotId2, {
+        displayRects: [displayRect2],
+        layerRects: layerRects2,
+      });
+
+      expect(result).toEqual(expectedMap);
+    });
+
+    function checkExtractedMap(
+      displayRects: TraceRect[],
+      layerRects: Map<bigint, any>,
+      expectedSnapshotId: bigint,
+      nextDisplaySnapshotId: bigint | undefined = undefined,
+      nextLayerSnapshotId: bigint | undefined = undefined,
+    ) {
+      extractDisplayRectsSpy.and.callFake(
+        (iter: RowIterator, currentId: bigint) => {
+          iter.next();
+          return {
+            displayRects,
+            nextSnapshotId: nextDisplaySnapshotId,
+          };
+        },
+      );
+
+      extractLayerInputRectsSpy.and.callFake(() => {
+        return {
+          rects: layerRects,
+          nextSnapshotId: nextLayerSnapshotId,
+        };
+      });
+
+      const result = RectExtractor.extractAllVisibleRects(
+        snapshotResult,
+        rectsResult,
+      );
+
+      const expectedMap = new Map();
+      expectedMap.set(expectedSnapshotId, {
+        displayRects,
+        layerRects,
+      });
+      expect(result).toEqual(expectedMap);
+    }
+  });
+
+  describe('extractLayerInputRectsForSnapshot', () => {
+    let layersIter: jasmine.SpyObj<RowIterator>;
+    let extractLayerRectsSpy: jasmine.Spy;
+
+    const currSnapshotId = 100n;
+
+    beforeEach(() => {
+      layersIter = makeSpyRowIterator();
+      extractLayerRectsSpy = spyOn(RectExtractor, 'extractLayerRects');
+    });
+
+    it('extracts 1 input layer rect for 1 snapshot id', () => {
+      const mockInputRect = makeExpectedInputRect();
+      setupMockLayerIterator([layerInputRow()]);
+
+      extractLayerRectsSpy.and.returnValue({input: mockInputRect});
+
+      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+        layersIter,
+        currSnapshotId,
+      );
+
+      const expectedMap = new Map();
+      expectedMap.set(1n, {input: mockInputRect});
+
+      expect(rects).toEqual(expectedMap);
+      expect(extractLayerRectsSpy).toHaveBeenCalledTimes(1);
+      expect(layersIter.next).toHaveBeenCalledTimes(1);
+      expect(layersIter.valid).toHaveBeenCalledTimes(2);
+    });
+
+    it('extracts 2 input layer rects for 1 snapshot id', () => {
+      const mockInputRect1 = makeExpectedInputRect();
+      const mockInputRect2 = makeExpectedInputRect();
+      const layerInputRow2 = layerInputRow({
+        'layer_id': 2n,
+        'id': 2n,
+        'layer_name': 'Layer2',
+        'input_group_id': 5n,
+      });
+
+      setupMockLayerIterator([layerInputRow(), layerInputRow2]);
+
+      extractLayerRectsSpy.and.returnValues(
+        {input: mockInputRect1},
+        {input: mockInputRect2},
+      );
+
+      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+        layersIter,
+        currSnapshotId,
+      );
+
+      const expectedMap = new Map();
+      expectedMap.set(1n, {input: mockInputRect1});
+      expectedMap.set(2n, {input: mockInputRect2});
+
+      expect(rects).toEqual(expectedMap);
+      expect(extractLayerRectsSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('extracts 1 bounds layer rect', () => {
+      const mockBoundsRect = makeExpectedLayerRect();
+      setupMockLayerIterator([layerBoundsRow()]);
+      extractLayerRectsSpy.and.returnValue({
+        bounds: mockBoundsRect,
+      });
+
+      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+        layersIter,
+        currSnapshotId,
+      );
+
+      const expectedMap = new Map();
+      expectedMap.set(1n, {
+        bounds: mockBoundsRect,
+      });
+      expect(rects).toEqual(expectedMap);
+      expect(extractLayerRectsSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('extracts 2 bounds layer rects for different layers', () => {
+      const mockBoundsRect1 = makeExpectedLayerRect('1', 'Layer1');
+      const mockBoundsRect2 = makeExpectedLayerRect('2', 'Layer2');
+      setupMockLayerIterator([
+        layerBoundsRow({
+          layer_id: 1n,
+          id: 1n,
+          layer_name: 'Layer1',
+        }),
+        layerBoundsRow({
+          layer_id: 2n,
+          id: 2n,
+          layer_name: 'Layer2',
+        }),
+      ]);
+      extractLayerRectsSpy.and.returnValues(
+        {
+          bounds: mockBoundsRect1,
+        },
+        {
+          bounds: mockBoundsRect2,
+        },
+      );
+
+      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+        layersIter,
+        currSnapshotId,
+      );
+
+      const expectedMap = new Map();
+      expectedMap.set(1n, {
+        bounds: mockBoundsRect1,
+      });
+      expectedMap.set(2n, {
+        bounds: mockBoundsRect2,
+      });
+      expect(rects).toEqual(expectedMap);
+      expect(extractLayerRectsSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('extracts combined bounds and input rect for a single layer', () => {
+      const mockBounds = makeExpectedLayerRect();
+      const mockInput = makeExpectedInputRect();
+      setupMockLayerIterator([layerCombinedRow()]);
+      extractLayerRectsSpy.and.returnValue({
+        bounds: mockBounds,
+        input: mockInput,
+      });
+
+      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+        layersIter,
+        currSnapshotId,
+      );
+
+      const expectedMap = new Map();
+      expectedMap.set(1n, {
+        bounds: mockBounds,
+        input: mockInput,
+      });
+      expect(rects).toEqual(expectedMap);
+      expect(extractLayerRectsSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('merges fill region for the same layer id and unique row id', () => {
+      const initialInputRect = makeExpectedInputRect([new Rect(1, 1, 1, 1)]);
+      const mockRects = {
+        input: initialInputRect,
+      };
+
+      const row1 = layerInputRow({
+        fr_x: 1,
+        fr_y: 1,
+        fr_w: 1,
+        fr_h: 1,
+      });
+      const row2 = layerInputRow({
+        fr_x: 2,
+        fr_y: 2,
+        fr_w: 2,
+        fr_h: 2,
+      });
+
+      setupMockLayerIterator([row1, row2]);
+
+      extractLayerRectsSpy.and.returnValue(mockRects);
+      const extractFillRegionRectSpy = spyOn(
+        RectExtractor,
+        'extractFillRegionRect',
+      );
+      extractFillRegionRectSpy.and.returnValue(new Rect(2, 2, 2, 2));
+
+      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+        layersIter,
+        currSnapshotId,
+      );
+
+      expect(extractLayerRectsSpy).toHaveBeenCalledTimes(1);
+      expect(extractFillRegionRectSpy).toHaveBeenCalledTimes(1);
+
+      const layerEntry = rects.get(1n);
+      expect(layerEntry?.input?.fillRegion?.rects).toEqual([
+        new Rect(1, 1, 1, 1),
+        new Rect(2, 2, 2, 2),
+      ]);
+    });
+
+    function setupMockLayerIterator(rows: Array<{[key: string]: any}>) {
+      let currentRow = 0;
+      layersIter.valid.and.callFake(() => currentRow < rows.length);
+      layersIter.next.and.callFake(() => {
+        currentRow++;
+      });
+      layersIter.get.and.callFake((key: string) => {
+        if (currentRow >= rows.length) {
+          return undefined;
+        }
+        return rows[currentRow][key];
+      });
+    }
+
+    function layerInputRow(overrides: {[key: string]: any} = {}): {
+      [key: string]: any;
+    } {
+      const defaults = {
+        'snapshot_id': currSnapshotId,
+        'layer_id': 1n,
+        'id': 1n,
+        'layer_name': 'LayerName',
+        'input_x': 2,
+        'input_y': 2,
+        'input_w': 400,
+        'input_h': 200,
+        'input_is_visible': 0n,
+        'input_group_id': 4n,
+        'input_depth': 3n,
+        'fr_x': null,
+        'group_id': null,
+      };
+      return {...defaults, ...overrides};
+    }
+
+    function layerBoundsRow(
+      overrides: {
+        [key: string]: any;
+      } = {},
+    ): {
+      [key: string]: any;
+    } {
+      const defaults = {
+        'snapshot_id': currSnapshotId,
+        'layer_id': 1n,
+        'id': 1n,
+        'layer_name': 'LayerName',
+        'x': 1,
+        'y': 1,
+        'w': 100,
+        'h': 100,
+        'is_visible': 1n,
+        'group_id': 3n,
+        'depth': 5n,
+        'input_group_id': null,
+        'fr_x': null,
+      };
+      return {...defaults, ...overrides};
+    }
+
+    function layerCombinedRow(
+      overrides: {
+        [key: string]: any;
+      } = {},
+    ): {
+      [key: string]: any;
+    } {
+      const defaults = {
+        'snapshot_id': currSnapshotId,
+        'layer_id': 1n,
+        'id': 1n,
+        'layer_name': 'LayerName',
+        'x': 1,
+        'y': 1,
+        'w': 100,
+        'h': 100,
+        'is_visible': 1n,
+        'group_id': 3n,
+        'depth': 5n,
+        'input_x': 2,
+        'input_y': 2,
+        'input_w': 400,
+        'input_h': 200,
+        'input_is_visible': 0n,
+        'input_group_id': 4n,
+        'input_depth': 3n,
+        'fr_x': null,
+      };
+      return {...defaults, ...overrides};
+    }
+  });
 
   describe('extractLayerRects', () => {
     let layersIter: jasmine.SpyObj<RowIterator>;
@@ -131,47 +633,6 @@ describe('SurfaceFlinger RectExtractor', () => {
       layersIter.get.withArgs('dtdy').and.returnValue(4);
       layersIter.get.withArgs('dsdy').and.returnValue(5);
       layersIter.get.withArgs('ty').and.returnValue(6);
-    }
-
-    function makeExpectedLayerRect(id = rectId1, name = rectName1): TraceRect {
-      return new TraceRectBuilder()
-        .setX(1)
-        .setY(1)
-        .setWidth(200)
-        .setHeight(400)
-        .setId(id)
-        .setName(name)
-        .setCornerRadii(new CornerRadii(0.25, 0, 0.5, 0))
-        .setTransform(expectedMatrix)
-        .setGroupId(3)
-        .setIsVisible(true)
-        .setIsDisplay(false)
-        .setIsActiveDisplay(false)
-        .setDepth(5)
-        .setIsSpy(false)
-        .setOpacity(0.5)
-        .build();
-    }
-
-    function makeExpectedInputRect(fillRegion?: Rect[]): TraceRect {
-      const builder = new TraceRectBuilder()
-        .setX(2)
-        .setY(2)
-        .setWidth(400)
-        .setHeight(200)
-        .setId(rectId1)
-        .setName(rectName1)
-        .setTransform(expectedMatrix)
-        .setGroupId(4)
-        .setIsVisible(false)
-        .setIsDisplay(false)
-        .setIsActiveDisplay(false)
-        .setDepth(3)
-        .setIsSpy(true);
-      if (fillRegion) {
-        builder.setFillRegion(new Region(fillRegion));
-      }
-      return builder.build();
     }
 
     function checkLayerRectsExtracted(
@@ -350,28 +811,6 @@ describe('SurfaceFlinger RectExtractor', () => {
       return {...defaults, ...overrides};
     }
 
-    function makeExpectedDisplayRect(
-      name = 'Display 123',
-      isActive = false,
-      displayId = 123n,
-    ): TraceRect {
-      return new TraceRectBuilder()
-        .setX(0)
-        .setY(0)
-        .setWidth(1000)
-        .setHeight(2000)
-        .setId(`Display - ${displayId}`)
-        .setName(name)
-        .setTransform(IDENTITY_MATRIX)
-        .setGroupId(321)
-        .setIsVisible(false)
-        .setIsDisplay(true)
-        .setIsActiveDisplay(isActive)
-        .setDepth(1)
-        .setIsSpy(false)
-        .build();
-    }
-
     function checkDisplaysExtracted(expected: TraceRect[]) {
       const {displayRects} = RectExtractor.extractDisplayRectsForSnapshot(
         snapshotResult.iter({}),
@@ -380,4 +819,75 @@ describe('SurfaceFlinger RectExtractor', () => {
       expect(displayRects).toEqual(expected);
     }
   });
+
+  function makeExpectedDisplayRect(
+    name = 'Display 123',
+    isActive = false,
+    displayId = 123n,
+  ): TraceRect {
+    return new TraceRectBuilder()
+      .setX(0)
+      .setY(0)
+      .setWidth(1000)
+      .setHeight(2000)
+      .setId(`Display - ${displayId}`)
+      .setName(name)
+      .setTransform(IDENTITY_MATRIX)
+      .setGroupId(321)
+      .setIsVisible(false)
+      .setIsDisplay(true)
+      .setIsActiveDisplay(isActive)
+      .setDepth(1)
+      .setIsSpy(false)
+      .build();
+  }
+
+  function makeExpectedLayerRect(id = rectId1, name = rectName1): TraceRect {
+    return new TraceRectBuilder()
+      .setX(1)
+      .setY(1)
+      .setWidth(200)
+      .setHeight(400)
+      .setId(id)
+      .setName(name)
+      .setCornerRadii(new CornerRadii(0.25, 0, 0.5, 0))
+      .setTransform(expectedMatrix)
+      .setGroupId(3)
+      .setIsVisible(true)
+      .setIsDisplay(false)
+      .setIsActiveDisplay(false)
+      .setDepth(5)
+      .setIsSpy(false)
+      .setOpacity(0.5)
+      .build();
+  }
+
+  function makeExpectedInputRect(fillRegion?: Rect[]): TraceRect {
+    const builder = new TraceRectBuilder()
+      .setX(2)
+      .setY(2)
+      .setWidth(400)
+      .setHeight(200)
+      .setId(rectId1)
+      .setName(rectName1)
+      .setTransform(expectedMatrix)
+      .setGroupId(4)
+      .setIsVisible(false)
+      .setIsDisplay(false)
+      .setIsActiveDisplay(false)
+      .setDepth(3)
+      .setIsSpy(true);
+    if (fillRegion) {
+      builder.setFillRegion(new Region(fillRegion));
+    }
+    return builder.build();
+  }
+
+  function makeMinimalDisplayRect(name: string, displayId: bigint): TraceRect {
+    return makeExpectedDisplayRect(name, false, displayId);
+  }
+
+  function makeMinimalLayerRect(id: string): TraceRect {
+    return makeExpectedLayerRect(id, id);
+  }
 });
