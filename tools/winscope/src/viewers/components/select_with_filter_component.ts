@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {ScrollingModule} from '@angular/cdk/scrolling';
 import {CommonModule} from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -52,6 +53,7 @@ import {AbstractSelectComponent} from './abstract_select_component';
     MatDividerModule,
     MatTooltipModule,
     MatOptionModule,
+    ScrollingModule,
     MatPseudoCheckboxModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -75,7 +77,7 @@ import {AbstractSelectComponent} from './abstract_select_component';
         #select>
         <mat-form-field class="select-filter mat-form-field-appearance-none" [style]="getInnerFormFieldStyle()">
           <mat-label>Filter options</mat-label>
-          <input matInput #filter [(ngModel)]="filterString" />
+          <input matInput #filter [(ngModel)]="filterString" (ngModelChange)="onFilterStringChange()" />
         </mat-form-field>
         <div *ngIf="(select.value?.length ?? 0) > 0" class="selected-options">
           <span class="mat-mdc-option mat-mdc-option-active mdc-list-item mdc-list-item--selected">Selected:</span>
@@ -91,13 +93,26 @@ import {AbstractSelectComponent} from './abstract_select_component';
           </div>
         </div>
         <mat-divider [vertical]="false"></mat-divider>
+        <cdk-virtual-scroll-viewport
+          [itemSize]="48"
+          [maxBufferPx]="1000"
+          [minBufferPx]="1000"
+          [style.height]="'60vh'"
+          [style.max-height]="getScrollMaxHeight()"
+          [style.width]="getScrollWidth()"
+          [style.min-width]="'100%'"
+          [style.max-width]="'50vw'">
+          <mat-option
+            *cdkVirtualFor="let option of nonHiddenOptions(); index as i"
+            [value]="option"
+            class="option no-focus"
+            (click)="onOptClick($event, nonHiddenOptionToIndex[i], select, matOption)"
+            #matOption>{{ option }}</mat-option>
+        </cdk-virtual-scroll-viewport>
         <mat-option
-          *ngFor="let option of options; index as i"
+          *ngFor="let option of hiddenOptions()"
           [value]="option"
-          class="option no-focus"
-          [class.hidden-option]="hideOption(option, filterString)"
-          (click)="onOptClick($event, i, select, matOption)"
-          #matOption>{{ option }}</mat-option>
+          class="option hidden-option"></mat-option>
       </mat-select>
     </mat-form-field>
   `,
@@ -107,13 +122,12 @@ import {AbstractSelectComponent} from './abstract_select_component';
         width: 100%;
       }
 
-      .hidden-option {
-        display: none;
-      }
-
       .selected-options {
         display: flex;
         flex-direction: column;
+      }
+      .hidden-option {
+        display: none;
       }
     `,
   ],
@@ -127,8 +141,14 @@ export class SelectWithFilterComponent extends AbstractSelectComponent<HTMLInput
   @Output() readonly selectChange = new EventEmitter<MatSelectChange>();
 
   filterString: string = '';
+  nonHiddenOptionToIndex: number[] = [];
 
   private lastClickedIndex: number | undefined;
+
+  private static readonly CHECKBOX_WIDTH = 34;
+  private static readonly OPTION_PADDING_WIDTH = 32;
+  private static readonly SCROLLBAR_WIDTH = 8;
+  private static readonly CHAR_WIDTH = 8.5;
 
   onSelectChange(event: MatSelectChange) {
     this.selectChange.emit(event);
@@ -153,6 +173,7 @@ export class SelectWithFilterComponent extends AbstractSelectComponent<HTMLInput
 
   onSelectOpened(select: MatSelect, filter: HTMLInputElement) {
     this.handleSelectOpened(select, filter);
+    this.onFilterStringChange();
     filter.focus();
   }
 
@@ -180,9 +201,49 @@ export class SelectWithFilterComponent extends AbstractSelectComponent<HTMLInput
     return this.options.filter((o) => select.value.includes(o));
   }
 
+  nonHiddenOptions() {
+    return this.options.filter((value, i) => {
+      return !this.hideOption(value, this.filterString);
+    });
+  }
+
+  hiddenOptions() {
+    return this.options.filter((value) =>
+      this.hideOption(value, this.filterString),
+    );
+  }
+
+  getScrollMaxHeight(): string {
+    return this.nonHiddenOptions().length * 48 + 24 + 'px';
+  }
+
+  getScrollWidth(): string {
+    let maxOptionLength = 0;
+    this.options.forEach((opt) => {
+      maxOptionLength = Math.max(opt.length, maxOptionLength);
+    });
+    return (
+      maxOptionLength * SelectWithFilterComponent.CHAR_WIDTH +
+      SelectWithFilterComponent.CHECKBOX_WIDTH +
+      SelectWithFilterComponent.OPTION_PADDING_WIDTH +
+      SelectWithFilterComponent.SCROLLBAR_WIDTH +
+      'px'
+    );
+  }
+
   onSelectedOptionClick(option: string, select: MatSelect) {
     select.value = select.value.filter((val: string) => val !== option);
     this.selectChange.emit(new MatSelectChange(select, select.value));
+  }
+
+  onFilterStringChange() {
+    const nonHiddenOptionToIndex: number[] = [];
+    this.options.forEach((value, i) => {
+      if (!this.hideOption(value, this.filterString)) {
+        nonHiddenOptionToIndex.push(i);
+      }
+    });
+    this.nonHiddenOptionToIndex = nonHiddenOptionToIndex;
   }
 
   protected override onKeydownCtrlA(select: MatSelect) {

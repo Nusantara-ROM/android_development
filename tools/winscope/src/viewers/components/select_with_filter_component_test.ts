@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {ScrollingModule} from '@angular/cdk/scrolling';
 import {CommonModule} from '@angular/common';
 import {Component, ViewChild} from '@angular/core';
 import {ComponentFixtureAutoDetect, TestBed} from '@angular/core/testing';
@@ -50,6 +51,7 @@ describe('SelectWithFilterComponent', () => {
         MatPseudoCheckboxModule,
         MatDividerModule,
         MatTooltipModule,
+        ScrollingModule,
         SelectWithFilterComponent,
         TestHostComponent,
       ],
@@ -75,35 +77,37 @@ describe('SelectWithFilterComponent', () => {
   it('applies filter correctly', () => {
     dom.openMatSelect();
 
-    const options = getOptions();
-    checkHiddenOptions(options, []);
+    checkOptions(getOptions(), [0, 1, 2]);
 
     const panel = dom.getMatSelectPanel();
     const input = panel.findAndDispatchInput(filterInputField, '2');
-    checkHiddenOptions(options, [0, 1]);
+    checkOptions(getOptions(), [2]);
 
     input.dispatchInput('');
-    checkHiddenOptions(options, []);
+    checkOptions(getOptions(), [0, 1, 2]);
   });
 
-  it('maintains selection even if filtered out', () => {
-    dom.openMatSelect();
+  it('maintains selection even if filtered out', async () => {
+    await dom.openMatSelect();
 
-    const options = getOptions();
-    checkHiddenOptions(options, []);
+    let options = getOptions();
+    checkOptions(options, [0, 1, 2]);
 
     options[0].click();
     checkSelectValue(['0']);
 
     const panel = dom.getMatSelectPanel();
     const input = panel.findAndDispatchInput(filterInputField, '2');
-    checkHiddenOptions(options, [0, 1]);
+    options = getOptions();
+    checkOptions(options, [2]);
 
-    options[2].click();
-    checkSelectValue(['0', '2']);
+    options[0].click();
+    checkSelectValue(['2', '0'], ['0', '2']);
 
     input.dispatchInput('');
-    checkHiddenOptions(options, []);
+    options = getOptions();
+    checkOptions(options, [0, 1, 2]);
+    checkSelectValue(['2', '0'], ['0', '2']);
 
     options[1].click();
     checkSelectValue(['0', '1', '2']);
@@ -137,18 +141,17 @@ describe('SelectWithFilterComponent', () => {
   it('resets filter on close', async () => {
     dom.openMatSelect();
 
-    const options = getOptions();
-    checkHiddenOptions(options, []);
+    checkOptions(getOptions(), [0, 1, 2]);
 
     dom.getMatSelectPanel().findAndDispatchInput(filterInputField, 'A');
-    checkHiddenOptions(options, [0, 1, 2]);
+    checkOptions(getOptions(), []);
 
     dom.clickBackdrop();
     await dom.whenStable();
     await dom.whenRenderingDone();
 
     dom.openMatSelect();
-    checkHiddenOptions(getOptions(), []);
+    checkOptions(getOptions(), [0, 1, 2]);
   });
 
   it('calls default select keydown handler', async () => {
@@ -208,8 +211,9 @@ describe('SelectWithFilterComponent', () => {
     expect(selectChangeSpy).toHaveBeenCalledTimes(4);
   });
 
-  it('emits second change after shift + click to toggle options in-between', () => {
-    dom.openMatSelect();
+  it('emits second change after shift + click to toggle options in-between', async () => {
+    await dom.openMatSelect();
+    await dom.whenRenderingDone();
     const options = getOptions();
 
     options[0].click();
@@ -225,9 +229,10 @@ describe('SelectWithFilterComponent', () => {
     checkSelectValue([]);
   });
 
-  it('sets in-between options to value of clicked option, regardless of current state', () => {
+  it('sets in-between options to value of clicked option, regardless of current state', async () => {
     component.allOptions.push('3');
-    dom.openMatSelect();
+    await dom.openMatSelect();
+    await dom.whenRenderingDone();
     const options = getOptions();
 
     options[2].click();
@@ -249,15 +254,16 @@ describe('SelectWithFilterComponent', () => {
     checkSelectValue([]);
   });
 
-  it('only toggles non-hidden options between last and current clicks', () => {
+  it('only toggles non-hidden options between last and current clicks', async () => {
     component.allOptions.push('10');
-    dom.openMatSelect();
-    const options = getOptions();
+    await dom.openMatSelect();
     dom.getMatSelectPanel().findAndDispatchInput(filterInputField, '1');
 
-    options[1].click();
+    const options = getOptions();
+    options[0].click();
     selectChangeSpy.calls.reset();
-    options[3].shiftAndClick();
+
+    options[1].shiftAndClick();
     checkSelectValue(['1', '10']);
     expect(selectChangeSpy).toHaveBeenCalledTimes(2);
   });
@@ -266,21 +272,26 @@ describe('SelectWithFilterComponent', () => {
     return Array.from(dom.getMatSelectPanel().findAll('.option'));
   }
 
-  function checkHiddenOptions(
+  function checkOptions(
     options: Array<DOMTestHelper<TestHostComponent>>,
-    hidden: number[],
+    expectedIndexes: number[],
   ) {
     expect(options.length).toEqual(3);
     options.forEach((option, index) => {
-      option.checkText(`${index}`);
-      option.checkClassName('hidden-option', hidden.includes(index));
+      const exp = expectedIndexes[index];
+      if (exp !== undefined) {
+        option.checkText(`${exp}`);
+        option.checkClassName('hidden-option', false);
+      } else {
+        option.checkClassName('hidden-option', true);
+      }
     });
   }
 
   function getPinnedOptions(): Array<DOMTestHelper<TestHostComponent>> {
-    return Array.from(
-      dom.getMatSelectPanel().findAll('.selected-options .mat-option'),
-    ).slice(1);
+    return dom
+      .getMatSelectPanel()
+      .findAll('.selected-options .selected-option');
   }
 
   function checkSelectValue(expValues: string[], expOpts = expValues) {
