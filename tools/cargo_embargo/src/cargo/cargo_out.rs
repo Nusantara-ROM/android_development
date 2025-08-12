@@ -381,6 +381,7 @@ impl Crate {
                         && !arg.starts_with("extra-filename=")
                         && !arg.starts_with("incremental=")
                         && !arg.starts_with("metadata=")
+                        && !arg.starts_with("link-arg=")
                         && arg != "prefer-dynamic"
                     {
                         out.codegens.push(arg.to_string());
