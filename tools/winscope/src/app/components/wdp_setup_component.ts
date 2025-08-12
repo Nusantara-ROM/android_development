@@ -41,7 +41,12 @@ import {ConnectionState} from 'trace_collection/connection_state';
             color="primary"
             mat-stroked-button
             class="install"
-            (click)="onInstallButtonClick()">Install Web Device Proxy</button>
+            (click)="onInstallExternalButtonClick()">Install (Non-Google users)</button>
+          <button
+            color="primary"
+            mat-stroked-button
+            class="install"
+            (click)="onInstallGoogleButtonClick()">Install (Google employees only)</button>
           <button
             color="primary"
             mat-stroked-button
@@ -76,11 +81,15 @@ export class WdpSetupComponent {
   @Input() state: ConnectionState | undefined;
   @Output() readonly retryConnection = new EventEmitter();
 
-  onInstallButtonClick() {
+  onInstallExternalButtonClick() {
     window.open(
       'https://tools.google.com/dlpage/android_web_device_proxy',
       '_blank',
     );
+  }
+
+  onInstallGoogleButtonClick() {
+    window.open('http://go/web-device-proxy#setup', '_blank');
   }
 
   onRetryButtonClick() {
