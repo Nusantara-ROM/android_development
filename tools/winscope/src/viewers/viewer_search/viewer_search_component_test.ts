@@ -17,6 +17,7 @@
 import {CdkAccordionModule} from '@angular/cdk/accordion';
 import {CdkMenuModule} from '@angular/cdk/menu';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import {CommonModule} from '@angular/common';
 import {Component, ViewChild} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -59,17 +60,9 @@ describe('ViewerSearchComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        TestHostComponent,
-        ViewerSearchComponent,
-        CollapsedSectionsComponent,
-        CollapsibleSectionTitleComponent,
-        ActiveSearchComponent,
-        SearchListComponent,
-        LogComponent,
-        VariableHeightScrollDirective,
-      ],
       imports: [
+        CommonModule,
+        TestHostComponent,
         MatFormFieldModule,
         MatInputModule,
         BrowserAnimationsModule,
@@ -84,6 +77,13 @@ describe('ViewerSearchComponent', () => {
         MatTooltipModule,
         CdkAccordionModule,
         MatDividerModule,
+        ViewerSearchComponent,
+        CollapsedSectionsComponent,
+        CollapsibleSectionTitleComponent,
+        ActiveSearchComponent,
+        SearchListComponent,
+        LogComponent,
+        VariableHeightScrollDirective,
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(TestHostComponent);
@@ -100,8 +100,9 @@ describe('ViewerSearchComponent', () => {
 
   it('creates global search section with tabs', () => {
     const globalSearch = dom.get('.global-search');
-    const [searchTab, savedTab, recentTab] =
-      globalSearch.findAll('.mat-tab-label');
+    const [searchTab, savedTab, recentTab] = globalSearch.findAll(
+      '.mdc-tab .mdc-tab__text-label',
+    );
     searchTab.checkTextExact('Search');
     savedTab.checkTextExact('Saved');
     recentTab.checkTextExact('Recent');
@@ -232,7 +233,7 @@ describe('ViewerSearchComponent', () => {
     data.currentSearches[0].result = new SearchResult([], []);
     updateInputDataAndDetectChanges(data);
     addCurrentSearchWithResult(testQuery, 2);
-    let resultTabs = dom.findAll('.result-tabs .mat-tab-label');
+    let resultTabs = dom.findAll('.result-tabs .mdc-tab__text-label');
     let activeSections = dom.findAll('active-search');
     expect(activeSections.length).toEqual(2);
     expect(resultTabs.length).toEqual(2);
@@ -249,7 +250,7 @@ describe('ViewerSearchComponent', () => {
     updateInputDataAndDetectChanges(newData);
     await dom.whenStable();
 
-    resultTabs = dom.findAll('.result-tabs .mat-tab-label');
+    resultTabs = dom.findAll('.result-tabs .mdc-tab__text-label');
     activeSections = dom.findAll('active-search');
     expect(resultTabs.length).toEqual(1);
     resultTabs[0].checkTextExact('Query 2');
@@ -507,6 +508,7 @@ describe('ViewerSearchComponent', () => {
   }
 
   @Component({
+    imports: [ViewerSearchComponent],
     selector: 'host-component',
     template: `
       <viewer-search [inputData]="inputData"></viewer-search>

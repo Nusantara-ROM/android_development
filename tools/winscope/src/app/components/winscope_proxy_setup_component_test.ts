@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 import {CommonModule} from '@angular/common';
-import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {Download} from 'common/download';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
@@ -35,6 +37,7 @@ describe('WinscopeProxySetupComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         CommonModule,
         MatIconModule,
         MatFormFieldModule,
@@ -42,9 +45,9 @@ describe('WinscopeProxySetupComponent', () => {
         BrowserAnimationsModule,
         MatButtonModule,
         FormsModule,
+        WinscopeProxySetupComponent,
       ],
-      declarations: [WinscopeProxySetupComponent],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [],
     }).compileComponents();
     const fixture = TestBed.createComponent(WinscopeProxySetupComponent);
     component = fixture.componentInstance;

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import {Input} from '@angular/core';
+import {Directive, Input} from '@angular/core';
 import {MatFormField} from '@angular/material/form-field';
 import {isElementOverflowing} from 'common/dom_utils';
 
+@Directive()
 export abstract class AbstractFormFieldComponent {
   @Input() label = 'Search';
   @Input() appearance = '';

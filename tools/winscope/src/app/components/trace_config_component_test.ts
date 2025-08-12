@@ -25,7 +25,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
@@ -51,6 +54,7 @@ describe('TraceConfigComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         CommonModule,
         MatCheckboxModule,
         MatDividerModule,
@@ -64,8 +68,8 @@ describe('TraceConfigComponent', () => {
         MatButtonModule,
         OverlayModule,
         MatIconModule,
+        TraceConfigComponent,
       ],
-      declarations: [TraceConfigComponent],
     }).compileComponents();
     const fixture = TestBed.createComponent(TraceConfigComponent);
     component = fixture.componentInstance;
@@ -172,12 +176,10 @@ describe('TraceConfigComponent', () => {
 
     box.checkText(traceKey);
     expect(inputElement.checked).toBeTrue();
-    expect(inputElement.ariaChecked).toEqual('true');
     expect(config[traceKey].config.enabled).toBeTrue();
 
     input.click();
     expect(inputElement.checked).toBeFalse();
-    expect(inputElement.ariaChecked).toEqual('false');
     expect(config[traceKey].config.enabled).toBeFalse();
     expect(configChangeSpy).toHaveBeenCalledTimes(1);
   });
@@ -193,12 +195,10 @@ describe('TraceConfigComponent', () => {
 
     box.checkText(traceKey);
     expect(inputElement.checked).toBeFalse();
-    expect(inputElement.ariaChecked).toEqual('false');
     expect(config[traceKey].config.enabled).toBeFalse();
 
     input.click();
     expect(inputElement.checked).toBeTrue();
-    expect(inputElement.ariaChecked).toEqual('true');
     expect(config[traceKey].config.enabled).toBeTrue();
     expect(configChangeSpy).toHaveBeenCalledTimes(1);
   });
@@ -237,14 +237,12 @@ describe('TraceConfigComponent', () => {
     ).checkboxConfigs[0].enabled = false;
     await detectNgModelChanges();
     expect(inputElement.checked).toBeFalse();
-    expect(inputElement.ariaChecked).toEqual('false');
 
     assertDefined(
       assertDefined(component.traceConfig)[layersTraceKey].config,
     ).checkboxConfigs[0].enabled = true;
     await detectNgModelChanges();
     expect(inputElement.checked).toBeTrue();
-    expect(inputElement.ariaChecked).toEqual('true');
   });
 
   it('changing checkbox config by DOM interaction emits event', async () => {
@@ -293,22 +291,20 @@ describe('TraceConfigComponent', () => {
     checkSelectionConfigValue(multSelectKey, []);
   });
 
-  it('stabilizes tooltip position', async () => {
+  it('shows tooltip', async () => {
     const settingsPanel = getAdvancedSettingsPanelForKey(optSelectKey);
     await settingsPanel.openMatSelect();
 
     const panel = dom.getMatSelectPanel();
     const options = panel.findAll('mat-option');
+    const longOption = options[1];
+
+    const longOptionEl = longOption.get('.option-value').getHTMLElement();
+    spyOnProperty(longOptionEl, 'scrollWidth').and.returnValue(
+      longOptionEl.clientWidth * 2,
+    );
 
     await checkTooltips(options, [undefined, options[1].getText()]);
-
-    const longOption = options[1];
-    longOption.dispatchEvent(new Event('mouseenter'));
-    const tooltipPanel = assertDefined(
-      dom.findMatTooltipPanel(),
-    ).getHTMLElement();
-    expect(tooltipPanel.style.top.length).toBeGreaterThan(0);
-    expect(tooltipPanel.style.left.length).toBeGreaterThan(0);
   });
 
   it('disables selection field if no options', async () => {

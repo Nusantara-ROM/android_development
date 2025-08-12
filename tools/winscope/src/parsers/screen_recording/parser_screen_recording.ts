@@ -21,12 +21,12 @@ import {
 } from 'common/array_utils';
 import {FileUtils} from 'common/file_utils';
 import {Timestamp} from 'common/time/time';
-import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
-import {UserNotifier} from 'common/user_notifier';
+import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {MonotonicScreenRecording} from 'messaging/user_warnings';
 import * as MP4Box from 'mp4box';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
+import {UserNotifier} from 'services/user_notifier';
 import {ScreenRecordingUtils} from 'trace/screen_recording_utils';
 import {TraceFile} from 'trace/trace_file';
 import {CoarseVersion} from 'trace_api/coarse_version';

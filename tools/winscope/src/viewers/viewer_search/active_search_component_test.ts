@@ -40,7 +40,6 @@ describe('ActiveSearchComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ActiveSearchComponent, TestHostComponent],
       imports: [
         MatFormFieldModule,
         MatInputModule,
@@ -53,6 +52,8 @@ describe('ActiveSearchComponent', () => {
         MatTooltipModule,
         CommonModule,
         NgTemplateOutlet,
+        ActiveSearchComponent,
+        TestHostComponent,
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(ActiveSearchComponent);
@@ -214,6 +215,7 @@ describe('ActiveSearchComponent', () => {
   }
 
   @Component({
+    imports: [ActiveSearchComponent],
     selector: 'test-component',
     template: `
       <active-search [saveQueryField]="testTemplate" [executedQuery]=executedQuery [saveQueryNameControl]="control"></active-search>

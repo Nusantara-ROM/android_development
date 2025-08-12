@@ -16,7 +16,7 @@
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {CommonModule} from '@angular/common';
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ChangeDetectionStrategy} from '@angular/core';
 import {ComponentFixtureAutoDetect, TestBed} from '@angular/core/testing';
 import {
@@ -42,12 +42,14 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {Title} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {Download} from 'common/download';
 import {FileUtils} from 'common/file_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
-import {UserNotifier} from 'common/user_notifier';
 import {
   FailedToInitializeTimelineData,
   NoValidFiles,
@@ -59,6 +61,7 @@ import {
   ViewersLoaded,
   ViewersUnloaded,
 } from 'messaging/winscope_event';
+import {UserNotifier} from 'services/user_notifier';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {waitToBeCalled} from 'test/unit/spy_utils';
 import {TracesBuilder} from 'test/unit/traces_builder';
@@ -88,8 +91,13 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [Title, {provide: ComponentFixtureAutoDetect, useValue: true}],
+      providers: [
+        Title,
+        provideHttpClient(withInterceptorsFromDi()),
+        {provide: ComponentFixtureAutoDetect, useValue: true},
+      ],
       imports: [
+        NoopAnimationsModule,
         CommonModule,
         FormsModule,
         MatCardModule,
@@ -107,14 +115,12 @@ describe('AppComponent', () => {
         BrowserAnimationsModule,
         ClipboardModule,
         MatDialogModule,
-        HttpClientModule,
         MatListModule,
-        MatProgressBarModule,
         OverlayModule,
-        MatTabsModule,
+        MatSnackBarModule,
         MatCheckboxModule,
-      ],
-      declarations: [
+        MatProgressBarModule,
+        MatTabsModule,
         WinscopeProxySetupComponent,
         WdpSetupComponent,
         AppComponent,
@@ -127,10 +133,10 @@ describe('AppComponent', () => {
         TraceConfigComponent,
         TraceViewComponent,
         UploadTracesComponent,
-        ViewerSurfaceFlingerComponent,
         ShortcutsComponent,
         SnackBarComponent,
         WarningDialogComponent,
+        ViewerSurfaceFlingerComponent,
       ],
     })
       .overrideComponent(AppComponent, {
@@ -436,8 +442,9 @@ describe('AppComponent', () => {
     dialog
       .get('.warning-message')
       .checkTextExact('Multiple Perfetto traces found. Select one to process:');
+
     const [option1, option2] = dialog.findAll(
-      '.warning-action-boxes .mat-checkbox',
+      '.warning-action-boxes mat-checkbox',
     );
     option1.checkTextExact('f1');
     option2.checkTextExact('f2');

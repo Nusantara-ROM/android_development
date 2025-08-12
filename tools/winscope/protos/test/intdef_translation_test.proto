@@ -11,4 +11,5 @@ message InputWindowInfoProto {
   optional int32 layout_params_flags = 1;
   optional int32 input_config = 2 [(.perfetto.protos.typedef) =  "android.view.WindowInsets.Side.InsetsSide"];
   optional int32 test_android_typedef = 3 [(.android.typedef) =  "android.content.pm.ActivityInfo.ScreenOrientation"];
+  optional int32 test_android_common_typedef = 4 [(.android_common.typedef) =  "android.view.WindowManager.TransitionFlags"];
 }

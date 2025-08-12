@@ -15,12 +15,12 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
+import root from 'protos/test/fake_proto/json';
+import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {
   TamperedMessageType,
   TamperedProtoField,
-} from 'parsers/tampered_message_type';
-import root from 'protos/test/fake_proto/json';
-import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
+} from 'trace/proto_utils/tampered_message_type';
 import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AddDefaults} from './add_defaults';
 

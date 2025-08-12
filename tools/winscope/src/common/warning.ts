@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-export interface LogMessage {
-  text: string;
-  tag: string;
-  level: string;
-  at: string;
-  timestamp: bigint;
+export interface Warning {
+  getMessage(): string;
 }

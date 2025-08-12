@@ -29,8 +29,8 @@ import {
 } from 'messaging/winscope_event';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
 import {Trace} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {QueryResult} from 'trace_processor/query_result';
 import {
   AddQueryClickDetail,
@@ -54,11 +54,7 @@ export class Presenter {
   private uiData = UiData.createEmpty();
   private activeSearchUid = 0;
   private activeSearches: ActiveSearch[] = [];
-  private savedSearches = PersistentStoreProxy.new<{searches: ListedSearch[]}>(
-    'savedSearches',
-    {searches: []},
-    this.storage,
-  );
+  private savedSearches: {searches: ListedSearch[]};
   private viewerElement: HTMLElement | undefined;
   private runningSearch: CurrentSearch | undefined;
 
@@ -68,6 +64,11 @@ export class Presenter {
     private readonly notifyViewCallback: (uiData: UiData) => void,
     private readonly timestampConverter: TimestampConverter,
   ) {
+    this.savedSearches = PersistentStoreProxy.new<{searches: ListedSearch[]}>(
+      'savedSearches',
+      {searches: []},
+      this.storage,
+    );
     this.uiData.savedSearches = Array.from(this.savedSearches.searches);
     this.addSearch();
   }

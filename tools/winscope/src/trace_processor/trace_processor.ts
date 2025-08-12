@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Analytics} from 'logging/analytics';
+import {Analytics} from 'common/analytics';
 import {TraceProcessorConfig} from './perfetto/engine';
 import {WasmEngineProxy} from './perfetto/wasm_engine_proxy';
 import {QueryResult} from './query_result';
@@ -29,7 +29,9 @@ export class TraceProcessor {
   async query(sqlQuery: string): Promise<QueryResult> {
     const startTimeMs = Date.now();
     const result = await this.wasmEngine.query(sqlQuery);
-    Analytics.TraceProcessor.logQueryExecutionTime(Date.now() - startTimeMs);
+    Analytics.analyticsLogEvent('tp_general_query_time', {
+      value: Date.now() - startTimeMs,
+    });
     return result;
   }
 

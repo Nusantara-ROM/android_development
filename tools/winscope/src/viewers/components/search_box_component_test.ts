@@ -41,8 +41,8 @@ describe('SearchBoxComponent', () => {
         BrowserAnimationsModule,
         MatIconModule,
         MatTooltipModule,
+        SearchBoxComponent,
       ],
-      declarations: [SearchBoxComponent],
     }).compileComponents();
     const fixture = TestBed.createComponent(SearchBoxComponent);
     component = fixture.componentInstance;

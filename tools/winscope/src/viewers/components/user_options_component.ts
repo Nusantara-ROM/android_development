@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {Component, ElementRef, Inject, Input} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 import {FunctionUtils} from 'common/function_utils';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TraceType} from 'trace_api/trace_type';
@@ -25,6 +28,8 @@ type LogCallback = (key: string, state: boolean, name: string) => void;
 
 @Component({
   selector: 'user-options',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatIconModule],
   template: `
       <button
         *ngFor="let option of objectKeys(userOptions)"

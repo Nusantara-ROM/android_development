@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -21,6 +22,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
 import {EMPTY_OBJ_STRING} from 'trace/formatters';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
@@ -31,11 +33,20 @@ import {
   InputMethodSurfaceProperties,
 } from 'viewers/common/ime_utils';
 import {ViewerEvents} from 'viewers/common/viewer_events';
+import {CollapsibleSectionTitleComponent} from './collapsible_section_title_component';
+import {CoordinatesTableComponent} from './coordinates_table_component';
 import {selectedElementStyle} from './styles/selected_element.styles';
 import {viewerCardInnerStyle} from './styles/viewer_card.styles';
 
 @Component({
   selector: 'ime-additional-properties',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    CollapsibleSectionTitleComponent,
+    CoordinatesTableComponent,
+  ],
   template: `
     <div class="title-section">
       <collapsible-section-title
@@ -65,7 +76,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
             (click)="onClickShowInPropertiesPanelWm(wmHierarchyTree(), 'Window Manager State')">
             WMState
           </button>
-          <h3 *ngIf="!wmHierarchyTree()" class="group-header mat-subheading-2">WMState</h3>
+          <h3 *ngIf="!wmHierarchyTree()" class="group-header mat-subtitle-1">WMState</h3>
           <div class="left-column wm-state">
             <p *ngIf="additionalProperties?.wm" class="mat-body-1">
               {{ wmRootLabel() }}
@@ -180,7 +191,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
             (click)="onClickShowInPropertiesPanelWm(wmHierarchyTree(), 'Window Manager State')">
             WMState
           </button>
-          <h3 *ngIf="!wmHierarchyTree()" class="group-header mat-subheading-2">WMState</h3>
+          <h3 *ngIf="!wmHierarchyTree()" class="group-header mat-subtitle-1">WMState</h3>
           <div class="left-column wm-state">
             <p *ngIf="additionalProperties?.wm" class="mat-body-1">
               {{ wmRootLabel() }}
@@ -191,7 +202,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           </div>
         </div>
         <div class="group">
-          <h3 class="group-header mat-subheading-2">SFLayer</h3>
+          <h3 class="group-header mat-subtitle-1">SFLayer</h3>
           <div class="left-column sf-state">
             <p *ngIf="additionalProperties?.sf" class="mat-body-1">
               {{ sfRootLabel() }}
@@ -202,7 +213,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           </div>
         </div>
         <div *ngIf="additionalProperties?.wm" class="group focus">
-          <h3 class="group-header mat-subheading-2">Focus</h3>
+          <h3 class="group-header mat-subtitle-1">Focus</h3>
           <div class="left-column">
             <p class="mat-body-1">
               <span class="mat-body-2">Focused App:</span>
@@ -229,7 +240,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           </div>
         </div>
         <div class="group visibility">
-          <h3 class="group-header mat-subheading-2">Visibility</h3>
+          <h3 class="group-header mat-subtitle-1">Visibility</h3>
           <div class="left-column">
             <p *ngIf="additionalProperties?.wm" class="mat-body-1">
               <span class="mat-body-2">InputMethod Window:</span>

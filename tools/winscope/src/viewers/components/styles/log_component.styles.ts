@@ -144,8 +144,7 @@ export const logComponentStyles = `
 
   .header {
     align-items: center;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
+    align-self: center;
   }
 
   .transition-type {

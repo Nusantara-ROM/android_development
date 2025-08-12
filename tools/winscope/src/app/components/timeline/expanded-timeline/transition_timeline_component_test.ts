@@ -24,7 +24,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {Rect} from 'common/geometry/rect';
 import {TimestampConverterUtils} from 'common/time/test_utils';
@@ -60,6 +63,7 @@ describe('TransitionTimelineComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         FormsModule,
         MatButtonModule,
         MatFormFieldModule,
@@ -70,8 +74,8 @@ describe('TransitionTimelineComponent', () => {
         ReactiveFormsModule,
         BrowserAnimationsModule,
         DragDropModule,
+        TransitionTimelineComponent,
       ],
-      declarations: [TransitionTimelineComponent],
     })
       .overrideComponent(TransitionTimelineComponent, {
         set: {changeDetection: ChangeDetectionStrategy.Default},

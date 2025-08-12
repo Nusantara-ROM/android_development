@@ -15,7 +15,7 @@
  */
 
 syntax = "proto2";
-package android.view;
+package android_common.view;
 
 option java_outer_classname = "ViewProtoEnums";
 option java_multiple_files = true;

@@ -28,8 +28,7 @@ describe('HierarchyTreeNodeDataViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HierarchyTreeNodeDataViewComponent],
-      imports: [MatTooltipModule],
+      imports: [HierarchyTreeNodeDataViewComponent, MatTooltipModule],
     }).compileComponents();
     const fixture = TestBed.createComponent(HierarchyTreeNodeDataViewComponent);
     component = fixture.componentInstance;

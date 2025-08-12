@@ -70,10 +70,14 @@ export async function postToProxy(
 }
 
 async function processProxyResponse(
-  response: HttpResponse,
+  response: HttpResponse | undefined,
   onSuccess: OnRequestSuccessCallback,
   onStateChange: StateChangeCallbackType,
 ): Promise<string> {
+  if (!response) {
+    // response may be empty from device request in test mode
+    return '';
+  }
   if (
     response.status === HttpRequestStatus.SUCCESS &&
     !isVersionCompatible(response)

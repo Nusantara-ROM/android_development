@@ -16,8 +16,8 @@
 
 import {Store} from 'common/store/store';
 import {Trace} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {
   AbstractHierarchyViewerPresenter,
@@ -26,8 +26,8 @@ import {
 import {DisplayIdentifier} from 'viewers/common/display_identifier';
 import {HierarchyPresenter} from 'viewers/common/hierarchy_presenter';
 import {PropertiesPresenter} from 'viewers/common/properties_presenter';
-import {RectsPresenter} from 'viewers/common/rects_presenter';
 import {RectShowState} from 'viewers/common/rect_show_state';
+import {RectsPresenter} from 'viewers/common/rects_presenter';
 import {TextFilter} from 'viewers/common/text_filter';
 import {UiDataHierarchy} from 'viewers/common/ui_data_hierarchy';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';

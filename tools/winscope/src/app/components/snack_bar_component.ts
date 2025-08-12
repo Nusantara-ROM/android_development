@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {CommonModule} from '@angular/common';
 import {Component, ElementRef, Inject} from '@angular/core';
-import {MatSnackBarRef, MAT_SNACK_BAR_DATA} from '@angular/material/snack-bar';
+import {MatButtonModule} from '@angular/material/button';
+import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'snack-bar',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, ClipboardModule],
   template: `
     <div class="snack-bar-container">
       <div class="message-container">

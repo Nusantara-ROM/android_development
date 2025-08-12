@@ -21,7 +21,6 @@ import {
   TimestampConverter,
   UTC_TIMEZONE_INFO,
 } from 'common/time/timestamp_converter';
-import {UserNotifier} from 'common/user_notifier';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';
 import {UserWarning} from 'messaging/user_warning';
@@ -51,17 +50,18 @@ import {
 import {ParserFactory as PerfettoParserFactory} from 'parsers/perfetto/parser_factory';
 import {ParserSearch} from 'parsers/search/parser_search';
 import {TracesParserFactory} from 'parsers/traces/traces_parser_factory';
+import {UserNotifier} from 'services/user_notifier';
 import {TraceFile} from 'trace/trace_file';
 import {FrameMapper} from 'trace_api/frame_mapper';
 import {Parser} from 'trace_api/parser';
 import {Trace} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TraceMetadata} from 'trace_api/trace_metadata';
 import {
   TraceEntryTypeMap,
   TraceType,
   TraceTypeUtils,
 } from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {QueryResult} from 'trace_processor/query_result';
 import {TraceProcessorFactory} from 'trace_processor/trace_processor_factory';
 import {FilesSource} from './files_source';

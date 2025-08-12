@@ -27,15 +27,14 @@ import {
   RecursiveLayerIds,
 } from 'messaging/user_warnings';
 import {AddDefaults} from 'parsers/operations/add_defaults';
-import {SetFormatters} from 'parsers/operations/set_formatters';
 import {TranslateIntDef} from 'parsers/operations/translate_intdef';
 import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
 import {queryArgs} from 'parsers/perfetto/utils';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
-import {TAMPERED_TRACE_PACKET} from 'parsers/tampered_message_type';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {EnumFormatter, LAYER_ID_FORMATTER} from 'trace/formatters';
+import {TAMPERED_TRACE_PACKET} from 'trace/proto_utils/tampered_message_type';
 import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
@@ -46,6 +45,7 @@ import {
 import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {TraceRect} from 'tree_node/trace_rect';
+import {SetFormatters} from 'viewers/operations/set_formatters';
 import {ZOrderPathsComputation} from './computations/z_order_paths_computation';
 import {DENYLIST_PROPERTIES} from './denylist_properties';
 import {HierarchyTreeBuilderSf} from './hierarchy_tree_builder_sf';

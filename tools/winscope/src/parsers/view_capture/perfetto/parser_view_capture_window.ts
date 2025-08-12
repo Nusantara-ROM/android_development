@@ -24,16 +24,14 @@ import {
 } from 'common/assert_utils';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {AddDefaults} from 'parsers/operations/add_defaults';
-import {SetFormatters} from 'parsers/operations/set_formatters';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {FakeProto, FakeProtoBuilder} from 'parsers/perfetto/fake_proto_builder';
 import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
-import {queryEntry} from 'parsers/perfetto/utils';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
-import {TAMPERED_WINSCOPE_EXTENSIONS} from 'parsers/tampered_message_type';
 import {RectsComputation} from 'parsers/view_capture/computations/rects_computation';
 import {VisibilityComputation} from 'parsers/view_capture/computations/visibility_computation';
 import {perfetto} from 'protos/perfetto/trace/static';
+import {TAMPERED_WINSCOPE_EXTENSIONS} from 'trace/proto_utils/tampered_message_type';
 import {TraceFile} from 'trace/trace_file';
 import {
   CustomQueryParserResultTypeMap,
@@ -47,6 +45,7 @@ import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertiesProvider} from 'tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {SetFormatters} from 'viewers/operations/set_formatters';
 import {HierarchyTreeBuilderVc} from './hierarchy_tree_builder_vc';
 
 export class ParserViewCaptureWindow extends AbstractParser<HierarchyTreeNode> {
@@ -102,14 +101,6 @@ export class ParserViewCaptureWindow extends AbstractParser<HierarchyTreeNode> {
   }
 
   override async getEntry(index: number): Promise<HierarchyTreeNode> {
-    let snapshotProto = (await queryEntry(
-      this.traceProcessor,
-      this.getTableName(),
-      this.entryIndexToRowIdMap,
-      index,
-    )) as perfetto.protos.IViewCapture;
-    snapshotProto = this.snapshotProtoTransformer.transform(snapshotProto);
-
     const viewProtos = (await this.queryViews(index)).map((viewProto) =>
       this.viewProtoTransformer.transform(viewProto),
     );

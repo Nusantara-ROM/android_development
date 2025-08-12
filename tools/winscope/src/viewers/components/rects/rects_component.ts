@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -27,10 +28,18 @@ import {
   SimpleChange,
   SimpleChanges,
 } from '@angular/core';
-import {MatButtonToggleChange} from '@angular/material/button-toggle';
-import {CanColor} from '@angular/material/core';
-import {MatIconRegistry} from '@angular/material/icon';
-import {MatSelectChange} from '@angular/material/select';
+import {MatButtonModule} from '@angular/material/button';
+import {
+  MatButtonToggleChange,
+  MatButtonToggleModule,
+} from '@angular/material/button-toggle';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {DomSanitizer} from '@angular/platform-browser';
 import {assertDefined} from 'common/assert_utils';
 import {Distance} from 'common/geometry/distance';
@@ -43,17 +52,38 @@ import {DisplayIdentifier} from 'viewers/common/display_identifier';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {UserOptions} from 'viewers/common/user_options';
 import {RectDblClickDetail, ViewerEvents} from 'viewers/common/viewer_events';
+import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
 import {RectSpec, TraceRectType} from 'viewers/components/rects/rect_spec';
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {iconDividerStyle} from 'viewers/components/styles/icon_divider.styles';
 import {multlineTooltip} from 'viewers/components/styles/tooltip.styles';
 import {viewerCardInnerStyle} from 'viewers/components/styles/viewer_card.styles';
+import {UserOptionsComponent} from 'viewers/components/user_options_component';
 import {Canvas} from './canvas';
 import {Mapper3D} from './mapper3d';
 import {ShadingMode} from './shading_mode';
 
+interface CanColor {
+  color: string | undefined;
+}
+
 @Component({
   selector: 'rects-view',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatDividerModule,
+    MatIconModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSliderModule,
+    MatTooltipModule,
+    CollapsibleSectionTitleComponent,
+    UserOptionsComponent,
+  ],
   template: `
     <div class="view-header">
       <div class="title-section">
@@ -86,16 +116,20 @@ import {ShadingMode} from './shading_mode';
               (mouseleave)="onInteractionEnd([rotationSlider, rotationSliderIcon])" #rotationSliderIcon> rotate_90_degrees_ccw </mat-icon>
             <mat-slider
               class="slider-rotation"
-              step="0.02"
-              min="0"
-              max="1"
               aria-label="units"
-              [value]="largeRectsMapper3d.getCameraRotationFactor()"
-              (input)="onRotationSliderChange($event.value)"
-              (focus)="$event.target.blur()"
               color="accent"
+              [step]="0.02"
+              [min]="0"
+              [max]="1"
               (mousedown)="onInteractionStart([rotationSlider, rotationSliderIcon])"
-              (mouseup)="onInteractionEnd([rotationSlider, rotationSliderIcon])" #rotationSlider></mat-slider>
+              (mouseup)="onInteractionEnd([rotationSlider, rotationSliderIcon])"
+              #rotationSlider>
+              <input
+                [value]="largeRectsMapper3d.getCameraRotationFactor()"
+                (input)="onRotationSliderChange($event.target.value)"
+                (focus)="$event.target.blur()"
+                matSliderThumb>
+            </mat-slider>
             <mat-icon
               color="accent"
               matTooltip="Spacing"
@@ -104,16 +138,20 @@ import {ShadingMode} from './shading_mode';
               (mouseleave)="onInteractionEnd([spacingSlider, spacingSliderIcon])" #spacingSliderIcon> format_letter_spacing </mat-icon>
             <mat-slider
               class="slider-spacing"
-              step="0.02"
-              min="0.02"
-              max="1"
               aria-label="units"
-              [value]="getZSpacingFactor()"
-              (input)="onSeparationSliderChange($event.value)"
-              (focus)="$event.target.blur()"
               color="accent"
+              [step]="0.02"
+              [min]="0.02"
+              [max]="1"
               (mousedown)="onInteractionStart([spacingSlider, spacingSliderIcon])"
-              (mouseup)="onInteractionEnd([spacingSlider, spacingSliderIcon])" #spacingSlider></mat-slider>
+              (mouseup)="onInteractionEnd([spacingSlider, spacingSliderIcon])"
+              #spacingSlider>
+              <input
+                [value]="getZSpacingFactor()"
+                (input)="onSeparationSliderChange($event.target.value)"
+                (focus)="$event.target.blur()"
+                matSliderThumb>
+            </mat-slider>
           </div>
 
           <div class="icon-divider"></div>
@@ -165,8 +203,9 @@ import {ShadingMode} from './shading_mode';
             *ngIf="allRectSpecs"
             [value]="rectSpec"
             (change)="onRectTypeButtonClicked($event)"
-            appearance="rect-type-toggle"
-            class="rect-type-toggle">
+            appearance="legacy"
+            class="rect-type-toggle"
+            [hideSingleSelectionIndicator]="true">
             <mat-button-toggle *ngFor="let spec of allRectSpecs" [value]="spec">
               <mat-icon
                 [color]="spec === rectSpec ? 'primary' : 'accent'"
@@ -175,13 +214,16 @@ import {ShadingMode} from './shading_mode';
             </mat-button-toggle>
           </mat-button-toggle-group>
           <span class="mat-body-1">{{groupLabel}}:</span>
-          <mat-form-field appearance="none" class="displays-select">
+          <mat-form-field
+            class="displays-select no-bottom-padding-field"
+            appearance="outline">
             <mat-select
               #displaySelect
               disableOptionCentering
               (selectionChange)="onDisplaySelectChange($event)"
               [value]="currentDisplays"
               [disabled]="internalDisplays.length === 1"
+              panelWidth="340px"
               multiple>
               <mat-select-trigger>
                 <span>
@@ -193,12 +235,12 @@ import {ShadingMode} from './shading_mode';
                 [value]="display"
                 [matTooltip]="'Display Id: ' + display.displayId"
                 matTooltipPosition="right">
-                <div class="option-label">
+                <div class="option-with-chip">
                   <button
                     mat-flat-button
                     class="option-only-button"
-                    (click)="onOnlyButtonClick($event, display)"> Only </button>
-                  <span class="option-label-text"> {{ display.name }} </span>
+                    (click)="onOnlyButtonClick($event, display)">Only</button>
+                  <span class="option-label-text text-no-overflow">{{ display.name }}</span>
                 </div>
               </mat-option>
             </mat-select>
@@ -211,7 +253,7 @@ import {ShadingMode} from './shading_mode';
       *ngIf="showRectSpecWarning()"
       class="mat-body-1 warning">
       <mat-icon class="warning-icon"> warning </mat-icon>
-      <span class="warning-message">
+      <span class="warning-message text-no-overflow">
         Showing {{rectSpec.type}} - change rect type via toggle above
       </span>
     </span>
@@ -268,10 +310,13 @@ import {ShadingMode} from './shading_mode';
       .right-btn-container {
         display: flex;
         align-items: center;
-        padding: 2px 0px;
       }
-      .right-btn-container .mat-slider-horizontal {
-        min-width: 64px !important;
+      .right-btn-container .mat-mdc-slider {
+        min-width: 48px;
+      }
+      .right-btn-container .mdc-slider__input {
+        padding: 0px !important;
+        margin: 0 16px;
       }
       .icon-divider {
         height: 50%;
@@ -295,6 +340,7 @@ import {ShadingMode} from './shading_mode';
         display: flex;
         flex-direction: row;
         align-items: baseline;
+        flex-shrink: 0;
       }
       .displays-section {
         display: flex;
@@ -304,11 +350,9 @@ import {ShadingMode} from './shading_mode';
         flex-wrap: nowrap;
       }
       .displays-select {
-        font-size: 14px;
-        background-color: var(--disabled-color);
         border-radius: 4px;
-        height: 24px;
         margin-left: 5px;
+        background-color: var(--disabled-color);
       }
       .rect-type-toggle {
         margin: 0 4px;
@@ -349,10 +393,11 @@ import {ShadingMode} from './shading_mode';
         position: absolute;
         z-index: 1000;
       }
-      .option-label {
+      .option-with-chip {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        width: 100%;
       }
       .option-only-button {
         padding: 0 10px;
@@ -363,10 +408,6 @@ import {ShadingMode} from './shading_mode';
         height: 18px;
         align-items: center;
         display: flex;
-      }
-      .option-label-text {
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
       .rect-legend {
         display: flex;
@@ -401,8 +442,7 @@ import {ShadingMode} from './shading_mode';
       .rect-legend-expand-button {
         height: 24px;
         width: 24px;
-        line-height: 24px;
-        font-size: 24px;
+        padding: 0px;
       }
     `,
     multlineTooltip,
@@ -442,7 +482,7 @@ export class RectsComponent implements OnInit, OnDestroy {
   private internalDisplays: DisplayIdentifier[] = [];
   private internalHighlightedItem = '';
   private currentDisplays: DisplayIdentifier[] = [];
-  private largeRectsMapper3d = new Mapper3D();
+  largeRectsMapper3d = new Mapper3D();
   private miniRectsMapper3d = new Mapper3D();
   private largeRectsCanvas?: Canvas;
   private miniRectsCanvas?: Canvas;
@@ -483,7 +523,7 @@ export class RectsComponent implements OnInit, OnDestroy {
 
     const canvasContainer = assertDefined(
       this.elementRef.nativeElement.querySelector<HTMLElement>(
-        '.canvas-container',
+        '.rects-content',
       ),
     );
     this.resizeObserver.observe(canvasContainer);
@@ -877,9 +917,8 @@ export class RectsComponent implements OnInit, OnDestroy {
       ((event.clientX - canvasOffset.left) / canvas.clientWidth) * 2 - 1;
     const y =
       -((event.clientY - canvasOffset.top) / canvas.clientHeight) * 2 + 1;
-    const z = 0;
 
-    return this.largeRectsCanvas?.getClickedRectId(x, y, z);
+    return this.largeRectsCanvas?.getClickedRectId(x, y);
   }
 
   private doZoomIn(ratio = 1) {

@@ -24,7 +24,6 @@ import {
 } from 'common/assert_utils';
 import {HierarchyTreeBuilderLog} from 'parsers/hierarchy_tree_builder_log';
 import {InputCoordinatePropagator} from 'parsers/input/operations/input_coordinate_propagator';
-import {SetFormatters} from 'parsers/operations/set_formatters';
 import {TranslateIntDef} from 'parsers/operations/translate_intdef';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {FakeProtoBuilder} from 'parsers/perfetto/fake_proto_builder';
@@ -32,10 +31,10 @@ import {FakeProtoTransformer} from 'parsers/perfetto/fake_proto_transformer';
 import {queryArgs, queryVsyncId} from 'parsers/perfetto/utils';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {PropertyTreeBuilderFromQueryRow} from 'parsers/property_tree_builder_from_query_row';
-import {TAMPERED_WINSCOPE_EXTENSIONS} from 'parsers/tampered_message_type';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {EnumFormatter} from 'trace/formatters';
 import {InputEventType} from 'trace/input/input_event_type';
+import {TAMPERED_WINSCOPE_EXTENSIONS} from 'trace/proto_utils/tampered_message_type';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
@@ -50,6 +49,7 @@ import {PropertiesProvider} from 'tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
+import {SetFormatters} from 'viewers/operations/set_formatters';
 
 export abstract class AbstractInputEventParser extends AbstractParser<HierarchyTreeNode> {
   protected static readonly WRAPPER_PROTO = assertDefined(

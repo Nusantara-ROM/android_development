@@ -16,8 +16,8 @@
 
 import {Store} from 'common/store/store';
 import {Trace} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {ImeTraceType, TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {NotifyHierarchyViewCallbackType} from 'viewers/common/abstract_hierarchy_viewer_presenter';
 import {AbstractViewerInputMethod} from 'viewers/common/abstract_viewer_input_method';

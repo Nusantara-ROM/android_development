@@ -17,7 +17,7 @@
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CdkMenuModule} from '@angular/cdk/menu';
 import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
-import {fakeAsync, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -25,7 +25,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
@@ -79,6 +82,7 @@ describe('MiniTimelineComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         FormsModule,
         MatButtonModule,
         MatFormFieldModule,
@@ -90,8 +94,10 @@ describe('MiniTimelineComponent', () => {
         BrowserAnimationsModule,
         DragDropModule,
         CdkMenuModule,
+        MiniTimelineComponent,
+        SliderComponent,
+        TestHostComponent,
       ],
-      declarations: [TestHostComponent, MiniTimelineComponent, SliderComponent],
     })
       .overrideComponent(MiniTimelineComponent, {
         set: {changeDetection: ChangeDetectionStrategy.Default},
@@ -232,7 +238,7 @@ describe('MiniTimelineComponent', () => {
     ]);
   });
 
-  it('updates zoom when slider moved', fakeAsync(() => {
+  it('updates zoom when slider moved', () => {
     dom.detectChanges();
     const initialZoom = new TimeRange(timestamp15, timestamp16);
     assertDefined(component.miniTimelineComponent).onZoomChanged(initialZoom);
@@ -245,7 +251,7 @@ describe('MiniTimelineComponent', () => {
     slider.dragElement(100, 8);
     const finalZoom = timelineData.getZoomRange();
     expect(finalZoom).not.toBe(initialZoom);
-  }));
+  });
 
   it('zooms in/out with buttons', () => {
     initializeTraces();
@@ -346,6 +352,9 @@ describe('MiniTimelineComponent', () => {
     const miniTimelineComponent = assertDefined(
       component.miniTimelineComponent,
     );
+    spyOnProperty(miniTimelineComponent.getCanvas(), 'width').and.returnValue(
+      1732,
+    );
     const spy = spyOn(miniTimelineComponent.onToggleBookmark, 'emit');
 
     openContextMenu(miniTimelineComponent);
@@ -364,6 +373,9 @@ describe('MiniTimelineComponent', () => {
     dom.detectChanges();
     const miniTimelineComponent = assertDefined(
       component.miniTimelineComponent,
+    );
+    spyOnProperty(miniTimelineComponent.getCanvas(), 'width').and.returnValue(
+      1732,
     );
     const spy = spyOn(miniTimelineComponent.onToggleBookmark, 'emit');
 
@@ -788,6 +800,7 @@ describe('MiniTimelineComponent', () => {
   }
 
   @Component({
+    imports: [MiniTimelineComponent],
     selector: 'host-component',
     template: `
       <mini-timeline

@@ -42,8 +42,9 @@ describe('ViewerMediaBasedComponent', () => {
         MatIconModule,
         MatSelectModule,
         BrowserAnimationsModule,
+        TestHostComponent,
+        ViewerMediaBasedComponent,
       ],
-      declarations: [TestHostComponent, ViewerMediaBasedComponent],
     }).compileComponents();
     const fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
@@ -251,6 +252,7 @@ describe('ViewerMediaBasedComponent', () => {
   }
 
   @Component({
+    imports: [ViewerMediaBasedComponent],
     selector: 'host-component',
     template: `
       <viewer-media-based

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -23,7 +25,11 @@ import {
   NgZone,
   SimpleChanges,
 } from '@angular/core';
-import {MatSelectChange} from '@angular/material/select';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {assertDefined} from 'common/assert_utils';
 import {Size} from 'common/geometry/size';
@@ -32,6 +38,16 @@ import {ViewerEvents} from 'viewers/common/viewer_events';
 
 @Component({
   selector: 'viewer-media-based',
+  standalone: true,
+  imports: [
+    CommonModule,
+    DragDropModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatTooltipModule,
+  ],
   template: `
   <div class="overlay">
     <mat-card class="container" cdkDrag cdkDragBoundary=".overlay" (dblclick)="onOverlayDblClick()">
@@ -43,7 +59,7 @@ import {ViewerEvents} from 'viewers/common/viewer_events';
           #titleText
           *ngIf="titles.length <= 1"
           cdkDragHandle
-          class="mat-body-2 overlay-title draggable"
+          class="mat-body-2 overlay-title text-no-overflow draggable"
           [matTooltip]="titles.at(index)"
           matTooltipPosition="above"
           [matTooltipShowDelay]="300"
@@ -51,7 +67,7 @@ import {ViewerEvents} from 'viewers/common/viewer_events';
 
         <mat-select
           *ngIf="titles.length > 1"
-          class="overlay-title select-title"
+          class="overlay-title text-no-overflow select-title"
           [matTooltip]="titles.at(index)"
           matTooltipPosition="above"
           [matTooltipShowDelay]="300"
@@ -147,8 +163,6 @@ import {ViewerEvents} from 'viewers/common/viewer_events';
       }
 
       .overlay-title {
-        overflow: hidden;
-        text-overflow: ellipsis;
         font-size: 14px;
         width: unset;
       }

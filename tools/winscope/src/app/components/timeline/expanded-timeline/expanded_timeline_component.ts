@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -23,6 +24,8 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
+import {MatIconModule} from '@angular/material/icon';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
 import {Trace} from 'trace_api/trace';
@@ -35,6 +38,14 @@ import {TransitionTimelineComponent} from './transition_timeline_component';
 
 @Component({
   selector: 'expanded-timeline',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatTooltipModule,
+    TransitionTimelineComponent,
+    DefaultTimelineRowComponent,
+  ],
   template: `
     <div id="expanded-timeline-wrapper" #expandedTimelineWrapper>
       <div

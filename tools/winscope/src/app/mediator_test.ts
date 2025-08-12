@@ -822,9 +822,9 @@ describe('Mediator', () => {
   it('handles trace removal requests', async () => {
     await loadPerfettoFilesAndReturnSearchViewer();
     await requestSearch('select ts from surfaceflinger_layers_snapshot');
-    removeSearchTraceAndCheckPropagation(true);
+    await removeSearchTraceAndCheckPropagation(true);
     await requestSearch('select id from surfaceflinger_layers_snapshot');
-    removeSearchTraceAndCheckPropagation(false);
+    await removeSearchTraceAndCheckPropagation(false);
   });
 
   it('handles BR file selection requests', async () => {

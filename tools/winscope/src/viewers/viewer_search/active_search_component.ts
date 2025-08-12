@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {NgTemplateOutlet} from '@angular/common';
+import {CommonModule, NgTemplateOutlet} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -24,13 +24,28 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
+import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventKey} from 'common/dom_utils';
 import {Analytics} from 'logging/analytics';
 
 @Component({
   selector: 'active-search',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+  ],
   template: `
     <span class="header">
       <span class="mat-body-2"> {{label}} </span>
@@ -50,14 +65,14 @@ import {Analytics} from 'logging/analytics';
     </mat-form-field>
 
     <div class="query-actions">
-      <div *ngIf="runningQuery" class="running-query-message">
+      <div *ngIf="runningQuery" class="running-query-message text-no-overflow">
         <mat-icon class="material-symbols-outlined"> timer </mat-icon>
         <span class="mat-body-2 message-with-spinner">
           <span>Calculating results </span>
           <mat-spinner [diameter]="20"></mat-spinner>
         </span>
       </div>
-      <span *ngIf="lastQueryExecutionTime" class="query-execution-time mat-body-1">
+      <span *ngIf="lastQueryExecutionTime" class="query-execution-time text-no-overflow mat-body-1">
        Executed in {{lastQueryExecutionTime}}
       </span>
       <button
@@ -95,13 +110,15 @@ import {Analytics} from 'logging/analytics';
       .query-field {
         height: fit-content;
       }
-      .query-field textarea {
+      .query-field .mat-mdc-form-field-input-control.mdc-text-field__input {
         height: 300px;
       }
       .query-button {
+        min-width: fit-content;
         width: fit-content;
         line-height: 24px;
         padding: 0 10px;
+        height: fit-content;
       }
       .end-align-button {
         align-self: end;
@@ -112,6 +129,7 @@ import {Analytics} from 'logging/analytics';
         justify-content: end;
         column-gap: 10px;
         align-items: center;
+        padding-bottom: 16px;
       }
       .running-query-message {
         display: flex;
@@ -120,7 +138,7 @@ import {Analytics} from 'logging/analytics';
         color: #FF8A00;
       }
       .current-search {
-        padding: 10px 0px;
+        padding-bottom: 10px;
       }
       .current-search .query {
         display: flex;

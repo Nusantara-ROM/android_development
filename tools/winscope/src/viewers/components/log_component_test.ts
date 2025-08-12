@@ -90,8 +90,6 @@ describe('LogComponent', () => {
         MatProgressSpinnerModule,
         MatTooltipModule,
         ClipboardModule,
-      ],
-      declarations: [
         TestHostComponent,
         LogComponent,
         SelectWithFilterComponent,
@@ -185,7 +183,7 @@ describe('LogComponent', () => {
     expect(dom.findAll('.entry').length).toEqual(2);
     await dom.openMatSelect();
 
-    const firstOption = dom.getMatSelectPanel().get('.mat-option');
+    const firstOption = dom.getMatSelectPanel().get('mat-option');
     firstOption.click();
     expect(dom.findAll('.entry').length).toEqual(1);
 
@@ -473,6 +471,7 @@ describe('LogComponent', () => {
   }
 
   @Component({
+    imports: [LogComponent],
     selector: 'host-component',
     template: `
         <log-view

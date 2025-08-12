@@ -16,14 +16,15 @@
 
 import {TimeRange, Timestamp} from 'common/time/time';
 import {ComponentTimestampConverter} from 'common/time/timestamp_converter';
-import {UserNotifier} from 'common/user_notifier';
+import {Analytics} from 'logging/analytics';
 import {CannotParseAllTransitions} from 'messaging/user_warnings';
+import {UserNotifier} from 'services/user_notifier';
 import {ScreenRecordingUtils} from 'trace/screen_recording_utils';
 import {Trace, TraceEntry} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TraceEntryFinder} from 'trace_api/trace_entry_finder';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType, TraceTypeUtils} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 export class TimelineData {
@@ -55,7 +56,7 @@ export class TimelineData {
     this.timestampConverter = timestampConverter;
 
     this.traces = new Traces();
-    traces.forEachTrace((trace, type) => {
+    traces.forEachTrace((trace) => {
       // Filter out empty traces or dumps with invalid timestamp (would mess up the timeline)
       if (trace.lengthEntries === 0 || trace.isDumpWithoutTimestamp()) {
         return;
@@ -255,7 +256,15 @@ export class TimelineData {
     }
 
     const firstTimestamp = trace.getEntry(0).getTimestamp();
-    const entry = TraceEntryFinder.findCorrespondingEntry(trace, position);
+    let entry;
+    try {
+      entry = TraceEntryFinder.findCorrespondingEntry(trace, position);
+    } catch (e) {
+      console.warn(
+        `Could not find corresponding entry: ${(e as Error).message}`,
+      );
+      Analytics.Error.logFrameMapError((e as Error).message);
+    }
     if (!entry) {
       return undefined;
     }
@@ -283,7 +292,11 @@ export class TimelineData {
       return undefined;
     }
 
-    const currentIndex = this.findCurrentEntryFor(trace)?.getIndex();
+    const entry = this.findCurrentEntryFor(trace);
+    if (!entry) {
+      return undefined;
+    }
+    const currentIndex = entry.getIndex();
     if (currentIndex === undefined || currentIndex === 0) {
       return undefined;
     }
@@ -296,7 +309,11 @@ export class TimelineData {
       return undefined;
     }
 
-    const currentIndex = this.findCurrentEntryFor(trace)?.getIndex();
+    const entry = this.findCurrentEntryFor(trace);
+    if (!entry) {
+      return trace.getEntry(0);
+    }
+    const currentIndex = entry.getIndex();
     if (currentIndex === undefined) {
       return trace.getEntry(0);
     }
@@ -314,7 +331,15 @@ export class TimelineData {
       return undefined;
     }
 
-    const entry = TraceEntryFinder.findCorrespondingEntry(trace, position);
+    let entry;
+    try {
+      entry = TraceEntryFinder.findCorrespondingEntry(trace, position);
+    } catch (e) {
+      console.warn(
+        `Could not find corresponding entry: ${(e as Error).message}`,
+      );
+      Analytics.Error.logFrameMapError((e as Error).message);
+    }
 
     if (
       this.lastReturnedCurrentEntries.get(trace)?.getIndex() !==

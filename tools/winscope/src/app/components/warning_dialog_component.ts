@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 
 @Component({
   selector: 'warning-dialog',
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, MatCheckboxModule, MatButtonModule],
   template: `
     <h2 class="warning-dialog-title" mat-dialog-title>
       <span> Warning </span>
     </h2>
     <mat-dialog-content class="warning-content">
-      <p class="warning-message mat-body-1"> {{data.message}} </p>
+      <p class="warning-message"> {{data.message}} </p>
 
       <div class="warning-actions">
         <div class="warning-action-boxes">
@@ -52,7 +57,6 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog';
     `
       .warning-dialog-title {
         display: flex;
-        justify-content: space-between;
       }
       .warning-close-button {
         width: 24px;
@@ -65,6 +69,7 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog';
       .warning-message {
         white-space: pre-line;
         font-size: 16px;
+        line-height: 16px;
       }
       .warning-actions {
         display: flex;

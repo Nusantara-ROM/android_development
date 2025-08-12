@@ -17,9 +17,9 @@
 import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {Trace} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {
   AbstractHierarchyViewerPresenter,

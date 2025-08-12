@@ -17,16 +17,16 @@
 import {assertDefined} from 'common/assert_utils';
 import {TransformTypeFlags} from 'common/geometry/transform_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
-import {
-  TamperedMessageType,
-  TamperedProtoField,
-} from 'parsers/tampered_message_type';
 import root from 'protos/test/fake_proto/json';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {TreeNodeUtils} from 'test/unit/tree_node_utils';
 import {EMPTY_OBJ_STRING, LAYER_ID_FORMATTER} from 'trace/formatters';
+import {
+  TamperedMessageType,
+  TamperedProtoField,
+} from 'trace/proto_utils/tampered_message_type';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
-import {SetFormatters} from './set_formatters';
+import {SetFormatters} from 'viewers/operations/set_formatters';
 
 describe('SetFormatters', () => {
   let propertyRoot: PropertyTreeNode;

@@ -18,7 +18,7 @@ syntax = "proto3";
 import "android.proto";
 
 option optimize_for = LITE_RUNTIME;
-package android.graphics;
+package android_common.graphics;
 
 message RectProto {
   int32 left   = 1;
@@ -28,7 +28,7 @@ message RectProto {
 }
 
 message PointProto {
-    option (.android.msg_privacy).dest = DEST_AUTOMATIC;
+    option (.android_common.msg_privacy).dest = DEST_AUTOMATIC;
 
     optional int32 x = 1;
     optional int32 y = 2;

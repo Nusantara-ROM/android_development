@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {
+  CdkVirtualScrollViewport,
+  ScrollingModule,
+} from '@angular/cdk/scrolling';
+import {CommonModule} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -25,7 +30,11 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSelectChange} from '@angular/material/select';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {
   isElementOverflowing,
@@ -42,12 +51,16 @@ import {
   LogFieldValue,
   LogHeader,
 } from 'viewers/common/ui_data_log';
+import {VariableHeightScrollDirective} from 'viewers/common/variable_height_scroll_directive';
 import {
   LogFilterChangeDetail,
   LogTextFilterChangeDetail,
   TimestampClickDetail,
   ViewerEvents,
 } from 'viewers/common/viewer_events';
+import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
+import {SearchBoxComponent} from 'viewers/components/search_box_component';
+import {SelectWithFilterComponent} from 'viewers/components/select_with_filter_component';
 import {
   inlineButtonStyle,
   targetWindowButtonStyle,
@@ -63,6 +76,20 @@ import {
 
 @Component({
   selector: 'log-view',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ScrollingModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    ClipboardModule,
+    CollapsibleSectionTitleComponent,
+    SelectWithFilterComponent,
+    SearchBoxComponent,
+    VariableHeightScrollDirective,
+  ],
   template: `
     <div class="view-header" *ngIf="title">
       <div class="title-section">
@@ -75,7 +102,7 @@ import {
 
     <div class="entries" [class.padded]="padEntries">
       <div class="headers table-header" *ngIf="headers.length > 0">
-        <div *ngIf="showTraceEntryTimes" class="time time-controls">
+        <div *ngIf="showTraceEntryTimes" class="time time-controls cell">
           <button
               color="primary"
               mat-icon-button
@@ -110,7 +137,7 @@ import {
           <div
             #headerEl
             *ngIf="!isHeaderWithFilter(header)"
-            class="mat-body-2 header"
+            class="mat-body-2 header text-no-overflow"
             [class]="header.spec.cssClass"
             [matTooltip]="header.spec.name"
             [matTooltipDisabled]="disableHeaderTooltip(headerEl)"
@@ -127,8 +154,7 @@ import {
                 [options]="header.filter.options"
                 [outerFilterWidth]="header.filter.outerFilterWidthCss"
                 [innerFilterWidth]="header.filter.innerFilterWidthCss"
-                appearance="none"
-                formFieldClass="no-padding-field"
+                formFieldClass="log-select-filter no-bottom-padding-field mat-form-field-appearance-none no-ripple-field"
                 (selectChange)="onFilterChange($event, header)">
             </select-with-filter>
 
@@ -137,13 +163,11 @@ import {
               [textFilter]="header.filter.textFilter"
               [label]="header.spec.name"
               [filterName]="header.spec.name"
-              appearance="none"
               [formFieldClass]="
-                'wide-field no-padding-field center-field '
+                'wide-field no-bottom-padding-field center-field mat-form-field-appearance-none no-ripple-field '
                  + header.spec.cssClass
                  + (header.filter.textFilter.filterString?.length === 0 ? ' mat-body-2' : '')
               "
-              height="fit-content"
               (filterChange)="onSearchBoxChange($event, header)"></search-box>
           </div>
         </ng-container>
@@ -189,7 +213,7 @@ import {
             [class.current]="isCurrentEntry(i)"
             [class.selected]="isSelectedEntry(i)"
             (click)="onEntryClicked(i)">
-          <div *ngIf="showTraceEntryTimes" class="time">
+          <div *ngIf="showTraceEntryTimes" class="time cell">
             <button
                 mat-button
                 class="time-button"

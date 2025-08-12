@@ -41,14 +41,16 @@ describe('TreeComponent', () => {
     mockCopyText = jasmine.createSpy();
     await TestBed.configureTestingModule({
       providers: [{provide: Clipboard, useValue: {copy: mockCopyText}}],
-      declarations: [
+      imports: [
+        MatTooltipModule,
+        MatIconModule,
+        ClipboardModule,
+        TreeNodeComponent,
         TreeComponent,
         TestHostComponent,
-        TreeNodeComponent,
         HierarchyTreeNodeDataViewComponent,
         PropertyTreeNodeDataViewComponent,
       ],
-      imports: [MatTooltipModule, MatIconModule, ClipboardModule],
     }).compileComponents();
     const fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
@@ -303,6 +305,7 @@ describe('TreeComponent', () => {
   }
 
   @Component({
+    imports: [TreeComponent],
     selector: 'host-component',
     template: `
     <div class="tree-wrapper">

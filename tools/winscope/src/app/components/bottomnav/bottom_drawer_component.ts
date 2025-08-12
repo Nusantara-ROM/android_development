@@ -22,6 +22,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -79,6 +80,8 @@ const transformDrawer: AnimationTriggerMetadata =
 @Component({
   selector: 'mat-drawer',
   exportAs: 'matDrawer',
+  standalone: true,
+  imports: [CommonModule],
   template: `
     <div class="mat-drawer-inner-container" #content>
       <ng-content></ng-content>
@@ -93,7 +96,7 @@ const transformDrawer: AnimationTriggerMetadata =
         top: unset;
         position: fixed;
         z-index: 5;
-        background-color: #f8f9fa;
+        background-color: var(--drawer-color);
         box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
       }
     `,
@@ -118,6 +121,8 @@ export class MatDrawer {
 
 @Component({
   selector: 'mat-drawer-content',
+  standalone: true,
+  imports: [CommonModule],
   template: '<ng-content></ng-content>',
   styles: [
     `
@@ -171,6 +176,8 @@ export class MatDrawerContent /*extends MatDrawerContentBase*/ {
 @Component({
   selector: 'mat-drawer-container',
   exportAs: 'matDrawerContainer',
+  standalone: true,
+  imports: [CommonModule],
   template: `
     <ng-content select="mat-drawer-content"> </ng-content>
 

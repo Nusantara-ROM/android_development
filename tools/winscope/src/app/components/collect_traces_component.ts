@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -24,8 +25,15 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
 import {MatDialog} from '@angular/material/dialog';
-import {MatSelectChange} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatListModule} from '@angular/material/list';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {equal} from 'common/array_utils';
 import {
   assertDefined,
@@ -34,7 +42,6 @@ import {
 } from 'common/assert_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {Store} from 'common/store/store';
-import {UserNotifier} from 'common/user_notifier';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';
 import {ProxyTraceTimeout} from 'messaging/user_warnings';
@@ -48,6 +55,7 @@ import {
   WinscopeEventEmitter,
 } from 'messaging/winscope_event_emitter';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
+import {UserNotifier} from 'services/user_notifier';
 import {
   AdbDeviceConnection,
   AdbDeviceState,
@@ -70,20 +78,41 @@ import {
 import {UiTraceTarget} from 'trace_collection/ui/ui_trace_target';
 import {UserRequest, UserRequestConfig} from 'trace_collection/user_request';
 import {LoadProgressComponent} from './load_progress_component';
+import {TraceConfigComponent} from './trace_config_component';
 import {
   WarningDialogComponent,
   WarningDialogData,
   WarningDialogResult,
 } from './warning_dialog_component';
+import {WdpSetupComponent} from './wdp_setup_component';
+import {WinscopeProxySetupComponent} from './winscope_proxy_setup_component';
 
 @Component({
   selector: 'collect-traces',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatIconModule,
+    WinscopeProxySetupComponent,
+    WdpSetupComponent,
+    MatListModule,
+    MatTabsModule,
+    TraceConfigComponent,
+    LoadProgressComponent,
+  ],
   template: `
     <mat-card class="collect-card">
-      <mat-card-title class="title">Collect Traces</mat-card-title>
+      <mat-card-header>
+        <mat-card-title class="title">Collect Traces</mat-card-title>
+      </mat-card-header>
 
       <mat-card-content *ngIf="controller" class="collect-card-content">
-        <mat-form-field class="connection-type">
+        <mat-form-field class="connection-type mat-form-field-appearance-none">
           <mat-label>Select connection type</mat-label>
           <mat-select
             [value]="getConnectionType()"
@@ -128,60 +157,63 @@ import {
             *ngIf="controller.getDevices().length > 0"
             class="device-selection">
             <p class="mat-body-1 instruction">Select a device:</p>
-            <mat-list>
+            <mat-action-list>
               <mat-list-item
                 *ngFor="let device of controller.getDevices()"
                 [disabled]="device.state === ${AdbDeviceState.OFFLINE}"
                 (click)="onDeviceClick(device)"
                 class="available-device">
-                <mat-icon matListIcon>
+                <mat-icon matListItemIcon>
                   {{ getDeviceStateIcon(device.state) }}
                 </mat-icon>
-                <p matLine>
+                <p matListItemTitle>
                   {{ getDeviceName(device) }}
                 </p>
-                <mat-icon
+                <mat-icon-button
+                  matListItemMeta
                   *ngIf="showTryAuthorizeButton(device)"
                   class="material-symbols-outlined authorize-btn"
                   matTooltip="Authorize device"
-                  (click)="device.tryAuthorize()">lock_open</mat-icon>
+                  (click)="device.tryAuthorize()">
+                  <mat-icon>lock_open</mat-icon>
+                </mat-icon-button>
               </mat-list-item>
-            </mat-list>
+            </mat-action-list>
           </div>
         </div>
 
         <div
           *ngIf="showTraceCollectionConfig()"
           class="trace-collection-config">
-          <mat-list>
-            <mat-list-item class="selected-device">
-              <mat-icon matListIcon>smartphone</mat-icon>
-              <p matLine>
+          <div class="selected-device">
+            <div class="device-info">
+              <mat-icon>smartphone</mat-icon>
+              <p class="mat-body-1 name text-no-overflow">
                 {{ getSelectedDevice()}}
               </p>
+            </div>
 
-              <div class="device-actions">
-                <button
-                  color="primary"
-                  class="change-btn"
-                  mat-stroked-button
-                  (click)="onChangeDeviceButton()"
-                  [disabled]="isTracingOrLoading()">
-                  Change device
-                </button>
-                <button
-                  color="primary"
-                  class="fetch-btn"
-                  mat-stroked-button
-                  (click)="fetchExistingTraces()"
-                  [disabled]="isTracingOrLoading()">
-                  Fetch traces from last session
-                </button>
-              </div>
-            </mat-list-item>
-          </mat-list>
+            <div class="device-actions">
+              <button
+                color="primary"
+                class="change-btn"
+                mat-stroked-button
+                (click)="onChangeDeviceButton()"
+                [disabled]="isTracingOrLoading()">
+                Change device
+              </button>
+              <button
+                color="primary"
+                class="fetch-btn"
+                mat-stroked-button
+                (click)="fetchExistingTraces()"
+                [disabled]="isTracingOrLoading()">
+                Fetch traces from last session
+              </button>
+            </div>
+          </div>
 
-          <mat-tab-group [selectedIndex]="targetTabIndex" class="target-tabs">
+          <mat-tab-group [mat-stretch-tabs]="false" [selectedIndex]="targetTabIndex" class="target-tabs">
             <mat-tab
               label="Trace"
               [disabled]="disableTraceSection()">
@@ -275,11 +307,9 @@ import {
       .fetch-btn {
         margin-left: 5px;
       }
-      .fetch-btn {
-        margin-top: 5px;
-      }
       .selected-device {
-        height: fit-content !important;
+        display: flex;
+        justify-content: space-between;
       }
       .mat-card.collect-card {
         display: flex;
@@ -325,6 +355,7 @@ import {
       .end-btn {
         margin: auto 0 0 0;
         padding: 1rem 0 0 0;
+        height: 48px;
       }
       .error-wrapper {
         display: flex;
@@ -337,7 +368,6 @@ import {
       .available-device {
         cursor: pointer;
       }
-
       .no-device-detected {
         display: flex;
         flex-direction: column;
@@ -346,44 +376,48 @@ import {
         align-items: center;
         height: 100%;
       }
-
       .no-device-detected p,
       .device-selection p.instruction {
         padding-top: 1rem;
         opacity: 0.6;
         font-size: 1.2rem;
       }
-
       .no-device-detected .icon {
         font-size: 3rem;
         margin: 0 0 0.2rem 0;
       }
-
+      .device-info {
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+      }
+      .device-info .mat-icon {
+        min-width: fit-content;
+      }
+      .device-actions {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .device-actions .mdc-button {
+        min-height: fit-content;
+      }
       mat-card-content {
         flex-grow: 1;
       }
-
-      mat-tab-body {
-        padding: 1rem;
-      }
-
       .loading-info {
         opacity: 0.8;
         padding: 1rem 0;
       }
-
       .target-tabs {
         flex-grow: 1;
       }
-
-      .target-tabs .mat-tab-body-wrapper {
+      .target-tabs .mat-mdc-tab-body-wrapper {
         flex-grow: 1;
       }
-
       .tabbed-section {
         height: 100%;
       }
-
       .progress-desc {
         display: flex;
         height: 100%;
@@ -392,11 +426,9 @@ import {
         align-content: center;
         align-items: center;
       }
-
       .progress-desc > * {
         max-width: 250px;
       }
-
       load-progress {
         height: 100%;
       }
@@ -634,6 +666,7 @@ export class CollectTracesComponent
       const optionText = 'Do not show again';
       const data: WarningDialogData = {
         message: `Cannot build frame mapping for IME with selected traces - some Winscope features may not work properly.
+
         Consider the following selection for valid frame mapping:
         Surface Flinger, Transactions, Window Manager, IME`,
         actions: ['Go back'],
@@ -643,6 +676,7 @@ export class CollectTracesComponent
       const dialogRef = this.dialog.open(WarningDialogComponent, {
         data,
         disableClose: true,
+        panelClass: 'warning-panel',
       });
       dialogRef
         .beforeClosed()

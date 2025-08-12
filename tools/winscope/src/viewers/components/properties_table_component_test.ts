@@ -21,7 +21,7 @@ describe('PropertiesTableComponent', () => {
 
   beforeAll(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PropertiesTableComponent],
+      imports: [PropertiesTableComponent],
     }).compileComponents();
   });
 

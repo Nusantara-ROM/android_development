@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {Component, Input} from '@angular/core';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {assertDefined} from 'common/assert_utils';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
 
 @Component({
   selector: 'transform-matrix',
+  standalone: true,
+  imports: [CommonModule, MatTooltipModule],
   template: `
     <div *ngIf="matrix" class="matrix">
       <p class="mat-body-1">

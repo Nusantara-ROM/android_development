@@ -50,14 +50,14 @@ import {
   WinscopeEvent,
 } from 'messaging/winscope_event';
 import {checkTooltips, DOMTestHelper} from 'test/unit/dom_test_utils';
-import {TracesBuilder} from 'test/unit/traces_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
+import {TracesBuilder} from 'test/unit/traces_builder';
 import {Trace} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {QueryResult} from 'trace_processor/query_result';
 import {makeSearchTraceSpies} from 'trace_processor/test_utils';
 import {CanvasDrawer} from './expanded-timeline/canvas_drawer';
@@ -110,9 +110,6 @@ describe('TimelineComponent', () => {
         DragDropModule,
         ClipboardModule,
         CdkMenuModule,
-      ],
-      declarations: [
-        TestHostComponent,
         ExpandedTimelineComponent,
         DefaultTimelineRowComponent,
         MatDrawer,
@@ -121,6 +118,7 @@ describe('TimelineComponent', () => {
         MiniTimelineComponent,
         TimelineComponent,
         SliderComponent,
+        TestHostComponent,
         TransitionTimelineComponent,
       ],
     })
@@ -388,7 +386,7 @@ describe('TimelineComponent', () => {
     loadAllTraces(component, dom, false);
     await dom.openMatSelect();
 
-    const matOptions = dom.getMatSelectPanel().findAll('mat-option'); // [WM, SF, SR, ProtoLog, VC]
+    const matOptions = dom.getMatSelectPanel().findAll('.mat-mdc-option'); // [WM, SF, SR, ProtoLog, VC]
 
     for (const i of [0, 2, 4]) {
       expect(matOptions[i].getHTMLElement().ariaDisabled).toEqual('false');
@@ -1395,6 +1393,7 @@ describe('TimelineComponent', () => {
   }
 
   @Component({
+    imports: [TimelineComponent],
     selector: 'host-component',
     template: `
       <timeline

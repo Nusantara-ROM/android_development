@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 import {CommonModule} from '@angular/common';
-import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {ConnectionState} from 'trace_collection/connection_state';
@@ -31,13 +33,14 @@ describe('WdpSetupComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        NoopAnimationsModule,
         CommonModule,
         MatIconModule,
         BrowserAnimationsModule,
         MatButtonModule,
+        WdpSetupComponent,
       ],
-      declarations: [WdpSetupComponent],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [],
     }).compileComponents();
     const fixture = TestBed.createComponent(WdpSetupComponent);
     component = fixture.componentInstance;

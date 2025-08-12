@@ -14,27 +14,48 @@
  * limitations under the License.
  */
 
-import {CdkAccordionItem} from '@angular/cdk/accordion';
-import {NgTemplateOutlet} from '@angular/common';
+import {CdkAccordionItem, CdkAccordionModule} from '@angular/cdk/accordion';
+import {CdkMenuModule} from '@angular/cdk/menu';
+import {CommonModule, NgTemplateOutlet} from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
   Inject,
   QueryList,
   SimpleChanges,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import {FormControl, ValidationErrors, Validators} from '@angular/forms';
-import {MatTabGroup} from '@angular/material/tabs';
+import {
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {
+  MatTabChangeEvent,
+  MatTabGroup,
+  MatTabsModule,
+} from '@angular/material/tabs';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {SEARCH_VIEWS} from 'app/trace_search/trace_search_initializer';
 import {assertDefined} from 'common/assert_utils';
 import {TimeDuration} from 'common/time/time_duration';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
+import {TimeUtils} from 'common/time/time_utils';
 import {Analytics} from 'logging/analytics';
 import {TraceType} from 'trace_api/trace_type';
-import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
+import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {
   AddQueryClickDetail,
   ClearQueryClickDetail,
@@ -43,16 +64,40 @@ import {
   SearchQueryClickDetail,
   ViewerEvents,
 } from 'viewers/common/viewer_events';
+import {CollapsedSectionsComponent} from 'viewers/components/collapsed_sections_component';
+import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
+import {LogComponent} from 'viewers/components/log_component';
 import {
   viewerCardInnerStyle,
   viewerCardStyle,
 } from 'viewers/components/styles/viewer_card.styles';
 import {ViewerComponent} from 'viewers/components/viewer_component';
 import {ActiveSearchComponent} from './active_search_component';
-import {ListItemOption} from './search_list_component';
+import {ListItemOption, SearchListComponent} from './search_list_component';
 import {CurrentSearch, ListedSearch, UiData} from './ui_data';
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    CollapsedSectionsComponent,
+    CollapsibleSectionTitleComponent,
+    LogComponent,
+    ActiveSearchComponent,
+    SearchListComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTabsModule,
+    CdkMenuModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    CdkAccordionModule,
+    MatDividerModule,
+  ],
   selector: 'viewer-search',
   template: `
     <div class="card-grid" *ngIf="inputData">
@@ -66,25 +111,28 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
         class="global-search"
         [class.collapsed]="sections.isSectionCollapsed(CollapsibleSectionType.GLOBAL_SEARCH)"
         (click)="onGlobalSearchClick($event)">
-        <div class="title-section">
+        <div class="title-section" #globalSearchTitle>
           <collapsible-section-title
-            class="padded-title"
             [title]="CollapsibleSectionType.GLOBAL_SEARCH"
             (collapseButtonClicked)="sections.onCollapseStateChange(CollapsibleSectionType.GLOBAL_SEARCH, true)"></collapsible-section-title>
-            <span class="mat-body-2 message-with-spinner" *ngIf="initializing">
+            <span class="mat-body-2 message-with-spinner text-no-overflow" *ngIf="initializing">
               <span>Initializing</span>
               <mat-spinner [diameter]="20"></mat-spinner>
             </span>
         </div>
 
-        <mat-tab-group class="search-tabs" (animationDone)="onSearchTabChanged()">
+        <mat-tab-group
+          [mat-stretch-tabs]="false"
+          class="search-tabs"
+          [style.height]="getTabsHeight()"
+          (animationDone)="onSearchTabChanged()">
           <mat-tab label="Search">
             <div class="body">
               <span class="mat-body-2">
                 {{globalSearchText}}
               </span>
 
-              <ng-container *ngFor="let section of searchSections; let i = index">
+              <ng-container *ngFor="let section of searchSections; index as i">
                 <mat-divider *ngIf="i > 0" class="section-divider"></mat-divider>
                 <active-search
                   [canClear]="searchSections.length > 1"
@@ -123,7 +171,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
 
           <ng-template #saveQueryField let-query="query" let-control="control">
             <div class="outline-field save-field">
-              <mat-form-field appearance="outline">
+              <mat-form-field class="no-bottom-padding-field" appearance="outline">
                 <input matInput [formControl]="control" (keydown.enter)="onSaveQueryClick(query, control)"/>
                 <mat-error *ngIf="control.invalid && control.value">Query with that name already exists.</mat-error>
               </mat-form-field>
@@ -143,13 +191,19 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
         [class.collapsed]="sections.isSectionCollapsed(CollapsibleSectionType.SEARCH_RESULTS)">
         <div class="title-section">
           <collapsible-section-title
-            class="padded-title"
             [title]="CollapsibleSectionType.SEARCH_RESULTS"
             (collapseButtonClicked)="sections.onCollapseStateChange(CollapsibleSectionType.SEARCH_RESULTS, true)"></collapsible-section-title>
         </div>
-        <div class="results-placeholder placeholder-text mat-body-1" *ngIf="showResultsPlaceholder()"> Run a search to view tabulated results. </div>
-        <mat-tab-group class="result-tabs">
-          <mat-tab *ngFor="let curr of getCurrentSearchesWithResults()" [label]="getQueryLabel(curr.uid)">
+        <div
+          *ngIf="showResultsPlaceholder()"
+          class="results-placeholder placeholder-text mat-body-1"> Run a search to view tabulated results. </div>
+        <mat-tab-group
+          [mat-stretch-tabs]="false"
+          (selectedTabChange)="onResultTabChange($event)"
+          class="result-tabs">
+          <mat-tab
+            *ngFor="let curr of getCurrentSearchesWithResults(); index as i; trackBy: trackResultTabByUid"
+            [label]="getQueryLabel(curr.uid)">
             <div class="result">
               <div class="results-table">
                 <log-view
@@ -164,7 +218,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
                   [showCurrentTimeButton]="false"
                   [padEntries]="false"
                   [isFetchingData]="curr.result.isFetchingData"
-                  [checkScrollViewport]="curr.result.checkScrollViewport"></log-view>
+                  [checkScrollViewport]="curr.result.checkScrollViewport || checkScrollViewport === i"></log-view>
               </div>
             </div>
           </mat-tab>
@@ -176,7 +230,6 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
         [class.collapsed]="sections.isSectionCollapsed(CollapsibleSectionType.HOW_TO_SEARCH)">
         <div class="title-section">
           <collapsible-section-title
-            class="padded-title"
             [title]="CollapsibleSectionType.HOW_TO_SEARCH"
             (collapseButtonClicked)="sections.onCollapseStateChange(CollapsibleSectionType.HOW_TO_SEARCH, true)"></collapsible-section-title>
         </div>
@@ -235,7 +288,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
   `,
   styles: [
     `
-      .search-tabs, .result-tabs {
+      .result-tabs {
         height: 100%;
       }
       .message-with-spinner {
@@ -243,6 +296,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        padding: 8px 0px 8px 8px;
       }
       .global-search .body {
         display: flex;
@@ -254,7 +308,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
       active-search {
         display: flex;
         flex-direction: column;
-        margin-top: 12px;
+        margin: 12px 0;
       }
 
       .result, .results-table {
@@ -301,6 +355,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
         align-items: center;
         cursor: pointer;
         justify-content: space-between;
+        word-break: break-all;
       }
       .how-to-search .view-title {
         display: flex;
@@ -317,6 +372,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
         padding: 8px;
         display: flex;
         flex-direction: column;
+        width: fit-content;
       }
       .how-to-search table {
         border-spacing: 0;
@@ -367,6 +423,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
 })
 export class ViewerSearchComponent extends ViewerComponent<UiData> {
   @ViewChild('saveQueryField') saveQueryField: NgTemplateOutlet | undefined;
+  @ViewChild('globalSearchTitle') globalSearchTitle: ElementRef | undefined;
   @ViewChildren(MatTabGroup) matTabGroups: QueryList<MatTabGroup> | undefined;
   @ViewChildren(ActiveSearchComponent) activeSearchComponents:
     | QueryList<ActiveSearchComponent>
@@ -397,6 +454,9 @@ export class ViewerSearchComponent extends ViewerComponent<UiData> {
 
   private runFromOptions = false;
   private editFromOptions = false;
+  private globalSearchTitleHeight = 48;
+  private checkScrollViewport = -1;
+
   private readonly editOption: ListItemOption = {
     name: 'Edit',
     icon: 'edit',
@@ -444,12 +504,18 @@ export class ViewerSearchComponent extends ViewerComponent<UiData> {
   `;
   readonly SEARCH_VIEWS = SEARCH_VIEWS;
 
-  constructor(@Inject(ElementRef) private elementRef: ElementRef<HTMLElement>) {
+  constructor(
+    @Inject(ElementRef) private elementRef: ElementRef<HTMLElement>,
+    @Inject(ChangeDetectorRef) private changeDetectorRef: ChangeDetectorRef,
+  ) {
     super();
   }
 
   ngAfterViewInit() {
+    this.globalSearchTitleHeight =
+      this.globalSearchTitle?.nativeElement.clientHeight ?? 48;
     this.saveOption.menu = this.saveQueryField;
+    this.changeDetectorRef.detectChanges();
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
@@ -550,6 +616,26 @@ export class ViewerSearchComponent extends ViewerComponent<UiData> {
     if (assertDefined(this.matTabGroups).first.selectedIndex === 0) {
       finalComponent.elementRef.nativeElement.scrollIntoView();
     }
+  }
+
+  getTabsHeight(): string {
+    return 'calc(100% - ' + this.globalSearchTitleHeight + 'px)';
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.globalSearchTitleHeight =
+      this.globalSearchTitle?.nativeElement.clientHeight ?? 48;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  onResultTabChange(event: MatTabChangeEvent) {
+    this.checkScrollViewport = event.index;
+    TimeUtils.sleepMs(50).then(() => (this.checkScrollViewport = -1));
+  }
+
+  trackResultTabByUid(i: number, j: CurrentSearch) {
+    return j.uid;
   }
 
   private updateSearchSections(simpleChanges: SimpleChanges) {

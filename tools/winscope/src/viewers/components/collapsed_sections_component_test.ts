@@ -19,8 +19,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {assertDefined} from 'common/assert_utils';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
-import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
+import {CollapsibleSections} from 'viewers/common/collapsible_sections';
 import {CollapsedSectionsComponent} from './collapsed_sections_component';
 
 describe('CollapsedSectionsComponent', () => {
@@ -29,8 +29,7 @@ describe('CollapsedSectionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatButtonModule, MatIconModule],
-      declarations: [CollapsedSectionsComponent],
+      imports: [CollapsedSectionsComponent, MatButtonModule, MatIconModule],
     }).compileComponents();
     const fixture = TestBed.createComponent(CollapsedSectionsComponent);
     component = fixture.componentInstance;
@@ -63,7 +62,7 @@ describe('CollapsedSectionsComponent', () => {
     let sections = dom.findAll('.collapsed-section');
     expect(sections.length).toEqual(1);
     sections[0].checkText('HIERARCHY');
-    expect(sections[0].find('button')).toBeDefined();
+    expect(sections[0].find('.mat-icon')).toBeDefined();
 
     assertDefined(component.sections).onCollapseStateChange(
       CollapsibleSectionType.RECTS,
@@ -73,14 +72,14 @@ describe('CollapsedSectionsComponent', () => {
     sections = dom.findAll('.collapsed-section');
     expect(sections.length).toEqual(2);
     sections[0].checkText('RECTS');
-    expect(sections[0].find('button')).toBeDefined();
+    expect(sections[0].find('.mat-icon')).toBeDefined();
     sections[1].checkText('HIERARCHY');
-    expect(sections[1].find('button')).toBeDefined();
+    expect(sections[1].find('.mat-icon')).toBeDefined();
   });
 
   it('emits sectionChange event', () => {
     const spy = spyOn(component.sectionChange, 'emit');
-    dom.findAndClick('.collapsed-section button');
+    dom.findAndClick('.collapsed-section');
     expect(spy).toHaveBeenCalledOnceWith(CollapsibleSectionType.HIERARCHY);
   });
 });

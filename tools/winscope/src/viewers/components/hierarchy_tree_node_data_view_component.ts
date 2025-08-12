@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {Component, Input} from '@angular/core';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {Chip} from 'viewers/common/chip';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {hierarchyTreeNodeDataViewStyles} from 'viewers/components/styles/tree_node_data_view.styles';
 
 @Component({
   selector: 'hierarchy-tree-node-data-view',
+  standalone: true,
+  imports: [CommonModule, MatTooltipModule],
   template: `
     <span class="mat-body-1" *ngIf="node">
       <span class="mat-body-2" *ngIf="node.heading()">{{ node.heading() }}</span>

@@ -15,18 +15,27 @@
  */
 
 // organize-imports-ignore
-import 'common/global_init';
+import 'app/global_init';
+import '@angular/compiler';
 import {globalConfig} from './common/global_config';
 globalConfig.set({
   MODE: 'PROD',
 });
 
 import {enableProdMode} from '@angular/core';
-import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {AppModule} from './app/app_module';
+import {bootstrapApplication} from '@angular/platform-browser';
+import {provideAnimations} from '@angular/platform-browser/animations';
+import {AppComponent} from 'app/components/app_component';
+import {GlobalErrorHandler} from 'app/global_error_handler';
+import {ErrorHandler} from '@angular/core';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 enableProdMode();
 
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideAnimations(),
+    provideHttpClient(withInterceptorsFromDi()),
+    {provide: ErrorHandler, useClass: GlobalErrorHandler},
+  ],
+}).catch((e) => console.error(e));

@@ -15,7 +15,6 @@
  */
 import {assertTrue} from 'common/assert_utils';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
-import {UserNotifier} from 'common/user_notifier';
 import {ProgressListener} from 'messaging/progress_listener';
 import {InvalidLegacyTrace} from 'messaging/user_warnings';
 import {ParserEventLog} from 'parsers/events/parser_eventlog';
@@ -24,9 +23,9 @@ import {ParserInputMethodClients} from 'parsers/input_method/legacy/parser_input
 import {ParserInputMethodManagerService} from 'parsers/input_method/legacy/parser_input_method_manager_service';
 import {ParserInputMethodService} from 'parsers/input_method/legacy/parser_input_method_service';
 import {ParserProtoLog} from 'parsers/protolog/legacy/parser_protolog';
-import {ParserScreenshot} from 'parsers/screenshot/parser_screenshot';
 import {ParserScreenRecording} from 'parsers/screen_recording/parser_screen_recording';
 import {ParserScreenRecordingLegacy} from 'parsers/screen_recording/parser_screen_recording_legacy';
+import {ParserScreenshot} from 'parsers/screenshot/parser_screenshot';
 import {ParserSurfaceFlinger} from 'parsers/surface_flinger/legacy/parser_surface_flinger';
 import {ParserTransactions} from 'parsers/transactions/legacy/parser_transactions';
 import {ParserTransitionsShell} from 'parsers/transitions/legacy/parser_transitions_shell';
@@ -34,6 +33,7 @@ import {ParserTransitionsWm} from 'parsers/transitions/legacy/parser_transitions
 import {ParserViewCapture} from 'parsers/view_capture/legacy/parser_view_capture';
 import {ParserWindowManager} from 'parsers/window_manager/legacy/parser_window_manager';
 import {ParserWindowManagerDump} from 'parsers/window_manager/legacy/parser_window_manager_dump';
+import {UserNotifier} from 'services/user_notifier';
 import {TraceFile} from 'trace/trace_file';
 import {Parser} from 'trace_api/parser';
 import {TraceMetadata} from 'trace_api/trace_metadata';

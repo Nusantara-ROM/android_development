@@ -40,12 +40,12 @@ import {DisplayIdentifier} from 'viewers/common/display_identifier';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {RectDblClickDetail, ViewerEvents} from 'viewers/common/viewer_events';
 import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
-import {RectsComponent} from 'viewers/components/rects/rects_component';
 import {
   RectLegendOption,
   RectSpec,
   TraceRectType,
 } from 'viewers/components/rects/rect_spec';
+import {RectsComponent} from 'viewers/components/rects/rects_component';
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {UserOptionsComponent} from 'viewers/components/user_options_component';
 import {Camera} from './camera';
@@ -93,8 +93,6 @@ describe('RectsComponent', () => {
         BrowserAnimationsModule,
         MatFormFieldModule,
         MatButtonToggleModule,
-      ],
-      declarations: [
         TestHostComponent,
         RectsComponent,
         CollapsibleSectionTitleComponent,
@@ -112,18 +110,22 @@ describe('RectsComponent', () => {
   });
 
   it('can be created', () => {
+    dom.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('renders rotation slider', () => {
+    dom.detectChanges();
     expect(dom.find('mat-slider.slider-rotation')).toBeDefined();
   });
 
   it('renders separation slider', () => {
+    dom.detectChanges();
     expect(dom.find('mat-slider.slider-spacing')).toBeDefined();
   });
 
   it('renders canvas', () => {
+    dom.detectChanges();
     expect(dom.find(largeRectsCanvasSelector)).toBeDefined();
   });
 
@@ -151,10 +153,11 @@ describe('RectsComponent', () => {
   it('draws scene when rotation slider changes', () => {
     dom.detectChanges();
     resetSpies();
-    const slider = dom.get('.slider-rotation');
+    const sliderInput = dom.get('.slider-rotation input');
+    sliderInput.updateValue('0.5');
 
     checkAllSpiesCalled(0);
-    slider.dispatchEvent(new MouseEvent('mousedown'));
+    sliderInput.dispatchEvent(new Event('input'));
     expect(updateViewPositionSpy).toHaveBeenCalledTimes(1);
     expect(updateRectsSpy).toHaveBeenCalledTimes(0);
     expect(updateLabelsSpy).toHaveBeenCalledTimes(1);
@@ -164,17 +167,18 @@ describe('RectsComponent', () => {
   it('draws scene when spacing slider changes', () => {
     dom.detectChanges();
     resetSpies();
-    const slider = dom.get('.slider-spacing');
+    const sliderInput = dom.get('.slider-spacing input');
+    sliderInput.updateValue('0.5');
 
     checkAllSpiesCalled(0);
-    slider.dispatchEvent(new MouseEvent('mousedown'));
+    sliderInput.dispatchEvent(new Event('input'));
     checkAllSpiesCalled(1);
   });
 
   it('unfocuses spacing slider on click', () => {
     dom.detectChanges();
     const spacingSlider = dom.get('.slider-spacing');
-    checkSliderUnfocusesOnClick(spacingSlider, 0.02);
+    checkSliderUnfocusesOnClick(spacingSlider, 1);
   });
 
   it('unfocuses rotation slider on click', () => {
@@ -232,7 +236,7 @@ describe('RectsComponent', () => {
     dom.openMatSelect();
     const [display0, display1] = dom
       .getMatSelectPanel()
-      .findAll('.mat-option .option-only-button');
+      .findAll('mat-option .option-only-button');
 
     // no change
     display0.click();
@@ -916,7 +920,7 @@ describe('RectsComponent', () => {
 
     const wrapperEl = optionsWrapper.getHTMLElement();
     wrapperEl.style.width = wrapperEl.clientWidth / 2 + 'px';
-    dom.detectChanges(); // halve wrapper width so options no longer all fit
+    dom.detectChanges(); // halve wrapper width so options no longer all it
     const expandButton = legendEl.get('.rect-legend-expand-button');
     expandButton.checkTextExact('more_horiz');
     expandButton.click();
@@ -1070,7 +1074,7 @@ describe('RectsComponent', () => {
   }
 
   function getDisplayOptions() {
-    return dom.getMatSelectPanel().findAll('.mat-option');
+    return dom.getMatSelectPanel().findAll('mat-option');
   }
 
   function checkAllSpiesCalled(times: number) {
@@ -1096,6 +1100,7 @@ describe('RectsComponent', () => {
   }
 
   @Component({
+    imports: [RectsComponent],
     selector: 'host-component',
     template: `
       <rects-view

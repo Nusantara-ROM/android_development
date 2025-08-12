@@ -15,6 +15,7 @@
  */
 
 import {Component, Input} from '@angular/core';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {
   getTimeRangeForTransition,
   isTransitionWithUnknownEnd,
@@ -33,6 +34,8 @@ import {AbstractTimelineRowComponent} from './abstract_timeline_row_component';
 
 @Component({
   selector: 'transition-timeline',
+  standalone: true,
+  imports: [MatTooltipModule],
   template: `
     <div
       class="transition-timeline"

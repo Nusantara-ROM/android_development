@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -22,6 +23,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import {MatDividerModule} from '@angular/material/divider';
 import {PersistentStore} from 'common/store/persistent_store';
 import {Analytics} from 'logging/analytics';
 import {TraceType} from 'trace_api/trace_type';
@@ -31,12 +33,26 @@ import {TextFilter} from 'viewers/common/text_filter';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
 import {UserOptions} from 'viewers/common/user_options';
 import {ViewerEvents} from 'viewers/common/viewer_events';
+import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
 import {nodeStyles} from 'viewers/components/styles/node.styles';
+import {TreeComponent} from 'viewers/components/tree_component';
+import {UserOptionsComponent} from 'viewers/components/user_options_component';
+import {ViewCapturePropertyGroupsComponent} from 'viewers/components/view_capture_property_groups_component';
 import {SearchBoxComponent} from './search_box_component';
 import {viewerCardInnerStyle} from './styles/viewer_card.styles';
 
 @Component({
   selector: 'properties-view',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDividerModule,
+    CollapsibleSectionTitleComponent,
+    SearchBoxComponent,
+    UserOptionsComponent,
+    ViewCapturePropertyGroupsComponent,
+    TreeComponent,
+  ],
   template: `
     <div class="view-header">
       <div class="title-section">
@@ -46,7 +62,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           [title]="title"
           (collapseButtonClicked)="collapseButtonClicked.emit()"></collapsible-section-title>
         <search-box
-          formFieldClass="applied-field"
+          formFieldClass="applied-field no-bottom-padding-field mat-form-field-appearance-none"
           [textFilter]="textFilter"
           (filterChange)="onFilterChange($event)"></search-box>
       </div>
@@ -101,6 +117,10 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
         flex-direction: column;
         overflow-y: auto;
         padding: 0px 12px;
+      }
+
+      search-box {
+        margin-top: 8px;
       }
     `,
     nodeStyles,

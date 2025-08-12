@@ -52,13 +52,15 @@ describe('TreeNodeComponent', () => {
     mockCopyText = jasmine.createSpy();
     await TestBed.configureTestingModule({
       providers: [{provide: Clipboard, useValue: {copy: mockCopyText}}],
-      declarations: [
+      imports: [
+        MatIconModule,
+        MatTooltipModule,
+        ClipboardModule,
         TreeNodeComponent,
+        TestHostComponent,
         HierarchyTreeNodeDataViewComponent,
         PropertyTreeNodeDataViewComponent,
-        TestHostComponent,
       ],
-      imports: [MatIconModule, MatTooltipModule, ClipboardModule],
     }).compileComponents();
     const fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
@@ -149,7 +151,9 @@ describe('TreeNodeComponent', () => {
 
   it('assigns diff css classes to expand tree button', () => {
     const expandButton = dom.get('.expand-tree-btn');
-    expandButton.checkClassNameExact('icon-button expand-tree-btn');
+    expandButton.checkClassName('icon-button expand-tree-btn');
+    expandButton.checkClassName('added', false);
+    expandButton.checkClassName('modified', false);
     component.node = UiHierarchyTreeNode.from(
       new HierarchyTreeBuilder()
         .setId('LayerTraceEntry')
@@ -161,7 +165,8 @@ describe('TreeNodeComponent', () => {
     );
     component.node.getChildByName('Child 1')?.setDiff(DiffType.ADDED);
     dom.detectChanges();
-    expandButton.checkClassNameExact('icon-button expand-tree-btn added');
+    expandButton.checkClassName('added');
+    expandButton.checkClassName('modified', false);
 
     component.node = UiHierarchyTreeNode.from(
       new HierarchyTreeBuilder()
@@ -176,7 +181,8 @@ describe('TreeNodeComponent', () => {
     child1.setDiff(DiffType.ADDED);
     child1.getChildByName('Child 2')?.setDiff(DiffType.DELETED);
     dom.detectChanges();
-    expandButton.checkClassNameExact('icon-button expand-tree-btn modified');
+    expandButton.checkClassName('added', false);
+    expandButton.checkClassName('modified');
   });
 
   it('pins node on click', () => {
@@ -227,6 +233,7 @@ describe('TreeNodeComponent', () => {
   });
 
   @Component({
+    imports: [TreeNodeComponent],
     selector: 'host-component',
     template: `
       <tree-node

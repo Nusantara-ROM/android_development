@@ -18,7 +18,6 @@ import {assertDefined} from 'common/assert_utils';
 import {Store} from 'common/store/store';
 import {Timestamp} from 'common/time/time';
 import {TimeUtils} from 'common/time/time_utils';
-import {UserNotifier} from 'common/user_notifier';
 import {CrossToolProtocol} from 'cross_tool/cross_tool_protocol';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';
@@ -48,6 +47,7 @@ import {
 } from 'messaging/winscope_event';
 import {WinscopeEventEmitter} from 'messaging/winscope_event_emitter';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
+import {UserNotifier} from 'services/user_notifier';
 import {TraceEntry} from 'trace_api/trace';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TracePosition} from 'trace_api/trace_position';

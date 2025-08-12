@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {CommonModule} from '@angular/common';
 import {Component, ElementRef, Inject, Input} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
 import {assertDefined} from 'common/assert_utils';
 import {Timestamp} from 'common/time/time';
 import {DiffType} from 'viewers/common/diff_type';
@@ -27,6 +29,8 @@ import {
 
 @Component({
   selector: 'property-tree-node-data-view',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule],
   template: `
     <div class="node-property" *ngIf="node">
       <span class=" mat-body-1 property-key"> {{ getKey(node) }} </span>
@@ -51,7 +55,7 @@ import {
           </div>
           <span
             *ngIf="!node.canPropagate()"
-            [class]="[valueClass()]"
+            [class]="valueClass()"
             class="mat-body-2 value new-value">{{ node.formattedValue() }}</span>
           <s *ngIf="isModified()" class="mat-body-2 old-value">{{ node.getOldValue() }}</s>
         </ng-container>
@@ -119,7 +123,7 @@ export class PropertyTreeNodeDataViewComponent {
     this.elementRef.nativeElement.dispatchEvent(event);
   }
 
-  valueClass() {
+  valueClass(): string | undefined {
     const property = assertDefined(this.node).formattedValue();
     if (property === 'null') {
       return property;
@@ -133,7 +137,7 @@ export class PropertyTreeNodeDataViewComponent {
     if (!isNaN(Number(property))) {
       return 'number';
     }
-    return null;
+    return undefined;
   }
 
   timeClass() {

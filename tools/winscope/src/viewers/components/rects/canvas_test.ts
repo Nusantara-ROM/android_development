@@ -275,11 +275,7 @@ describe('Canvas', () => {
       const rect = makeUiRect3D(rectId);
       canvas.updateRects([rect]);
       const rectMesh = getRectMesh(rectId);
-      const defaultVisibleRectColor = new THREE.Color(
-        200 / 255,
-        232 / 255,
-        183 / 255,
-      );
+      const defaultVisibleRectColor = new THREE.Color(0xc8e8b7);
       checkMaterialColorAndOpacity(
         rectMesh,
         defaultVisibleRectColor,
@@ -298,7 +294,7 @@ describe('Canvas', () => {
       canvas.updateRects([nonVisible]);
       checkMaterialColorAndOpacity(
         rectMesh,
-        new THREE.Color(220 / 255, 220 / 255, 220 / 255),
+        new THREE.Color(0xdcdcdc),
         Canvas.OPACITY_REGULAR,
       );
 
@@ -1035,7 +1031,7 @@ describe('Canvas', () => {
       canvas.updateRects([rect]);
       canvas.renderView();
 
-      const id = canvas.getClickedRectId(0.1, 0.1, 0);
+      const id = canvas.getClickedRectId(0.1, 0.1);
       expect(id).toEqual('rect1');
     });
 
@@ -1048,21 +1044,21 @@ describe('Canvas', () => {
       canvas.updateRects([rect]);
       canvas.renderView();
 
-      const id = canvas.getClickedRectId(0.1, 0.1, 0);
+      const id = canvas.getClickedRectId(0.1, 0.1);
       expect(id).toEqual('rect1');
     });
 
     it('does not identify rect if not clickable', () => {
       const rect = makeUiRect3D(rectId);
       canvas.updateRects([rect]);
-      expect(canvas.getClickedRectId(0.1, 0.1, 0)).toBeUndefined();
+      expect(canvas.getClickedRectId(0.1, 0.1)).toBeUndefined();
     });
 
     it('does not identify rect out of click area', () => {
       const rect = makeUiRect3D(rectId);
       rect.isClickable = true;
       canvas.updateRects([rect]);
-      expect(canvas.getClickedRectId(2, 2, 0)).toBeUndefined();
+      expect(canvas.getClickedRectId(2, 2)).toBeUndefined();
     });
   });
 

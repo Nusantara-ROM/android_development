@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {Component, Input} from '@angular/core';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @Component({
   selector: 'load-progress',
+  standalone: true,
+  imports: [CommonModule, MatIconModule, MatProgressBarModule],
   template: `
     <div class="container-progress">
       <p class="mat-body-3">
@@ -32,7 +37,7 @@ import {Component, Input} from '@angular/core';
         [value]="progressPercentage">
       </mat-progress-bar>
 
-      <p class="mat-body-1">{{ message }}</p>
+      <p class="mat-body-1 progress-message">{{ message }}</p>
     </div>
   `,
   styles: [
@@ -58,6 +63,9 @@ import {Component, Input} from '@angular/core';
       }
       mat-card-content {
         flex-grow: 1;
+      }
+      .progress-message {
+        padding-top: 4px;
       }
     `,
   ],

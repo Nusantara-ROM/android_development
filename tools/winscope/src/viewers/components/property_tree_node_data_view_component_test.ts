@@ -39,8 +39,11 @@ describe('PropertyTreeNodeDataViewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [{provide: ComponentFixtureAutoDetect, useValue: true}],
-      declarations: [PropertyTreeNodeDataViewComponent],
-      imports: [MatButtonModule, BrowserAnimationsModule],
+      imports: [
+        MatButtonModule,
+        BrowserAnimationsModule,
+        PropertyTreeNodeDataViewComponent,
+      ],
     }).compileComponents();
     const fixture = TestBed.createComponent(PropertyTreeNodeDataViewComponent);
     component = fixture.componentInstance;

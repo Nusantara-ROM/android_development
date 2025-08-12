@@ -44,16 +44,8 @@ export class Canvas {
   static readonly RECT_COLOR_HIGHLIGHTED_DARK_MODE = new THREE.Color(
     0x5f718a, // Keep in sync with .dark-mode --selected-element-color in material-theme.scss
   );
-  static readonly RECT_COLOR_VISIBLE = new THREE.Color(
-    200 / 255,
-    232 / 255,
-    183 / 255,
-  );
-  static readonly RECT_COLOR_NOT_VISIBLE = new THREE.Color(
-    220 / 255,
-    220 / 255,
-    220 / 255,
-  );
+  static readonly RECT_COLOR_VISIBLE = new THREE.Color(0xc8e8b7);
+  static readonly RECT_COLOR_NOT_VISIBLE = new THREE.Color(0xdcdcdc);
   static readonly RECT_COLOR_HAS_CONTENT = new THREE.Color(0xad42f5);
   static readonly RECT_EDGE_COLOR_LIGHT_MODE = 0x000000;
   static readonly RECT_EDGE_COLOR_DARK_MODE = 0xffffff;
@@ -79,11 +71,7 @@ export class Canvas {
   };
   private static readonly RECT_EDGE_BOLD_WIDTH = 10;
 
-  renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    canvas: this.canvasRects,
-    alpha: true,
-  });
+  renderer: THREE.WebGLRenderer;
   labelRenderer?: CSS2DRenderer;
 
   private camera = new THREE.OrthographicCamera(
@@ -98,18 +86,25 @@ export class Canvas {
   private pinnedIdToColorMap = new Map<string, THREE.Color>();
   private lastAssignedDefaultPinnedColor = false;
   private firstDraw = true;
-  private lastScene: SceneState = {
-    isDarkMode: this.isDarkMode(),
-    translatedPos: undefined,
-    rectIdToRectGraphics: new Map<string, RectGraphics>(),
-    rectIdToLabelGraphics: new Map<string, LabelGraphics>(),
-  };
+  private lastScene: SceneState;
 
   constructor(
     private canvasRects: HTMLElement,
     private canvasLabels?: HTMLElement,
     private isDarkMode = () => false,
   ) {
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      canvas: this.canvasRects,
+      alpha: true,
+    });
+    this.lastScene = {
+      isDarkMode: this.isDarkMode(),
+      translatedPos: undefined,
+      rectIdToRectGraphics: new Map<string, RectGraphics>(),
+      rectIdToLabelGraphics: new Map<string, LabelGraphics>(),
+    };
+
     if (this.canvasLabels) {
       this.labelRenderer = new CSS2DRenderer({element: this.canvasLabels});
     }
@@ -242,8 +237,8 @@ export class Canvas {
     return [this.scene, this.camera];
   }
 
-  getClickedRectId(x: number, y: number, z: number): undefined | string {
-    const clickPosition = new THREE.Vector3(x, y, z);
+  getClickedRectId(x: number, y: number): undefined | string {
+    const clickPosition = new THREE.Vector2(x, y);
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(clickPosition, assertDefined(this.camera));
     const intersected = raycaster.intersectObjects(
@@ -429,7 +424,7 @@ export class Canvas {
 
   private makeRectBorders(
     rect: UiRect3D,
-    rectGeometry: THREE.ShapeGeometry,
+    rectGeometry: THREE.BufferGeometry,
   ): THREE.LineSegments {
     // create line edges for rect
     const edgeGeo = new THREE.EdgesGeometry(rectGeometry);

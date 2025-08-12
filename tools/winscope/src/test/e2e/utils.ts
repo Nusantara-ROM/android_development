@@ -395,7 +395,9 @@ async function toggleSelectFilterOptions(
   options: string[],
 ) {
   await element(
-    by.css(`${viewerSelector} .headers ${filterSelector} .mat-select-trigger`),
+    by.css(
+      `${viewerSelector} .headers ${filterSelector} .mat-mdc-select-trigger`,
+    ),
   ).click();
   const optionElements: ElementFinder[] = await element.all(
     by.css('.mat-select-panel .option'),

@@ -163,8 +163,6 @@ describe('ArrayUtils', () => {
   });
 
   it('toUintLittleEndian', () => {
-    const buffer = new Uint8Array([0, 0, 1, 1]);
-
     expect(toUintLittleEndian(new Uint8Array([0xff, 0xff]), 0, -1)).toEqual(0n);
     expect(toUintLittleEndian(new Uint8Array([0xff, 0xff]), 0, 0)).toEqual(0n);
     expect(toUintLittleEndian(new Uint8Array([0xff, 0xff]), 1, 1)).toEqual(0n);

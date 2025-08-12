@@ -27,9 +27,9 @@ import {InputColumnType} from 'trace/input/input_column_type';
 import {InputEventType} from 'trace/input/input_event_type';
 import {CustomQueryType} from 'trace_api/custom_query';
 import {Trace, TraceEntry, TraceEntryLazy} from 'trace_api/trace';
-import {Traces} from 'trace_api/traces';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TraceType} from 'trace_api/trace_type';
+import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {
@@ -130,33 +130,7 @@ export class Presenter extends AbstractLogViewerPresenter<
   private shouldHandleSpecificClicks = false;
   private shouldHandleWindowPropertyHighlight = false;
 
-  private readonly rectsPresenter = new RectsPresenter(
-    PersistentStoreProxy.new<UserOptions>(
-      'InputWindowRectsOptions',
-      {
-        showOnlyWithContent: {
-          name: 'Has input',
-          icon: 'pan_tool_alt',
-          enabled: false,
-        },
-        showOnlyVisible: {
-          name: 'Show only',
-          chip: VISIBLE_CHIP,
-          enabled: true,
-        },
-      },
-      this.storage,
-    ),
-    (tree: HierarchyTreeNode) => {
-      return UI_RECT_FACTORY.makeInputRects(
-        tree,
-        (id) => this.currentTargetWindowIds.has(id.split(' ')[0]),
-        this.currDispatchProperties,
-      );
-    },
-    makeDisplayIdentifiers,
-    convertRectIdToLayerorDisplayName,
-  );
+  private readonly rectsPresenter: RectsPresenter;
 
   constructor(
     traces: Traces,
@@ -178,6 +152,33 @@ export class Presenter extends AbstractLogViewerPresenter<
     );
     this.traces = traces;
     this.surfaceFlingerTrace = this.traces.getTrace(TraceType.SURFACE_FLINGER);
+    this.rectsPresenter = new RectsPresenter(
+      PersistentStoreProxy.new<UserOptions>(
+        'InputWindowRectsOptions',
+        {
+          showOnlyWithContent: {
+            name: 'Has input',
+            icon: 'pan_tool_alt',
+            enabled: false,
+          },
+          showOnlyVisible: {
+            name: 'Show only',
+            chip: VISIBLE_CHIP,
+            enabled: true,
+          },
+        },
+        this.storage,
+      ),
+      (tree: HierarchyTreeNode) => {
+        return UI_RECT_FACTORY.makeInputRects(
+          tree,
+          (id) => this.currentTargetWindowIds.has(id.split(' ')[0]),
+          this.currDispatchProperties,
+        );
+      },
+      makeDisplayIdentifiers,
+      convertRectIdToLayerorDisplayName,
+    );
   }
 
   async onDispatchPropertiesFilterChange(textFilter: TextFilter) {
