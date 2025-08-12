@@ -273,15 +273,7 @@ $dark-theme: mat.m2-define-dark-theme((
 @include mat.ripple-theme($light-theme);
 @include mat.select-theme($light-theme);
 @include mat.sidenav-theme($light-theme);
-
 @include mat.slider-theme($light-theme);
-@include mat.slider-overrides((
-  handle-height: 10px,
-  handle-width: 10px,
-  active-track-height: 2px,
-  inactive-track-height: 2px,
-));
-
 @include mat.snack-bar-theme($light-theme);
 @include mat.tabs-theme($light-theme);
 @include mat.toolbar-theme($light-theme);
@@ -295,6 +287,12 @@ $dark-theme: mat.m2-define-dark-theme((
     list-item-leading-icon-color: var(--default-text-color),
     list-item-hover-leading-icon-color: var(--default-text-color),
     list-item-trailing-supporting-text-color: var(--default-text-color),
+  ));
+  @include mat.slider-overrides((
+    handle-height: 10px,
+    handle-width: 10px,
+    active-track-height: 2px,
+    inactive-track-height: 2px,
   ));
 
   .shortcuts-panel, .warning-panel {
@@ -319,6 +317,11 @@ $dark-theme: mat.m2-define-dark-theme((
       filled-container-color: var(--selected-element-color),
     ));
   }
+}
+
+body {
+  background-color: var(--mat-app-background-color, var(--mat-sys-background, transparent));
+  color: var(--mat-app-text-color, var(--mat-sys-on-background, inherit));
 }
 
 body:not(.dark-mode) {
