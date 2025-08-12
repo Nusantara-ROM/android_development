@@ -21,6 +21,7 @@ import {
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {queryVsyncId} from 'parsers/perfetto/utils';
 import {EntryHierarchyTreeFactory} from 'parsers/surface_flinger/entry_hierarchy_tree_factory';
+import {RectExtractor} from 'parsers/surface_flinger/rect_extractor';
 import {
   CustomQueryParserResultTypeMap,
   CustomQueryType,
@@ -66,13 +67,24 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
       entriesSnapshotRangeStart,
       entriesSnapshotRangeEnd,
     );
-    const layersResult = await this.queryRangeLayers(
+    const layersResult = await this.queryRangeLayersAndRects(
       entriesSnapshotRangeStart,
       entriesSnapshotRangeEnd,
     );
+    const visibleRectsResult = await this.queryAllVisibleRects();
+    const allSnapshotsResults = await this.queryRangeSnapshots(
+      0,
+      this.getLengthEntries(),
+    );
+    const allVisibleRectsAndDisplay =
+      RectExtractor.extractAllVisibleAndDisplayRects(
+        allSnapshotsResults,
+        visibleRectsResult,
+      );
     return this.factory.makeEntryHierarchyTrees(
       snapshotResult,
       layersResult,
+      allVisibleRectsAndDisplay,
       this.traceProcessor,
     );
   }
@@ -147,7 +159,7 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
     return await this.traceProcessor.query(snapshotQuery);
   }
 
-  private async queryRangeLayers(
+  private async queryRangeLayersAndRects(
     start: number,
     end: number,
   ): Promise<QueryResult> {
@@ -205,8 +217,64 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
           ON sfl.input_rect_id = fr.trace_rect_id
         LEFT JOIN android_winscope_rect AS frr
           ON fr.rect_id = frr.id
-          WHERE sfl.snapshot_id >= ${start} AND sfl.snapshot_id < ${end}
+        WHERE sfl.snapshot_id >= ${start} AND sfl.snapshot_id < ${end}
           ORDER BY sfl.id`;
     return await this.traceProcessor.query(layersQuery);
+  }
+
+  private async queryAllVisibleRects(): Promise<QueryResult> {
+    const visibleRectsQuery = `
+      SELECT
+          sfl.snapshot_id,
+          sfl.id,
+          sfl.layer_id,
+          sfl.layer_name,
+          sfl.is_visible,
+          sfl.corner_radius_tl,
+          sfl.corner_radius_tr,
+          sfl.corner_radius_bl,
+          sfl.corner_radius_br,
+          sfl.input_rect_id,
+          ltr.group_id,
+          ltr.depth,
+          ltr.opacity,
+          ltr.x,
+          ltr.y,
+          ltr.w,
+          ltr.h,
+          lt.dsdx,
+          lt.dtdx,
+          lt.dsdy,
+          lt.dtdy,
+          lt.tx,
+          lt.ty,
+          itr.is_visible AS input_is_visible,
+          itr.is_spy,
+          itr.group_id AS input_group_id,
+          itr.depth AS input_depth,
+          itr.is_visible AS input_is_visible,
+          itr.is_spy,
+          itr.x AS input_x,
+          itr.y AS input_y,
+          itr.w AS input_w,
+          itr.h AS input_h,
+          frr.x AS fr_x,
+          frr.y AS fr_y,
+          frr.w AS fr_w,
+          frr.h AS fr_h
+        FROM surfaceflinger_layer AS sfl
+        LEFT JOIN winscope_rect AS ltr
+          ON sfl.layer_rect_id = ltr.trace_rect_id
+        LEFT JOIN android_winscope_transform AS lt
+          ON ltr.transform_id = lt.id
+        LEFT JOIN winscope_rect AS itr
+          ON sfl.input_rect_id = itr.trace_rect_id
+        LEFT JOIN android_winscope_fill_region AS fr
+          ON sfl.input_rect_id = fr.trace_rect_id
+        LEFT JOIN android_winscope_rect AS frr
+          ON fr.rect_id = frr.id
+          WHERE (sfl.is_visible = true) OR (itr.is_visible = true)
+          ORDER BY sfl.id`;
+    return this.traceProcessor.query(visibleRectsQuery);
   }
 }

@@ -28,7 +28,7 @@ import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {TraceRect} from 'tree_node/trace_rect';
 
 export class RectExtractor {
-  static extractAllVisibleRects(
+  static extractAllVisibleAndDisplayRects(
     snapshotResult: QueryResult,
     rectsResult: QueryResult,
   ) {
@@ -36,8 +36,6 @@ export class RectExtractor {
       bigint,
       {displayRects: TraceRect[]; layerRects: Map<bigint, LayerRects>}
     >();
-    const allDisplayRects = [];
-    const allLayerRects = [];
     const currRect = rectsResult.iter({});
     const currSnapshot = snapshotResult.iter({});
     while (currSnapshot.valid()) {
@@ -52,8 +50,6 @@ export class RectExtractor {
         currRect,
         currentId,
       );
-      allDisplayRects.push(displayRects);
-      allLayerRects.push(rects);
       const combinedRects = {
         displayRects,
         layerRects: rects,

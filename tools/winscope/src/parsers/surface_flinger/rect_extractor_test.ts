@@ -206,7 +206,7 @@ describe('SurfaceFlinger RectExtractor', () => {
         },
       );
 
-      const result = RectExtractor.extractAllVisibleRects(
+      const result = RectExtractor.extractAllVisibleAndDisplayRects(
         snapshotResult,
         rectsResult,
       );
@@ -248,7 +248,7 @@ describe('SurfaceFlinger RectExtractor', () => {
         };
       });
 
-      const result = RectExtractor.extractAllVisibleRects(
+      const result = RectExtractor.extractAllVisibleAndDisplayRects(
         snapshotResult,
         rectsResult,
       );

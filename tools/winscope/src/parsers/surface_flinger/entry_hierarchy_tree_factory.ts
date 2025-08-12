@@ -114,6 +114,10 @@ export class EntryHierarchyTreeFactory {
   makeEntryHierarchyTrees(
     snapshotResults: QueryResult,
     layersResults: QueryResult,
+    visibleRectsResults: Map<
+      bigint,
+      {displayRects: TraceRect[]; layerRects: Map<bigint, LayerRects>}
+    >,
     traceProcessor: TraceProcessor,
   ): HierarchyTreeNode[] {
     const currLayer = layersResults.iter({});
@@ -126,17 +130,17 @@ export class EntryHierarchyTreeFactory {
         currSnapshot,
         traceProcessor,
       );
-      // currSnapshot is being iterated in the extractDisplayRectsForSnapshot
-      const {displayRects} = RectExtractor.extractDisplayRectsForSnapshot(
-        currSnapshot,
-        currentId,
-      );
+      const visibleRects = assertDefined(visibleRectsResults.get(currentId));
+      const displayRects = visibleRects.displayRects;
+      const visibleLayerRects = visibleRects.layerRects;
 
-      const {layers, rects, warnings} = this.makeLayersAndRects(
+      const {layers, rects, warnings} = this.makeLayersAndNonvisibleRects(
         currLayer,
         traceProcessor,
         currentId,
+        visibleLayerRects,
       );
+
       const tree = this.buildHierarchyTree(
         currSnapshotProperties,
         layers,
@@ -144,6 +148,14 @@ export class EntryHierarchyTreeFactory {
         rects,
         displayRects,
       );
+      // Since our query uses left joins there might be multiple rows for the same snapshotID
+      // We've already processed the unique information for the currentId, so we skip any remaining rows for this ID.
+      while (
+        currSnapshot.valid() &&
+        assertBigInt(currSnapshot.get('id')) === currentId
+      ) {
+        currSnapshot.next();
+      }
       trees.push(tree);
     }
 
@@ -209,21 +221,22 @@ export class EntryHierarchyTreeFactory {
     return entryProps;
   }
 
-  private makeLayersAndRects(
+  private makeLayersAndNonvisibleRects(
     layersIter: RowIterator,
     traceProcessor: TraceProcessor,
     currSnapshotId: bigint | undefined,
+    visibleLayerInputRects: Map<bigint, LayerRects>,
   ): {
     layers: PropertiesProvider[];
     rects: Map<bigint, LayerRects>;
     warnings: UserWarning[];
   } {
     let missingLayerIds = false;
-    let prevUniqueRowId: bigint | undefined;
     const rects = new Map<bigint, LayerRects>();
     const layers: PropertiesProvider[] = [];
     const recursiveIds: number[] = [];
-    const processed = new Map<number, number>();
+    const processedUniqueRowIds = new Set<bigint>();
+    const processedLayerIdCounts = new Map<number, number>();
 
     for (const it = layersIter; it.valid(); it.next()) {
       if (currSnapshotId !== undefined) {
@@ -234,34 +247,41 @@ export class EntryHierarchyTreeFactory {
           break;
         }
       }
+
+      const uniqueRowId = assertBigInt(it.get('id'));
+
+      if (processedUniqueRowIds.has(uniqueRowId)) {
+        // some row ids will be repeated due querying multiple fill region rects
+        const layerIdBigint = assertBigInt(it.get('layer_id'));
+        const layerRects = rects.get(layerIdBigint);
+        if (layerRects?.input) {
+          const fillRegionRect = RectExtractor.extractFillRegionRect(it);
+          if (fillRegionRect) {
+            assertDefined(layerRects.input.fillRegion).rects.push(
+              fillRegionRect,
+            );
+          }
+        }
+        continue;
+      }
+
+      processedUniqueRowIds.add(uniqueRowId);
       const layerIdBigint = assertBigIntOrUndefined(
         it.get('layer_id') ?? undefined,
       );
+
       if (layerIdBigint === undefined) {
         missingLayerIds = true;
         continue;
       }
-
       const layerId = Number(layerIdBigint);
 
       if (layerIdBigint === it.get('parent')) {
         recursiveIds.push(layerId);
       }
 
-      const uniqueRowId = assertBigInt(it.get('id'));
-      if (prevUniqueRowId !== undefined && uniqueRowId === prevUniqueRowId) {
-        // some row ids will be repeated due querying multiple fill region rects
-        const inputRect = assertDefined(rects.get(layerIdBigint)?.input);
-        const fillRegionRect = RectExtractor.extractFillRegionRect(it);
-        if (fillRegionRect) {
-          assertDefined(inputRect.fillRegion).rects.push(fillRegionRect);
-        }
-        continue;
-      }
-      prevUniqueRowId = uniqueRowId;
-
-      const duplicateCount = processed.get(layerId) ?? 0;
-      processed.set(assertDefined(layerId), duplicateCount + 1);
+      const duplicateCount = processedLayerIdCounts.get(layerId) ?? 0;
+      processedLayerIdCounts.set(layerId, duplicateCount + 1);
 
       const layerName = assertString(it.get('layer_name'));
       const layerProps = this.makeLayerPropertiesProvider(
@@ -273,18 +293,37 @@ export class EntryHierarchyTreeFactory {
       );
       layers.push(layerProps);
 
-      const nodeId = layerProps.getEagerProperties().id;
-      const layerRects = RectExtractor.extractLayerRects(it, nodeId, layerName);
-      if (layerRects) {
-        rects.set(layerIdBigint, layerRects);
+      if (visibleLayerInputRects.has(layerIdBigint)) {
+        const precomputedRects = assertDefined(
+          visibleLayerInputRects.get(layerIdBigint),
+        );
+        rects.set(layerIdBigint, precomputedRects);
+      } else {
+        const layerRects = RectExtractor.extractLayerRects(
+          it,
+          uniqueRowId.toString(),
+          layerName,
+        );
+        if (layerRects) {
+          rects.set(layerIdBigint, layerRects);
+          if (layerRects?.input) {
+            const fillRegionRect = RectExtractor.extractFillRegionRect(it);
+            if (fillRegionRect) {
+              assertDefined(layerRects.input.fillRegion).rects.push(
+                fillRegionRect,
+              );
+            }
+          }
+        }
       }
     }
+
     const warnings = [];
     if (missingLayerIds) {
       warnings.push(new MissingLayerIds());
     }
-    const duplicateIds = Array.from(processed.keys()).filter(
-      (layerId) => assertDefined(processed.get(layerId)) > 1,
+    const duplicateIds = Array.from(processedLayerIdCounts.keys()).filter(
+      (layerId) => assertDefined(processedLayerIdCounts.get(layerId)) > 1,
     );
     if (duplicateIds.length > 0) {
       warnings.push(new DuplicateLayerIds(duplicateIds));
