@@ -75,6 +75,13 @@ describe('WdpSetupComponent', () => {
       'https://tools.google.com/dlpage/android_web_device_proxy',
       '_blank',
     );
+
+    windowSpy.calls.reset();
+    dom.findAndClickByIndex('.install', 1);
+    expect(windowSpy).toHaveBeenCalledOnceWith(
+      'http://go/web-device-proxy#setup',
+      '_blank',
+    );
   });
 
   it('correct icon and message displays if unauthorized proxy', () => {
