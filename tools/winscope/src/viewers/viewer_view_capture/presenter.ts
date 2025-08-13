@@ -292,6 +292,7 @@ the default for its data type.`,
     const curated: VcCuratedProperties = {
       className: tree.name,
       hashcode: assertDefined(tree.getChildByName('hashcode')).formattedValue(),
+      viewId: assertDefined(tree.getChildByName('viewId')).formattedValue(),
       left: assertDefined(tree.getChildByName('left')).formattedValue(),
       top: assertDefined(tree.getChildByName('top')).formattedValue(),
       elevation: assertDefined(

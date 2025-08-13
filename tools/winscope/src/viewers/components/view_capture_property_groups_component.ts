@@ -25,8 +25,8 @@ import {VcCuratedProperties} from 'viewers/common/curated_properties';
   template: `
     <div *ngIf="properties" class="group view">
       <h3 class="group-header mat-subtitle-1">View</h3>
-      <div class="left-column class-name">
-        <p class="mat-body-2">
+      <div class="left-column">
+        <p class="mat-body-2 class-name">
           <span class="mat-body-1">Class: </span>
           &ngsp;
           {{ properties.className }}
@@ -35,6 +35,11 @@ import {VcCuratedProperties} from 'viewers/common/curated_properties';
           <span class="mat-body-1">Hashcode: </span>
           &ngsp;
           {{ properties.hashcode }}
+        </p>
+        <p class="mat-body-2 view-id">
+          <span class="mat-body-1">View Id: </span>
+          &ngsp;
+          {{ properties.viewId }}
         </p>
       </div>
     </div>

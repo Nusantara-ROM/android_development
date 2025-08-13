@@ -63,6 +63,7 @@ export interface SfCuratedProperties {
 
 export interface VcCuratedProperties {
   className: string;
+  viewId: string;
   hashcode: string;
   left: string;
   top: string;

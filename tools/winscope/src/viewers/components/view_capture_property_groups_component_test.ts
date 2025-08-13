@@ -51,6 +51,7 @@ describe('ViewCapturePropertyGroupsComponent', () => {
     const section = dom.get('.view');
     section.get('.class-name').checkText('test.package.name');
     section.get('.hashcode').checkText('12345678');
+    section.get('.view-id').checkText('package/name');
   });
 
   it('displays geometry coordinates section', () => {
@@ -106,6 +107,7 @@ describe('ViewCapturePropertyGroupsComponent', () => {
   class TestHostComponent {
     properties: VcCuratedProperties = {
       className: 'test.package.name',
+      viewId: 'package/name',
       hashcode: '12345678',
       left: '0',
       top: '5',
