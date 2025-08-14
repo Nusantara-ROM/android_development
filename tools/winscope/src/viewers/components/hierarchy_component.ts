@@ -74,7 +74,8 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           title="HIERARCHY"
           (collapseButtonClicked)="collapseButtonClicked.emit()"></collapsible-section-title>
         <search-box
-          formFieldClass="applied-field no-bottom-padding-field mat-form-field-appearance-none"
+          formFieldClass="applied-field mat-form-field-appearance-none"
+          subscriptSizing="dynamic"
           [textFilter]="textFilter"
           (filterChange)="onFilterChange($event)"></search-box>
       </div>

@@ -215,7 +215,8 @@ interface CanColor {
           </mat-button-toggle-group>
           <span class="mat-body-1">{{groupLabel}}:</span>
           <mat-form-field
-            class="displays-select no-bottom-padding-field"
+            class="displays-select"
+            subscriptSizing="dynamic"
             appearance="outline">
             <mat-select
               #displaySelect

@@ -132,7 +132,7 @@ log-view .headers .mat-mdc-form-field-infix {
 
 .save-field {
     display: flex;
-    align-items: center;
+    align-items: top;
     width: 100%;
 }
 
@@ -151,10 +151,6 @@ log-view .headers .mat-mdc-form-field-infix {
 
 .mat-form-field-appearance-none .mat-mdc-text-field-wrapper {
     padding: 0px;
-}
-
-.no-bottom-padding-field .mat-mdc-form-field-subscript-wrapper {
-    display: none;
 }
 
 .mat-mdc-form-field-icon-prefix>.mat-icon {

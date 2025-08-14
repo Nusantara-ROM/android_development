@@ -154,8 +154,9 @@ import {
             </span>
             <span *ngIf="!isEditingFilename" class="download-file-ext mat-body-2">.zip</span>
             <mat-form-field
-              class="file-name-input-field no-bottom-padding-field"
+              class="file-name-input-field"
               *ngIf="isEditingFilename"
+              subscriptSizing="dynamic"
               floatLabel="always"
               (keydown.esc)="trySubmitFilename()"
               (keydown.enter)="trySubmitFilename()"

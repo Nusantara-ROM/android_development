@@ -125,7 +125,8 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
           </p>
           <p class="mat-body-1">Enter Winscope proxy token:</p>
           <mat-form-field
-            class="proxy-token-input-field mat-form-field-appearance-none no-bottom-padding-field"
+            class="proxy-token-input-field mat-form-field-appearance-none"
+            subscriptSizing="dynamic"
             (keydown.enter)="onKeydownEnterProxyTokenInput($event)">
             <input matInput [(ngModel)]="proxyToken" name="proxy-token" />
           </mat-form-field>

@@ -136,6 +136,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
               <form [formGroup]="timestampForm" class="time-selector-form">
                 <mat-form-field
                   class="time-input human"
+                  subscriptSizing="dynamic"
                   appearance="fill"
                   (keydown.esc)="$event.target.blur()"
                   (keydown.enter)="onKeydownEnterTimeInputField($event)"
@@ -165,6 +166,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
                 </mat-form-field>
                 <mat-form-field
                   class="time-input nano"
+                  subscriptSizing="dynamic"
                   appearance="fill"
                   (keydown.esc)="$event.target.blur()"
                   (keydown.enter)="onKeydownEnterNanosecondsTimeInputField($event)"
@@ -214,7 +216,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
               </div>
             </div>
             <div id="trace-selector">
-              <mat-form-field class="mat-form-field-appearance-none no-bottom-padding-field no-ripple-field">
+              <mat-form-field class="mat-form-field-appearance-none no-ripple-field" subscriptSizing="dynamic">
                 <mat-select #traceSelector [formControl]="selectedTracesFormControl" panelWidth="340px" multiple>
                   <div class="select-traces-panel">
                     <div class="tip">Filter traces in the timeline</div>
@@ -372,9 +374,9 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
         width: 90%;
         justify-content: center;
         align-items: center;
+        gap: 8px;
       }
       .time-selector-form mat-form-field {
-        margin-bottom: -1.34375em;
         display: flex;
         width: 100%;
         font-size: 12px;

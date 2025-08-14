@@ -119,7 +119,8 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
                     class="selection-config-opt overlay-panel-section mat-body-1">
                     <ng-container *ngFor="let selectionConfig of getSortedConfigs(traceConfig[advancedSettingsKey].config.selectionConfigs)">
                       <mat-form-field
-                        class="config-selection no-bottom-padding-field"
+                        class="config-selection"
+                        subscriptSizing="dynamic"
                         [class.wide-field]="selectionConfig.wideField"
                         appearance="fill">
                         <mat-label>{{ selectionConfig.name }}</mat-label>
@@ -139,7 +140,8 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
 
                           <mat-form-field
                             *ngIf="selectionConfig.filterString !== undefined"
-                            class="select-config-filter no-bottom-padding-field mat-form-field-appearance-none">
+                            class="select-config-filter mat-form-field-appearance-none"
+                            subscriptSizing="dynamic">
                               <mat-label>Filter options</mat-label>
                               <input matInput [(ngModel)]="selectionConfig.filterString" />
                           </mat-form-field>
