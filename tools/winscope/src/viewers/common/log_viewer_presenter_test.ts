@@ -25,14 +25,13 @@ import {
   TracePositionUpdate,
 } from 'messaging/winscope_event';
 import {MockPresenter} from 'test/unit/mock_log_viewer_presenter';
-import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {DEFAULT_PROPERTY_FORMATTER} from 'trace/formatters';
 import {Trace} from 'trace_api/trace';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType} from 'trace_api/trace_type';
-import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
+import {PropertySource} from 'tree_node/property_tree_node';
 import {TextFilter} from 'viewers/common/text_filter';
 import {LogSelectFilter, LogTextFilter} from './log_filters';
 import {LogHeader, UiDataLog} from './ui_data_log';

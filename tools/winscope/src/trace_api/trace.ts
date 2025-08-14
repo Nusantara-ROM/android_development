@@ -39,6 +39,7 @@ import {
 import {Parser} from './parser';
 import {TRACE_INFO} from './trace_info';
 import {TraceType} from './trace_type';
+import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 
 export abstract class TraceEntry<T> {
   constructor(
@@ -208,6 +209,9 @@ export class Trace<T> {
     try {
       return await this.parser.getAllEntries();
     } catch (e) {
+      if (e !== NOT_IMPLEMENTED_ERROR) {
+        console.error(e);
+      }
       return await Promise.all(this.mapEntry((entry) => entry.getValue()));
     }
   }
