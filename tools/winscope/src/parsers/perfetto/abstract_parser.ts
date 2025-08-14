@@ -18,6 +18,7 @@ import {assertBigInt, assertDefined, assertTrue} from 'common/assert_utils';
 import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {INVALID_TIME_NS, Timestamp} from 'common/time/time';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
+import {TraceGeometryData} from 'parsers/trace_geometry_data';
 import {TraceFile} from 'trace/trace_file';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {
@@ -37,6 +38,7 @@ export abstract class AbstractParser<T> implements Parser<T> {
   protected timestampConverter: ParserTimestampConverter;
   protected entryIndexToRowIdMap: number[] = [];
   protected preProcessTrace?(): Promise<void>;
+  protected traceGeometryData?: TraceGeometryData;
 
   private lengthEntries = 0;
   private traceFile: TraceFile;
@@ -47,10 +49,12 @@ export abstract class AbstractParser<T> implements Parser<T> {
     traceFile: TraceFile,
     traceProcessor: TraceProcessor,
     timestampConverter: ParserTimestampConverter,
+    traceGeometryData?: TraceGeometryData,
   ) {
     this.traceFile = traceFile;
     this.traceProcessor = traceProcessor;
     this.timestampConverter = timestampConverter;
+    this.traceGeometryData = traceGeometryData;
   }
 
   isPerfetto(): boolean {
