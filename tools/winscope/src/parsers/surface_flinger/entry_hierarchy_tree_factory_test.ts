@@ -28,7 +28,7 @@ import {TraceProcessor} from 'trace_processor/trace_processor';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {TraceRect} from 'tree_node/trace_rect';
 import {EntryHierarchyTreeFactory} from './entry_hierarchy_tree_factory';
-import {RectExtractor} from './rect_extractor';
+import {LayerRects, RectExtractor} from './rect_extractor';
 
 describe('EntryHierarchyTreeFactory', () => {
   const factory = new EntryHierarchyTreeFactory();
@@ -36,7 +36,11 @@ describe('EntryHierarchyTreeFactory', () => {
     'traceProcessor',
     ['query'],
   );
+  const createMapWithoutLayerRects = (snapshotId: bigint) => {
+    return new Map([[snapshotId, {displayRects: [], layerRects: new Map()}]]);
+  };
   const layerName1 = 'Layer1';
+  const defaultSnapshotId = 100n;
   let displaysSpy: jasmine.Spy;
   let layerRectsSpy: jasmine.Spy;
   let snapshotResult: jasmine.SpyObj<QueryResult>;
@@ -48,7 +52,6 @@ describe('EntryHierarchyTreeFactory', () => {
     snapshotIter = makeSpyRowIterator();
     snapshotResult = jasmine.createSpyObj<QueryResult>('result', ['iter']);
     snapshotResult.iter.and.returnValue(snapshotIter);
-
     let snapshotIterValidCallCount = 0;
     snapshotIter.valid.and.callFake(() => {
       return snapshotIterValidCallCount++ === 0;
@@ -77,73 +80,118 @@ describe('EntryHierarchyTreeFactory', () => {
 
   describe('rects', () => {
     const spyRect = jasmine.createSpyObj<TraceRect>('rect', [], ['x']);
+
     beforeEach(() => {
       snapshotIter.get.withArgs('arg_set_id').and.returnValue(1n);
-      snapshotIter.get.withArgs('id').and.returnValue(100n);
+      snapshotIter.get.withArgs('id').and.returnValue(defaultSnapshotId);
     });
+
     it('sets bounds rect to node', () => {
       layerRectsSpy.and.returnValue({bounds: spyRect});
-      const tree = makeEntryHierarchyTree();
+      const tree = makeEntryHierarchyTree(
+        createMapWithoutLayerRects(defaultSnapshotId),
+      );
       const layer = assertDefined(tree.getChildByName(layerName1));
       expect(layer.getRects()).toEqual([spyRect]);
       expect(layer.getSecondaryRects()).toBeUndefined();
     });
 
     it('sets input rect to node', () => {
-      layerRectsSpy.and.returnValue({input: spyRect});
-      const tree = makeEntryHierarchyTree();
+      const spyRectInput = jasmine.createSpyObj<TraceRect>('rect', [], {
+        'id': 'inputRect',
+        'fillRegion': new Region([]),
+      });
+      layerRectsSpy.and.returnValue({input: spyRectInput});
+      const mockLayersIter = setupLayerIterator([
+        defaultLayerData({'snapshot_id': defaultSnapshotId}),
+      ]);
+      layersResult.iter.and.returnValue(mockLayersIter);
+
+      const tree = makeEntryHierarchyTree(
+        createMapWithoutLayerRects(defaultSnapshotId),
+      );
       const layer = assertDefined(tree.getChildByName(layerName1));
       expect(layer.getRects()).toBeUndefined();
-      expect(layer.getSecondaryRects()).toEqual([spyRect]);
+      expect(layer.getSecondaryRects()).toEqual([spyRectInput]);
     });
 
     it('sets both bounds and input rects to node', () => {
-      const spyRectOther = jasmine.createSpyObj<TraceRect>('rect', [], ['y']);
-      layerRectsSpy.and.returnValue({bounds: spyRect, input: spyRectOther});
-      const tree = makeEntryHierarchyTree();
+      const spyRectInputOther = jasmine.createSpyObj<TraceRect>('rect', [], {
+        'y': 20,
+        'fillRegion': new Region([]),
+      });
+      layerRectsSpy.and.returnValue({
+        bounds: spyRect,
+        input: spyRectInputOther,
+      });
+      const mockLayersIter = setupLayerIterator([
+        defaultLayerData({'snapshot_id': defaultSnapshotId}),
+      ]);
+      layersResult.iter.and.returnValue(mockLayersIter);
+
+      const tree = makeEntryHierarchyTree(
+        createMapWithoutLayerRects(defaultSnapshotId),
+      );
       const layer = assertDefined(tree.getChildByName(layerName1));
       expect(layer.getRects()).toEqual([spyRect]);
-      expect(layer.getSecondaryRects()).toEqual([spyRectOther]);
+      expect(layer.getSecondaryRects()).toEqual([spyRectInputOther]);
     });
 
     it('adds fill region rects to input rect', () => {
-      let calls = 0;
-      layersIter.next.and.callFake(() => {
-        if (calls === 2) {
-          layersIter.valid.and.returnValue(false);
-          return;
-        }
-        calls++;
-        layersIter.get.withArgs('fr_x').and.returnValue(1 * calls);
-        layersIter.get.withArgs('fr_y').and.returnValue(2 * calls);
-        layersIter.get.withArgs('fr_w').and.returnValue(3 * calls);
-        layersIter.get.withArgs('fr_h').and.returnValue(4 * calls);
+      const rows = [
+        defaultLayerData({
+          'snapshot_id': defaultSnapshotId,
+          'id': 0n,
+          'fr_x': 1,
+          'fr_y': 2,
+          'fr_w': 3,
+          'fr_h': 4,
+        }),
+        defaultLayerData({
+          'snapshot_id': defaultSnapshotId,
+          'id': 0n,
+          'fr_x': 2,
+          'fr_y': 4,
+          'fr_w': 6,
+          'fr_h': 8,
+        }),
+      ];
+      const mockLayersIter = setupLayerIterator(rows);
+      layersResult.iter.and.returnValue(mockLayersIter);
+
+      const spyInputRect = jasmine.createSpyObj<TraceRect>('rect', [], {
+        id: 'inputRect',
+        'fillRegion': new Region([]),
       });
+      layerRectsSpy.and.returnValue({input: spyInputRect});
 
-      const spyRectWithFillRegion = jasmine.createSpyObj<TraceRect>(
-        'rect',
-        [],
-        {'fillRegion': new Region([])},
+      const tree = makeEntryHierarchyTree(
+        createMapWithoutLayerRects(defaultSnapshotId),
       );
-
-      layerRectsSpy.and.returnValue({input: spyRectWithFillRegion});
-
-      const tree = makeEntryHierarchyTree();
       const layer = assertDefined(tree.getChildByName(layerName1));
       expect(layer.getRects()).toBeUndefined();
 
-      const expectedRect = jasmine.createSpyObj<TraceRect>('rect', [], {
-        fillRegion: new Region([new Rect(1, 2, 3, 4), new Rect(2, 4, 6, 8)]),
-      });
-      expect(layer.getSecondaryRects()).toEqual([expectedRect]);
+      const secondaryRects = layer.getSecondaryRects();
+      expect(secondaryRects).toBeDefined();
+      expect(secondaryRects!.length).toBe(1);
+      const outputRect = secondaryRects![0];
+
+      const expectedFillRegion = new Region([
+        new Rect(1, 2, 3, 4),
+        new Rect(2, 4, 6, 8),
+      ]);
+      expect(outputRect.fillRegion).toEqual(expectedFillRegion);
     });
 
     it('sets display rects to root', () => {
       const expectedRects = [spyRect, spyRect];
-      displaysSpy.and.returnValue({
-        displayRects: expectedRects,
-      });
-      const tree = makeEntryHierarchyTree();
+      const visibleRectsResults = new Map([
+        [
+          defaultSnapshotId,
+          {displayRects: expectedRects, layerRects: new Map()},
+        ],
+      ]);
+      const tree = makeEntryHierarchyTree(visibleRectsResults);
       expect(tree.getRects()).toEqual(expectedRects);
     });
   });
@@ -154,19 +202,29 @@ describe('EntryHierarchyTreeFactory', () => {
       snapshotIter.get.withArgs('id').and.returnValue(100n);
     });
     it('handles missing layer ids', () => {
-      layersIter.get.withArgs('layer_id').and.returnValue(null);
-      let calls = 0;
-      layersIter.next.and.callFake(() => {
-        if (calls !== 0) {
-          layersIter.valid.and.returnValue(false);
-          return;
-        }
-        calls++;
-        layersIter.get.withArgs('layer_id').and.returnValue(1n);
-      });
+      const rows = [
+        defaultLayerData({
+          'snapshot_id': defaultSnapshotId,
+          'layer_id': null,
+          'layer_name': 'LayerWithMissingId',
+          'id': 0n,
+        }),
+        defaultLayerData({
+          'snapshot_id': defaultSnapshotId,
+          'layer_id': 1n,
+          'layer_name': layerName1,
+          'id': 1n,
+        }),
+      ];
+      const mockLayersIter = setupLayerIterator(rows);
+      layersResult.iter.and.returnValue(mockLayersIter);
 
-      const tree = makeEntryHierarchyTree();
+      const tree = makeEntryHierarchyTree(
+        createMapWithoutLayerRects(defaultSnapshotId),
+      );
+
       expect(tree.getAllChildren().length).toEqual(1);
+      expect(tree.getChildByName('LayerWithMissingId')).toBeUndefined();
       expect(tree.getChildByName(layerName1)).toBeDefined();
       expect(tree.getWarnings()).toEqual([new MissingLayerIds()]);
     });
@@ -182,7 +240,9 @@ describe('EntryHierarchyTreeFactory', () => {
         layersIter.get.withArgs('id').and.returnValue(1n);
       });
 
-      const tree = makeEntryHierarchyTree();
+      const tree = makeEntryHierarchyTree(
+        createMapWithoutLayerRects(defaultSnapshotId),
+      );
       expect(tree.getAllChildren().length).toEqual(2);
       expect(tree.getChildByName(layerName1)).toBeDefined();
       expect(tree.getChildByName(layerName1 + ' duplicate(1)')).toBeDefined();
@@ -203,7 +263,9 @@ describe('EntryHierarchyTreeFactory', () => {
         layersIter.get.withArgs('parent').and.returnValue(7n);
       });
 
-      const tree = makeEntryHierarchyTree();
+      const tree = makeEntryHierarchyTree(
+        createMapWithoutLayerRects(defaultSnapshotId),
+      );
       const recursiveLayers = tree.getAllChildren()[0].getAllChildren();
       expect(
         recursiveLayers.map((c) =>
@@ -223,37 +285,31 @@ describe('EntryHierarchyTreeFactory', () => {
     it('generates multiple trees', () => {
       const snapshots = [
         defaultSnapshotData({'id': 1n, 'arg_set_id': 0n}),
-        defaultSnapshotData({'id': 1n, 'arg_set_id': 1n, 'display_id': 1n}),
-        defaultSnapshotData({'id': 2n, 'arg_set_id': 1n}),
+        defaultSnapshotData({'id': 2n, 'arg_set_id': 1n, 'display_id': 1n}),
       ];
       setupSnapshotIterator(snapshots);
-      snapshotResult.iter.and.returnValue(snapshotIter);
+
       const allLayers = [
         defaultLayerData({
           'snapshot_id': 1n,
-          'layer_id': 1n,
+          'layer_id': 11n,
           'layer_name': 'Layer-1',
         }),
         defaultLayerData({
           'snapshot_id': 2n,
-          'layer_id': 2n,
+          'layer_id': 22n,
           'layer_name': 'Layer-2',
         }),
       ];
-
       const mockLayersIter = setupLayerIterator(allLayers);
       layersResult.iter.and.returnValue(mockLayersIter);
-      displaysSpy.and.callFake((iter, targetSnapshotId) => {
-        while (iter.valid()) {
-          const currentId = iter.get('id');
-          if (currentId !== targetSnapshotId) {
-            break;
-          }
-          iter.next();
-        }
-        return {displayRects: []};
-      });
-      const trees = makeEntryHierarchyTrees();
+
+      const visibleRectsResults = new Map([
+        [1n, {displayRects: [], layerRects: new Map()}],
+        [2n, {displayRects: [], layerRects: new Map()}],
+      ]);
+
+      const trees = makeEntryHierarchyTrees(visibleRectsResults);
       expect(trees.length).toBe(2);
     });
   });
@@ -312,6 +368,10 @@ describe('EntryHierarchyTreeFactory', () => {
       'hwc_composition_type': 0,
       'is_hidden_by_policy': 0n,
       'is_missing_z_parent': 0n,
+      'fr_x': null,
+      'fr_y': null,
+      'fr_w': null,
+      'fr_h': null,
     };
     return {...defaults, ...overrides};
   }
@@ -341,20 +401,37 @@ describe('EntryHierarchyTreeFactory', () => {
     layersIter.get.withArgs('is_hidden_by_policy').and.returnValue(0n);
     layersIter.get.withArgs('z_order_relative_of').and.returnValue(0n);
     layersIter.get.withArgs('is_missing_z_parent').and.returnValue(0n);
+    layersIter.get.withArgs('fr_x').and.returnValue(1);
+    layersIter.get.withArgs('fr_y').and.returnValue(1);
+    layersIter.get.withArgs('fr_w').and.returnValue(1);
+    layersIter.get.withArgs('fr_h').and.returnValue(1);
   }
 
-  function makeEntryHierarchyTree(): HierarchyTreeNode {
+  function makeEntryHierarchyTree(
+    visibleRectsResults?: Map<
+      bigint,
+      {displayRects: TraceRect[]; layerRects: Map<bigint, LayerRects>}
+    >,
+  ): HierarchyTreeNode {
     const trees = factory.makeEntryHierarchyTrees(
       snapshotResult,
       layersResult,
+      visibleRectsResults ?? new Map(),
       traceProcessor,
     );
     return trees[0];
   }
-  function makeEntryHierarchyTrees(): HierarchyTreeNode[] {
+
+  function makeEntryHierarchyTrees(
+    visibleRectsResults?: Map<
+      bigint,
+      {displayRects: TraceRect[]; layerRects: Map<bigint, LayerRects>}
+    >,
+  ): HierarchyTreeNode[] {
     return factory.makeEntryHierarchyTrees(
       snapshotResult,
       layersResult,
+      visibleRectsResults ?? new Map(),
       traceProcessor,
     );
   }
