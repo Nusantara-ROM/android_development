@@ -384,6 +384,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
       }
       .time-selector-form .time-difference {
         padding-right: 2px;
+        white-space: nowrap;
       }
       #time-selector .time-controls {
         border-radius: 10px;
