@@ -441,7 +441,7 @@ export class MiniTimelineComponent {
 
     canvas.width = HiPPIwidth;
     canvas.height = HiPPIheight;
-    canvas.style.width = '100%';
+    canvas.style.width = width + 'px';
     canvas.style.height = height + 'px';
 
     // ensure all drawing operations are scaled
