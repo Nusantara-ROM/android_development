@@ -17,7 +17,10 @@
 import {FileUtils} from 'common/file_utils';
 
 export class TraceFile {
-  constructor(public file: File, public parentArchive?: File) {}
+  constructor(
+    public file: File,
+    public parentArchive?: File,
+  ) {}
 
   getDescriptor(): string {
     let descriptor = FileUtils.removeDirFromFileName(this.file.name);

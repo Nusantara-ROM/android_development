@@ -198,7 +198,6 @@ export class DOMTestHelper<T> {
     this.root.addEventListener(event, listener);
   }
 
-  // eslint-disable-next-line no-undef
   keydownEnter(init?: KeyboardEventInit) {
     const params = {key: KeyboardEventKey.ENTER};
     Object.assign(params, init);
@@ -235,9 +234,11 @@ export class DOMTestHelper<T> {
 
   private keydownByKey(key: string, toDocument = false) {
     const event = new KeyboardEvent('keydown', {key});
-    toDocument
-      ? this.dispatchEventInDocument(event)
-      : this.dispatchEvent(event);
+    if (toDocument) {
+      this.dispatchEventInDocument(event);
+    } else {
+      this.dispatchEvent(event);
+    }
   }
 
   focusOut() {
@@ -279,21 +280,27 @@ export class DOMTestHelper<T> {
   }
 
   checkInnerHTML(value: string, isPresent = true) {
-    isPresent
-      ? expect(this.root.innerHTML).toContain(value)
-      : expect(this.root.innerHTML).not.toContain(value);
+    if (isPresent) {
+      expect(this.root.innerHTML).toContain(value);
+    } else {
+      expect(this.root.innerHTML).not.toContain(value);
+    }
   }
 
   checkClassName(value: string, isPresent = true) {
-    isPresent
-      ? expect(this.root.className).toContain(value)
-      : expect(this.root.className).not.toContain(value);
+    if (isPresent) {
+      expect(this.root.className).toContain(value);
+    } else {
+      expect(this.root.className).not.toContain(value);
+    }
   }
 
   checkClassNameExact(value: string, isPresent = true) {
-    isPresent
-      ? expect(this.root.className).toEqual(value)
-      : expect(this.root.className).not.toEqual(value);
+    if (isPresent) {
+      expect(this.root.className).toEqual(value);
+    } else {
+      expect(this.root.className).not.toEqual(value);
+    }
   }
 
   checkDisabled(value: boolean) {

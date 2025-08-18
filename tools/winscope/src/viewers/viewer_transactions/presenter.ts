@@ -225,7 +225,7 @@ export class Presenter extends AbstractLogViewerPresenter<
         const layerOrDisplayId =
           (layerId?.length ?? 0) > 0
             ? assertDefined(layerId)
-            : displayId ?? Presenter.VALUE_NA;
+            : (displayId ?? Presenter.VALUE_NA);
 
         const fields: LogField[] = [
           {

@@ -305,7 +305,7 @@ describe('LegacyToPerfettoConverter', () => {
             return TimestampConverterUtils.makeRealTimestamp(ns);
           });
     const parser = new ParserBuilder<string>()
-      .setEntries(ts.length === 0 ? [''] : ts.map((_) => ''))
+      .setEntries(ts.length === 0 ? [''] : ts.map(() => ''))
       .setTimestamps(ts)
       .build();
 

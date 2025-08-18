@@ -257,14 +257,20 @@ export class NoTraceTargetsSelected extends WinscopeEvent {
 
 export class FilterPresetSaveRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.FILTER_PRESET_SAVE_REQUEST;
-  constructor(readonly name: string, readonly traceType: TraceType) {
+  constructor(
+    readonly name: string,
+    readonly traceType: TraceType,
+  ) {
     super();
   }
 }
 
 export class FilterPresetApplyRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.FILTER_PRESET_APPLY_REQUEST;
-  constructor(readonly name: string, readonly traceType: TraceType) {
+  constructor(
+    readonly name: string,
+    readonly traceType: TraceType,
+  ) {
     super();
   }
 }

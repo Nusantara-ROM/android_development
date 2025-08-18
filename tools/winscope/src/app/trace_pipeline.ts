@@ -239,7 +239,7 @@ export class TracePipeline
       const trace = Trace.fromParser(parser);
       this.traces.addTrace(trace);
       return trace;
-    } catch (e) {
+    } catch {
       return undefined;
     }
   }
@@ -530,7 +530,7 @@ export class TracePipeline
           });
           unzippedFiles.push(...subTraceFiles);
           onSubProgressUpdate(100);
-        } catch (e) {
+        } catch {
           UserNotifier.add(new CorruptedArchive(file));
         }
       } else {

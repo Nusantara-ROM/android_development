@@ -407,9 +407,9 @@ the default for its data type.`,
         : 'null',
       cropTouchRegionWithItem: cropLayerId,
       replaceTouchRegionWithCrop: hasInputChannel
-        ? inputWindowInfo
+        ? (inputWindowInfo
             .getChildByName('replaceTouchableRegionWithCrop')
-            ?.formattedValue() ?? 'false'
+            ?.formattedValue() ?? 'false')
         : 'false',
       inputConfig:
         inputWindowInfo?.getChildByName('inputConfig')?.formattedValue() ??

@@ -45,7 +45,10 @@ export class PerfettoSessionModerator {
   private concurrentSessions: number | undefined;
   private configFilepath: string;
 
-  constructor(private device: AdbDeviceConnection, private isDump: boolean) {
+  constructor(
+    private device: AdbDeviceConnection,
+    private isDump: boolean,
+  ) {
     this.configFilepath = isDump
       ? PERFETTO_DUMP_CONFIG_FILE
       : PERFETTO_TRACE_CONFIG_FILE;

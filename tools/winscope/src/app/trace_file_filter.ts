@@ -444,7 +444,7 @@ export class TraceFileFilter
           mFiles.push(file);
           break;
         }
-      } catch (e) {
+      } catch {
         // swallow - looking for metadata json
       }
     }

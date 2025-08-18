@@ -326,7 +326,11 @@ export class MiniTimelineComponent {
     const zoomTo = this.hoverTimestamp;
     const isZoomIn = event.code === KeyboardEventCode.W;
     Analytics.Navigation.logZoom('key', 'timeline', isZoomIn ? 'in' : 'out');
-    isZoomIn ? this.zoomIn(zoomTo) : this.zoomOut(zoomTo);
+    if (isZoomIn) {
+      this.zoomIn(zoomTo);
+    } else {
+      this.zoomOut(zoomTo);
+    }
   }
 
   onZoomChanged(zoom: TimeRange) {

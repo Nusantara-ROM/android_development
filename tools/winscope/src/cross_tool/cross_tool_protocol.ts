@@ -44,7 +44,10 @@ import {OriginAllowList} from './origin_allow_list';
 class RemoteTool {
   timestampType?: TimestampType;
 
-  constructor(readonly window: Window, readonly origin: string) {}
+  constructor(
+    readonly window: Window,
+    readonly origin: string,
+  ) {}
 }
 
 export class CrossToolProtocol
@@ -304,7 +307,7 @@ export class CrossToolProtocol
             return this.timestampConverter.makeTimestampFromBootTimeNs(
               timestampNs,
             );
-          } catch (error) {
+          } catch {
             return undefined;
           }
         };
@@ -312,7 +315,7 @@ export class CrossToolProtocol
         return () => {
           try {
             return this.timestampConverter.makeTimestampFromRealNs(timestampNs);
-          } catch (error) {
+          } catch {
             return undefined;
           }
         };

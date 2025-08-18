@@ -59,7 +59,7 @@ export function assertTrue(value: boolean, lazyErrorMessage?: () => string) {
  * @throws {Error} If the line is reachable.
  * @return The value, asserted to be unreachable.
  */
-export function assertUnreachable(x: never): never {
+export function assertUnreachable(_: never): never {
   throw new Error('This line should never execute');
 }
 

@@ -373,8 +373,8 @@ class Mapper3D {
 
     if (width > maxDimension) {
       rect3d.isOversized = true;
-      (rect3d.topLeft.x = (maxDimension - maxDisplaySize.width / 2) * -1),
-        (rect3d.bottomRight.x = maxDimension);
+      rect3d.topLeft.x = (maxDimension - maxDisplaySize.width / 2) * -1;
+      rect3d.bottomRight.x = maxDimension;
     }
     if (height > maxDimension) {
       rect3d.isOversized = true;

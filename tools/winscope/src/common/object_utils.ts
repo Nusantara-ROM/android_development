@@ -24,7 +24,10 @@ class Key {
    * @param key The key name.
    * @param index The index of the key in an array, or undefined if it's not an array key.
    */
-  constructor(public key: string, public index?: number) {}
+  constructor(
+    public key: string,
+    public index?: number,
+  ) {}
 
   /**
    * Returns true if the key is an array key.

@@ -390,18 +390,18 @@ export class Trace<T> {
     const startEntry =
       start === undefined
         ? this.entriesRange.start
-        : this.clampEntryToSliceBounds(
+        : (this.clampEntryToSliceBounds(
             binarySearchFirstGreaterOrEqual(
               this.getFullTraceTimestamps(),
               start,
             ),
-          ) ?? this.entriesRange.end;
+          ) ?? this.entriesRange.end);
     const endEntry =
       end === undefined
         ? this.entriesRange.end
-        : this.clampEntryToSliceBounds(
+        : (this.clampEntryToSliceBounds(
             binarySearchFirstGreaterOrEqual(this.getFullTraceTimestamps(), end),
-          ) ?? this.entriesRange.end;
+          ) ?? this.entriesRange.end);
     const entries: EntriesRange = {
       start: startEntry,
       end: endEntry,

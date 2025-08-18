@@ -268,10 +268,10 @@ export class LoadedParsers {
     ];
 
     const latestMonotonicOffset = getParserWithLatestRealToMonotonicTimeOffset(
-      allParsers.map(({parser, file}) => parser),
+      allParsers.map(({parser}) => parser),
     )?.getRealToMonotonicTimeOffsetNs();
     const latestBootTimeOffset = getParserWithLatestRealToBootTimeOffset(
-      allParsers.map(({parser, file}) => parser),
+      allParsers.map(({parser}) => parser),
     )?.getRealToBootTimeOffsetNs();
 
     newLegacyParsers = newLegacyParsers.filter(({parser, file}) => {
@@ -401,13 +401,13 @@ export class LoadedParsers {
   ): FileAndParser[] {
     const hasParserWithOffset =
       perfettoParsers ||
-      newLegacyParsers.find(({parser, file}) => {
+      newLegacyParsers.find(({parser}) => {
         return (
           parser.getRealToBootTimeOffsetNs() !== undefined ||
           parser.getRealToMonotonicTimeOffsetNs() !== undefined
         );
       });
-    const hasParserWithoutOffset = newLegacyParsers.find(({parser, file}) => {
+    const hasParserWithoutOffset = newLegacyParsers.find(({parser}) => {
       const timestamps = parser.getTimestamps();
       return (
         this.hasValidTimestamps(timestamps) &&
@@ -417,7 +417,7 @@ export class LoadedParsers {
     });
 
     if (hasParserWithOffset && hasParserWithoutOffset) {
-      return newLegacyParsers.filter(({parser, file}) => {
+      return newLegacyParsers.filter(({parser}) => {
         if (
           LoadedParsers.REAL_TIME_TRACES_WITHOUT_RTE_OFFSET.some(
             (traceType) => parser.getTraceType() === traceType,

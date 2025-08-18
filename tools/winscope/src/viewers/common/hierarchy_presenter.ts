@@ -500,7 +500,7 @@ export class HierarchyPresenter {
     let indexOffset = 0;
     for (const curr of this.currentTrees) {
       const treesToSearch = searchFormatted
-        ? curr.formattedTrees ?? []
+        ? (curr.formattedTrees ?? [])
         : curr.trees;
       let target: HierarchyTreeNode | undefined;
       const treeIndex = treesToSearch.findIndex((t) => {

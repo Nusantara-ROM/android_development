@@ -513,6 +513,10 @@ describe('UI_RECT_FACTORY', () => {
       .setIsSpy(isSpy)
       .build();
 
-    isPrimary ? node.setRects([rect]) : node.setSecondaryRects([rect]);
+    if (isPrimary) {
+      node.setRects([rect]);
+    } else {
+      node.setSecondaryRects([rect]);
+    }
   }
 });

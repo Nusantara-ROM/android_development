@@ -16,7 +16,6 @@
 
 import {globalConfig} from 'common/global_config';
 
-/* eslint-disable no-undef */
 export class Analytics {
   static analyticsLogEvent(
     eventName: Gtag.EventNames | (string & {}),

@@ -389,7 +389,7 @@ describe('UploadTracesComponent', () => {
     const firstBannerCloseButton = warningBanners[0].find(
       warningCloseButtonSelector,
     );
-    firstBannerCloseButton!!.click();
+    firstBannerCloseButton!.click();
     dom.detectChanges();
 
     // Assert only the first banner is removed

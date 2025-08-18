@@ -22,46 +22,46 @@
 @import 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0';
 
 $typography: mat.m2-define-typography-config(
-    $font-family: 'Roboto, sans-serif',
-    $headline-1: mat.m2-define-typography-level(
+  $font-family: 'Roboto, sans-serif',
+  $headline-1: mat.m2-define-typography-level(
       $font-size: 24px,
       $letter-spacing: normal,
       $font-weight: 400,
     ),
-    $headline-2: mat.m2-define-typography-level(
+  $headline-2: mat.m2-define-typography-level(
       $font-size: 20px,
       $letter-spacing: normal,
       $font-weight: 500,
     ),
-    $headline-6: mat.m2-define-typography-level(
+  $headline-6: mat.m2-define-typography-level(
       $font-size: 20px,
       $letter-spacing: normal,
       $font-weight: 500,
     ),
-    $subtitle-1: mat.m2-define-typography-level(
+  $subtitle-1: mat.m2-define-typography-level(
       $font-size: 16px,
       $line-height: 28px,
       $letter-spacing: normal,
       $font-weight: 400,
     ),
-    $subtitle-2: mat.m2-define-typography-level(
+  $subtitle-2: mat.m2-define-typography-level(
       $font-size: 20px,
       $letter-spacing: normal,
       $font-weight: 400,
     ),
-    $body-1: mat.m2-define-typography-level(
+  $body-1: mat.m2-define-typography-level(
       $font-size: 14px,
       $line-height: 20px,
       $letter-spacing: normal,
       $font-weight: 400,
     ),
-    $body-2: mat.m2-define-typography-level(
+  $body-2: mat.m2-define-typography-level(
       $font-size: 14px,
       $line-height: 20px,
       $letter-spacing: normal,
       $font-weight: 500,
     ),
-    $button: mat.m2-define-typography-level(
+  $button: mat.m2-define-typography-level(
       $font-size: 14px,
       $letter-spacing: normal,
       $font-weight: 500,
@@ -74,24 +74,28 @@ $light-accent: mat.m2-define-palette(mat.$m2-grey-palette, 700);
 $dark-accent: mat.m2-define-palette(mat.$m2-grey-palette, 500);
 $warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$light-theme: mat.m2-define-light-theme((
- color: (
-   primary: $light-primary,
-   accent: $light-accent,
-   warn: $warn,
- ),
- density: 0,
- typography: $typography,
-));
+$light-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $light-primary,
+      accent: $light-accent,
+      warn: $warn,
+    ),
+    density: 0,
+    typography: $typography,
+  )
+);
 
-$dark-theme: mat.m2-define-dark-theme((
-  color: (
-    primary: $dark-primary,
-    accent: $dark-accent,
-    warn: $warn,
-  ),
-  typography: $typography,
-));
+$dark-theme: mat.m2-define-dark-theme(
+  (
+    color: (
+      primary: $dark-primary,
+      accent: $dark-accent,
+      warn: $warn,
+    ),
+    typography: $typography,
+  )
+);
 
 @mixin background-color($theme, $contrast-theme) {
   $config: mat.m2-get-color-config($theme);
@@ -99,7 +103,10 @@ $dark-theme: mat.m2-define-dark-theme((
   $contrast-config: mat.m2-get-color-config($contrast-theme);
   $contrast-background: map.get($contrast-config, background);
   & {
-    --background-color: #{mat.m2-get-color-from-palette($background, background)};
+    --background-color: #{mat.m2-get-color-from-palette(
+        $background,
+        background
+      )};
     --contrast-background-color: #{mat.m2-get-color-from-palette(
         $contrast-background,
         background
@@ -130,131 +137,177 @@ $dark-theme: mat.m2-define-dark-theme((
 @include mat.button-theme($light-theme);
 
 @include mat.button-toggle-theme($light-theme);
-@include mat.button-toggle-overrides((
-  legacy-shape: 4px,
-));
+@include mat.button-toggle-overrides(
+  (
+    legacy-shape: 4px,
+  )
+);
 
 @include mat.card-theme($light-theme);
 
 @include mat.checkbox-theme($light-theme);
 @include mat.checkbox-density(-1);
-@include mat.checkbox-overrides((
-  label-text-weight: 400,
-));
+@include mat.checkbox-overrides(
+  (
+    label-text-weight: 400,
+  )
+);
 
 @include mat.dialog-theme($light-theme);
 .shortcuts-panel {
-  @include mat.dialog-overrides((
-    container-shape: 20px,
-    headline-padding: 10px,
-  ));
+  @include mat.dialog-overrides(
+    (
+      container-shape: 20px,
+      headline-padding: 10px,
+    )
+  );
 }
 .warning-panel {
-  @include mat.dialog-overrides((
-    container-shape: 20px,
-    headline-padding: 20px 24px,
-  ));
+  @include mat.dialog-overrides(
+    (
+      container-shape: 20px,
+      headline-padding: 20px 24px,
+    )
+  );
 }
 
 @include mat.divider-theme($light-theme);
 
 @include mat.form-field-theme($light-theme);
 .file-name-input-field {
-  @include mat.form-field-overrides((
-    container-height: 36px,
-    filled-with-label-container-padding-top: 12px,
-    filled-with-label-container-padding-bottom: 8px,
-  ));
+  @include mat.form-field-overrides(
+    (
+      container-height: 36px,
+      filled-with-label-container-padding-top: 12px,
+      filled-with-label-container-padding-bottom: 8px,
+    )
+  );
 }
 #time-selector {
-  @include mat.form-field-overrides((
-    container-text-weight: 500,
-    container-height: 20px,
-    container-vertical-padding: 0px,
-    filled-with-label-container-padding-top: 0px,
-    filled-with-label-container-padding-bottom: 0px,
-  ));
+  @include mat.form-field-overrides(
+    (
+      container-text-weight: 500,
+      container-height: 20px,
+      container-vertical-padding: 0px,
+      filled-with-label-container-padding-top: 0px,
+      filled-with-label-container-padding-bottom: 0px,
+    )
+  );
 }
 .save-field {
-  @include mat.form-field-overrides((
-    container-vertical-padding: 8px,
-    container-height: 20px,
-  ));
+  @include mat.form-field-overrides(
+    (
+      container-vertical-padding: 8px,
+      container-height: 20px,
+    )
+  );
 }
 .mat-form-field-appearance-none:not(.applied-field.highlighted) {
-  @include mat.form-field-overrides((
-    filled-container-color: transparent,
-  ));
+  @include mat.form-field-overrides(
+    (
+      filled-container-color: transparent,
+    )
+  );
 }
 .displays-select {
-  @include mat.form-field-overrides((
-    outlined-outline-width: 0,
-    container-height: 28px,
-    container-vertical-padding: 2px,
-  ));
+  @include mat.form-field-overrides(
+    (
+      outlined-outline-width: 0,
+      container-height: 28px,
+      container-vertical-padding: 2px,
+    )
+  );
 }
-.hierarchy-view .search-box, .properties-view .search-box {
-  @include mat.form-field-overrides((
-    container-height: 30px,
-    filled-with-label-container-padding-top: 8px,
-    filled-with-label-container-padding-bottom: 0px,
-    filled-container-shape: 0px,
-  ));
+.hierarchy-view .search-box,
+.properties-view .search-box {
+  @include mat.form-field-overrides(
+    (
+      container-height: 30px,
+      filled-with-label-container-padding-top: 8px,
+      filled-with-label-container-padding-bottom: 0px,
+      filled-container-shape: 0px,
+    )
+  );
 }
 .connection-type {
-  @include mat.form-field-overrides((
-    container-height: 52px,
-    filled-with-label-container-padding-bottom: 4px,
-  ));
+  @include mat.form-field-overrides(
+    (
+      container-height: 52px,
+      filled-with-label-container-padding-bottom: 4px,
+    )
+  );
 }
 
-.select-config-filter, .select-filter {
-  @include mat.form-field-overrides((
-    container-height: 40px,
-    filled-with-label-container-padding-top: 16px,
-    filled-with-label-container-padding-bottom: 4px,
-  ));
+.select-config-filter,
+.select-filter {
+  @include mat.form-field-overrides(
+    (
+      container-height: 40px,
+      filled-with-label-container-padding-top: 16px,
+      filled-with-label-container-padding-bottom: 4px,
+    )
+  );
 }
-.log-select-filter, .log-view .search-box {
-  @include mat.form-field-overrides((
-    container-height: 38px,
-    filled-with-label-container-padding-bottom: 3px,
-  ));
-  @include mat.select-overrides((
-    arrow-transform: translateY(-5px),
-  ));
+.log-select-filter,
+.log-view .search-box {
+  @include mat.form-field-overrides(
+    (
+      container-height: 38px,
+      filled-with-label-container-padding-bottom: 3px,
+    )
+  );
+  @include mat.select-overrides(
+    (
+      arrow-transform: translateY(-5px),
+    )
+  );
 }
 .log-select-filter {
-  @include mat.form-field-overrides((
-    filled-with-label-container-padding-top: 12px,
-  ));
+  @include mat.form-field-overrides(
+    (
+      filled-with-label-container-padding-top: 12px,
+    )
+  );
 }
 .log-view .search-box {
-  @include mat.form-field-overrides((
-    filled-with-label-container-padding-top: 14px,
-  ));
+  @include mat.form-field-overrides(
+    (
+      filled-with-label-container-padding-top: 14px,
+    )
+  );
 }
 .proxy-command {
-  @include mat.form-field-overrides((
-    container-height: 52px,
-  ));
+  @include mat.form-field-overrides(
+    (
+      container-height: 52px,
+    )
+  );
 }
 .proxy-token-input-field {
-  @include mat.form-field-overrides((
-    container-height: 32px,
-    container-vertical-padding: 8px,
-  ));
+  @include mat.form-field-overrides(
+    (
+      container-height: 32px,
+      container-vertical-padding: 8px,
+    )
+  );
 }
 
 @include mat.icon-button-theme($light-theme);
 @include mat.icon-button-density(-2);
-@include mat.icon-button-overrides((
-  touch-target-display: -1,
-));
-.no-touch-target-button, .rect-legend, .search-box, .listed-search-option {
-  @include mat.icon-button-overrides((
-    touch-target-display: none,
-  ));
+@include mat.icon-button-overrides(
+  (
+    touch-target-display: -1,
+  )
+);
+.no-touch-target-button,
+.rect-legend,
+.search-box,
+.listed-search-option {
+  @include mat.icon-button-overrides(
+    (
+      touch-target-display: none,
+    )
+  );
 }
 
 @include mat.icon-theme($light-theme);
@@ -280,61 +333,79 @@ $dark-theme: mat.m2-define-dark-theme((
 @include mat.tooltip-theme($light-theme);
 
 @mixin winscope-color-overrides() {
-  @include mat.button-toggle-overrides((
-    legacy-selected-state-background-color: var(--card-title-background-color),
-  ));
-  @include mat.list-overrides((
-    list-item-leading-icon-color: var(--default-text-color),
-    list-item-hover-leading-icon-color: var(--default-text-color),
-    list-item-trailing-supporting-text-color: var(--default-text-color),
-  ));
-  @include mat.slider-overrides((
-    handle-height: 10px,
-    handle-width: 10px,
-    active-track-height: 2px,
-    inactive-track-height: 2px,
-  ));
+  @include mat.button-toggle-overrides(
+    (
+      legacy-selected-state-background-color: var(--card-title-background-color),
+    )
+  );
+  @include mat.list-overrides(
+    (
+      list-item-leading-icon-color: var(--default-text-color),
+      list-item-hover-leading-icon-color: var(--default-text-color),
+      list-item-trailing-supporting-text-color: var(--default-text-color),
+    )
+  );
+  @include mat.slider-overrides(
+    (
+      handle-height: 10px,
+      handle-width: 10px,
+      active-track-height: 2px,
+      inactive-track-height: 2px,
+    )
+  );
 
-  .shortcuts-panel, .warning-panel {
-    @include mat.dialog-overrides((
-      supporting-text-color: var(--default-text-color),
-    ));
+  .shortcuts-panel,
+  .warning-panel {
+    @include mat.dialog-overrides(
+      (
+        supporting-text-color: var(--default-text-color),
+      )
+    );
   }
 
   #time-selector {
-    @include mat.form-field-overrides((
-      filled-container-color: var(--drawer-block-tertiary),
-    ));
+    @include mat.form-field-overrides(
+      (
+        filled-container-color: var(--drawer-block-tertiary),
+      )
+    );
   }
 
   .mat-form-field-appearance-none.displays-select {
-    @include mat.form-field-overrides((
-      filled-container-color: var(--disabled-color),
-    ));
-    }
+    @include mat.form-field-overrides(
+      (
+        filled-container-color: var(--disabled-color),
+      )
+    );
+  }
   .applied-field.highlighted {
-    @include mat.form-field-overrides((
-      filled-container-color: var(--selected-element-color),
-    ));
+    @include mat.form-field-overrides(
+      (
+        filled-container-color: var(--selected-element-color),
+      )
+    );
   }
 }
 
 body {
-  background-color: var(--mat-app-background-color, var(--mat-sys-background, transparent));
+  background-color: var(
+    --mat-app-background-color,
+    var(--mat-sys-background, transparent)
+  );
   color: var(--mat-app-text-color, var(--mat-sys-on-background, inherit));
 }
 
 body:not(.dark-mode) {
-  --added-element-color: #D8EAC5;
+  --added-element-color: #d8eac5;
   --blue-text-color: #{map.get(mat.$m2-indigo-palette, A200)};
   --card-title-background-color: #f1f1f1;
   --contrast-text-color: white;
   --current-element-color: #7b9ccc;
   --default-text-color: rgba(0, 0, 0, 0.87);
-  --deleted-element-color: #FFCFD0;
+  --deleted-element-color: #ffcfd0;
   --disabled-color: rgba(0, 0, 0, 0.12);
-  --drawer-block-primary: #EEEFF0;
-  --drawer-block-secondary: #DDDDDD;
+  --drawer-block-primary: #eeeff0;
+  --drawer-block-secondary: #dddddd;
   --drawer-block-tertiary: rgba(0, 0, 0, 0.04);
   --gray-text-color: #7f7f7f;
   --green-text-color: #4e9c00;
@@ -344,12 +415,12 @@ body:not(.dark-mode) {
   --primary: #{mat.m2-get-color-from-palette(mat.$m2-blue-palette, 700)};
   --purple-text-color: #a357e9;
   --red-text-color: #b30000;
-  --selected-element-color: #E2ECFF;
+  --selected-element-color: #e2ecff;
   --search-background-color: #f4ebbb;
-  --side-bar-color: #6E6E6E;
-  --slider-background-color: #E8F0FE;
-  --slider-border-color: #8AB4F8;
-  --trace-view-background-color: #E4E4E4;
+  --side-bar-color: #6e6e6e;
+  --slider-background-color: #e8f0fe;
+  --slider-border-color: #8ab4f8;
+  --trace-view-background-color: #e4e4e4;
   --warning-background-color: #ffe9bd;
   --warning-color: #e37400;
   --error-background-color: #ffdada;
@@ -367,7 +438,7 @@ body:not(.dark-mode) {
 }
 
 body.dark-mode {
-  --added-element-color: #6D8358;
+  --added-element-color: #6d8358;
   --blue-text-color: #b8e3fd;
   --card-title-background-color: #343434;
   --contrast-text-color: rgba(0, 0, 0, 0.87);
@@ -388,12 +459,12 @@ body.dark-mode {
   --red-text-color: #f85252;
   --selected-element-color: #546481;
   --side-bar-color: #dedcdc;
-  --slider-background-color: #8AB4F8;
-  --slider-border-color: #E8F0FE;
+  --slider-background-color: #8ab4f8;
+  --slider-border-color: #e8f0fe;
   --trace-view-background-color: #383838;
-  --warning-background-color: #FFE9BD80;
+  --warning-background-color: #ffe9bd80;
   --warning-color: #fbbc04;
-  --error-background-color: #FFDADA80;
+  --error-background-color: #ffdada80;
   --error-color: #f6aea9;
   --icon-accent-color: #969696;
 

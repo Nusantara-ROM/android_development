@@ -19,7 +19,10 @@ import {Item} from './item';
 export abstract class TreeNode implements Item {
   protected children: this[] = [];
 
-  constructor(readonly id: string, readonly name: string) {}
+  constructor(
+    readonly id: string,
+    readonly name: string,
+  ) {}
 
   addOrReplaceChild(newChild: this): void {
     const currIndex = this.children.findIndex(

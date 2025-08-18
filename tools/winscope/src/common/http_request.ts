@@ -36,7 +36,7 @@ export enum HttpRequestStatus {
  */
 export interface HttpResponse {
   status: HttpRequestStatus;
-  type: XMLHttpRequestResponseType; //eslint-disable-line no-undef
+  type: XMLHttpRequestResponseType;
   text: string;
   body: any;
   getHeader: (name: string) => string | undefined;

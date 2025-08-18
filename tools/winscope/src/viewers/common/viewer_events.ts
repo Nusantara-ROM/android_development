@@ -71,15 +71,24 @@ export class TimestampClickDetail {
 }
 
 export class LogFilterChangeDetail {
-  constructor(public header: LogHeader, public value: string[]) {}
+  constructor(
+    public header: LogHeader,
+    public value: string[],
+  ) {}
 }
 
 export class LogTextFilterChangeDetail {
-  constructor(public header: LogHeader, public filter: TextFilter) {}
+  constructor(
+    public header: LogHeader,
+    public filter: TextFilter,
+  ) {}
 }
 
 export class SearchQueryClickDetail {
-  constructor(public query: string, public uid: number) {}
+  constructor(
+    public query: string,
+    public uid: number,
+  ) {}
 }
 
 export class AddQueryClickDetail {
@@ -91,7 +100,10 @@ export class ClearQueryClickDetail {
 }
 
 export class SaveQueryClickDetail {
-  constructor(public query: string, public name: string) {}
+  constructor(
+    public query: string,
+    public name: string,
+  ) {}
 }
 
 export class DeleteSavedQueryClickDetail {

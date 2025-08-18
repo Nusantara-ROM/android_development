@@ -212,7 +212,7 @@ describe('TraceFileFilter', () => {
       let identifiedTimezoneInfo: TimezoneInfo | undefined;
       const tryParseLegacyFiles = (
         files: TraceFile[],
-        metadata: TraceMetadata,
+        _,
         timezoneInfo?: TimezoneInfo,
       ) => {
         identifiedTimezoneInfo = timezoneInfo;
@@ -417,7 +417,6 @@ describe('TraceFileFilter', () => {
       const tryParseLegacyFiles = (
         files: TraceFile[],
         metadata: TraceMetadata,
-        timezoneInfo?: TimezoneInfo,
       ) => {
         identifiedMetadata = metadata;
         return tryParseLegacy(files);

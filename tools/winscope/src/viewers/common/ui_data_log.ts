@@ -45,7 +45,10 @@ export interface ColumnSpec {
 }
 
 export class LogHeader {
-  constructor(public spec: ColumnSpec, public filter?: LogFilter) {}
+  constructor(
+    public spec: ColumnSpec,
+    public filter?: LogFilter,
+  ) {}
 }
 
 export interface LogEntry {

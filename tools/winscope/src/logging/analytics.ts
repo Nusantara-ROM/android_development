@@ -20,7 +20,6 @@ import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
 
-/* eslint-disable no-undef */
 export class Analytics {
   private static BUGANIZER_OPENED = 'buganizer_opened';
   private static CROSS_TOOL_SYNC = 'cross_tool_sync';

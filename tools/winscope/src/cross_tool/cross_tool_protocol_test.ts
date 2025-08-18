@@ -47,7 +47,7 @@ describe('CrossToolProtocol', () => {
       emittedEvent = event;
     });
 
-    // @ts-ignore
+    // @ts-expect-error(remoteTool is private but needs to be mocked in this test)
     protocol.remoteTool = {
       window: FAKE_WINDOW,
       origin: FAKE_ORIGIN,
@@ -102,7 +102,7 @@ Check the test run artifacts for trace files
     `;
     const message = new MessageTestFailureInfo(stackTrace);
 
-    // @ts-ignore
+    // @ts-expect-error(onMessageDebugInfoReceived is private but needs to be mocked in this test)
     await protocol.onMessageDebugInfoReceived(message);
 
     expect(emittedEvent).toBeInstanceOf(RemoteToolTimestampReceived);
@@ -119,14 +119,14 @@ Check the test run artifacts for trace files
     `;
     const message = new MessageTestFailureInfo(stackTrace);
 
-    // @ts-ignore
+    // @ts-expect-error(onMessageDebugInfoReceived is private but needs to be mocked in this test)
     await protocol.onMessageDebugInfoReceived(message);
     expect(emittedEvent).toBeUndefined();
   });
 
   it('handles debug info message with no stacktrace', async () => {
     const message = new MessageTestFailureInfo(undefined);
-    // @ts-ignore
+    // @ts-expect-error(onMessageDebugInfoReceived is private but needs to be mocked in this test)
     await protocol.onMessageDebugInfoReceived(message);
     expect(emittedEvent).toBeUndefined();
   });

@@ -17,7 +17,7 @@ const compat = new FlatCompat({
 module.exports = defineConfig([
   {
     files: ['**/*.ts', '**/*.js'],
-    extends: compat.extends('eslint-config-prettier', 'eslint:recommended'),
+    extends: compat.extends('eslint-config-prettier', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'),
 
     plugins: {
       prettier,
@@ -41,7 +41,9 @@ module.exports = defineConfig([
     },
 
     rules: {
-      'no-unused-vars': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
       'no-var': 'error',
 
       'prefer-const': [
@@ -62,5 +64,5 @@ module.exports = defineConfig([
       ],
     },
   },
-  globalIgnores(['src/trace_processor/perfetto/']),
+  globalIgnores(['src/trace_processor/perfetto/', '**/webpack.config.js']),
 ]);

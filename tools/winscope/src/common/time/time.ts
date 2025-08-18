@@ -17,7 +17,10 @@
 export const INVALID_TIME_NS = 0n;
 
 export class TimeRange {
-  constructor(readonly from: Timestamp, readonly to: Timestamp) {}
+  constructor(
+    readonly from: Timestamp,
+    readonly to: Timestamp,
+  ) {}
 
   containsTimestamp(ts: Timestamp): boolean {
     const min = this.from.getValueNs();

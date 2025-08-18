@@ -307,12 +307,9 @@ export class Mediator {
       }
     });
 
-    await event.visit(
-      WinscopeEventType.NO_TRACE_TARGETS_SELECTED,
-      async (event) => {
-        UserNotifier.add(new NoTraceTargetsSelected()).notify();
-      },
-    );
+    await event.visit(WinscopeEventType.NO_TRACE_TARGETS_SELECTED, async () => {
+      UserNotifier.add(new NoTraceTargetsSelected()).notify();
+    });
 
     await event.visit(
       WinscopeEventType.FILTER_PRESET_SAVE_REQUEST,
