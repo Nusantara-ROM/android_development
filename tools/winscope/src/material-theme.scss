@@ -218,10 +218,10 @@ $dark-theme: mat.m2-define-dark-theme((
 .log-select-filter, .log-view .search-box {
   @include mat.form-field-overrides((
     container-height: 38px,
-    filled-with-label-container-padding-bottom: 4px,
+    filled-with-label-container-padding-bottom: 3px,
   ));
   @include mat.select-overrides((
-    arrow-transform: translateY(-6px),
+    arrow-transform: translateY(-5px),
   ));
 }
 .log-select-filter {

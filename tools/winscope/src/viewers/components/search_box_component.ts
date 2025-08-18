@@ -48,6 +48,7 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
       (keydown.enter)="$event.target.blur()"
       [matTooltip]="label"
       matTooltipPosition="above"
+      subscriptSizing="dynamic"
       [matTooltipDisabled]="disableFormFieldTooltip(formField)" #formField>
       <mat-label>{{ label }}</mat-label>
       <input

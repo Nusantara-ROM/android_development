@@ -66,6 +66,7 @@ import {AbstractSelectComponent} from './abstract_select_component';
       [matTooltip]="label"
       matTooltipPosition="above"
       [matTooltipDisabled]="disableFormFieldTooltip(formField)"
+      subscriptSizing="dynamic"
       [class.mat-body-2]="!select.value || select.value.length === 0"  #formField>
       <mat-label>{{ label }}</mat-label>
       <mat-select
@@ -75,7 +76,10 @@ import {AbstractSelectComponent} from './abstract_select_component';
         [multiple]="true"
         panelWidth="''"
         #select>
-        <mat-form-field class="select-filter mat-form-field-appearance-none" [style]="getInnerFormFieldStyle()">
+        <mat-form-field
+          class="select-filter mat-form-field-appearance-none"
+          [style]="getInnerFormFieldStyle()"
+          subscriptSizing="dynamic">
           <mat-label>Filter options</mat-label>
           <input matInput #filter [(ngModel)]="filterString" (ngModelChange)="onFilterStringChange()" />
         </mat-form-field>
@@ -167,6 +171,7 @@ export class SelectWithFilterComponent extends AbstractSelectComponent<HTMLInput
       paddingTop: '2px',
       paddingLeft: '10px',
       paddingRight: '20px',
+      paddingBottom: '10px',
       width: this.innerFilterWidth + 'px',
     };
   }

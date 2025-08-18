@@ -147,7 +147,7 @@ interface Tab {
               <div class="overlay-panel-section save-section">
                 <span class="mat-body-2 overlay-panel-section-title"> Preset Name </span>
                 <div class="outline-field save-field">
-                  <mat-form-field class="no-bottom-padding-field" appearance="outline">
+                  <mat-form-field subscriptSizing="dynamic" appearance="outline">
                     <input matInput [formControl]="filterPresetNameControl" (keydown.enter)="savePreset()"/>
                     <mat-error *ngIf="filterPresetNameControl.invalid && filterPresetNameControl.value">Preset with that name already exists.</mat-error>
                   </mat-form-field>

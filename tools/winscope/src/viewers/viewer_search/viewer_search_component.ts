@@ -171,7 +171,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
 
           <ng-template #saveQueryField let-query="query" let-control="control">
             <div class="outline-field save-field">
-              <mat-form-field class="no-bottom-padding-field" appearance="outline">
+              <mat-form-field subscriptSizing="dynamic" appearance="outline">
                 <input matInput [formControl]="control" (keydown.enter)="onSaveQueryClick(query, control)"/>
                 <mat-error *ngIf="control.invalid && control.value">Query with that name already exists.</mat-error>
               </mat-form-field>

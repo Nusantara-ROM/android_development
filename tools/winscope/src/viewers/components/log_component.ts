@@ -154,7 +154,8 @@ import {
                 [options]="header.filter.options"
                 [outerFilterWidth]="header.filter.outerFilterWidthCss"
                 [innerFilterWidth]="header.filter.innerFilterWidthCss"
-                formFieldClass="log-select-filter no-bottom-padding-field mat-form-field-appearance-none no-ripple-field"
+                formFieldClass="log-select-filter mat-form-field-appearance-none no-ripple-field"
+                subscriptSizing="dynamic"
                 (selectChange)="onFilterChange($event, header)">
             </select-with-filter>
 
@@ -164,7 +165,7 @@ import {
               [label]="header.spec.name"
               [filterName]="header.spec.name"
               [formFieldClass]="
-                'wide-field no-bottom-padding-field center-field mat-form-field-appearance-none no-ripple-field '
+                'wide-field center-field mat-form-field-appearance-none no-ripple-field '
                  + header.spec.cssClass
                  + (header.filter.textFilter.filterString?.length === 0 ? ' mat-body-2' : '')
               "
