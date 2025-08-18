@@ -24,7 +24,7 @@ import {Timestamp} from 'common/time/time';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {MonotonicScreenRecording} from 'messaging/user_warnings';
-import * as MP4Box from 'mp4box';
+import {createFile, MP4ArrayBuffer, MP4File, Sample} from 'mp4box';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
 import {UserNotifier} from 'services/user_notifier';
 import {ScreenRecordingUtils} from 'trace/screen_recording_utils';
@@ -280,16 +280,21 @@ export class ParserScreenRecording extends AbstractParser<
   }
 
   private async parseTimestampsFromMp4(
-    arrayBuffer: ArrayBuffer,
+    arrayBuffer: ArrayBuffer | SharedArrayBuffer,
     elapsedRealTimeNanos: bigint,
   ): Promise<Array<bigint>> {
     const timestamps: Array<bigint> = [];
-    const mp4File: MP4Box.MP4File = MP4Box.createFile();
+    // There's an export issue with the createFile alias for TypeScript (1.5.0 - Jun 2025)
+    // It fails with the error below, use this as a bypass until the library is fixed.
+    // ERROR in src/parsers/screen_recording/parser_screen_recording.ts:288:48
+    // - error TS2554: Expected 0 arguments, but got 2.
+    const createFileAny = createFile as any;
+    const mp4File: MP4File = createFileAny(true, undefined);
     await new Promise<void>((resolve) => {
       mp4File.onReady = (info) => {
         mp4File.onSamples = (id, user, samples) => {
           let curr = elapsedRealTimeNanos;
-          samples.forEach((sample) => {
+          samples.forEach((sample: Sample) => {
             const timeSeconds = sample.duration / sample.timescale;
             const timeNs = BigInt(
               Math.floor(TIME_UNIT_TO_NANO.s * timeSeconds),
@@ -301,7 +306,7 @@ export class ParserScreenRecording extends AbstractParser<
         };
         mp4File.setExtractionOptions(info.tracks[0].id);
       };
-      const buffer = arrayBuffer as MP4Box.MP4ArrayBuffer;
+      const buffer = arrayBuffer as MP4ArrayBuffer;
       buffer.fileStart = 0;
       mp4File.appendBuffer(buffer);
       mp4File.start();

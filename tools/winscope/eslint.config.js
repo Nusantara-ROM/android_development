@@ -1,0 +1,66 @@
+const {defineConfig, globalIgnores} = require('eslint/config');
+
+const prettier = require('eslint-plugin-prettier');
+const typescriptEslint = require('@typescript-eslint/eslint-plugin');
+const tsParser = require('@typescript-eslint/parser');
+const globals = require('globals');
+const js = require('@eslint/js');
+
+const {FlatCompat} = require('@eslint/eslintrc');
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
+});
+
+module.exports = defineConfig([
+  {
+    files: ['**/*.ts', '**/*.js'],
+    extends: compat.extends('eslint-config-prettier', 'eslint:recommended'),
+
+    plugins: {
+      prettier,
+      '@typescript-eslint': typescriptEslint,
+    },
+
+    languageOptions: {
+      parser: tsParser,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parserOptions: {},
+
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+        ...globals.webextensions,
+        ...globals.jasmine,
+        ...globals.protractor,
+        NodeJS: true,
+      },
+    },
+
+    rules: {
+      'no-unused-vars': 'off',
+      'no-var': 'error',
+
+      'prefer-const': [
+        'error',
+        {
+          destructuring: 'all',
+        },
+      ],
+
+      'prefer-rest-params': 'error',
+      'prefer-spread': 'error',
+
+      'no-restricted-imports': [
+        'error',
+        {
+          'patterns': ['..*'],
+        },
+      ],
+    },
+  },
+  globalIgnores(['src/trace_processor/perfetto/']),
+]);
