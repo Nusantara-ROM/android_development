@@ -119,7 +119,7 @@ export class ParserTransitions extends AbstractParser<HierarchyTreeNode> {
     const columns = ParserTransitions.EAGER_COLUMNS.map(
       (column) => `transitions.${column}`,
     ).join(', ');
-    const sql = `SELECT ${columns} FROM ${this.getTableName()} as transitions;`;
+    const sql = `SELECT ${columns} FROM ${this.getTableName()} as transitions ORDER BY transitions.ts;`;
     return this.makeHierarchyTrees(sql);
   }
 
