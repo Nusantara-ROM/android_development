@@ -17,6 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FilterComponent, SelectOption } from '../filter/filter.component';
 import { FilterService } from '../service/filter.service';
 import { Subscription } from 'rxjs';
+import { TestModes } from '../model/test_mode';
 
 @Component({
   selector: 'app-timeline',
@@ -39,13 +40,13 @@ export class TimelineComponent implements OnChanges {
 
   @Input() selectedGolden: MotionGolden | null = null;
   @Input() showTestList: boolean = false;
+  @Input() testMode: string = "";
 
   actualData: MotionGoldenData | undefined;
   expectedData: MotionGoldenData | undefined;
   loading: boolean = false;
   featureCount = 0;
   expandedGraphIdx: number = -1;
-  showUpdateButton: boolean = true;
   availableOptions: SelectOption[] = [];
   displayedData: SelectOption[] = [];
 
@@ -64,13 +65,11 @@ export class TimelineComponent implements OnChanges {
     if (changes['selectedGolden']) {
       this.receivedSelectedOptions = [];
       if(this.selectedGolden?.dataSource === DataSource.GERRIT){
-        this.showUpdateButton = false
         this.updatePageFromData(
           this.selectedGolden.actualData,
           this.selectedGolden.expectedData
         );
       } else {
-        this.showUpdateButton = true
         this.updatePage();
       }
     }
@@ -275,5 +274,10 @@ export class TimelineComponent implements OnChanges {
     return this.receivedSelectedOptions.some(selectedOption =>
       selectedOption.name === featureName
     );
+  }
+
+  get showUpdateButton(): boolean {
+    return this.testMode != TestModes.PRESUBMIT
+      && this.testMode != TestModes.GERRIT;
   }
 }
