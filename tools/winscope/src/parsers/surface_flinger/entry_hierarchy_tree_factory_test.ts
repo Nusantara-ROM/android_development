@@ -22,6 +22,7 @@ import {
   MissingLayerIds,
   RecursiveLayerIds,
 } from 'messaging/user_warnings';
+import {TraceGeometryData} from 'parsers/trace_geometry_data';
 import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {makeSpyRowIterator} from 'trace_processor/test_utils';
 import {TraceProcessor} from 'trace_processor/trace_processor';
@@ -29,6 +30,7 @@ import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {TraceRect} from 'tree_node/trace_rect';
 import {EntryHierarchyTreeFactory} from './entry_hierarchy_tree_factory';
 import {LayerRects, RectExtractor} from './rect_extractor';
+import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
 
 describe('EntryHierarchyTreeFactory', () => {
   const factory = new EntryHierarchyTreeFactory();
@@ -39,6 +41,7 @@ describe('EntryHierarchyTreeFactory', () => {
   const createMapWithoutLayerRects = (snapshotId: bigint) => {
     return new Map([[snapshotId, {displayRects: [], layerRects: new Map()}]]);
   };
+
   const layerName1 = 'Layer1';
   const defaultSnapshotId = 100n;
   let displaysSpy: jasmine.Spy;
@@ -47,6 +50,8 @@ describe('EntryHierarchyTreeFactory', () => {
   let snapshotIter: jasmine.SpyObj<RowIterator>;
   let layersResult: jasmine.SpyObj<QueryResult>;
   let layersIter: jasmine.SpyObj<RowIterator>;
+  let mockTraceGeometryData: jasmine.SpyObj<TraceGeometryData>;
+  let extractFillRegionRectSpy: jasmine.Spy;
 
   beforeEach(() => {
     snapshotIter = makeSpyRowIterator();
@@ -60,7 +65,10 @@ describe('EntryHierarchyTreeFactory', () => {
     setColumnValuesForLayer();
     layersResult = jasmine.createSpyObj<QueryResult>('result', ['iter']);
     layersResult.iter.and.returnValue(layersIter);
-
+    mockTraceGeometryData = jasmine.createSpyObj<TraceGeometryData>(
+      'TraceGeometryData',
+      ['getRect', 'getTransform'],
+    );
     displaysSpy = spyOn(
       RectExtractor,
       'extractDisplayRectsForSnapshot',
@@ -70,7 +78,7 @@ describe('EntryHierarchyTreeFactory', () => {
     layerRectsSpy = spyOn(RectExtractor, 'extractLayerRects').and.returnValue(
       undefined,
     );
-
+    extractFillRegionRectSpy = spyOn(RectExtractor, 'extractFillRegionRect');
     let layersIterCallCount = 0;
     layersIter.valid.and.callFake(() => layersIterCallCount === 0);
     layersIter.next.and.callFake(() => {
@@ -138,10 +146,16 @@ describe('EntryHierarchyTreeFactory', () => {
     });
 
     it('adds fill region rects to input rect', () => {
+      const layerIdBigint = 10n;
+      const currentLayerName = 'TestLayer';
+
       const rows = [
         defaultLayerData({
           'snapshot_id': defaultSnapshotId,
           'id': 0n,
+          'layer_id': layerIdBigint,
+          'layer_name': currentLayerName,
+          'fr_id': 0n,
           'fr_x': 1,
           'fr_y': 2,
           'fr_w': 3,
@@ -150,6 +164,9 @@ describe('EntryHierarchyTreeFactory', () => {
         defaultLayerData({
           'snapshot_id': defaultSnapshotId,
           'id': 0n,
+          'layer_id': layerIdBigint,
+          'layer_name': currentLayerName,
+          'fr_id': 1n,
           'fr_x': 2,
           'fr_y': 4,
           'fr_w': 6,
@@ -159,28 +176,48 @@ describe('EntryHierarchyTreeFactory', () => {
       const mockLayersIter = setupLayerIterator(rows);
       layersResult.iter.and.returnValue(mockLayersIter);
 
-      const spyInputRect = jasmine.createSpyObj<TraceRect>('rect', [], {
-        id: 'inputRect',
-        'fillRegion': new Region([]),
-      });
+      const spyInputRect = new TraceRectBuilder()
+        .setX(0)
+        .setY(0)
+        .setWidth(10)
+        .setHeight(10)
+        .setId('inputRect')
+        .setName('input')
+        .setGroupId(0)
+        .setIsVisible(true)
+        .setIsDisplay(false)
+        .setDepth(0)
+        .setIsSpy(false)
+        .setFillRegion(new Region([]))
+        .build();
+
       layerRectsSpy.and.returnValue({input: spyInputRect});
+
+      const rect1 = new Rect(1, 2, 3, 4);
+      const rect2 = new Rect(2, 4, 6, 8);
+      extractFillRegionRectSpy.and.returnValues(rect1, rect2);
 
       const tree = makeEntryHierarchyTree(
         createMapWithoutLayerRects(defaultSnapshotId),
       );
-      const layer = assertDefined(tree.getChildByName(layerName1));
-      expect(layer.getRects()).toBeUndefined();
+      const layer = assertDefined(tree.getChildByName(currentLayerName));
 
       const secondaryRects = layer.getSecondaryRects();
       expect(secondaryRects).toBeDefined();
       expect(secondaryRects!.length).toBe(1);
       const outputRect = secondaryRects![0];
 
-      const expectedFillRegion = new Region([
-        new Rect(1, 2, 3, 4),
-        new Rect(2, 4, 6, 8),
-      ]);
-      expect(outputRect.fillRegion).toEqual(expectedFillRegion);
+      expect(outputRect.fillRegion).toBeDefined();
+      const expectedFillRegion = new Region([rect1, rect2]);
+      expect(assertDefined(outputRect.fillRegion).rects).toEqual(
+        expectedFillRegion.rects,
+      );
+
+      expect(extractFillRegionRectSpy).toHaveBeenCalledTimes(2);
+      expect(extractFillRegionRectSpy).toHaveBeenCalledWith(
+        mockLayersIter,
+        mockTraceGeometryData,
+      );
     });
 
     it('sets display rects to root', () => {
@@ -418,6 +455,7 @@ describe('EntryHierarchyTreeFactory', () => {
       layersResult,
       visibleRectsResults ?? new Map(),
       traceProcessor,
+      mockTraceGeometryData,
     );
     return trees[0];
   }
@@ -433,6 +471,7 @@ describe('EntryHierarchyTreeFactory', () => {
       layersResult,
       visibleRectsResults ?? new Map(),
       traceProcessor,
+      mockTraceGeometryData,
     );
   }
 });

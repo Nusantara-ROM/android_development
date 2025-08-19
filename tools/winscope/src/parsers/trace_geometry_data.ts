@@ -79,13 +79,11 @@ export class TraceGeometryData {
     }
   }
 
-  getRect(id: number) {
-    const key = BigInt(id);
-    return this.rectsMap.get(key);
+  getRect(id: bigint) {
+    return this.rectsMap.get(id);
   }
 
-  getTransform(id: number) {
-    const key = BigInt(id);
-    return this.transformMap.get(key);
+  getTransform(id: bigint) {
+    return this.transformMap.get(id);
   }
 }

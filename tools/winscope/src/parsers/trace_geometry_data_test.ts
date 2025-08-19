@@ -50,13 +50,13 @@ describe('TraceGeometryData', () => {
 
       expect(mockTraceProcessor.query).toHaveBeenCalledTimes(2);
 
-      expect(traceGeometryData.getRect(1)).toEqual(new Rect(0, 0, 10, 10));
-      expect(traceGeometryData.getTransform(1)).toEqual(
+      expect(traceGeometryData.getRect(1n)).toEqual(new Rect(0, 0, 10, 10));
+      expect(traceGeometryData.getTransform(1n)).toEqual(
         new TransformMatrix(1, 0, 0, 1, 0, 0),
       );
 
-      expect(traceGeometryData.getRect(2)).toEqual(new Rect(5, 5, 20, 20));
-      expect(traceGeometryData.getTransform(2)).toEqual(
+      expect(traceGeometryData.getRect(2n)).toEqual(new Rect(5, 5, 20, 20));
+      expect(traceGeometryData.getTransform(2n)).toEqual(
         new TransformMatrix(2, 0.1, 50, 2, 0.2, 51),
       );
     });
@@ -65,8 +65,8 @@ describe('TraceGeometryData', () => {
       setupMockQuery([], []);
       await traceGeometryData.fetchAndBuild();
       expect(mockTraceProcessor.query).toHaveBeenCalledTimes(2);
-      expect(traceGeometryData.getRect(1)).toBeUndefined();
-      expect(traceGeometryData.getTransform(1)).toBeUndefined();
+      expect(traceGeometryData.getRect(1n)).toBeUndefined();
+      expect(traceGeometryData.getTransform(1n)).toBeUndefined();
     });
   });
 
@@ -79,11 +79,11 @@ describe('TraceGeometryData', () => {
     });
 
     it('getRect should return the correct Rect for a valid ID', () => {
-      expect(traceGeometryData.getRect(100)).toEqual(new Rect(1, 2, 3, 4));
+      expect(traceGeometryData.getRect(100n)).toEqual(new Rect(1, 2, 3, 4));
     });
 
     it('getRect should return undefined for an invalid ID', () => {
-      expect(traceGeometryData.getRect(999)).toBeUndefined();
+      expect(traceGeometryData.getRect(999n)).toBeUndefined();
     });
   });
 
@@ -99,13 +99,13 @@ describe('TraceGeometryData', () => {
     });
 
     it('getTransform should return the correct TransformMatrix for a valid ID', () => {
-      expect(traceGeometryData.getTransform(100)).toEqual(
+      expect(traceGeometryData.getTransform(100n)).toEqual(
         new TransformMatrix(1.1, 0.1, 10, 1.2, 0.2, 11),
       );
     });
 
     it('getTransform should return undefined for an invalid ID', () => {
-      expect(traceGeometryData.getTransform(999)).toBeUndefined();
+      expect(traceGeometryData.getTransform(999n)).toBeUndefined();
     });
   });
 

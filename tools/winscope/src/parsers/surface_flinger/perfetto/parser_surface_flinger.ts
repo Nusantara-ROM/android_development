@@ -16,6 +16,7 @@
 
 import {
   assertBigIntOrUndefined,
+  assertDefined,
   assertStringOrUndefined,
 } from 'common/assert_utils';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
@@ -71,21 +72,24 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
       entriesSnapshotRangeStart,
       entriesSnapshotRangeEnd,
     );
-    const visibleRectsResult = await this.queryAllVisibleRects();
+    const visibleRectsResult = await this.queryAllVisibleAndDisplayRects();
     const allSnapshotsResults = await this.queryRangeSnapshots(
       0,
       this.getLengthEntries(),
     );
+    const traceGeometryData = assertDefined(this.traceGeometryData);
     const allVisibleRectsAndDisplay =
       RectExtractor.extractAllVisibleAndDisplayRects(
         allSnapshotsResults,
         visibleRectsResult,
+        traceGeometryData,
       );
     return this.factory.makeEntryHierarchyTrees(
       snapshotResult,
       layersResult,
       allVisibleRectsAndDisplay,
       this.traceProcessor,
+      traceGeometryData,
     );
   }
 
@@ -143,17 +147,15 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
           display.is_virtual,
           display.display_id,
           display.display_name,
+          trace_rect.rect_id,
           trace_rect.group_id,
           trace_rect.depth,
-          trace_rect.x,
-          trace_rect.y,
-          trace_rect.w,
-          trace_rect.h
+          trace_rect.transform_id
         FROM surfaceflinger_layers_snapshot AS sfs
         LEFT JOIN android_surfaceflinger_display AS display
           ON sfs.id = display.snapshot_id
-        LEFT JOIN winscope_rect AS trace_rect
-          ON display.trace_rect_id = trace_rect.trace_rect_id
+        LEFT JOIN android_winscope_trace_rect AS trace_rect
+          ON display.trace_rect_id = trace_rect.id
         WHERE sfs.id >= ${start} AND sfs.id < ${end}
           ORDER BY sfs.id, display.id;`;
     return await this.traceProcessor.query(snapshotQuery);
@@ -184,35 +186,20 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
           ltr.group_id,
           ltr.depth,
           ltr.opacity,
-          ltr.x,
-          ltr.y,
-          ltr.w,
-          ltr.h,
-          lt.dsdx,
-          lt.dtdx,
-          lt.dsdy,
-          lt.dtdy,
-          lt.tx,
-          lt.ty,
+          ltr.rect_id,
+          ltr.transform_id,
           itr.group_id AS input_group_id,
           itr.depth AS input_depth,
           itr.is_visible AS input_is_visible,
           itr.is_spy,
-          itr.x AS input_x,
-          itr.y AS input_y,
-          itr.w AS input_w,
-          itr.h AS input_h,
-          frr.x AS fr_x,
-          frr.y AS fr_y,
-          frr.w AS fr_w,
-          frr.h AS fr_h
+          itr.rect_id AS input_trace_rect_id,
+          itr.transform_id AS input_transform_id,
+          frr.id AS fr_id
         FROM surfaceflinger_layer AS sfl
-        LEFT JOIN winscope_rect AS ltr
-          ON sfl.layer_rect_id = ltr.trace_rect_id
-        LEFT JOIN android_winscope_transform AS lt
-          ON ltr.transform_id = lt.id
-        LEFT JOIN winscope_rect AS itr
-          ON sfl.input_rect_id = itr.trace_rect_id
+        LEFT JOIN android_winscope_trace_rect AS ltr
+          ON sfl.layer_rect_id = ltr.id
+        LEFT JOIN android_winscope_trace_rect AS itr
+          ON sfl.input_rect_id = itr.id
         LEFT JOIN android_winscope_fill_region AS fr
           ON sfl.input_rect_id = fr.trace_rect_id
         LEFT JOIN android_winscope_rect AS frr
@@ -222,9 +209,9 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
     return await this.traceProcessor.query(layersQuery);
   }
 
-  private async queryAllVisibleRects(): Promise<QueryResult> {
-    const visibleRectsQuery = `
-      SELECT
+  private async queryAllVisibleAndDisplayRects(): Promise<QueryResult> {
+    const visibleRectsDisplayQuery = `
+    SELECT
           sfl.snapshot_id,
           sfl.id,
           sfl.layer_id,
@@ -238,43 +225,29 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
           ltr.group_id,
           ltr.depth,
           ltr.opacity,
-          ltr.x,
-          ltr.y,
-          ltr.w,
-          ltr.h,
-          lt.dsdx,
-          lt.dtdx,
-          lt.dsdy,
-          lt.dtdy,
-          lt.tx,
-          lt.ty,
+          ltr.rect_id,
+          ltr.transform_id,
           itr.is_visible AS input_is_visible,
           itr.is_spy,
           itr.group_id AS input_group_id,
           itr.depth AS input_depth,
           itr.is_visible AS input_is_visible,
           itr.is_spy,
-          itr.x AS input_x,
-          itr.y AS input_y,
-          itr.w AS input_w,
-          itr.h AS input_h,
-          frr.x AS fr_x,
-          frr.y AS fr_y,
-          frr.w AS fr_w,
-          frr.h AS fr_h
+          itr.rect_id AS input_trace_rect_id,
+          itr.transform_id AS input_transform_id,
+          frr.id AS fr_id
         FROM surfaceflinger_layer AS sfl
-        LEFT JOIN winscope_rect AS ltr
-          ON sfl.layer_rect_id = ltr.trace_rect_id
-        LEFT JOIN android_winscope_transform AS lt
-          ON ltr.transform_id = lt.id
-        LEFT JOIN winscope_rect AS itr
-          ON sfl.input_rect_id = itr.trace_rect_id
+        LEFT JOIN android_winscope_trace_rect AS ltr
+          ON sfl.layer_rect_id = ltr.id
+        LEFT JOIN android_winscope_trace_rect AS itr
+          ON sfl.input_rect_id = itr.id
         LEFT JOIN android_winscope_fill_region AS fr
           ON sfl.input_rect_id = fr.trace_rect_id
         LEFT JOIN android_winscope_rect AS frr
           ON fr.rect_id = frr.id
           WHERE (sfl.is_visible = true) OR (itr.is_visible = true)
-          ORDER BY sfl.id`;
-    return this.traceProcessor.query(visibleRectsQuery);
+          ORDER BY sfl.id;
+    `;
+    return this.traceProcessor.query(visibleRectsDisplayQuery);
   }
 }

@@ -21,6 +21,7 @@ import {
   IDENTITY_MATRIX,
   TransformMatrix,
 } from 'common/geometry/transform_matrix';
+import {TraceGeometryData} from 'parsers/trace_geometry_data';
 import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {makeSpyRowIterator} from 'trace_processor/test_utils';
 import {TraceRect} from 'tree_node/trace_rect';
@@ -36,16 +37,26 @@ describe('SurfaceFlinger RectExtractor', () => {
     dsdy: 5,
     ty: 6,
   });
-
+  let mockTraceGeometryData: jasmine.SpyObj<TraceGeometryData>;
+  beforeEach(() => {
+    mockTraceGeometryData = jasmine.createSpyObj<TraceGeometryData>(
+      'TraceGeometryData',
+      ['getRect', 'getTransform'],
+    );
+  });
   const rectId1 = 'RectId1';
   const rectName1 = 'RectName1';
+
+  const boundsRectGeom = new Rect(1, 1, 200, 400);
+  const inputRectGeom = new Rect(2, 2, 400, 200);
+  const displayRectGeom = new Rect(0, 0, 1000, 2000);
+  const fillRegionGeom = new Rect(1, 2, 3, 4);
 
   describe('extractAllRects', () => {
     let snapshotResult: jasmine.SpyObj<QueryResult>;
     let rectsResult: jasmine.SpyObj<QueryResult>;
     let snapshotIter: jasmine.SpyObj<RowIterator>;
     let rectsIter: jasmine.SpyObj<RowIterator>;
-
     let extractDisplayRectsSpy: jasmine.Spy;
     let extractLayerInputRectsSpy: jasmine.Spy;
 
@@ -91,6 +102,12 @@ describe('SurfaceFlinger RectExtractor', () => {
       extractLayerInputRectsSpy.and.returnValue({
         rects: [],
       });
+      mockTraceGeometryData.getRect
+        .withArgs(1n)
+        .and.returnValue(displayRectGeom);
+      mockTraceGeometryData.getRect
+        .withArgs(2n)
+        .and.returnValue(displayRectGeom);
     });
 
     it('extracts 1 display rect for 1 snapshot id', () => {
@@ -209,6 +226,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       const result = RectExtractor.extractAllVisibleAndDisplayRects(
         snapshotResult,
         rectsResult,
+        mockTraceGeometryData,
       );
 
       const expectedMap = new Map();
@@ -251,6 +269,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       const result = RectExtractor.extractAllVisibleAndDisplayRects(
         snapshotResult,
         rectsResult,
+        mockTraceGeometryData,
       );
 
       const expectedMap = new Map();
@@ -282,6 +301,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
         layersIter,
         currSnapshotId,
+        mockTraceGeometryData,
       );
 
       const expectedMap = new Map();
@@ -313,6 +333,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
         layersIter,
         currSnapshotId,
+        mockTraceGeometryData,
       );
 
       const expectedMap = new Map();
@@ -333,6 +354,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
         layersIter,
         currSnapshotId,
+        mockTraceGeometryData,
       );
 
       const expectedMap = new Map();
@@ -370,6 +392,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
         layersIter,
         currSnapshotId,
+        mockTraceGeometryData,
       );
 
       const expectedMap = new Map();
@@ -395,6 +418,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
         layersIter,
         currSnapshotId,
+        mockTraceGeometryData,
       );
 
       const expectedMap = new Map();
@@ -437,6 +461,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
         layersIter,
         currSnapshotId,
+        mockTraceGeometryData,
       );
 
       expect(extractLayerRectsSpy).toHaveBeenCalledTimes(1);
@@ -505,6 +530,8 @@ describe('SurfaceFlinger RectExtractor', () => {
         'depth': 5n,
         'input_group_id': null,
         'fr_x': null,
+        'rect_id': 1n,
+        'transform_id': 1n,
       };
       return {...defaults, ...overrides};
     }
@@ -543,9 +570,34 @@ describe('SurfaceFlinger RectExtractor', () => {
 
   describe('extractLayerRects', () => {
     let layersIter: jasmine.SpyObj<RowIterator>;
+    const boundsRectId = 100n;
+    const inputRectId = 101n;
+    const fillRegionId = 1n;
+    const transformId = 102n;
 
     beforeEach(() => {
       layersIter = makeSpyRowIterator();
+      mockTraceGeometryData.getRect.and.returnValue(undefined);
+      mockTraceGeometryData.getRect
+        .withArgs(boundsRectId)
+        .and.returnValue(boundsRectGeom);
+      mockTraceGeometryData.getRect
+        .withArgs(inputRectId)
+        .and.returnValue(inputRectGeom);
+      mockTraceGeometryData.getRect
+        .withArgs(fillRegionId)
+        .and.returnValue(fillRegionGeom);
+
+      mockTraceGeometryData.getTransform.and.returnValue(expectedMatrix);
+      mockTraceGeometryData.getTransform
+        .withArgs(transformId)
+        .and.returnValue(expectedMatrix);
+
+      let iterated = false;
+      layersIter.valid.and.callFake(() => !iterated);
+      layersIter.next.and.callFake(() => {
+        iterated = true;
+      });
     });
 
     it('extracts bounds rect with corner radius and opacity', () => {
@@ -568,6 +620,7 @@ describe('SurfaceFlinger RectExtractor', () => {
 
     it('adds fill region rects to input rect', () => {
       setColumnValuesForInputRect();
+      layersIter.get.withArgs('fr_id').and.returnValue(1n);
       layersIter.get.withArgs('fr_x').and.returnValue(1);
       layersIter.get.withArgs('fr_y').and.returnValue(2);
       layersIter.get.withArgs('fr_w').and.returnValue(3);
@@ -592,6 +645,10 @@ describe('SurfaceFlinger RectExtractor', () => {
 
     function setColumnValuesForLayerRect(noInputRect = true) {
       setCommonColumnValuesForLayer();
+      layersIter.get.withArgs('rect_id').and.returnValue(BigInt(boundsRectId));
+      layersIter.get
+        .withArgs('transform_id')
+        .and.returnValue(BigInt(transformId));
       layersIter.get.withArgs('x').and.returnValue(1);
       layersIter.get.withArgs('y').and.returnValue(1);
       layersIter.get.withArgs('w').and.returnValue(200);
@@ -599,13 +656,17 @@ describe('SurfaceFlinger RectExtractor', () => {
       layersIter.get.withArgs('is_visible').and.returnValue(1n);
       layersIter.get.withArgs('group_id').and.returnValue(3n);
       layersIter.get.withArgs('depth').and.returnValue(5n);
+      layersIter.get.withArgs('fr_id').and.returnValue(null);
       if (noInputRect) {
         layersIter.get.withArgs('input_group_id').and.returnValue(null);
+        layersIter.get.withArgs('input_trace_rect_id').and.returnValue(null);
+        layersIter.get.withArgs('input_transform_id').and.returnValue(null);
       }
     }
 
     function setColumnValuesForInputRect(noLayerRect = true) {
       setCommonColumnValuesForLayer();
+      layersIter.get.withArgs('input_trace_rect_id').and.returnValue(101n);
       layersIter.get.withArgs('input_x').and.returnValue(2);
       layersIter.get.withArgs('input_y').and.returnValue(2);
       layersIter.get.withArgs('input_w').and.returnValue(400);
@@ -613,9 +674,12 @@ describe('SurfaceFlinger RectExtractor', () => {
       layersIter.get.withArgs('input_is_visible').and.returnValue(0n);
       layersIter.get.withArgs('input_group_id').and.returnValue(4n);
       layersIter.get.withArgs('input_depth').and.returnValue(3n);
-      layersIter.get.withArgs('fr_x').and.returnValue(null);
+      layersIter.get.withArgs('fr_id').and.returnValue(null);
+      layersIter.get.withArgs('input_transform_id').and.returnValue(101n);
       if (noLayerRect) {
         layersIter.get.withArgs('group_id').and.returnValue(null);
+        layersIter.get.withArgs('rect_id').and.returnValue(null);
+        layersIter.get.withArgs('transform_id').and.returnValue(null);
       }
     }
 
@@ -633,6 +697,11 @@ describe('SurfaceFlinger RectExtractor', () => {
       layersIter.get.withArgs('dtdy').and.returnValue(4);
       layersIter.get.withArgs('dsdy').and.returnValue(5);
       layersIter.get.withArgs('ty').and.returnValue(6);
+      layersIter.get.withArgs('fr_id').and.returnValue(null);
+      layersIter.get.withArgs('fr_x').and.returnValue(null);
+      layersIter.get.withArgs('fr_y').and.returnValue(null);
+      layersIter.get.withArgs('fr_w').and.returnValue(null);
+      layersIter.get.withArgs('fr_h').and.returnValue(null);
     }
 
     function checkLayerRectsExtracted(
@@ -643,6 +712,7 @@ describe('SurfaceFlinger RectExtractor', () => {
         layersIter,
         rectId1,
         rectName1,
+        mockTraceGeometryData,
       );
       if (!expectedBoundsRect && !expectedInputRect) {
         expect(rects).toBeUndefined();
@@ -658,21 +728,29 @@ describe('SurfaceFlinger RectExtractor', () => {
 
     beforeEach(() => {
       fillRegionIter = makeSpyRowIterator();
+      mockTraceGeometryData.getRect
+        .withArgs(1n)
+        .and.returnValue(new Rect(1, 2, 3, 4));
     });
 
     it('extracts fill region rect', () => {
+      fillRegionIter.get.withArgs('fr_id').and.returnValue(1n);
       fillRegionIter.get.withArgs('fr_x').and.returnValue(1);
       fillRegionIter.get.withArgs('fr_y').and.returnValue(2);
       fillRegionIter.get.withArgs('fr_w').and.returnValue(3);
       fillRegionIter.get.withArgs('fr_h').and.returnValue(4);
-      const fillRegionRect =
-        RectExtractor.extractFillRegionRect(fillRegionIter);
+      const fillRegionRect = RectExtractor.extractFillRegionRect(
+        fillRegionIter,
+        mockTraceGeometryData,
+      );
       expect(fillRegionRect).toEqual(new Rect(1, 2, 3, 4));
     });
 
     it('robust to row without fill region rect', () => {
-      const fillRegionRect =
-        RectExtractor.extractFillRegionRect(fillRegionIter);
+      const fillRegionRect = RectExtractor.extractFillRegionRect(
+        fillRegionIter,
+        mockTraceGeometryData,
+      );
       expect(fillRegionRect).toBeUndefined();
     });
   });
@@ -685,6 +763,14 @@ describe('SurfaceFlinger RectExtractor', () => {
       snapshotIter = makeSpyRowIterator();
       snapshotResult = jasmine.createSpyObj<QueryResult>('result', ['iter']);
       snapshotResult.iter.and.returnValue(snapshotIter);
+      mockTraceGeometryData.getRect.and.returnValue(new Rect(0, 0, 1000, 2000));
+      mockTraceGeometryData.getTransform.and.returnValue(expectedMatrix);
+      mockTraceGeometryData.getRect
+        .withArgs(123n)
+        .and.returnValue(displayRectGeom);
+      mockTraceGeometryData.getRect
+        .withArgs(654n)
+        .and.returnValue(new Rect(1000, 0, 800, 1800));
     });
 
     it('skips display with null id', () => {
@@ -717,6 +803,8 @@ describe('SurfaceFlinger RectExtractor', () => {
         'display_name': 'Display 456',
         'is_on': 1n,
         'is_virtual': 0n,
+        'rect_id': 2n,
+        'transform_id': 2n,
         'x': 1000,
         'y': 0,
         'w': 800,
@@ -729,10 +817,10 @@ describe('SurfaceFlinger RectExtractor', () => {
 
       const expectedRect1 = makeExpectedDisplayRect('Display 123', false);
       const expectedRect2 = new TraceRectBuilder()
-        .setX(1000)
+        .setX(0)
         .setY(0)
-        .setWidth(800)
-        .setHeight(1800)
+        .setWidth(1000)
+        .setHeight(2000)
         .setId('Display - 456')
         .setName('Display 456')
         .setTransform(IDENTITY_MATRIX)
@@ -800,6 +888,8 @@ describe('SurfaceFlinger RectExtractor', () => {
         'display_name': 'Display 123',
         'is_on': false,
         'is_virtual': 0n,
+        'rect_id': 1n,
+        'transform_id': 1n,
         'x': 0,
         'y': 0,
         'w': 1000,
@@ -815,6 +905,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       const {displayRects} = RectExtractor.extractDisplayRectsForSnapshot(
         snapshotResult.iter({}),
         1n,
+        mockTraceGeometryData,
       );
       expect(displayRects).toEqual(expected);
     }
