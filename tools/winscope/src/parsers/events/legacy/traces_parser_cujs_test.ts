@@ -29,10 +29,10 @@ import {
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
-import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 describe('TracesParserCujs', () => {
-  let parser: Parser<PropertyTreeNode>;
+  let parser: Parser<HierarchyTreeNode>;
 
   beforeAll(async () => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
@@ -40,7 +40,7 @@ describe('TracesParserCujs', () => {
       await getTracesParser([
         'traces/elapsed_and_real_timestamp/eventlog.winscope',
       ])
-    ).tracesParser as Parser<PropertyTreeNode>;
+    ).tracesParser as Parser<HierarchyTreeNode>;
   });
 
   it('has expected trace type', () => {
@@ -99,7 +99,8 @@ describe('TracesParserCujs', () => {
         {name: 'canceled', value: true, formatter: DEFAULT_PROPERTY_FORMATTER},
       ])
       .build();
+    expected.setIsRoot(true);
 
-    expect(entry).toEqual(expected);
+    expect(await entry.getAllProperties()).toEqual(expected);
   });
 });

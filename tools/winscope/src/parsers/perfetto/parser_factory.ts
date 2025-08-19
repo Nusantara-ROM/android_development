@@ -18,6 +18,7 @@ import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';
 import {InvalidPerfettoTrace} from 'messaging/user_warnings';
+import {ParserCujs} from 'parsers/events/perfetto/parser_cujs';
 import {ParserKeyEvent} from 'parsers/input/perfetto/parser_key_event';
 import {ParserMotionEvent} from 'parsers/input/perfetto/parser_motion_event';
 import {ParserInputMethodClients} from 'parsers/input_method/perfetto/parser_input_method_clients';
@@ -53,6 +54,7 @@ export class ParserFactory {
     ParserWindowManager,
     ParserMotionEvent,
     ParserKeyEvent,
+    ParserCujs,
   ];
   private static readonly CHUNK_SIZE_BYTES = 50 * 1024 * 1024;
   private static readonly NO_ENTRIES_ERROR_REGEX =
@@ -114,6 +116,8 @@ export class ParserFactory {
       if (errors.length === 0) {
         errors.push('Perfetto trace has no Winscope trace entries');
       }
+    }
+    if (errors.length > 0) {
       UserNotifier.add(
         new InvalidPerfettoTrace(traceFile.getDescriptor(), errors),
       );

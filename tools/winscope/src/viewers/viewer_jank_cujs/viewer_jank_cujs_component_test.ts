@@ -21,11 +21,11 @@ import {TraceBuilder} from 'test/unit/trace_builder';
 import {Parser} from 'trace_api/parser';
 import {TraceEntry} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';
-import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {AbstractLogViewerComponentTest} from 'viewers/common/abstract_log_viewer_component_test';
 import {LogEntry, LogHeader} from 'viewers/common/ui_data_log';
 import {CujEntry, UiData} from './ui_data';
 import {ViewerJankCujsComponent} from './viewer_jank_cujs_component';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
 class ViewerJankCujsComponentTest extends AbstractLogViewerComponentTest<ViewerJankCujsComponent> {
   protected override readonly testProperties = false;
@@ -50,9 +50,9 @@ class ViewerJankCujsComponentTest extends AbstractLogViewerComponentTest<ViewerJ
       await getTracesParser([
         'traces/elapsed_and_real_timestamp/eventlog.winscope',
       ])
-    ).tracesParser as Parser<PropertyTreeNode>;
+    ).tracesParser as Parser<HierarchyTreeNode>;
 
-    const trace = new TraceBuilder<PropertyTreeNode>()
+    const trace = new TraceBuilder<HierarchyTreeNode>()
       .setParser(parser)
       .setType(TraceType.CUJS)
       .build();
@@ -73,7 +73,7 @@ class ViewerJankCujsComponentTest extends AbstractLogViewerComponentTest<ViewerJ
     return this.initializeTestEnvironment(uiData, ViewerJankCujsComponent);
   }
 
-  private createMockCujEntry(entry: TraceEntry<PropertyTreeNode>): LogEntry {
+  private createMockCujEntry(entry: TraceEntry<HierarchyTreeNode>): LogEntry {
     return new CujEntry(
       entry,
       [

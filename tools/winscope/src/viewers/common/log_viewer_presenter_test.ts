@@ -25,14 +25,13 @@ import {
   TracePositionUpdate,
 } from 'messaging/winscope_event';
 import {MockPresenter} from 'test/unit/mock_log_viewer_presenter';
-import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {DEFAULT_PROPERTY_FORMATTER} from 'trace/formatters';
 import {Trace} from 'trace_api/trace';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType} from 'trace_api/trace_type';
-import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
+import {PropertySource} from 'tree_node/property_tree_node';
 import {TextFilter} from 'viewers/common/text_filter';
 import {LogSelectFilter, LogTextFilter} from './log_filters';
 import {LogHeader, UiDataLog} from './ui_data_log';
@@ -43,11 +42,13 @@ import {
   TimestampClickDetail,
   ViewerEvents,
 } from './viewer_events';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 
 describe('AbstractLogViewerPresenter', () => {
   let uiData: UiDataLog;
   let presenter: MockPresenter;
-  let trace: Trace<PropertyTreeNode>;
+  let trace: Trace<HierarchyTreeNode>;
   let positionUpdate: TracePositionUpdate;
   let secondPositionUpdate: TracePositionUpdate;
   let lastEntryPositionUpdate: TracePositionUpdate;
@@ -57,46 +58,34 @@ describe('AbstractLogViewerPresenter', () => {
     const timestamp2 = TimestampConverterUtils.makeElapsedTimestamp(2n);
     const timestamp3 = TimestampConverterUtils.makeElapsedTimestamp(3n);
     const timestamp4 = TimestampConverterUtils.makeElapsedTimestamp(4n);
-    trace = new TraceBuilder<PropertyTreeNode>()
+    trace = new TraceBuilder<HierarchyTreeNode>()
       .setType(TraceType.TRANSACTIONS)
       .setEntries([
-        new PropertyTreeBuilder()
-          .setRootId('Test Trace')
+        new HierarchyTreeBuilder()
+          .setId('Test Trace')
           .setName('entry 1')
-          .setChildren([
-            {
-              name: 'pass1',
-              value: 'pass',
-              formatter: DEFAULT_PROPERTY_FORMATTER,
-            },
-            {
-              name: 'pass2',
-              value: 'fail',
-              formatter: DEFAULT_PROPERTY_FORMATTER,
-              source: PropertySource.DEFAULT,
-            },
-            {
-              name: 'fail1',
-              value: 'pass',
-              formatter: DEFAULT_PROPERTY_FORMATTER,
-            },
-            {
-              name: 'fail2',
-              value: 'fail',
-              formatter: DEFAULT_PROPERTY_FORMATTER,
-            },
-          ])
+          .setProperties({
+            pass1: 'pass',
+            fail1: 'pass',
+            fail2: 'fail',
+          })
+          .addChildProperty({
+            name: 'pass2',
+            value: 'fail',
+            formatter: DEFAULT_PROPERTY_FORMATTER,
+            source: PropertySource.DEFAULT,
+          })
           .build(),
-        new PropertyTreeBuilder()
-          .setRootId('Test Trace')
+        new HierarchyTreeBuilder()
+          .setId('Test Trace')
           .setName('entry 2')
           .build(),
-        new PropertyTreeBuilder()
-          .setRootId('Test Trace')
+        new HierarchyTreeBuilder()
+          .setId('Test Trace')
           .setName('entry 3')
           .build(),
-        new PropertyTreeBuilder()
-          .setRootId('Test Trace')
+        new HierarchyTreeBuilder()
+          .setId('Test Trace')
           .setName('entry 4')
           .build(),
       ])

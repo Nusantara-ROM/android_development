@@ -32,7 +32,11 @@ import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {TraceFile} from 'trace/trace_file';
 import {TraceMetadata} from 'trace_api/trace_metadata';
-import {BuildType, TraceFileFilter} from './trace_file_filter';
+import {
+  BuildType,
+  ParseLegacyFilesStrategy,
+  TraceFileFilter,
+} from './trace_file_filter';
 
 describe('TraceFileFilter', () => {
   const filter = new TraceFileFilter();
@@ -210,7 +214,7 @@ describe('TraceFileFilter', () => {
       ];
 
       let identifiedTimezoneInfo: TimezoneInfo | undefined;
-      const tryParseLegacyFiles = (
+      const tryParseLegacyFiles: ParseLegacyFilesStrategy = (
         files: TraceFile[],
         _,
         timezoneInfo?: TimezoneInfo,

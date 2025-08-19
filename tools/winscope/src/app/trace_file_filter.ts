@@ -74,7 +74,7 @@ type ParsePerfettoFileStrategy = (
   file: TraceFile,
 ) => Promise<FileAndParsers | undefined>;
 
-type ParseLegacyFilesStrategy = (
+export type ParseLegacyFilesStrategy = (
   files: TraceFile[],
   metadata: TraceMetadata,
   timezoneInfo?: TimezoneInfo,
