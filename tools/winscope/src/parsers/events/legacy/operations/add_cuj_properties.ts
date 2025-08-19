@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {isNumeric} from 'common/string_utils';
-import {EventTag} from 'parsers/events/event_tag';
+import {EventTag} from 'parsers/events/legacy/event_tag';
 import {CujType} from 'trace/cuj_type';
 import {AddOperation} from 'tree_node/add_operation';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
