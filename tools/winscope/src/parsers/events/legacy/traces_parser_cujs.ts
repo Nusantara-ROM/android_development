@@ -17,7 +17,9 @@
 import {assertDefined} from 'common/assert_utils';
 import {Timestamp} from 'common/time/time';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
+import {EventTag} from 'parsers/events/legacy/event_tag';
 import {AddCujProperties} from 'parsers/events/legacy/operations/add_cuj_properties';
+import {HierarchyTreeBuilderLog} from 'parsers/hierarchy_tree_builder_log';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {AbstractTracesParser} from 'parsers/traces/abstract_traces_parser';
 import {CUJ_TYPE_FORMATTER} from 'trace/formatters';
@@ -25,15 +27,20 @@ import {CoarseVersion} from 'trace_api/coarse_version';
 import {Trace} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';
+import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {SetFormatters} from 'viewers/operations/set_formatters';
-import {EventTag} from './event_tag';
 
-export class TracesParserCujs extends AbstractTracesParser<PropertyTreeNode> {
-  private static readonly AddCujProperties = new AddCujProperties();
+export class TracesParserCujs extends AbstractTracesParser<HierarchyTreeNode> {
+  private static readonly ADD_CUJ_PROPERTIES = new AddCujProperties();
+  private static readonly SET_FORMATTERS = new SetFormatters(
+    undefined,
+    new Map([['cujType', CUJ_TYPE_FORMATTER]]),
+  );
   private readonly eventLogTrace: Trace<PropertyTreeNode> | undefined;
   private readonly descriptors: string[];
-  private decodedEntries: PropertyTreeNode[] | undefined;
+  private decodedEntries: HierarchyTreeNode[] | undefined;
 
   constructor(traces: Traces, timestampConverter: ParserTimestampConverter) {
     super(timestampConverter);
@@ -76,7 +83,9 @@ export class TracesParserCujs extends AbstractTracesParser<PropertyTreeNode> {
     this.timestamps = [];
     for (let index = 0; index < this.getLengthEntries(); index++) {
       const entry = await this.getEntry(index);
-      const timestamp = entry?.getChildByName('startTimestamp')?.getValue();
+      const timestamp = entry
+        ?.getEagerPropertyByName('startTimestamp')
+        ?.getValue();
       this.timestamps.push(timestamp);
     }
   }
@@ -85,7 +94,7 @@ export class TracesParserCujs extends AbstractTracesParser<PropertyTreeNode> {
     return assertDefined(this.decodedEntries).length;
   }
 
-  getEntry(index: number): Promise<PropertyTreeNode> {
+  getEntry(index: number): Promise<HierarchyTreeNode> {
     const entry = assertDefined(this.decodedEntries)[index];
     return Promise.resolve(entry);
   }
@@ -112,8 +121,8 @@ export class TracesParserCujs extends AbstractTracesParser<PropertyTreeNode> {
     );
   }
 
-  private makeCujsFromEvents(events: PropertyTreeNode[]): PropertyTreeNode[] {
-    events.forEach((event) => TracesParserCujs.AddCujProperties.apply(event));
+  private makeCujsFromEvents(events: PropertyTreeNode[]): HierarchyTreeNode[] {
+    events.forEach((event) => TracesParserCujs.ADD_CUJ_PROPERTIES.apply(event));
 
     const startEvents = this.filterEventsByTag(
       events,
@@ -125,8 +134,7 @@ export class TracesParserCujs extends AbstractTracesParser<PropertyTreeNode> {
       EventTag.JANK_CUJ_CANCEL_TAG,
     );
 
-    const cujs: PropertyTreeNode[] = [];
-
+    const cujs: HierarchyTreeNode[] = [];
     for (const startEvent of startEvents) {
       const cujType = assertDefined(
         startEvent.getChildByName('cujType'),
@@ -169,7 +177,16 @@ export class TracesParserCujs extends AbstractTracesParser<PropertyTreeNode> {
         canceled,
       };
 
-      cujs.push(this.makeCujPropertyTree(cuj));
+      const provider = new PropertiesProviderBuilder()
+        .setEagerProperties(this.makeCujPropertyTree(cuj))
+        .setEagerOperations([TracesParserCujs.SET_FORMATTERS])
+        .build();
+      const cujTree = new HierarchyTreeBuilderLog()
+        .setRoot(provider)
+        .setChildren([])
+        .build();
+
+      cujs.push(cujTree);
     }
     return cujs;
   }
@@ -240,17 +257,11 @@ export class TracesParserCujs extends AbstractTracesParser<PropertyTreeNode> {
   }
 
   private makeCujPropertyTree(cuj: Cuj): PropertyTreeNode {
-    const tree = new PropertyTreeBuilderFromProto()
+    return new PropertyTreeBuilderFromProto()
       .setData(cuj)
       .setRootId('CujTrace')
       .setRootName('cuj')
       .build();
-
-    new SetFormatters(
-      undefined,
-      new Map([['cujType', CUJ_TYPE_FORMATTER]]),
-    ).apply(tree);
-    return tree;
   }
 }
 
