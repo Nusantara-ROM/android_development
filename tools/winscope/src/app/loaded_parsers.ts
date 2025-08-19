@@ -65,6 +65,7 @@ export class LoadedParsers {
     );
     legacyParsers = this.filterOutLegacyParsersWithOldData(legacyParsers);
     legacyParsers = this.filterScreenshotParsersIfRequired(legacyParsers);
+    legacyParsers = this.filterEventlogParsersIfRequired(legacyParsers);
 
     this.addLegacyParsers(legacyParsers);
   }
@@ -393,6 +394,25 @@ export class LoadedParsers {
       (fileAndParser) =>
         fileAndParser.parser.getTraceType() !== TraceType.SCREENSHOT,
     );
+  }
+
+  private filterEventlogParsersIfRequired(
+    newLegacyParsers: FileAndParser[],
+  ): FileAndParser[] {
+    const hasCujParsers = this.perfettoParsers.some(
+      (entry) => entry.parser.getTraceType() === TraceType.CUJS,
+    );
+    if (!hasCujParsers) {
+      return newLegacyParsers;
+    }
+    this.legacyParsers.forEach((fileAndParser) => {
+      if (fileAndParser.parser.getTraceType() === TraceType.EVENT_LOG) {
+        this.remove(fileAndParser.parser);
+      }
+    });
+    return newLegacyParsers.filter((fileAndParser) => {
+      return fileAndParser.parser.getTraceType() !== TraceType.EVENT_LOG;
+    });
   }
 
   private filterOutParsersWithoutOffsetsIfRequired(

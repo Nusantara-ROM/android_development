@@ -417,6 +417,21 @@ describe('LoadedParsers', () => {
     });
   });
 
+  it('filters eventlog parsers if perfetto cuj uploaded', () => {
+    loadParsers([parserEventlog], []);
+    expectLoadResult([parserEventlog], []);
+
+    const parserCuj = new ParserBuilder<object>()
+      .setType(TraceType.CUJS)
+      .setTimestamps(timestamps)
+      .setDescriptors(['cujs'])
+      .setNoOffsets(true)
+      .build();
+
+    loadParsers([parserEventlog], [parserCuj]);
+    expectLoadResult([parserCuj], []);
+  });
+
   it('can remove parsers', () => {
     loadParsers([parserSf0], [parserWm0]);
     expectLoadResult([parserSf0, parserWm0], []);
