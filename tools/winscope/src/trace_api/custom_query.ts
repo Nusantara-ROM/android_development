@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-import {RelativeEntryIndex} from './index_types';
-import {TraceEntryEager} from './trace';
+import {Timestamp} from 'common/time/time';
+import {
+  AbsoluteEntryIndex,
+  FramesRange,
+  RelativeEntryIndex,
+} from './index_types';
 
 export enum CustomQueryType {
   SF_LAYERS_ID_AND_NAME,
@@ -25,7 +29,14 @@ export enum CustomQueryType {
   LOG_TABLE_FILTER_VALUES,
 }
 
-export class ProcessParserResult {
+interface CustomQueryTraceEntry<U> {
+  getValue(): U;
+  getFramesRange(): FramesRange | undefined;
+  getIndex(): AbsoluteEntryIndex;
+  getTimestamp(): Timestamp;
+}
+
+export class ProcessCustomQueryParserResult {
   static [CustomQueryType.SF_LAYERS_ID_AND_NAME]<T>(
     parserResult: CustomQueryParserResultTypeMap[CustomQueryType.SF_LAYERS_ID_AND_NAME],
   ): CustomQueryResultTypeMap<T>[CustomQueryType.SF_LAYERS_ID_AND_NAME] {
@@ -43,7 +54,7 @@ export class ProcessParserResult {
     makeTraceEntry: (
       index: RelativeEntryIndex,
       vsyncId: bigint,
-    ) => TraceEntryEager<T, bigint>,
+    ) => CustomQueryTraceEntry<bigint>,
   ): CustomQueryResultTypeMap<T>[CustomQueryType.VSYNCID] {
     return parserResult.map((vsyncId, index) => {
       return makeTraceEntry(index, vsyncId);
@@ -91,7 +102,7 @@ export interface CustomQueryResultTypeMap<T> {
     packageName: string;
     windowName: string;
   };
-  [CustomQueryType.VSYNCID]: Array<TraceEntryEager<T, bigint>>;
+  [CustomQueryType.VSYNCID]: Array<CustomQueryTraceEntry<bigint>>;
   [CustomQueryType.WM_WINDOWS_TOKEN_AND_TITLE]: Array<{
     token: string;
     title: string;

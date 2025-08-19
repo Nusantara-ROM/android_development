@@ -19,7 +19,10 @@ import {AdbHostConnection} from 'trace_collection/adb/adb_host_connection';
 import {AdbConnectionType} from 'trace_collection/adb_connection_type';
 import {ConnectionState} from 'trace_collection/connection_state';
 import {StreamProvider} from './stream_provider';
-import {WdpDeviceConnection} from './wdp_device_connection';
+import {
+  WdpDeviceConnection,
+  WdpDeviceConnectionResponse,
+} from './wdp_device_connection';
 
 /**
  * A connection to the WebDeviceProxy websocket.
@@ -119,12 +122,4 @@ export interface WdpRequestDevicesResponse {
     message?: string;
     approveUrl?: string;
   };
-}
-
-export interface WdpDeviceConnectionResponse {
-  serialNumber: string;
-  proxyStatus: 'ADB' | 'PROXY_UNAUTHORIZED';
-  adbStatus: string;
-  adbProps?: {[key: string]: string};
-  approveUrl?: string;
 }

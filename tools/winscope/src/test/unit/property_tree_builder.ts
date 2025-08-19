@@ -15,8 +15,11 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {PropertyFormatter} from 'tree_node/property_formatter';
-import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
+import {
+  PropertySource,
+  PropertyFormatter,
+  PropertyTreeNode,
+} from 'tree_node/property_tree_node';
 import {TreeBuilder} from './tree_builder';
 
 export class PropertyTreeBuilder extends TreeBuilder<

@@ -29,7 +29,6 @@ import {
   EnumFormatter,
   MATRIX_FORMATTER,
   POSITION_FORMATTER,
-  PropertyFormatter,
   RECT_FORMATTER,
   REGION_FORMATTER,
   SIZE_FORMATTER,
@@ -37,7 +36,10 @@ import {
   TRANSFORM_FORMATTER,
 } from 'trace/formatters';
 import {Operation} from 'tree_node/operation';
-import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {
+  PropertyFormatter,
+  PropertyTreeNode,
+} from 'tree_node/property_tree_node';
 
 export class SetFormatters implements Operation<PropertyTreeNode> {
   private static readonly TransformRegExp = new RegExp('transform', 'i');

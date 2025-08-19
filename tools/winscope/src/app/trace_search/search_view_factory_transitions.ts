@@ -16,7 +16,7 @@
 
 import {TraceType} from 'trace_api/trace_type';
 import {AbstractSearchViewFactory} from './abstract_search_view_factory';
-import {SearchView} from './trace_search_initializer';
+import {SearchView} from './search_view';
 
 export class SearchViewFactoryTransitions extends AbstractSearchViewFactory {
   override readonly traceType = TraceType.TRANSITION;

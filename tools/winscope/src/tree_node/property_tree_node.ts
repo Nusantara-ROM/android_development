@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import {PropertyFormatter} from './property_formatter';
 import {TreeNode} from './tree_node';
 
 export class PropertyTreeNode extends TreeNode {
@@ -61,4 +60,8 @@ export enum PropertySource {
   DEFAULT,
   CALCULATED,
   TP,
+}
+
+export interface PropertyFormatter {
+  format(node: PropertyTreeNode): string;
 }

@@ -17,8 +17,10 @@
 import {TransformType} from 'common/geometry/transform_utils';
 import {Timestamp} from 'common/time/time';
 import {TimeDuration} from 'common/time/time_duration';
-import {PropertyFormatter} from 'tree_node/property_formatter';
-import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {
+  PropertyFormatter,
+  PropertyTreeNode,
+} from 'tree_node/property_tree_node';
 import {RawDataUtils} from 'tree_node/raw_data_utils';
 import {CujType} from './cuj_type';
 
@@ -283,7 +285,6 @@ export {
   LAYER_ID_FORMATTER,
   MATRIX_FORMATTER,
   POSITION_FORMATTER,
-  PropertyFormatter,
   RECT_FORMATTER,
   REGION_FORMATTER,
   SIZE_FORMATTER,

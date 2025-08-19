@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import {PropertyTreeNode} from './property_tree_node';
-
-/**
- * Interface for formatting a PropertyTreeNode.
- */
-export interface PropertyFormatter {
-  format(node: PropertyTreeNode): string;
+export interface SearchView {
+  name: string;
+  dataType: string;
+  docsUrl: string;
+  columns: Array<{name: string; desc: string}>;
+  examples: Array<{query: string; desc: string}>;
 }
