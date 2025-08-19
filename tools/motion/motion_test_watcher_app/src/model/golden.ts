@@ -33,7 +33,11 @@ export interface MotionGolden {
   error?: string;
 }
 
-export enum DataSource{
+export interface PresubmitTest {
+  testname: string;
+}
+
+export enum DataSource {
   GERRIT = 'gerrit',
 }
 
@@ -58,7 +62,7 @@ type DataPointTypes =
 export interface DataPointObject {
   [member: string]: DataPointTypes;
 }
-export interface DataPointArray extends Array<DataPointTypes> {}
+export interface DataPointArray extends Array<DataPointTypes> { }
 export interface NotFound {
   type: 'not_found';
 }
