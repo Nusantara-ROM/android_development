@@ -53,8 +53,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.compose.modifiers.height
 import com.android.mechanics.debug.DebugMotionValueVisualization
-import com.android.mechanics.debug.MotionValueDebuggerState
-import com.android.mechanics.debug.motionValueDebugger
+import com.android.mechanics.debug.LocalMotionValueDebugController
+import com.android.mechanics.debug.MotionValueDebuggerProvider
 
 /**  */
 @Composable
@@ -65,59 +65,58 @@ fun DebugUi(
     modifier: Modifier = Modifier,
     content: @Composable (modifier: Modifier) -> Unit,
 ) {
-    val debuggerState = remember { MotionValueDebuggerState() }
+    MotionValueDebuggerProvider {
+        Box(modifier = modifier.fillMaxHeight()) {
+            Box(modifier = Modifier.fillMaxWidth().align(Alignment.TopStart)) {
+                content(Modifier.align(Alignment.TopStart))
+            }
 
-    Box(modifier = modifier.fillMaxHeight()) {
-        Box(
-            modifier =
-                Modifier.fillMaxWidth().motionValueDebugger(debuggerState).align(Alignment.TopStart)
-        ) {
-            content(Modifier.align(Alignment.TopStart))
-        }
-
-        var isExpanded by rememberSaveable(key = "debugUiExpanded") { mutableStateOf(false) }
-        Card(modifier = Modifier.fillMaxWidth().padding(16.dp).align(Alignment.BottomStart)) {
-            Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth().clickable { isExpanded = !isExpanded },
-                ) {
-                    Text(text = "Motion Value Visualization", style = typography.titleMedium)
-                    val rotation by animateFloatAsState(if (isExpanded) 180f else 0f)
-
-                    Icon(
-                        Icons.Default.ExpandMore,
-                        null,
-                        Modifier.size(24.dp).drawWithContent {
-                            rotate(rotation) { this@drawWithContent.drawContent() }
-                        },
-                    )
-                }
-                val scrollState = rememberScrollState()
-
-                AnimatedVisibility(isExpanded) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                        modifier = Modifier.verticalScroll(scrollState),
+            var isExpanded by rememberSaveable(key = "debugUiExpanded") { mutableStateOf(false) }
+            Card(modifier = Modifier.fillMaxWidth().padding(16.dp).align(Alignment.BottomStart)) {
+                Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth().clickable { isExpanded = !isExpanded },
                     ) {
-                        debuggerState.observedMotionValues.forEach {
-                            key(it) {
-                                var rowExpanded by remember { mutableStateOf(false) }
-                                val height by
-                                    animateDpAsState(
-                                        if (rowExpanded) expandedGraphHeight
-                                        else collapsedGraphHeight
-                                    )
+                        Text(text = "Motion Value Visualization", style = typography.titleMedium)
+                        val rotation by animateFloatAsState(if (isExpanded) 180f else 0f)
 
-                                DebugMotionValueVisualization(
-                                    it,
-                                    visualizationInputRange,
-                                    modifier =
-                                        Modifier.height { height.toPx().toInt() }
-                                            .fillMaxWidth()
-                                            .clickable { rowExpanded = !rowExpanded },
-                                )
+                        Icon(
+                            Icons.Default.ExpandMore,
+                            null,
+                            Modifier.size(24.dp).drawWithContent {
+                                rotate(rotation) { this@drawWithContent.drawContent() }
+                            },
+                        )
+                    }
+                    val scrollState = rememberScrollState()
+
+                    AnimatedVisibility(isExpanded) {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.verticalScroll(scrollState),
+                        ) {
+                            val debuggerState =
+                                checkNotNull(LocalMotionValueDebugController.current)
+                            debuggerState.observed.forEach {
+                                key(it) {
+                                    var rowExpanded by remember { mutableStateOf(false) }
+                                    val height by
+                                        animateDpAsState(
+                                            if (rowExpanded) expandedGraphHeight
+                                            else collapsedGraphHeight
+                                        )
+
+                                    DebugMotionValueVisualization(
+                                        it,
+                                        visualizationInputRange,
+                                        modifier =
+                                            Modifier.height { height.toPx().toInt() }
+                                                .fillMaxWidth()
+                                                .clickable { rowExpanded = !rowExpanded },
+                                    )
+                                }
                             }
                         }
                     }
