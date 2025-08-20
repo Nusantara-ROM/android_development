@@ -23,9 +23,11 @@ import {ConnectionState} from 'trace_collection/connection_state';
 import {ConnectionStateListener} from 'trace_collection/connection_state_listener';
 import {DevicesStream} from './devices_stream';
 import {StreamProvider} from './stream_provider';
-import {WdpDeviceConnection} from './wdp_device_connection';
 import {
+  WdpDeviceConnection,
   WdpDeviceConnectionResponse,
+} from './wdp_device_connection';
+import {
   WdpHostConnection,
   WdpRequestDevicesResponse,
 } from './wdp_host_connection';

@@ -36,8 +36,10 @@ import {AdbWebSocketStream} from './adb_websocket_stream';
 import {ShellStream} from './shell_stream';
 import {StreamProvider} from './stream_provider';
 import {SyncStream} from './sync_stream';
-import {WdpDeviceConnection} from './wdp_device_connection';
-import {WdpDeviceConnectionResponse} from './wdp_host_connection';
+import {
+  WdpDeviceConnection,
+  WdpDeviceConnectionResponse,
+} from './wdp_device_connection';
 
 describe('WdpDeviceConnection', () => {
   const listener = jasmine.createSpyObj<AdbDeviceConnectionListener>(
@@ -499,7 +501,7 @@ Error: Expected message data to be ArrayBuffer or Blob.`,
   }
 
   function setSyncStreamResponses(
-    responses: Array<{filepath: string; data: ArrayBuffer}>,
+    responses: Array<{filepath: string; data: ArrayBufferLike | Uint8Array}>,
   ) {
     const syncStreamSpy = spyOn(StreamProvider.prototype, 'createSyncStream');
     syncStreamSpy.and.callFake((device, sock, errorlistener) => {

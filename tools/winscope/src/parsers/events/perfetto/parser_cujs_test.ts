@@ -22,7 +22,6 @@ import {
 import {getPerfettoParser} from 'test/unit/fixture_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {
-  CUJ_TYPE_FORMATTER,
   DEFAULT_PROPERTY_FORMATTER,
   TIMESTAMP_NODE_FORMATTER,
 } from 'trace/formatters';
