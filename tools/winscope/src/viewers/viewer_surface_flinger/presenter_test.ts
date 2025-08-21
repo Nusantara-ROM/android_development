@@ -20,6 +20,7 @@ import {Store} from 'common/store/store';
 import {
   TabbedViewSwitchRequest,
   TracePositionUpdate,
+  PlaybackStart,
 } from 'messaging/winscope_event';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
@@ -387,6 +388,16 @@ the default for its data type.`,
           }),
         );
         expect(spy).toHaveBeenCalledOnceWith(TraceRectType.LAYERS);
+      });
+
+      it('initializes playback when a PlaybackStart event is received', async () => {
+        const playbackPresenterSpy = spyOn(
+          (presenter as any).playbackPresenter,
+          'playbackStart',
+        );
+        const event = new PlaybackStart(TraceType.SURFACE_FLINGER);
+        await presenter.onAppEvent(event);
+        expect(playbackPresenterSpy).toHaveBeenCalled();
       });
 
       it('handles displays with no visible layers', async () => {

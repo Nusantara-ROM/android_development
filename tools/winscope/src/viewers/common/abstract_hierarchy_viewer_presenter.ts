@@ -258,6 +258,11 @@ export abstract class AbstractHierarchyViewerPresenter<
         this.refreshUIData();
       },
     );
+    await event.visit(WinscopeEventType.PLAYBACK_START, async () => {
+      if (this.initializePlayback && this.trace) {
+        await this.initializePlayback(this.trace);
+      }
+    });
     await this.onViewerSpecificWinscopeEvent(event);
   }
 
@@ -506,6 +511,7 @@ export abstract class AbstractHierarchyViewerPresenter<
   ): string | undefined;
   protected abstract refreshUIData(): void;
   protected initializeIfNeeded?(event: TracePositionUpdate): Promise<void>;
+  protected initializePlayback?(trace: Trace<HierarchyTreeNode>): Promise<void>;
   protected processDataAfterPositionUpdate?(
     event: TracePositionUpdate,
   ): Promise<void>;

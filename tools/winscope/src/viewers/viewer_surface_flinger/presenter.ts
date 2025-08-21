@@ -65,6 +65,7 @@ import {
 } from 'viewers/components/rects/rect_spec';
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {UiData} from './ui_data';
+import {PlaybackPresenter} from 'viewers/common/playback/playback_presenter';
 
 export class Presenter extends AbstractHierarchyViewerPresenter<UiData> {
   static readonly DENYLIST_PROPERTY_NAMES = [
@@ -175,6 +176,7 @@ the default for its data type.`,
     },
   ];
   private rectSpecIndex = 0;
+  private playbackPresenter = new PlaybackPresenter();
 
   constructor(
     trace: Trace<HierarchyTreeNode>,
@@ -251,6 +253,10 @@ the default for its data type.`,
       this.viewCapturePackageNames = await Promise.all(promisesPackageName);
     }
     await this.setInitialWmActiveDisplay(event);
+  }
+
+  protected override async initializePlayback(trace: Trace<HierarchyTreeNode>) {
+    this.playbackPresenter.playbackStart(trace);
   }
 
   protected override async processDataAfterPositionUpdate(): Promise<void> {
