@@ -57,6 +57,7 @@ export enum WinscopeEventType {
   INITIALIZE_TRACE_SEARCH_REQUEST,
   TRACE_SEARCH_INITIALIZED,
   SHOW_TRACE_UPLOAD_WARNING,
+  PLAYBACK_START,
 }
 
 interface TypeMap {
@@ -91,6 +92,7 @@ interface TypeMap {
   [WinscopeEventType.TRACE_SEARCH_INITIALIZED]: TraceSearchInitialized;
   [WinscopeEventType.TRACE_SEARCH_COMPLETED]: TraceSearchCompleted;
   [WinscopeEventType.SHOW_TRACE_UPLOAD_WARNING]: ShowTraceUploadWarning;
+  [WinscopeEventType.PLAYBACK_START]: PlaybackStart;
 }
 
 /**
@@ -456,5 +458,14 @@ export class ShowTraceUploadWarning extends WinscopeEvent {
 
   constructor(readonly message: string) {
     super();
+  }
+}
+
+export class PlaybackStart extends WinscopeEvent {
+  override readonly type = WinscopeEventType.PLAYBACK_START;
+  readonly traceType: TraceType;
+  constructor(traceType: TraceType) {
+    super();
+    this.traceType = traceType;
   }
 }

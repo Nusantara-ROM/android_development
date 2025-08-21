@@ -383,6 +383,17 @@ export class Mediator {
         await this.appComponent.onWinscopeEvent(event);
       },
     );
+
+    await event.visit(WinscopeEventType.PLAYBACK_START, async (event) => {
+      const traceType = event.traceType;
+      const viewer = this.findViewerByType(traceType);
+      if (viewer) {
+        const visible = this.isViewerVisible(viewer);
+        if (visible) {
+          await viewer.onWinscopeEvent(event);
+        }
+      }
+    });
   }
 
   private async loadFiles(files: File[], source: FilesSource) {

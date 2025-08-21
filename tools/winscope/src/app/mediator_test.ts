@@ -65,6 +65,7 @@ import {
   ViewersUnloaded,
   WinscopeEvent,
   WinscopeEventType,
+  PlaybackStart,
 } from 'messaging/winscope_event';
 
 import {WinscopeEventEmitter} from 'messaging/winscope_event_emitter';
@@ -846,6 +847,38 @@ describe('Mediator', () => {
         ),
       }),
     );
+  });
+
+  describe('PlaybackStart event handling', () => {
+    beforeEach(async () => {
+      await loadFiles();
+      await loadTraceView();
+      resetSpyCalls();
+    });
+
+    it('propagates to the visible viewer matching the trace type', async () => {
+      const event = new PlaybackStart(TraceType.SURFACE_FLINGER);
+      await mediator.onWinscopeEvent(event);
+
+      expect(viewerStub0.onWinscopeEvent).toHaveBeenCalledOnceWith(event);
+      expect(viewerStub1.onWinscopeEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not propagate if the matching viewer is not visible', async () => {
+      const event = new PlaybackStart(TraceType.WINDOW_MANAGER);
+      await mediator.onWinscopeEvent(event);
+
+      expect(viewerStub0.onWinscopeEvent).not.toHaveBeenCalled();
+      expect(viewerStub1.onWinscopeEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not propagate if no viewer matches the trace type', async () => {
+      const event = new PlaybackStart(TraceType.PROTO_LOG);
+      await mediator.onWinscopeEvent(event);
+
+      expect(viewerStub0.onWinscopeEvent).not.toHaveBeenCalled();
+      expect(viewerStub1.onWinscopeEvent).not.toHaveBeenCalled();
+    });
   });
 
   async function loadFiles(files = inputFiles) {
