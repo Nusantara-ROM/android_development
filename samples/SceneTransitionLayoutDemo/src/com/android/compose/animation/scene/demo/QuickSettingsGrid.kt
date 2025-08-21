@@ -145,7 +145,7 @@ fun ContentScope.QuickSettingsGrid(
         remember(revealEffect, density, motionBuilderContext) {
             if (!revealEffect) return@remember null
             RevealEffectConfig(
-                deltaY = -with(density) { QuickSettingsGrid.Dimensions.Spacing.toPx() },
+                deltaY = with(density) { QuickSettingsGrid.Dimensions.Spacing.toPx() },
                 motionBuilderContext = motionBuilderContext,
             )
         }
@@ -220,9 +220,7 @@ private fun ContentScope.Tile(
                 .then(
                     if (revealEffectConfig != null) {
                         Modifier.verticalTactileSurfaceReveal(
-                            contentScope = this@Tile,
                             motionBuilderContext = revealEffectConfig.motionBuilderContext,
-                            container = QuickSettingsShade.Elements.Root,
                             deltaY = revealEffectConfig.deltaY,
                             label = "tile($tileId)",
                             debug = tileId % 2 == 0,
@@ -240,9 +238,7 @@ private fun ContentScope.Tile(
                 .then(
                     if (revealEffectConfig != null) {
                         Modifier.verticalFadeContentReveal(
-                            contentScope = this@Tile,
                             motionBuilderContext = revealEffectConfig.motionBuilderContext,
-                            container = QuickSettingsShade.Elements.Root,
                             deltaY = revealEffectConfig.deltaY,
                             label = "tile($tileId)",
                             debug = tileId % 2 == 0,

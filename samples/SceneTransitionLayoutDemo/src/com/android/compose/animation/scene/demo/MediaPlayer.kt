@@ -161,9 +161,7 @@ fun ContentScope.MediaPlayer(
             modifier
                 .thenIf(revealEffect) {
                     Modifier.verticalTactileSurfaceReveal(
-                        contentScope = this@MediaPlayer,
                         motionBuilderContext = motionBuilderContext,
-                        container = QuickSettingsShade.Elements.Root,
                         deltaY = deltaY,
                         label = "mediaPlayer",
                         debug = true,
@@ -183,9 +181,7 @@ fun ContentScope.MediaPlayer(
                         )
                         .thenIf(revealEffect) {
                             Modifier.verticalFadeContentReveal(
-                                contentScope = this@MediaPlayer,
                                 motionBuilderContext = motionBuilderContext,
-                                container = QuickSettingsShade.Elements.Root,
                                 deltaY = deltaY,
                                 label = "mediaPlayer",
                                 debug = true,
