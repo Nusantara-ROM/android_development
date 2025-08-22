@@ -284,14 +284,14 @@ describe('MiniTimelineComponent', () => {
 
     dom.findAndClick(zoomOutSelector);
     let finalZoom = timelineData.getZoomRange();
-    expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
-    expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    expect(finalZoom.startNs).toEqual(initialZoom.startNs);
+    expect(finalZoom.endNs).toEqual(initialZoom.endNs);
 
     setCanvasZeroXOffset();
     zoomOutByScrollWheel();
     finalZoom = timelineData.getZoomRange();
-    expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
-    expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    expect(finalZoom.startNs).toEqual(initialZoom.startNs);
+    expect(finalZoom.endNs).toEqual(initialZoom.endNs);
   });
 
   it('zooms in/out with scroll wheel', () => {
@@ -433,12 +433,9 @@ describe('MiniTimelineComponent', () => {
         new KeyboardEvent('keydown', {code: KeyboardEventCode.D}),
       );
       const zoomRange = timelineData.getZoomRange();
-      const increase =
-        zoomRange.from.getValueNs() - initialZoom.from.getValueNs();
+      const increase = zoomRange.startNs - initialZoom.startNs;
       expect(increase).toBeGreaterThan(0);
-      expect(zoomRange.to.getValueNs()).toEqual(
-        initialZoom.to.getValueNs() + increase,
-      );
+      expect(zoomRange.endNs).toEqual(initialZoom.endNs + increase);
     }
 
     // cannot move past end of trace
@@ -453,12 +450,9 @@ describe('MiniTimelineComponent', () => {
         new KeyboardEvent('keydown', {code: KeyboardEventCode.A}),
       );
       const zoomRange = timelineData.getZoomRange();
-      const decrease =
-        finalZoom.from.getValueNs() - zoomRange.from.getValueNs();
+      const decrease = finalZoom.startNs - zoomRange.startNs;
       expect(decrease).toBeGreaterThan(0);
-      expect(zoomRange.to.getValueNs()).toEqual(
-        finalZoom.to.getValueNs() - decrease,
-      );
+      expect(zoomRange.endNs).toEqual(finalZoom.endNs - decrease);
     }
 
     // cannot move before start of trace
@@ -693,12 +687,10 @@ describe('MiniTimelineComponent', () => {
     smallerRange: TimeRange,
   ) {
     expect(biggerRange).not.toBe(smallerRange);
-    expect(smallerRange.from.getValueNs()).toBeGreaterThanOrEqual(
-      Number(biggerRange.from.getValueNs()),
+    expect(smallerRange.startNs).toBeGreaterThanOrEqual(
+      Number(biggerRange.startNs),
     );
-    expect(smallerRange.to.getValueNs()).toBeLessThanOrEqual(
-      Number(biggerRange.to.getValueNs()),
-    );
+    expect(smallerRange.endNs).toBeLessThanOrEqual(Number(biggerRange.endNs));
   }
 
   function zoomInByKeyW() {
@@ -759,12 +751,11 @@ describe('MiniTimelineComponent', () => {
       currentZoom = zoomedIn;
 
       const zoomedInTimestamp = zoomedIn.from.add(
-        (zoomedIn.to.minus(zoomedIn.from.getValueNs()).getValueNs() *
-          ratioNom) /
+        (zoomedIn.to.minus(zoomedIn.startNs).getValueNs() * ratioNom) /
           ratioDenom,
       );
       expect(
-        Math.abs(Number(zoomedInTimestamp.minus(zoomOnTimestamp.getValueNs()))),
+        Math.abs(Number(zoomedInTimestamp.minus(zoomOnTimestamp))),
       ).toBeLessThanOrEqual(5);
     }
     for (let i = 0; i < 4; i++) {
@@ -775,14 +766,11 @@ describe('MiniTimelineComponent', () => {
       currentZoom = zoomedOut;
 
       const zoomedOutTimestamp = zoomedOut.from.add(
-        (zoomedOut.to.minus(zoomedOut.from.getValueNs()).getValueNs() *
-          ratioNom) /
+        (zoomedOut.to.minus(zoomedOut.startNs).getValueNs() * ratioNom) /
           ratioDenom,
       );
       expect(
-        Math.abs(
-          Number(zoomedOutTimestamp.minus(zoomOnTimestamp.getValueNs())),
-        ),
+        Math.abs(Number(zoomedOutTimestamp.minus(zoomOnTimestamp))),
       ).toBeLessThanOrEqual(5);
     }
   }

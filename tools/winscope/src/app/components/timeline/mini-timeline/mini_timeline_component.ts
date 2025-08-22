@@ -515,22 +515,18 @@ export class MiniTimelineComponent {
     );
     const shiftAmount = transformer
       .untransform(usableRange.from + step)
-      .minus(zoomRange.from.getValueNs());
+      .minus(zoomRange.startNs);
 
-    let newFrom = zoomRange.from.add(shiftAmount.getValueNs());
-    let newTo = zoomRange.to.add(shiftAmount.getValueNs());
+    let newFrom = zoomRange.from.add(shiftAmount);
+    let newTo = zoomRange.to.add(shiftAmount);
 
-    if (newFrom.getValueNs() < fullRange.from.getValueNs()) {
-      newTo = newTo.add(
-        fullRange.from.minus(newFrom.getValueNs()).getValueNs(),
-      );
+    if (newFrom.getValueNs() < fullRange.startNs) {
+      newTo = newTo.add(fullRange.from.minus(newFrom));
       newFrom = fullRange.from;
     }
 
-    if (newTo.getValueNs() > fullRange.to.getValueNs()) {
-      newFrom = newFrom.minus(
-        newTo.minus(fullRange.to.getValueNs()).getValueNs(),
-      );
+    if (newTo.getValueNs() > fullRange.endNs) {
+      newFrom = newFrom.minus(newTo.minus(fullRange.to));
       newTo = fullRange.to;
     }
 
@@ -553,16 +549,14 @@ export class MiniTimelineComponent {
     const timelineData = assertDefined(this.timelineData);
     const fullRange = timelineData.getFullTimeRange();
     const currentZoomRange = timelineData.getZoomRange();
-    const currentZoomWidth = currentZoomRange.to.minus(
-      currentZoomRange.from.getValueNs(),
-    );
+    const currentZoomWidth = currentZoomRange.to.minus(currentZoomRange.from);
     const zoomToWidth = currentZoomWidth
       .times(zoomRatio.nominator)
       .div(zoomRatio.denominator);
 
     const cursorPosition = this.currentTracePosition?.timestamp;
     const currentMiddle = currentZoomRange.from
-      .add(currentZoomRange.to.getValueNs())
+      .add(currentZoomRange.to)
       .div(2n);
 
     let newFrom: Timestamp;
@@ -579,32 +573,25 @@ export class MiniTimelineComponent {
 
     newFrom = zoomTowards.minus(
       zoomToWidth
-        .times(
-          zoomTowards.minus(currentZoomRange.from.getValueNs()).getValueNs(),
-        )
-        .div(currentZoomWidth.getValueNs())
-        .getValueNs(),
+        .times(zoomTowards.minus(currentZoomRange.from))
+        .div(currentZoomWidth),
     );
 
     newTo = zoomTowards.add(
       zoomToWidth
-        .times(currentZoomRange.to.minus(zoomTowards.getValueNs()).getValueNs())
-        .div(currentZoomWidth.getValueNs())
-        .getValueNs(),
+        .times(currentZoomRange.to.minus(zoomTowards))
+        .div(currentZoomWidth),
     );
 
-    if (newFrom.getValueNs() < fullRange.from.getValueNs()) {
-      newTo = TimestampUtils.min(
-        fullRange.to,
-        newFrom.add(zoomToWidth.getValueNs()),
-      );
+    if (newFrom.getValueNs() < fullRange.startNs) {
+      newTo = TimestampUtils.min(fullRange.to, newFrom.add(zoomToWidth));
       newFrom = fullRange.from;
     }
 
-    if (newTo.getValueNs() > fullRange.to.getValueNs()) {
+    if (newTo.getValueNs() > fullRange.endNs) {
       newFrom = TimestampUtils.max(
         fullRange.from,
-        fullRange.to.minus(zoomToWidth.getValueNs()),
+        fullRange.to.minus(zoomToWidth),
       );
       newTo = fullRange.to;
     }

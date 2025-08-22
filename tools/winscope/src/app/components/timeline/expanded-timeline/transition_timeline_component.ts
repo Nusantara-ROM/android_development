@@ -176,8 +176,8 @@ export class TransitionTimelineComponent extends AbstractTimelineRowComponent<Hi
   }
 
   private getXPosOf(entry: Timestamp): number {
-    const start = assertDefined(this.selectionRange).from.getValueNs();
-    const end = assertDefined(this.selectionRange).to.getValueNs();
+    const start = assertDefined(this.selectionRange).startNs;
+    const end = assertDefined(this.selectionRange).endNs;
 
     return Number(
       (BigInt(this.getAvailableWidth()) * (entry.getValueNs() - start)) /
@@ -191,8 +191,8 @@ export class TransitionTimelineComponent extends AbstractTimelineRowComponent<Hi
     rowToUse: number,
   ): Rect {
     const xPosStart = this.getXPosOf(start);
-    const selectionStart = assertDefined(this.selectionRange).from.getValueNs();
-    const selectionEnd = assertDefined(this.selectionRange).to.getValueNs();
+    const selectionStart = assertDefined(this.selectionRange).startNs;
+    const selectionEnd = assertDefined(this.selectionRange).endNs;
 
     const borderPadding = 5;
     let totalRowHeight =
@@ -211,8 +211,8 @@ export class TransitionTimelineComponent extends AbstractTimelineRowComponent<Hi
     const width = Math.max(
       Number(
         (BigInt(this.getAvailableWidth()) *
-          (end.getValueNs() - start.getValueNs())) /
-          (selectionEnd - selectionStart),
+          BigInt(end.getValueNs() - start.getValueNs())) /
+          BigInt(selectionEnd - selectionStart),
       ),
       rowHeight,
     );
@@ -269,11 +269,11 @@ export class TransitionTimelineComponent extends AbstractTimelineRowComponent<Hi
       }
 
       let rowToUse = 0;
-      while ((rowAvailableFrom[rowToUse] ?? 0n) > timeRange.from.getValueNs()) {
+      while ((rowAvailableFrom[rowToUse] ?? 0n) > timeRange.startNs) {
         rowToUse++;
       }
 
-      rowAvailableFrom[rowToUse] = timeRange.to.getValueNs();
+      rowAvailableFrom[rowToUse] = timeRange.endNs;
 
       if (rowToUse + 1 > this.maxRowsRequires) {
         this.maxRowsRequires = rowToUse + 1;

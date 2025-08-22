@@ -490,7 +490,7 @@ describe('Mediator', () => {
 
     // notify position
     resetSpyCalls();
-    const finalTimestampNs = timelineData.getFullTimeRange().to.getValueNs();
+    const finalTimestampNs = timelineData.getFullTimeRange().endNs;
     const timestamp =
       TimestampConverterUtils.makeRealTimestamp(finalTimestampNs);
     const position = TracePosition.fromTimestamp(timestamp);

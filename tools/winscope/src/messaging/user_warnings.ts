@@ -102,9 +102,7 @@ export class TraceHasOldData extends UserWarning {
 
   getMessage(): string {
     const elapsedTime = this.timeGap
-      ? new TimeDuration(
-          this.timeGap.to.getValueNs() - this.timeGap.from.getValueNs(),
-        )
+      ? new TimeDuration(this.timeGap.endNs - this.timeGap.startNs)
       : undefined;
     return (
       `${this.descriptor}: discarded because data is old` +

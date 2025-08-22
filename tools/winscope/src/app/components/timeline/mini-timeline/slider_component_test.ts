@@ -182,9 +182,9 @@ describe('SliderComponent', () => {
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
     expect(finalZoom.from).not.toEqual(initialZoom.from);
     expect(finalZoom.to).not.toEqual(initialZoom.to);
-    expect(
-      finalZoom.to.minus(finalZoom.from.getValueNs()).getValueNs(),
-    ).toEqual(initialZoom.to.minus(initialZoom.from.getValueNs()).getValueNs());
+    expect(finalZoom.to.minus(finalZoom.from).getValueNs()).toEqual(
+      initialZoom.to.minus(initialZoom.from).getValueNs(),
+    );
   });
 
   it('moving slider left pointer around updates zoom', fakeAsync(() => {
@@ -252,8 +252,8 @@ describe('SliderComponent', () => {
     expect(zoomChangedSpy).toHaveBeenCalled();
 
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
-    expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
-    expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    expect(finalZoom.startNs).toEqual(initialZoom.startNs);
+    expect(finalZoom.endNs).toEqual(initialZoom.endNs);
     discardPeriodicTasks();
   }));
 
@@ -276,8 +276,8 @@ describe('SliderComponent', () => {
     expect(zoomChangedSpy).toHaveBeenCalled();
 
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
-    expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
-    expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    expect(finalZoom.startNs).toEqual(initialZoom.startNs);
+    expect(finalZoom.endNs).toEqual(initialZoom.endNs);
     discardPeriodicTasks();
   }));
 
@@ -300,8 +300,8 @@ describe('SliderComponent', () => {
     expect(zoomChangedSpy).toHaveBeenCalled();
 
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
-    expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
-    expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    expect(finalZoom.startNs).toEqual(initialZoom.startNs);
+    expect(finalZoom.endNs).toEqual(initialZoom.endNs);
     discardPeriodicTasks();
   }));
 
@@ -324,8 +324,8 @@ describe('SliderComponent', () => {
     expect(zoomChangedSpy).toHaveBeenCalled();
 
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
-    expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
-    expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    expect(finalZoom.startNs).toEqual(initialZoom.startNs);
+    expect(finalZoom.endNs).toEqual(initialZoom.endNs);
     discardPeriodicTasks();
   }));
 
@@ -348,8 +348,8 @@ describe('SliderComponent', () => {
     expect(zoomChangedSpy).toHaveBeenCalled();
 
     const finalZoom = assertDefined<TimeRange>(lastZoomUpdate);
-    expect(finalZoom.from.getValueNs()).toEqual(initialZoom.from.getValueNs());
-    expect(finalZoom.to.getValueNs()).toEqual(initialZoom.to.getValueNs());
+    expect(finalZoom.startNs).toEqual(initialZoom.startNs);
+    expect(finalZoom.endNs).toEqual(initialZoom.endNs);
   });
 
   function checkVisible(element: HTMLElement) {

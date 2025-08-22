@@ -91,8 +91,8 @@ export function getTimeRangeForTransition(
     return undefined;
   }
 
-  const timeRangeMin = fullTimeRange.from.getValueNs();
-  const timeRangeMax = fullTimeRange.to.getValueNs();
+  const timeRangeMin = fullTimeRange.startNs;
+  const timeRangeMax = fullTimeRange.endNs;
 
   if (
     finishOrAbortTimestamp &&

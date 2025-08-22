@@ -342,7 +342,7 @@ export class LoadedParsers {
       timestamps = assertDefined(timestamps);
 
       const endTimestamp = timestamps[timestamps.length - 1];
-      const isOldData = endTimestamp.getValueNs() <= timeGap.from.getValueNs();
+      const isOldData = endTimestamp.getValueNs() <= timeGap.startNs;
       if (isOldData) {
         UserNotifier.add(new TraceHasOldData(file.getDescriptor(), timeGap));
         return false;
@@ -469,12 +469,12 @@ export class LoadedParsers {
   ): TimeRange | undefined {
     const rangesSortedByEnd = ranges
       .slice()
-      .sort((a, b) => (a.to.getValueNs() < b.to.getValueNs() ? -1 : +1));
+      .sort((a, b) => (a.endNs < b.endNs ? -1 : +1));
 
     for (let i = rangesSortedByEnd.length - 2; i >= 0; --i) {
       const curr = rangesSortedByEnd[i];
       const next = rangesSortedByEnd[i + 1];
-      const gap = next.from.getValueNs() - curr.to.getValueNs();
+      const gap = next.startNs - curr.endNs;
       if (gap > LoadedParsers.MAX_ALLOWED_TIME_GAP_BETWEEN_TRACES_NS) {
         return new TimeRange(curr.to, next.from);
       }

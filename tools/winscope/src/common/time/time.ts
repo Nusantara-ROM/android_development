@@ -23,10 +23,28 @@ export const INVALID_TIME_NS = 0n;
  * A class representing a time range.
  */
 export class TimeRange {
+  /**
+   * @param from The start of the time range.
+   * @param to The end of the time range.
+   */
   constructor(
     readonly from: Timestamp,
     readonly to: Timestamp,
   ) {}
+
+  /**
+   * Gets the start of the time range in nanoseconds.
+   */
+  get startNs(): bigint {
+    return this.from.getValueNs();
+  }
+
+  /**
+   * Gets the end of the time range in nanoseconds.
+   */
+  get endNs(): bigint {
+    return this.to.getValueNs();
+  }
 
   /**
    * Checks if a timestamp is within the time range.
@@ -78,6 +96,10 @@ export class Timestamp {
   private readonly utcValueNs: bigint;
   private readonly formatter: TimestampFormatter;
 
+  /**
+   * @param valueNs The value of the timestamp in nanoseconds.
+   * @param formatter The formatter to use for formatting the timestamp.
+   */
   constructor(valueNs: bigint, formatter: TimestampFormatter) {
     this.utcValueNs = valueNs;
     this.formatter = formatter;
@@ -109,8 +131,7 @@ export class Timestamp {
    */
   in(range: TimeRange): boolean {
     return (
-      range.from.getValueNs() <= this.getValueNs() &&
-      this.getValueNs() <= range.to.getValueNs()
+      range.startNs <= this.getValueNs() && this.getValueNs() <= range.endNs
     );
   }
 
@@ -120,7 +141,14 @@ export class Timestamp {
    * @param n The value to add.
    * @return A new timestamp with the added value.
    */
-  add(n: bigint): Timestamp {
+  add(other: bigint | Timestamp): Timestamp {
+    let n: bigint;
+    if (other instanceof Timestamp) {
+      n = other.getValueNs();
+    } else {
+      n = other;
+    }
+
     return new Timestamp(this.getValueNs() + n, this.formatter);
   }
 
@@ -130,7 +158,13 @@ export class Timestamp {
    * @param n The value to subtract.
    * @return A new timestamp with the subtracted value.
    */
-  minus(n: bigint): Timestamp {
+  minus(other: bigint | Timestamp): Timestamp {
+    let n: bigint;
+    if (other instanceof Timestamp) {
+      n = other.getValueNs();
+    } else {
+      n = other;
+    }
     return new Timestamp(this.getValueNs() - n, this.formatter);
   }
 
@@ -140,7 +174,13 @@ export class Timestamp {
    * @param n The value to multiply by.
    * @return A new timestamp with the multiplied value.
    */
-  times(n: bigint): Timestamp {
+  times(other: bigint | Timestamp): Timestamp {
+    let n: bigint;
+    if (other instanceof Timestamp) {
+      n = other.getValueNs();
+    } else {
+      n = other;
+    }
     return new Timestamp(this.getValueNs() * n, this.formatter);
   }
 
@@ -150,7 +190,13 @@ export class Timestamp {
    * @param n The value to divide by.
    * @return A new timestamp with the divided value.
    */
-  div(n: bigint): Timestamp {
+  div(other: bigint | Timestamp): Timestamp {
+    let n: bigint;
+    if (other instanceof Timestamp) {
+      n = other.getValueNs();
+    } else {
+      n = other;
+    }
     return new Timestamp(this.getValueNs() / n, this.formatter);
   }
 

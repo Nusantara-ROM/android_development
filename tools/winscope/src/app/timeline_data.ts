@@ -206,10 +206,8 @@ export class TimelineData {
 
     if (
       this.lastReturnedFullTimeRange === undefined ||
-      this.lastReturnedFullTimeRange.from.getValueNs() !==
-        fullTimeRange.from.getValueNs() ||
-      this.lastReturnedFullTimeRange.to.getValueNs() !==
-        fullTimeRange.to.getValueNs()
+      this.lastReturnedFullTimeRange.startNs !== fullTimeRange.startNs ||
+      this.lastReturnedFullTimeRange.endNs !== fullTimeRange.endNs
     ) {
       this.lastReturnedFullTimeRange = fullTimeRange;
     }

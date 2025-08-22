@@ -34,9 +34,9 @@ describe('Transformer', () => {
       TimestampConverterUtils.TIMESTAMP_CONVERTER,
     );
 
-    const rangeStart = fromRange.from.getValueNs();
-    const rangeEnd = fromRange.to.getValueNs();
-    const range = fromRange.to.getValueNs() - fromRange.from.getValueNs();
+    const rangeStart = fromRange.startNs;
+    const rangeEnd = fromRange.endNs;
+    const range = fromRange.endNs - fromRange.startNs;
 
     expect(transformer.transform(fromRange.from)).toBe(toRange.from);
     expect(transformer.transform(fromRange.to)).toBe(toRange.to);
@@ -84,14 +84,14 @@ describe('Transformer', () => {
       TimestampConverterUtils.TIMESTAMP_CONVERTER,
     );
 
-    const rangeStart = fromRange.from.getValueNs();
-    const range = fromRange.to.getValueNs() - fromRange.from.getValueNs();
+    const rangeStart = fromRange.startNs;
+    const range = fromRange.endNs - fromRange.startNs;
 
     expect(transformer.untransform(toRange.from).getValueNs()).toBe(
-      fromRange.from.getValueNs(),
+      fromRange.startNs,
     );
     expect(transformer.untransform(toRange.to).getValueNs()).toBe(
-      fromRange.to.getValueNs(),
+      fromRange.endNs,
     );
 
     expect(

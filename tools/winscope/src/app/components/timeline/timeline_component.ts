@@ -977,7 +977,7 @@ export class TimelineComponent
         range.containsTimestamp(bookmark),
       );
     }
-    const clickedNs = (range.from.getValueNs() + range.to.getValueNs()) / 2n;
+    const clickedNs = (range.startNs + range.endNs) / 2n;
     if (rangeContainsBookmark) {
       const closestBookmark = this.bookmarks.reduce((prev, curr) => {
         if (clickedNs - curr.getValueNs() < 0) return prev;
