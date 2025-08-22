@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
-import {ParsingUtils} from 'parsers/legacy/parsing_utils';
+import {throwIfMagicNumberDoesNotMatch} from 'parsers/legacy/parsing_utils';
 import root from 'protos/viewcapture/udc/json';
 import {com} from 'protos/viewcapture/udc/static';
 import {TraceFile} from 'trace/trace_file';
@@ -38,10 +38,7 @@ export class ParserViewCapture {
 
   async parse() {
     const traceBuffer = new Uint8Array(await this.traceFile.file.arrayBuffer());
-    ParsingUtils.throwIfMagicNumberDoesNotMatch(
-      traceBuffer,
-      ParserViewCapture.MAGIC_NUMBER,
-    );
+    throwIfMagicNumberDoesNotMatch(traceBuffer, ParserViewCapture.MAGIC_NUMBER);
 
     const exportedData = ParserViewCapture.ExportedDataProto.decode(
       traceBuffer,
