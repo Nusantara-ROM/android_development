@@ -114,8 +114,8 @@ import com.android.compose.modifiers.thenIf
 import com.android.compose.windowsizeclass.calculateWindowSizeClass
 import com.android.mechanics.behavior.VerticalExpandContainerSpec
 import com.android.mechanics.debug.DebugMotionValueVisualization
-import com.android.mechanics.debug.MotionValueDebuggerState
-import com.android.mechanics.debug.motionValueDebugger
+import com.android.mechanics.debug.LocalMotionValueDebugController
+import com.android.mechanics.debug.MotionValueDebuggerProvider
 import kotlin.math.max
 
 object Scenes {
@@ -213,7 +213,9 @@ fun SystemUi(modifier: Modifier = Modifier) {
         rememberSaveable(stateSaver = DemoConfiguration.Saver) {
             mutableStateOf(DemoConfiguration())
         }
-    SystemUi(configuration, { configuration = it }, modifier)
+    MotionValueDebuggerProvider(enableDebugger = configuration.enableMotionValueDebugger) {
+        SystemUi(configuration, { configuration = it }, modifier)
+    }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -473,13 +475,8 @@ fun SystemUi(
         val shape = RoundedCornerShape(Shade.Dimensions.ScrimCornerSize)
         val borderColor = MaterialTheme.colorScheme.onSurface
 
-        val debuggerState = remember { MotionValueDebuggerState() }
-
         Surface(
-            Modifier.thenIf(configuration.enableMotionValueDebugger) {
-                    Modifier.motionValueDebugger(debuggerState)
-                }
-                .semantics { testTagsAsResourceId = true }
+            Modifier.semantics { testTagsAsResourceId = true }
                 .thenIf(!configuration.isFullscreen) {
                     Modifier.padding(3.dp)
                         .then(
@@ -760,7 +757,8 @@ fun SystemUi(
                     }
                 }
 
-                if (configuration.enableMotionValueDebugger) {
+                val debuggerState = LocalMotionValueDebugController.current
+                if (debuggerState != null) {
                     Box(Modifier.fillMaxSize()) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -771,7 +769,7 @@ fun SystemUi(
                                     )
                                     .align(Alignment.BottomStart),
                         ) {
-                            debuggerState.observedMotionValues.forEach {
+                            debuggerState.observed.forEach {
                                 key(it) {
                                     var rowExpanded by remember { mutableStateOf(false) }
 
