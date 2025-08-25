@@ -19,7 +19,14 @@ import {TransformTypeFlags} from 'common/geometry/transform_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import root from 'protos/test/fake_proto/json';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
-import {TreeNodeUtils} from 'test/unit/tree_node_utils';
+import {
+  makeBufferNode,
+  makeColorNode,
+  makePositionNode,
+  makeRectNode,
+  makeSizeNode,
+  makeTransformNode,
+} from 'test/unit/tree_node_utils';
 import {EMPTY_OBJ_STRING, LAYER_ID_FORMATTER} from 'trace/formatters';
 import {
   TamperedMessageType,
@@ -62,7 +69,7 @@ describe('SetFormatters', () => {
       .setRootId('test')
       .setName('node')
       .build();
-    propertyRoot.addOrReplaceChild(TreeNodeUtils.makeColorNode(-1, -1, -1, 1));
+    propertyRoot.addOrReplaceChild(makeColorNode(-1, -1, -1, 1));
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -77,9 +84,7 @@ describe('SetFormatters', () => {
       .setRootId('test')
       .setName('node')
       .build();
-    propertyRoot.addOrReplaceChild(
-      TreeNodeUtils.makeColorNode(0, 0, 0, undefined),
-    );
+    propertyRoot.addOrReplaceChild(makeColorNode(0, 0, 0, undefined));
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -94,7 +99,7 @@ describe('SetFormatters', () => {
       .setRootId('test')
       .setName('node')
       .build();
-    propertyRoot.addOrReplaceChild(TreeNodeUtils.makeRectNode(0, 0, 1, 1));
+    propertyRoot.addOrReplaceChild(makeRectNode(0, 0, 1, 1));
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -109,7 +114,7 @@ describe('SetFormatters', () => {
       .setRootId('test')
       .setName('node')
       .build();
-    propertyRoot.addOrReplaceChild(TreeNodeUtils.makeBufferNode());
+    propertyRoot.addOrReplaceChild(makeBufferNode());
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -124,7 +129,7 @@ describe('SetFormatters', () => {
       .setRootId('test')
       .setName('node')
       .build();
-    propertyRoot.addOrReplaceChild(TreeNodeUtils.makeSizeNode(1, 2));
+    propertyRoot.addOrReplaceChild(makeSizeNode(1, 2));
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -177,7 +182,7 @@ describe('SetFormatters', () => {
       .setRootId('test')
       .setName('node')
       .build();
-    propertyRoot.addOrReplaceChild(TreeNodeUtils.makePositionNode(1, 2));
+    propertyRoot.addOrReplaceChild(makePositionNode(1, 2));
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');
@@ -192,9 +197,7 @@ describe('SetFormatters', () => {
       .setRootId('test')
       .setName('node')
       .build();
-    propertyRoot.addOrReplaceChild(
-      TreeNodeUtils.makeTransformNode(TransformTypeFlags.EMPTY),
-    );
+    propertyRoot.addOrReplaceChild(makeTransformNode(TransformTypeFlags.EMPTY));
     operation.apply(propertyRoot);
 
     expect(propertyRoot.formattedValue()).toEqual('');

@@ -25,7 +25,7 @@ import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {TreeNodeUtils} from 'test/unit/tree_node_utils';
+import {makeHierarchyNode} from 'test/unit/tree_node_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {EMPTY_OBJ_STRING} from 'trace/formatters';
 import {CustomQueryType} from 'trace_api/custom_query';
@@ -740,9 +740,7 @@ the default for its data type.`,
       ): Promise<[Presenter, Trace<HierarchyTreeNode>]> {
         const traceVc = new TraceBuilder<HierarchyTreeNode>()
           .setType(TraceType.VIEW_CAPTURE)
-          .setEntries([
-            TreeNodeUtils.makeHierarchyNode({id: 'vc id', name: 'vc node'}),
-          ])
+          .setEntries([makeHierarchyNode({id: 'vc id', name: 'vc node'})])
           .setParserCustomQueryResult(CustomQueryType.VIEW_CAPTURE_METADATA, {
             packageName: 'com.android.car.carlauncher',
             windowName: 'not_used',

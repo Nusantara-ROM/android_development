@@ -18,7 +18,7 @@ import {assertDefined} from 'common/assert_utils';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {com} from 'protos/windowmanager/udc/static';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
-import {TreeNodeUtils} from 'test/unit/tree_node_utils';
+import {makeHierarchyNode} from 'test/unit/tree_node_utils';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {TraceRect} from 'tree_node/trace_rect';
 import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
@@ -122,7 +122,7 @@ describe('WindowManager RectsComputation', () => {
   });
 
   it('makes window state rects', () => {
-    const state1Node = TreeNodeUtils.makeHierarchyNode({
+    const state1Node = makeHierarchyNode({
       id: 'WindowState',
       name: 'state1',
       displayId: 1,
@@ -136,7 +136,7 @@ describe('WindowManager RectsComputation', () => {
     } as WindowStateProto);
 
     state1Node.addOrReplaceChild(
-      TreeNodeUtils.makeHierarchyNode({
+      makeHierarchyNode({
         id: 'WindowState',
         name: 'state2',
         displayId: 1,

@@ -18,11 +18,11 @@ import {TreeNode} from 'tree_node/tree_node';
 import {DiffNode} from 'viewers/common/diff_node';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
-import {TreeNodeUtils} from './tree_node_utils';
+import {makeHierarchyNode, makePropertyNode} from './tree_node_utils';
 
 export class UiTreeNodeUtils {
   static makeUiHierarchyNode(proto: object): UiHierarchyTreeNode {
-    return UiHierarchyTreeNode.from(TreeNodeUtils.makeHierarchyNode(proto));
+    return UiHierarchyTreeNode.from(makeHierarchyNode(proto));
   }
 
   static makeUiPropertyNode(
@@ -30,9 +30,7 @@ export class UiTreeNodeUtils {
     name: string,
     value: any,
   ): UiPropertyTreeNode {
-    return UiPropertyTreeNode.from(
-      TreeNodeUtils.makePropertyNode(rootId, name, value),
-    );
+    return UiPropertyTreeNode.from(makePropertyNode(rootId, name, value));
   }
 
   static treeNodeEqualityTester(

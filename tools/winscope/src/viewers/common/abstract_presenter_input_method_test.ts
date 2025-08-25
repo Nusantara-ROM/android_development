@@ -21,7 +21,6 @@ import {TracePositionUpdate} from 'messaging/winscope_event';
 import {getImeTraceEntries} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {TreeNodeUtils} from 'test/unit/tree_node_utils';
 import {UiTreeNodeUtils} from 'test/unit/ui_tree_node_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {ImeTraceType, TraceType} from 'trace_api/trace_type';
@@ -215,7 +214,7 @@ the default for its data type.`,
         );
         const selectedItem = {
           name: '',
-          treeNode: TreeNodeUtils.makePropertyNode('', '', null),
+          treeNode: makePropertyNode('', '', null),
         };
         element.dispatchEvent(
           new CustomEvent(ViewerEvents.AdditionalPropertySelected, {

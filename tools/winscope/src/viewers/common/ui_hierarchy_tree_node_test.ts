@@ -15,7 +15,7 @@
  */
 
 import {DuplicateLayerIds} from 'messaging/user_warnings';
-import {TreeNodeUtils} from 'test/unit/tree_node_utils';
+import {makeHierarchyNode} from 'test/unit/tree_node_utils';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
 import {UiHierarchyTreeNode} from './ui_hierarchy_tree_node';
@@ -24,10 +24,9 @@ describe('UiHierarchyTreeNode', () => {
   let node: HierarchyTreeNode;
 
   beforeEach(() => {
-    node = TreeNodeUtils.makeHierarchyNode(
-      {id: '1', name: 'node1', prop: true},
-      [{id: '2', name: 'node2'}],
-    );
+    node = makeHierarchyNode({id: '1', name: 'node1', prop: true}, [
+      {id: '2', name: 'node2'},
+    ]);
   });
 
   it('transfers id, name and properties', () => {

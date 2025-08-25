@@ -18,7 +18,16 @@ import {assertDefined} from 'common/assert_utils';
 import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
 import {TransformTypeFlags} from 'common/geometry/transform_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
-import {TreeNodeUtils} from 'test/unit/tree_node_utils';
+import {
+  makeBufferNode,
+  makeColorNode,
+  makeMatrixNode,
+  makePositionNode,
+  makePropertyNode,
+  makeRectNode,
+  makeSizeNode,
+  makeTransformNode,
+} from 'test/unit/tree_node_utils';
 import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {
   BUFFER_FORMATTER,
@@ -92,63 +101,59 @@ describe('Formatters', () => {
 
   describe('ColorFormatter', () => {
     it('translates empty color to string correctly', () => {
-      expect(
-        COLOR_FORMATTER.format(TreeNodeUtils.makeColorNode(-1, -1, -1, 1)),
-      ).toEqual(`${EMPTY_OBJ_STRING}, alpha: 1`);
-      expect(
-        COLOR_FORMATTER.format(TreeNodeUtils.makeColorNode(1, 1, 1, 0)),
-      ).toEqual(`${EMPTY_OBJ_STRING}, alpha: 0`);
+      expect(COLOR_FORMATTER.format(makeColorNode(-1, -1, -1, 1))).toEqual(
+        `${EMPTY_OBJ_STRING}, alpha: 1`,
+      );
+      expect(COLOR_FORMATTER.format(makeColorNode(1, 1, 1, 0))).toEqual(
+        `${EMPTY_OBJ_STRING}, alpha: 0`,
+      );
     });
 
     it('translates non-empty color to string correctly', () => {
-      expect(
-        COLOR_FORMATTER.format(TreeNodeUtils.makeColorNode(1, 2, 3, 1)),
-      ).toEqual('(1, 2, 3), alpha: 1');
-      expect(
-        COLOR_FORMATTER.format(TreeNodeUtils.makeColorNode(1, 2, 3, 0.608)),
-      ).toEqual('(1, 2, 3), alpha: 0.608');
+      expect(COLOR_FORMATTER.format(makeColorNode(1, 2, 3, 1))).toEqual(
+        '(1, 2, 3), alpha: 1',
+      );
+      expect(COLOR_FORMATTER.format(makeColorNode(1, 2, 3, 0.608))).toEqual(
+        '(1, 2, 3), alpha: 0.608',
+      );
     });
 
     it('translates rgb color without alpha to string correctly (transactions)', () => {
+      expect(COLOR_FORMATTER.format(makeColorNode(1, 2, 3, undefined))).toEqual(
+        '(1, 2, 3)',
+      );
       expect(
-        COLOR_FORMATTER.format(TreeNodeUtils.makeColorNode(1, 2, 3, undefined)),
-      ).toEqual('(1, 2, 3)');
-      expect(
-        COLOR_FORMATTER.format(
-          TreeNodeUtils.makeColorNode(0.106, 0.203, 0.313, undefined),
-        ),
+        COLOR_FORMATTER.format(makeColorNode(0.106, 0.203, 0.313, undefined)),
       ).toEqual('(0.106, 0.203, 0.313)');
     });
   });
 
   describe('RectFormatter', () => {
     it('translates empty rect to string correctly', () => {
-      expect(
-        RECT_FORMATTER.format(TreeNodeUtils.makeRectNode(0, 0, -1, -1)),
-      ).toEqual(EMPTY_OBJ_STRING);
-      expect(
-        RECT_FORMATTER.format(TreeNodeUtils.makeRectNode(0, 0, 0, 0)),
-      ).toEqual(EMPTY_OBJ_STRING);
+      expect(RECT_FORMATTER.format(makeRectNode(0, 0, -1, -1))).toEqual(
+        EMPTY_OBJ_STRING,
+      );
+      expect(RECT_FORMATTER.format(makeRectNode(0, 0, 0, 0))).toEqual(
+        EMPTY_OBJ_STRING,
+      );
     });
 
     it('translates non-empty rect to string correctly', () => {
+      expect(RECT_FORMATTER.format(makeRectNode(0, 0, 1, 1))).toEqual(
+        '(0, 0) - (1, 1)',
+      );
+      expect(RECT_FORMATTER.format(makeRectNode(0, 0, 10, 10))).toEqual(
+        '(0, 0) - (10, 10)',
+      );
       expect(
-        RECT_FORMATTER.format(TreeNodeUtils.makeRectNode(0, 0, 1, 1)),
-      ).toEqual('(0, 0) - (1, 1)');
-      expect(
-        RECT_FORMATTER.format(TreeNodeUtils.makeRectNode(0, 0, 10, 10)),
-      ).toEqual('(0, 0) - (10, 10)');
-      expect(
-        RECT_FORMATTER.format(
-          TreeNodeUtils.makeRectNode(0, 1.6431, 10456.9086, 10),
-        ),
+        RECT_FORMATTER.format(makeRectNode(0, 1.6431, 10456.9086, 10)),
       ).toEqual('(0, 1.643) - (10456.909, 10)');
     });
   });
 
   describe('BufferFormatter', () => {
     it('translates buffer to string correctly', () => {
-      const buffer = TreeNodeUtils.makeBufferNode();
+      const buffer = makeBufferNode();
       expect(BUFFER_FORMATTER.format(buffer)).toEqual(
         'w: 1, h: 0, stride: 0, format: 1',
       );
@@ -182,7 +187,7 @@ describe('Formatters', () => {
     it('translates matrix correctly', () => {
       expect(
         MATRIX_FORMATTER.format(
-          TreeNodeUtils.makeMatrixNode(
+          makeMatrixNode(
             IDENTITY_MATRIX.dsdx,
             IDENTITY_MATRIX.dtdx,
             IDENTITY_MATRIX.dtdy,
@@ -191,16 +196,14 @@ describe('Formatters', () => {
         ),
       ).toEqual('dsdx: 1, dtdx: 0, dtdy: 0, dsdy: 1');
       expect(
-        MATRIX_FORMATTER.format(
-          TreeNodeUtils.makeMatrixNode(0.4, 100, 1, 0.1232),
-        ),
+        MATRIX_FORMATTER.format(makeMatrixNode(0.4, 100, 1, 0.1232)),
       ).toEqual('dsdx: 0.400, dtdx: 100, dtdy: 1, dsdy: 0.123');
-      expect(
-        MATRIX_FORMATTER.format(TreeNodeUtils.makeMatrixNode(0, 0, 0, 0)),
-      ).toEqual('null');
+      expect(MATRIX_FORMATTER.format(makeMatrixNode(0, 0, 0, 0))).toEqual(
+        'null',
+      );
       expect(
         MATRIX_FORMATTER.format(
-          TreeNodeUtils.makePropertyNode('test node', 'transform', {
+          makePropertyNode('test node', 'transform', {
             dsdx: 1,
             dtdx: 0,
             tx: 5,
@@ -216,38 +219,36 @@ describe('Formatters', () => {
   describe('TransformFormatter', () => {
     it('translates type correctly', () => {
       expect(
-        TRANSFORM_FORMATTER.format(
-          TreeNodeUtils.makeTransformNode(TransformTypeFlags.EMPTY),
-        ),
+        TRANSFORM_FORMATTER.format(makeTransformNode(TransformTypeFlags.EMPTY)),
       ).toEqual('IDENTITY');
       expect(
         TRANSFORM_FORMATTER.format(
-          TreeNodeUtils.makeTransformNode(TransformTypeFlags.TRANSLATE_VAL),
+          makeTransformNode(TransformTypeFlags.TRANSLATE_VAL),
         ),
       ).toEqual('TRANSLATE');
       expect(
         TRANSFORM_FORMATTER.format(
-          TreeNodeUtils.makeTransformNode(TransformTypeFlags.SCALE_VAL),
+          makeTransformNode(TransformTypeFlags.SCALE_VAL),
         ),
       ).toEqual('SCALE');
       expect(
         TRANSFORM_FORMATTER.format(
-          TreeNodeUtils.makeTransformNode(TransformTypeFlags.FLIP_H_VAL),
+          makeTransformNode(TransformTypeFlags.FLIP_H_VAL),
         ),
       ).toEqual('IDENTITY|FLIP_H');
       expect(
         TRANSFORM_FORMATTER.format(
-          TreeNodeUtils.makeTransformNode(TransformTypeFlags.FLIP_V_VAL),
+          makeTransformNode(TransformTypeFlags.FLIP_V_VAL),
         ),
       ).toEqual('IDENTITY|FLIP_V');
       expect(
         TRANSFORM_FORMATTER.format(
-          TreeNodeUtils.makeTransformNode(TransformTypeFlags.ROT_90_VAL),
+          makeTransformNode(TransformTypeFlags.ROT_90_VAL),
         ),
       ).toEqual('IDENTITY|ROT_90');
       expect(
         TRANSFORM_FORMATTER.format(
-          TreeNodeUtils.makeTransformNode(TransformTypeFlags.ROT_INVALID_VAL),
+          makeTransformNode(TransformTypeFlags.ROT_INVALID_VAL),
         ),
       ).toEqual('IDENTITY|ROT_INVALID');
     });
@@ -255,20 +256,18 @@ describe('Formatters', () => {
 
   describe('SizeFormatter', () => {
     it('translates size correctly', () => {
-      expect(SIZE_FORMATTER.format(TreeNodeUtils.makeSizeNode(1, 2))).toEqual(
-        '1 x 2',
-      );
+      expect(SIZE_FORMATTER.format(makeSizeNode(1, 2))).toEqual('1 x 2');
     });
   });
 
   describe('PositionFormatter', () => {
     it('translates position correctly', () => {
-      expect(
-        POSITION_FORMATTER.format(TreeNodeUtils.makePositionNode(1, 2)),
-      ).toEqual('x: 1, y: 2');
-      expect(
-        POSITION_FORMATTER.format(TreeNodeUtils.makePositionNode(1.5, 2.2916)),
-      ).toEqual('x: 1.500, y: 2.292');
+      expect(POSITION_FORMATTER.format(makePositionNode(1, 2))).toEqual(
+        'x: 1, y: 2',
+      );
+      expect(POSITION_FORMATTER.format(makePositionNode(1.5, 2.2916))).toEqual(
+        'x: 1.500, y: 2.292',
+      );
     });
   });
 
@@ -281,7 +280,7 @@ describe('Formatters', () => {
         .build();
 
       const rectNode = assertDefined(region.getChildByName('rect'));
-      rectNode.addOrReplaceChild(TreeNodeUtils.makeRectNode(0, 0, 1080, 2340));
+      rectNode.addOrReplaceChild(makeRectNode(0, 0, 1080, 2340));
 
       expect(REGION_FORMATTER.format(region)).toEqual(
         'SkRegion((0, 0, 1080, 2340))',
