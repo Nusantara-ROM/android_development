@@ -19,7 +19,15 @@ import {
   TamperedMessageType,
   TamperedProtoField,
 } from 'trace/proto_utils/tampered_message_type';
-import {RawDataUtils} from 'tree_node/raw_data_utils';
+import {
+  isBuffer,
+  isColor,
+  isMatrix,
+  isPosition,
+  isRect,
+  isRegion,
+  isSize,
+} from 'tree_node/raw_data_utils';
 // TODO(b/311642700) Not compatible with google3 migration
 import * as protobuf from 'protobufjs';
 import {
@@ -86,19 +94,19 @@ export class SetFormatters implements Operation<PropertyTreeNode> {
 
     if (node.getValue() instanceof Timestamp) return TIMESTAMP_NODE_FORMATTER;
 
-    if (RawDataUtils.isColor(node)) return COLOR_FORMATTER;
-    if (RawDataUtils.isRect(node)) return RECT_FORMATTER;
-    if (RawDataUtils.isBuffer(node)) return BUFFER_FORMATTER;
-    if (RawDataUtils.isSize(node)) return SIZE_FORMATTER;
-    if (RawDataUtils.isRegion(node)) return REGION_FORMATTER;
-    if (RawDataUtils.isPosition(node)) return POSITION_FORMATTER;
+    if (isColor(node)) return COLOR_FORMATTER;
+    if (isRect(node)) return RECT_FORMATTER;
+    if (isBuffer(node)) return BUFFER_FORMATTER;
+    if (isSize(node)) return SIZE_FORMATTER;
+    if (isRegion(node)) return REGION_FORMATTER;
+    if (isPosition(node)) return POSITION_FORMATTER;
     if (
       SetFormatters.TransformRegExp.test(node.name) &&
       node.getChildByName('type')
     ) {
       return TRANSFORM_FORMATTER;
     }
-    if (RawDataUtils.isMatrix(node)) return MATRIX_FORMATTER;
+    if (isMatrix(node)) return MATRIX_FORMATTER;
 
     if (node.getAllChildren().length > 0) return undefined;
 

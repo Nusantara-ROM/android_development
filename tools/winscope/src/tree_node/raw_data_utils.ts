@@ -17,88 +17,86 @@
 import {GeometryFactory} from './geometry_factory';
 import {PropertyTreeNode} from './property_tree_node';
 
-export class RawDataUtils {
-  static isEmptyObj(obj: PropertyTreeNode): boolean {
-    if (RawDataUtils.isColor(obj)) {
-      return RawDataUtils.isEmptyColor(obj);
-    }
-
-    if (RawDataUtils.isRect(obj)) {
-      return GeometryFactory.makeRect(obj).isEmpty();
-    }
-
-    return false;
+export function isEmptyObj(obj: PropertyTreeNode): boolean {
+  if (isColor(obj)) {
+    return isEmptyColor(obj);
   }
 
-  static isColor(obj: PropertyTreeNode): boolean {
-    return (
-      (obj.getChildByName('r') !== undefined &&
-        obj.getChildByName('g') !== undefined &&
-        obj.getChildByName('b') !== undefined) ||
-      obj.getChildByName('a') !== undefined
-    );
+  if (isRect(obj)) {
+    return GeometryFactory.makeRect(obj).isEmpty();
   }
 
-  static isRect(obj: PropertyTreeNode): boolean {
-    return (
-      (obj.getChildByName('right') !== undefined &&
-        obj.getChildByName('bottom') !== undefined) ||
-      (obj.getChildByName('left') !== undefined &&
-        obj.getChildByName('top') !== undefined)
-    );
-  }
+  return false;
+}
 
-  static isBuffer(obj: PropertyTreeNode): boolean {
-    return (
-      obj.getChildByName('stride') !== undefined &&
-      obj.getChildByName('format') !== undefined
-    );
-  }
+export function isColor(obj: PropertyTreeNode): boolean {
+  return (
+    (obj.getChildByName('r') !== undefined &&
+      obj.getChildByName('g') !== undefined &&
+      obj.getChildByName('b') !== undefined) ||
+    obj.getChildByName('a') !== undefined
+  );
+}
 
-  static isSize(obj: PropertyTreeNode): boolean {
-    return (
-      obj.getAllChildren().length <= 2 &&
-      (obj.getChildByName('w') !== undefined ||
-        obj.getChildByName('h') !== undefined)
-    );
-  }
+export function isRect(obj: PropertyTreeNode): boolean {
+  return (
+    (obj.getChildByName('right') !== undefined &&
+      obj.getChildByName('bottom') !== undefined) ||
+    (obj.getChildByName('left') !== undefined &&
+      obj.getChildByName('top') !== undefined)
+  );
+}
 
-  static isPosition(obj: PropertyTreeNode): boolean {
-    return (
-      obj.getAllChildren().length <= 2 &&
-      (obj.getChildByName('x') !== undefined ||
-        obj.getChildByName('y') !== undefined)
-    );
-  }
+export function isBuffer(obj: PropertyTreeNode): boolean {
+  return (
+    obj.getChildByName('stride') !== undefined &&
+    obj.getChildByName('format') !== undefined
+  );
+}
 
-  static isRegion(obj: PropertyTreeNode): boolean {
-    const rect = obj.getChildByName('rect');
-    return (
-      rect !== undefined &&
-      rect
-        .getAllChildren()
-        .every((innerRect: PropertyTreeNode) => RawDataUtils.isRect(innerRect))
-    );
-  }
+export function isSize(obj: PropertyTreeNode): boolean {
+  return (
+    obj.getAllChildren().length <= 2 &&
+    (obj.getChildByName('w') !== undefined ||
+      obj.getChildByName('h') !== undefined)
+  );
+}
 
-  static isMatrix(obj: PropertyTreeNode): boolean {
-    return (
-      !obj.getChildByName('type') &&
-      (obj.getChildByName('dsdx') !== undefined ||
-        obj.getChildByName('dtdx') !== undefined ||
-        obj.getChildByName('dsdy') !== undefined ||
-        obj.getChildByName('dtdy') !== undefined)
-    );
-  }
+export function isPosition(obj: PropertyTreeNode): boolean {
+  return (
+    obj.getAllChildren().length <= 2 &&
+    (obj.getChildByName('x') !== undefined ||
+      obj.getChildByName('y') !== undefined)
+  );
+}
 
-  private static isEmptyColor(color: PropertyTreeNode): boolean {
-    const [r, g, b, a] = [
-      color.getChildByName('r')?.getValue() ?? 0,
-      color.getChildByName('g')?.getValue() ?? 0,
-      color.getChildByName('b')?.getValue() ?? 0,
-      color.getChildByName('a')?.getValue() ?? 0,
-    ];
-    if (a === 0) return true;
-    return r < 0 || g < 0 || b < 0;
-  }
+export function isRegion(obj: PropertyTreeNode): boolean {
+  const rect = obj.getChildByName('rect');
+  return (
+    rect !== undefined &&
+    rect
+      .getAllChildren()
+      .every((innerRect: PropertyTreeNode) => isRect(innerRect))
+  );
+}
+
+export function isMatrix(obj: PropertyTreeNode): boolean {
+  return (
+    !obj.getChildByName('type') &&
+    (obj.getChildByName('dsdx') !== undefined ||
+      obj.getChildByName('dtdx') !== undefined ||
+      obj.getChildByName('dsdy') !== undefined ||
+      obj.getChildByName('dtdy') !== undefined)
+  );
+}
+
+function isEmptyColor(color: PropertyTreeNode): boolean {
+  const [r, g, b, a] = [
+    color.getChildByName('r')?.getValue() ?? 0,
+    color.getChildByName('g')?.getValue() ?? 0,
+    color.getChildByName('b')?.getValue() ?? 0,
+    color.getChildByName('a')?.getValue() ?? 0,
+  ];
+  if (a === 0) return true;
+  return r < 0 || g < 0 || b < 0;
 }

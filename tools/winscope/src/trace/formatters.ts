@@ -21,7 +21,7 @@ import {
   PropertyFormatter,
   PropertyTreeNode,
 } from 'tree_node/property_tree_node';
-import {RawDataUtils} from 'tree_node/raw_data_utils';
+import {isEmptyObj, isRect} from 'tree_node/raw_data_utils';
 import {CujType} from './cuj_type';
 
 const EMPTY_OBJ_STRING = '{empty}';
@@ -74,7 +74,7 @@ class ColorFormatter implements PropertyFormatter {
 
     const alpha = formatAsDecimal(alphaNode?.getValue() ?? 0);
     const alphaString = `alpha: ${alpha}`;
-    if (RawDataUtils.isEmptyObj(node)) {
+    if (isEmptyObj(node)) {
       return `${EMPTY_OBJ_STRING}, ${alphaString}`;
     }
     return `${rgbString}, ${alphaString}`;
@@ -198,7 +198,7 @@ const POSITION_FORMATTER = new PositionFormatter();
 
 class RectFormatter implements PropertyFormatter {
   format(node: PropertyTreeNode): string {
-    if (!RawDataUtils.isRect(node) || RawDataUtils.isEmptyObj(node)) {
+    if (!isRect(node) || isEmptyObj(node)) {
       return EMPTY_OBJ_STRING;
     }
     const left = formatAsDecimal(node.getChildByName('left')?.getValue() ?? 0);
