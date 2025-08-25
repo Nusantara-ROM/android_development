@@ -66,7 +66,7 @@ import com.android.mechanics.spec.builder.spatialDirectionalMotionSpec
 
 object SpecDemo : Demo<SpecDemo.Config>, HasMotionValueVisualization {
     enum class Scenario(val label: String) {
-        Empty("Simple"),
+        Identity("Simple"),
         Toggle("Toggle"),
         Steps("Discrete Steps"),
         TrackNSnap("Track and Snap"),
@@ -79,7 +79,7 @@ object SpecDemo : Demo<SpecDemo.Config>, HasMotionValueVisualization {
     @Composable
     override fun DemoUi(config: Config, modifier: Modifier) {
         val colors = MaterialTheme.colorScheme
-        var activeScenario by remember { mutableStateOf(Scenario.Empty) }
+        var activeScenario by remember { mutableStateOf(Scenario.Identity) }
 
         // Also using GestureContext.dragOffset as input.
         val gestureContext = rememberDistanceGestureContext()
@@ -168,7 +168,7 @@ object SpecDemo : Demo<SpecDemo.Config>, HasMotionValueVisualization {
     ): MotionSpec {
         return MotionSpec(
             when (scenario) {
-                Scenario.Empty -> DirectionalMotionSpec.Empty
+                Scenario.Identity -> DirectionalMotionSpec.Identity
                 Scenario.Toggle ->
                     spatialDirectionalMotionSpec(Mapping.Fixed(inputOutputRange.start)) {
                         fixedValue(
