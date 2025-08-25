@@ -43,184 +43,219 @@ export class Transform {
 }
 
 /**
- * Utility class for working with transforms.
+ * Converts transform type flags into a human-readable string representation.
+ *
+ * @param type The transform type flags.
+ * @return A string representing the transform type.
  */
-export class TransformType {
-  static getTypeFlags(type: TransformTypeFlags): string {
-    const typeFlags: string[] = [];
+export function getTypeFlags(type: TransformTypeFlags): string {
+  const typeFlags: string[] = [];
 
-    if (
-      TransformType.isFlagClear(
-        type,
-        TransformTypeFlags.SCALE_VAL |
-          TransformTypeFlags.ROTATE_VAL |
-          TransformTypeFlags.TRANSLATE_VAL,
-      )
-    ) {
-      typeFlags.push('IDENTITY');
-    }
-
-    if (TransformType.isFlagSet(type, TransformTypeFlags.SCALE_VAL)) {
-      typeFlags.push('SCALE');
-    }
-
-    if (TransformType.isFlagSet(type, TransformTypeFlags.TRANSLATE_VAL)) {
-      typeFlags.push('TRANSLATE');
-    }
-
-    if (TransformType.isFlagSet(type, TransformTypeFlags.ROT_INVALID_VAL)) {
-      typeFlags.push('ROT_INVALID');
-    } else if (
-      TransformType.isFlagSet(
-        type,
-        TransformTypeFlags.ROT_90_VAL |
-          TransformTypeFlags.FLIP_V_VAL |
-          TransformTypeFlags.FLIP_H_VAL,
-      )
-    ) {
-      typeFlags.push('ROT_270');
-    } else if (
-      TransformType.isFlagSet(
-        type,
-        TransformTypeFlags.FLIP_V_VAL | TransformTypeFlags.FLIP_H_VAL,
-      )
-    ) {
-      typeFlags.push('ROT_180');
-    } else {
-      if (TransformType.isFlagSet(type, TransformTypeFlags.ROT_90_VAL)) {
-        typeFlags.push('ROT_90');
-      }
-      if (TransformType.isFlagSet(type, TransformTypeFlags.FLIP_V_VAL)) {
-        typeFlags.push('FLIP_V');
-      }
-      if (TransformType.isFlagSet(type, TransformTypeFlags.FLIP_H_VAL)) {
-        typeFlags.push('FLIP_H');
-      }
-    }
-
-    if (typeFlags.length === 0) {
-      throw TransformType.makeUnknownTransformTypeError(type);
-    }
-    return typeFlags.join('|');
-  }
-
-  static getDefaultTransform(
-    type: TransformTypeFlags,
-    x: number,
-    y: number,
-  ): Transform {
-    // IDENTITY
-    if (!type) {
-      return new Transform(
-        type,
-        TransformMatrix.from({
-          dsdx: 1,
-          dtdx: 0,
-          tx: x,
-          dtdy: 0,
-          dsdy: 1,
-          ty: y,
-        }),
-      );
-    }
-
-    // ROT_270 = ROT_90|FLIP_H|FLIP_V
-    if (
-      TransformType.isFlagSet(
-        type,
-        TransformTypeFlags.ROT_90_VAL |
-          TransformTypeFlags.FLIP_V_VAL |
-          TransformTypeFlags.FLIP_H_VAL,
-      )
-    ) {
-      return new Transform(
-        type,
-        TransformMatrix.from({
-          dsdx: 0,
-          dtdx: -1,
-          tx: x,
-          dtdy: 1,
-          dsdy: 0,
-          ty: y,
-        }),
-      );
-    }
-
-    // ROT_180 = FLIP_H|FLIP_V
-    if (
-      TransformType.isFlagSet(
-        type,
-        TransformTypeFlags.FLIP_V_VAL | TransformTypeFlags.FLIP_H_VAL,
-      )
-    ) {
-      return new Transform(
-        type,
-        TransformMatrix.from({
-          dsdx: -1,
-          dtdx: 0,
-          tx: x,
-          dtdy: 0,
-          dsdy: -1,
-          ty: y,
-        }),
-      );
-    }
-
-    // ROT_90
-    if (TransformType.isFlagSet(type, TransformTypeFlags.ROT_90_VAL)) {
-      return new Transform(
-        type,
-        TransformMatrix.from({
-          dsdx: 0,
-          dtdx: 1,
-          tx: x,
-          dtdy: -1,
-          dsdy: 0,
-          ty: y,
-        }),
-      );
-    }
-
-    // IDENTITY
-    if (
-      TransformType.isFlagClear(
-        type,
-        TransformTypeFlags.SCALE_VAL | TransformTypeFlags.ROTATE_VAL,
-      )
-    ) {
-      return new Transform(
-        type,
-        TransformMatrix.from({
-          dsdx: 1,
-          dtdx: 0,
-          tx: x,
-          dtdy: 0,
-          dsdy: 1,
-          ty: y,
-        }),
-      );
-    }
-
-    throw TransformType.makeUnknownTransformTypeError(type);
-  }
-
-  static makeUnknownTransformTypeError(type: TransformTypeFlags): Error {
-    return new Error(`Unknown transform type ${type} found in SF trace entry`);
-  }
-
-  static isSimpleTransform(type: TransformTypeFlags): boolean {
-    return TransformType.isFlagClear(
+  if (
+    isFlagClear(
       type,
-      TransformTypeFlags.ROT_INVALID_VAL | TransformTypeFlags.SCALE_VAL,
+      TransformTypeFlags.SCALE_VAL |
+        TransformTypeFlags.ROTATE_VAL |
+        TransformTypeFlags.TRANSLATE_VAL,
+    )
+  ) {
+    typeFlags.push('IDENTITY');
+  }
+
+  if (isFlagSet(type, TransformTypeFlags.SCALE_VAL)) {
+    typeFlags.push('SCALE');
+  }
+
+  if (isFlagSet(type, TransformTypeFlags.TRANSLATE_VAL)) {
+    typeFlags.push('TRANSLATE');
+  }
+
+  if (isFlagSet(type, TransformTypeFlags.ROT_INVALID_VAL)) {
+    typeFlags.push('ROT_INVALID');
+  } else if (
+    isFlagSet(
+      type,
+      TransformTypeFlags.ROT_90_VAL |
+        TransformTypeFlags.FLIP_V_VAL |
+        TransformTypeFlags.FLIP_H_VAL,
+    )
+  ) {
+    typeFlags.push('ROT_270');
+  } else if (
+    isFlagSet(
+      type,
+      TransformTypeFlags.FLIP_V_VAL | TransformTypeFlags.FLIP_H_VAL,
+    )
+  ) {
+    typeFlags.push('ROT_180');
+  } else {
+    if (isFlagSet(type, TransformTypeFlags.ROT_90_VAL)) {
+      typeFlags.push('ROT_90');
+    }
+    if (isFlagSet(type, TransformTypeFlags.FLIP_V_VAL)) {
+      typeFlags.push('FLIP_V');
+    }
+    if (isFlagSet(type, TransformTypeFlags.FLIP_H_VAL)) {
+      typeFlags.push('FLIP_H');
+    }
+  }
+
+  if (typeFlags.length === 0) {
+    throw makeUnknownTransformTypeError(type);
+  }
+  return typeFlags.join('|');
+}
+
+/**
+ * Creates a default transform based on the specified type and translation.
+ *
+ * @param type The type of transform.
+ * @param x The x-coordinate of the translation.
+ * @param y The y-coordinate of the translation.
+ * @return A new Transform object.
+ */
+export function getDefaultTransform(
+  type: TransformTypeFlags,
+  x: number,
+  y: number,
+): Transform {
+  // IDENTITY
+  if (!type) {
+    return new Transform(
+      type,
+      TransformMatrix.from({
+        dsdx: 1,
+        dtdx: 0,
+        tx: x,
+        dtdy: 0,
+        dsdy: 1,
+        ty: y,
+      }),
     );
   }
 
-  private static isFlagSet(type: TransformTypeFlags, bits: number): boolean {
-    type = type || 0;
-    return (type & bits) === bits;
+  // ROT_270 = ROT_90|FLIP_H|FLIP_V
+  if (
+    isFlagSet(
+      type,
+      TransformTypeFlags.ROT_90_VAL |
+        TransformTypeFlags.FLIP_V_VAL |
+        TransformTypeFlags.FLIP_H_VAL,
+    )
+  ) {
+    return new Transform(
+      type,
+      TransformMatrix.from({
+        dsdx: 0,
+        dtdx: -1,
+        tx: x,
+        dtdy: 1,
+        dsdy: 0,
+        ty: y,
+      }),
+    );
   }
 
-  private static isFlagClear(type: TransformTypeFlags, bits: number): boolean {
-    return (type & bits) === 0;
+  // ROT_180 = FLIP_H|FLIP_V
+  if (
+    isFlagSet(
+      type,
+      TransformTypeFlags.FLIP_V_VAL | TransformTypeFlags.FLIP_H_VAL,
+    )
+  ) {
+    return new Transform(
+      type,
+      TransformMatrix.from({
+        dsdx: -1,
+        dtdx: 0,
+        tx: x,
+        dtdy: 0,
+        dsdy: -1,
+        ty: y,
+      }),
+    );
   }
+
+  // ROT_90
+  if (isFlagSet(type, TransformTypeFlags.ROT_90_VAL)) {
+    return new Transform(
+      type,
+      TransformMatrix.from({
+        dsdx: 0,
+        dtdx: 1,
+        tx: x,
+        dtdy: -1,
+        dsdy: 0,
+        ty: y,
+      }),
+    );
+  }
+
+  // IDENTITY
+  if (
+    isFlagClear(
+      type,
+      TransformTypeFlags.SCALE_VAL | TransformTypeFlags.ROTATE_VAL,
+    )
+  ) {
+    return new Transform(
+      type,
+      TransformMatrix.from({
+        dsdx: 1,
+        dtdx: 0,
+        tx: x,
+        dtdy: 0,
+        dsdy: 1,
+        ty: y,
+      }),
+    );
+  }
+
+  throw makeUnknownTransformTypeError(type);
+}
+
+/**
+ * Creates an error for an unknown transform type.
+ *
+ * @param type The unknown transform type.
+ * @return An Error object.
+ */
+export function makeUnknownTransformTypeError(type: TransformTypeFlags): Error {
+  return new Error(`Unknown transform type ${type} found in SF trace entry`);
+}
+
+/**
+ * Checks if a transform is simple (no scaling or invalid rotation).
+ *
+ * @param type The transform type flags.
+ * @return True if the transform is simple, false otherwise.
+ */
+export function isSimpleTransform(type: TransformTypeFlags): boolean {
+  return isFlagClear(
+    type,
+    TransformTypeFlags.ROT_INVALID_VAL | TransformTypeFlags.SCALE_VAL,
+  );
+}
+
+/**
+ * Checks if specific bits are set in the transform type.
+ *
+ * @param type The transform type flags.
+ * @param bits The bits to check.
+ * @return True if all specified bits are set, false otherwise.
+ */
+function isFlagSet(type: TransformTypeFlags, bits: number): boolean {
+  type = type || 0;
+  return (type & bits) === bits;
+}
+
+/**
+ * Checks if specific bits are clear in the transform type.
+ *
+ * @param type The transform type flags.
+ * @param bits The bits to check.
+ * @return True if all specified bits are clear, false otherwise.
+ */
+function isFlagClear(type: TransformTypeFlags, bits: number): boolean {
+  return (type & bits) === 0;
 }

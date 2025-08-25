@@ -22,7 +22,7 @@ import {Distance} from 'common/geometry/distance';
 import {Point3D} from 'common/geometry/point3d';
 import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
 import {
-  TransformType,
+  getDefaultTransform,
   TransformTypeFlags,
 } from 'common/geometry/transform_utils';
 import * as THREE from 'three';
@@ -441,7 +441,7 @@ describe('Canvas', () => {
       const rotated = makeUiRect3D(rectId);
       rotated.bottomRight = new Point3D(5, 5, 5);
       rotated.topLeft = new Point3D(0, 0, 5);
-      rotated.transform = TransformType.getDefaultTransform(
+      rotated.transform = getDefaultTransform(
         TransformTypeFlags.ROT_90_VAL,
         2,
         2,
