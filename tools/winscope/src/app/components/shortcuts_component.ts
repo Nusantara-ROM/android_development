@@ -22,6 +22,9 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {overlayPanelStyles} from 'app/styles/overlay_panel.styles';
 import {getRootUrl} from 'common/url_utils';
 
+/**
+ * A component for displaying a list of essential keyboard shortcuts.
+ */
 @Component({
   selector: 'shortcuts-panel',
   standalone: true,

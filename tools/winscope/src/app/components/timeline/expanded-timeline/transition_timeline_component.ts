@@ -32,6 +32,9 @@ import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {AbstractTimelineRowComponent} from './abstract_timeline_row_component';
 
+/**
+ * A component for displaying a timeline of transitions.
+ */
 @Component({
   selector: 'transition-timeline',
   standalone: true,

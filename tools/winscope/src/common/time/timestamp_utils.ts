@@ -16,6 +16,9 @@
 
 import {Timestamp} from './time';
 
+/**
+ * Utility class for working with timestamps.
+ */
 export class TimestampUtils {
   // (?=.) checks there is at least one character with a lookahead match
   private static readonly REAL_TIME_ONLY_REGEX =

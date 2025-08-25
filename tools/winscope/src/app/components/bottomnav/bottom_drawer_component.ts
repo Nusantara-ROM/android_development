@@ -119,6 +119,9 @@ export class MatDrawer {
   }
 }
 
+/**
+ * This component corresponds to the content of the drawer container.
+ */
 @Component({
   selector: 'mat-drawer-content',
   standalone: true,

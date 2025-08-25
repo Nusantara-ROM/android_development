@@ -22,6 +22,9 @@ import {Timestamp} from 'common/time/time';
 import {Trace, TraceEntry} from 'trace_api/trace';
 import {AbstractTimelineRowComponent} from './abstract_timeline_row_component';
 
+/**
+ * A component for displaying a single timeline row with entries rendered as vertical bars.
+ */
 @Component({
   selector: 'single-timeline',
   standalone: true,

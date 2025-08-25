@@ -85,6 +85,14 @@ export function assertString<A>(
   return value;
 }
 
+/**
+ * Asserts that the given value is a string or undefined.
+ *
+ * @param value The value to assert.
+ * @param lazyErrorMessage A function that returns a message to be included in the error if the assertion fails.
+ * @throws {Error} If the value is not a string or undefined.
+ * @return The value, asserted to be a string or undefined.
+ */
 export function assertStringOrUndefined<A>(
   value: A | null | undefined,
   lazyErrorMessage?: () => string,
@@ -117,6 +125,14 @@ export function assertNumber<A>(
   return value;
 }
 
+/**
+ * Asserts that the given value is a number or undefined.
+ *
+ * @param value The value to assert.
+ * @param lazyErrorMessage A function that returns a message to be included in the error if the assertion fails.
+ * @throws {Error} If the value is not a number or undefined.
+ * @return The value, asserted to be a number or undefined.
+ */
 export function assertNumberOrUndefined<A>(
   value: A | null | undefined,
   lazyErrorMessage?: () => string,
@@ -149,6 +165,14 @@ export function assertBigInt<A>(
   return value;
 }
 
+/**
+ * Asserts that the given value is a bigint or undefined.
+ *
+ * @param value The value to assert.
+ * @param lazyErrorMessage A function that returns a message to be included in the error if the assertion fails.
+ * @throws {Error} If the value is not a bigint or undefined.
+ * @return The value, asserted to be a bigint or undefined.
+ */
 export function assertBigIntOrUndefined<A>(
   value: A | null | undefined,
   lazyErrorMessage?: () => string,

@@ -36,6 +36,9 @@ import {AbstractTimelineRowComponent} from './abstract_timeline_row_component';
 import {DefaultTimelineRowComponent} from './default_timeline_row_component';
 import {TransitionTimelineComponent} from './transition_timeline_component';
 
+/**
+ * A component for displaying the expanded timeline view.
+ */
 @Component({
   selector: 'expanded-timeline',
   standalone: true,

@@ -43,6 +43,9 @@ import {TRACE_INFO} from 'trace_api/trace_info';
 import {TraceTypeUtils} from 'trace_api/trace_type';
 import {LoadProgressComponent} from './load_progress_component';
 
+/**
+ * A component for uploading traces.
+ */
 @Component({
   selector: 'upload-traces',
   standalone: true,

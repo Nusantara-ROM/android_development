@@ -87,6 +87,9 @@ import {
 import {WdpSetupComponent} from './wdp_setup_component';
 import {WinscopeProxySetupComponent} from './winscope_proxy_setup_component';
 
+/**
+ * A component for collecting traces from an Android device.
+ */
 @Component({
   selector: 'collect-traces',
   standalone: true,

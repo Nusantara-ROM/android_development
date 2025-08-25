@@ -40,6 +40,9 @@ import {ComponentTimestampConverter} from 'common/time/timestamp_converter';
 import {TracePosition} from 'trace_api/trace_position';
 import {Transformer} from './transformer';
 
+/**
+ * A component for displaying a slider to control the zoom level of the timeline.
+ */
 @Component({
   selector: 'slider',
   standalone: true,
@@ -319,4 +322,7 @@ export class SliderComponent {
   }
 }
 
+/**
+ * The minimum width of the slider in pixels.
+ */
 export const MIN_SLIDER_WIDTH = 30;

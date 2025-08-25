@@ -16,6 +16,9 @@
 
 import {TIME_UNIT_TO_NANO} from './time_units';
 
+/**
+ * A class representing a UTC offset.
+ */
 export class UTCOffset {
   private valueNs: bigint | undefined;
 

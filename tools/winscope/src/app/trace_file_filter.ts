@@ -44,18 +44,38 @@ import {UserNotifier} from 'services/user_notifier';
 import {TraceFile} from 'trace/trace_file';
 import {TraceMetadata} from 'trace_api/trace_metadata';
 
+/**
+ * The build type of the Android device that generated the bugreport.
+ */
 export enum BuildType {
+  /**
+   * A user build of the Android device.
+   */
   USER = 'user',
+
+  /**
+   * A userdebug build of the Android device.
+   */
   USERDEBUG = 'userdebug',
+
+  /**
+   * An eng build of the Android device.
+   */
   ENG = 'eng',
 }
 
+/**
+ * Metadata extracted from a bugreport.
+ */
 export interface BugreportData {
   timezoneInfo?: TimezoneInfo;
   buildType?: BuildType;
   isPersistentTracingEnabled: boolean;
 }
 
+/**
+ * The result of parsing a set of files.
+ */
 export interface ParsedFiles {
   legacy: FileAndParser[];
   perfetto: FileAndParsers | undefined;
@@ -74,12 +94,21 @@ type ParsePerfettoFileStrategy = (
   file: TraceFile,
 ) => Promise<FileAndParsers | undefined>;
 
+/**
+ * A strategy for parsing legacy files.
+ */
 export type ParseLegacyFilesStrategy = (
   files: TraceFile[],
   metadata: TraceMetadata,
   timezoneInfo?: TimezoneInfo,
 ) => Promise<ProcessedFiles>;
 
+/**
+ * A filter for trace files.
+ *
+ * The filter identifies the type of each file and, if applicable, extracts metadata from it.
+ * The filter is also responsible for parsing the files and returning the corresponding parsers.
+ */
 export class TraceFileFilter
   implements WinscopeEventListener, WinscopeEventEmitter
 {

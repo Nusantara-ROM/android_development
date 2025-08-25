@@ -31,6 +31,9 @@ import {RowIterator} from 'trace_processor/query_result';
 import {TraceRect} from 'tree_node/trace_rect';
 import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
 
+/**
+ * A builder for creating a trace rect from a query row.
+ */
 export class TraceRectBuilderFromQueryRow {
   private row: RowIterator | undefined;
   private id: string | undefined;

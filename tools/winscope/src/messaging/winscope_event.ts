@@ -22,6 +22,9 @@ import {TraceType} from 'trace_api/trace_type';
 import {AdbFiles} from 'trace_collection/adb_files';
 import {View, Viewer, ViewType} from 'viewers/viewer';
 
+/**
+ * An enum for Winscope event types.
+ */
 export enum WinscopeEventType {
   APP_INITIALIZED,
   APP_FILES_COLLECTED,
@@ -90,9 +93,18 @@ interface TypeMap {
   [WinscopeEventType.SHOW_TRACE_UPLOAD_WARNING]: ShowTraceUploadWarning;
 }
 
+/**
+ * An abstract class for Winscope events.
+ */
 export abstract class WinscopeEvent {
   abstract readonly type: WinscopeEventType;
 
+  /**
+   * Visits the event if it is of the given type.
+   *
+   * @param type The type of the event to visit.
+   * @param callback The callback to execute if the event is of the given type.
+   */
   async visit<T extends WinscopeEventType>(
     type: T,
     callback: (event: TypeMap[T]) => Promise<void>,
@@ -104,10 +116,16 @@ export abstract class WinscopeEvent {
   }
 }
 
+/**
+ * An event for when the application has been initialized.
+ */
 export class AppInitialized extends WinscopeEvent {
   override readonly type = WinscopeEventType.APP_INITIALIZED;
 }
 
+/**
+ * An event for when files have been collected from a device.
+ */
 export class AppFilesCollected extends WinscopeEvent {
   override readonly type = WinscopeEventType.APP_FILES_COLLECTED;
 
@@ -116,6 +134,9 @@ export class AppFilesCollected extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when files have been uploaded by the user.
+ */
 export class AppFilesUploaded extends WinscopeEvent {
   override readonly type = WinscopeEventType.APP_FILES_UPLOADED;
 
@@ -124,10 +145,16 @@ export class AppFilesUploaded extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a request has been made to reset the application.
+ */
 export class AppResetRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.APP_RESET_REQUEST;
 }
 
+/**
+ * An event for when a request has been made to view traces.
+ */
 export class AppTraceViewRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.APP_TRACE_VIEW_REQUEST;
   constructor(readonly discardLegacyTraces = false) {
@@ -135,18 +162,30 @@ export class AppTraceViewRequest extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a request to view traces has been handled.
+ */
 export class AppTraceViewRequestHandled extends WinscopeEvent {
   override readonly type = WinscopeEventType.APP_TRACE_VIEW_REQUEST_HANDLED;
 }
 
+/**
+ * An event for when a request has been made to refresh dumps.
+ */
 export class AppRefreshDumpsRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.APP_REFRESH_DUMPS_REQUEST;
 }
 
+/**
+ * An event for when a download from a remote tool has started.
+ */
 export class RemoteToolDownloadStart extends WinscopeEvent {
   override readonly type = WinscopeEventType.REMOTE_TOOL_DOWNLOAD_START;
 }
 
+/**
+ * An event for when files have been received from a remote tool.
+ */
 export class RemoteToolFilesReceived extends WinscopeEvent {
   override readonly type = WinscopeEventType.REMOTE_TOOL_FILES_RECEIVED;
 
@@ -158,6 +197,9 @@ export class RemoteToolFilesReceived extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a timestamp has been received from a remote tool.
+ */
 export class RemoteToolTimestampReceived extends WinscopeEvent {
   override readonly type = WinscopeEventType.REMOTE_TOOL_TIMESTAMP_RECEIVED;
 
@@ -166,6 +208,9 @@ export class RemoteToolTimestampReceived extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when the tabbed view has been switched.
+ */
 export class TabbedViewSwitched extends WinscopeEvent {
   override readonly type = WinscopeEventType.TABBED_VIEW_SWITCHED;
   readonly newFocusedView: View;
@@ -179,6 +224,9 @@ export class TabbedViewSwitched extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a request has been made to switch the tabbed view.
+ */
 export class TabbedViewSwitchRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.TABBED_VIEW_SWITCH_REQUEST;
 
@@ -190,6 +238,9 @@ export class TabbedViewSwitchRequest extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when the trace position has been updated.
+ */
 export class TracePositionUpdate extends WinscopeEvent {
   override readonly type = WinscopeEventType.TRACE_POSITION_UPDATE;
   readonly position: TracePosition;
@@ -201,6 +252,13 @@ export class TracePositionUpdate extends WinscopeEvent {
     this.updateTimeline = updateTimeline;
   }
 
+  /**
+   * Creates a new TracePositionUpdate event from a timestamp.
+   *
+   * @param timestamp The timestamp.
+   * @param updateTimeline Whether to update the timeline.
+   * @return The new event.
+   */
   static fromTimestamp(
     timestamp: Timestamp,
     updateTimeline = false,
@@ -209,6 +267,13 @@ export class TracePositionUpdate extends WinscopeEvent {
     return new TracePositionUpdate(position, updateTimeline);
   }
 
+  /**
+   * Creates a new TracePositionUpdate event from a trace entry.
+   *
+   * @param entry The trace entry.
+   * @param updateTimeline Whether to update the timeline.
+   * @return The new event.
+   */
   static fromTraceEntry(
     entry: TraceEntry<{}>,
     updateTimeline = false,
@@ -218,6 +283,9 @@ export class TracePositionUpdate extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when the viewers have been loaded.
+ */
 export class ViewersLoaded extends WinscopeEvent {
   override readonly type = WinscopeEventType.VIEWERS_LOADED;
 
@@ -226,10 +294,16 @@ export class ViewersLoaded extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when the viewers have been unloaded.
+ */
 export class ViewersUnloaded extends WinscopeEvent {
   override readonly type = WinscopeEventType.VIEWERS_UNLOADED;
 }
 
+/**
+ * An event for when the expanded timeline has been toggled.
+ */
 export class ExpandedTimelineToggled extends WinscopeEvent {
   override readonly type = WinscopeEventType.EXPANDED_TIMELINE_TOGGLED;
   constructor(readonly isTimelineExpanded: boolean) {
@@ -237,6 +311,9 @@ export class ExpandedTimelineToggled extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when the active trace has changed.
+ */
 export class ActiveTraceChanged extends WinscopeEvent {
   override readonly type = WinscopeEventType.ACTIVE_TRACE_CHANGED;
   constructor(readonly trace: Trace<object>) {
@@ -244,6 +321,9 @@ export class ActiveTraceChanged extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when dark mode has been toggled.
+ */
 export class DarkModeToggled extends WinscopeEvent {
   override readonly type = WinscopeEventType.DARK_MODE_TOGGLED;
   constructor(readonly isDarkMode: boolean) {
@@ -251,10 +331,16 @@ export class DarkModeToggled extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when no trace targets have been selected.
+ */
 export class NoTraceTargetsSelected extends WinscopeEvent {
   override readonly type = WinscopeEventType.NO_TRACE_TARGETS_SELECTED;
 }
 
+/**
+ * An event for when a request has been made to save a filter preset.
+ */
 export class FilterPresetSaveRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.FILTER_PRESET_SAVE_REQUEST;
   constructor(
@@ -265,6 +351,9 @@ export class FilterPresetSaveRequest extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a request has been made to apply a filter preset.
+ */
 export class FilterPresetApplyRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.FILTER_PRESET_APPLY_REQUEST;
   constructor(
@@ -275,6 +364,9 @@ export class FilterPresetApplyRequest extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a trace search request has been made.
+ */
 export class TraceSearchRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.TRACE_SEARCH_REQUEST;
   constructor(readonly query: string) {
@@ -282,10 +374,16 @@ export class TraceSearchRequest extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a trace search has failed.
+ */
 export class TraceSearchFailed extends WinscopeEvent {
   override readonly type = WinscopeEventType.TRACE_SEARCH_FAILED;
 }
 
+/**
+ * An event for when a request has been made to add a trace.
+ */
 export class TraceAddRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.TRACE_ADD_REQUEST;
   constructor(readonly trace: Trace<object>) {
@@ -293,6 +391,9 @@ export class TraceAddRequest extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a request has been made to remove a trace.
+ */
 export class TraceRemoveRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.TRACE_REMOVE_REQUEST;
   constructor(readonly trace: Trace<object>) {
@@ -300,10 +401,16 @@ export class TraceRemoveRequest extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a request has been made to initialize trace search.
+ */
 export class InitializeTraceSearchRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.INITIALIZE_TRACE_SEARCH_REQUEST;
 }
 
+/**
+ * An event for when trace search has been initialized.
+ */
 export class TraceSearchInitialized extends WinscopeEvent {
   override readonly type = WinscopeEventType.TRACE_SEARCH_INITIALIZED;
 
@@ -312,10 +419,16 @@ export class TraceSearchInitialized extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a trace search has been completed.
+ */
 export class TraceSearchCompleted extends WinscopeEvent {
   override readonly type = WinscopeEventType.TRACE_SEARCH_COMPLETED;
 }
 
+/**
+ * An event for when a bugreport file has been selected.
+ */
 export class BugreportFileSelected extends WinscopeEvent {
   override readonly type = WinscopeEventType.BUGREPORT_FILE_SELECTED;
 
@@ -324,6 +437,9 @@ export class BugreportFileSelected extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a request has been made to select a bugreport file.
+ */
 export class BugreportFileSelectionRequest extends WinscopeEvent {
   override readonly type = WinscopeEventType.BUGREPORT_FILE_SELECTION_REQUEST;
 
@@ -332,6 +448,9 @@ export class BugreportFileSelectionRequest extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when a trace upload warning should be shown.
+ */
 export class ShowTraceUploadWarning extends WinscopeEvent {
   override readonly type = WinscopeEventType.SHOW_TRACE_UPLOAD_WARNING;
 

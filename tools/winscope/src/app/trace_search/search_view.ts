@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/**
+ * An interface for a search view.
+ */
 export interface SearchView {
   name: string;
   dataType: string;

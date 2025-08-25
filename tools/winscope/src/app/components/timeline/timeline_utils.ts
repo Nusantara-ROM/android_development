@@ -20,6 +20,11 @@ import {ComponentTimestampConverter} from 'common/time/timestamp_converter';
 import {TransitionStatus} from 'trace/transitions/status';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
+/**
+ * Checks if a transition has an unknown start time.
+ *
+ * @param transition The transition to check.
+ */
 export function isTransitionWithUnknownStart(
   transition: HierarchyTreeNode,
 ): boolean {
@@ -29,6 +34,11 @@ export function isTransitionWithUnknownStart(
   return dispatchTimestamp === undefined;
 }
 
+/**
+ * Checks if a transition has an unknown end time.
+ *
+ * @param transition The transition to check.
+ */
 export function isTransitionWithUnknownEnd(
   transition: HierarchyTreeNode,
 ): boolean {
@@ -46,6 +56,13 @@ function isAborted(transition: HierarchyTreeNode): boolean {
   );
 }
 
+/**
+ * Gets the time range for a transition.
+ *
+ * @param transition The transition to get the time range for.
+ * @param fullTimeRange The full time range of the timeline.
+ * @param converter The timestamp converter.
+ */
 export function getTimeRangeForTransition(
   transition: HierarchyTreeNode,
   fullTimeRange: TimeRange,
@@ -115,6 +132,11 @@ export function getTimeRangeForTransition(
   return new TimeRange(startTime, finishTime);
 }
 
+/**
+ * Converts a hex color string to an RGB object.
+ *
+ * @param hex The hex color string to convert.
+ */
 export function convertHexToRgb(
   hex: string,
 ): {r: number; g: number; b: number} | undefined {

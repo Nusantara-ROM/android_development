@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * An interface for a warning.
+ */
 export interface Warning {
+  /**
+   * Gets the warning message.
+   *
+   * @return The warning message.
+   */
   getMessage(): string;
 }

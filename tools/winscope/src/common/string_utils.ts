@@ -24,6 +24,12 @@ import {assertTrue} from './assert_utils';
 /**
  * String utility functions.
  */
+/**
+ * Parses a bigint from a string, stripping any non-numeric characters.
+ *
+ * @param s The string to parse.
+ * @return The parsed bigint.
+ */
 export function parseBigIntStrippingUnit(s: string): bigint {
   const match = s.match(/^\s*(-?\d+)\D*.*$/);
   if (!match) {
@@ -32,6 +38,12 @@ export function parseBigIntStrippingUnit(s: string): bigint {
   return BigInt(match[1]);
 }
 
+/**
+ * Converts a camelCase string to snake_case.
+ *
+ * @param s The string to convert.
+ * @return The converted string.
+ */
 export function convertCamelToSnakeCase(s: string): string {
   const result: string[] = [];
 
@@ -52,6 +64,12 @@ export function convertCamelToSnakeCase(s: string): string {
   return result.join('');
 }
 
+/**
+ * Converts a snake_case string to camelCase.
+ *
+ * @param s The string to convert.
+ * @return The converted string.
+ */
 export function convertSnakeToCamelCase(s: string): string {
   const tokens = s.split('_').filter((token) => token.length > 0);
   const tokensCapitalized = tokens.map((token) => {
@@ -71,34 +89,76 @@ export function convertSnakeToCamelCase(s: string): string {
   return result;
 }
 
+/**
+ * Checks if a character is an alphabetic character.
+ *
+ * @param char The character to check.
+ * @return True if the character is an alphabetic character, false otherwise.
+ */
 export function isAlpha(char: string): boolean {
   assertTrue(char.length === 1, () => 'Input must be a single character');
   return char[0].toLowerCase() !== char[0].toUpperCase();
 }
 
+/**
+ * Checks if a character is a digit.
+ *
+ * @param char The character to check.
+ * @return True if the character is a digit, false otherwise.
+ */
 export function isDigit(char: string): boolean {
   assertTrue(char.length === 1, () => 'Input must be a single character');
   return char >= '0' && char <= '9';
 }
 
+/**
+ * Checks if a character is a lowercase letter.
+ *
+ * @param char The character to check.
+ * @return True if the character is a lowercase letter, false otherwise.
+ */
 export function isLowerCase(char: string): boolean {
   assertTrue(char.length === 1, () => 'Input must be a single character');
   return isAlpha(char) && char === char.toLowerCase();
 }
 
+/**
+ * Checks if a character is an uppercase letter.
+ *
+ * @param char The character to check.
+ * @return True if the character is an uppercase letter, false otherwise.
+ */
 export function isUpperCase(char: string): boolean {
   assertTrue(char.length === 1, () => 'Input must be a single character');
   return isAlpha(char) && char === char.toUpperCase();
 }
 
+/**
+ * Checks if a string is blank.
+ *
+ * @param str The string to check.
+ * @return True if the string is blank, false otherwise.
+ */
 export function isBlank(str: string): boolean {
   return str.replace(/\s/g, '').length === 0;
 }
 
+/**
+ * Checks if a string is numeric.
+ *
+ * @param str The string to check.
+ * @return True if the string is numeric, false otherwise.
+ */
 export function isNumeric(str: string): boolean {
   return Number(str).toString() === str;
 }
 
+/**
+ * Encodes a string as a binary string.
+ *
+ * @param str The string to encode.
+ * @return The encoded string.
+ */
 export function binaryEncode(str: string): Uint8Array {
   const data = new Uint8Array(str.length);
   for (let i = 0; i < str.length; ++i) {
@@ -107,6 +167,12 @@ export function binaryEncode(str: string): Uint8Array {
   return data;
 }
 
+/**
+ * Decodes a binary string.
+ *
+ * @param buf The binary string to decode.
+ * @return The decoded string.
+ */
 export function binaryDecode(buf: Uint8Array): string {
   let str = '';
   for (let i = 0; i < buf.length; i++) {
@@ -115,14 +181,32 @@ export function binaryDecode(buf: Uint8Array): string {
   return str;
 }
 
+/**
+ * Encodes a string as UTF-8.
+ *
+ * @param data The string to encode.
+ * @return The encoded string.
+ */
 export function utf8Encode(data: string): Uint8Array {
   return new TextEncoder().encode(data);
 }
 
+/**
+ * Decodes a UTF-8 string.
+ *
+ * @param data The string to decode.
+ * @return The decoded string.
+ */
 export function utf8Decode(data: Uint8Array): string {
   return new TextDecoder('utf-8').decode(data);
 }
 
+/**
+ * Encodes a byte array as a hex string.
+ *
+ * @param bytes The byte array to encode.
+ * @return The encoded string.
+ */
 export function hexEncode(bytes: Uint8Array): string {
   return bytes.reduce(
     (prev, curr) => prev + ('0' + curr.toString(16)).slice(-2),
@@ -130,6 +214,12 @@ export function hexEncode(bytes: Uint8Array): string {
   );
 }
 
+/**
+ * Decodes a base64 string.
+ *
+ * @param str The string to decode.
+ * @return The decoded byte array.
+ */
 export function base64Decode(str: string): Uint8Array {
   // if the string is in base64url format, convert to base64
   const b64 = str.replace('-', '+').replace('_', '/');
@@ -139,6 +229,12 @@ export function base64Decode(str: string): Uint8Array {
   return arr;
 }
 
+/**
+ * Encodes a byte array as a base64 string.
+ *
+ * @param buffer The byte array to encode.
+ * @return The encoded string.
+ */
 export function base64Encode(buffer: Uint8Array): string {
   return protobufBase64Encode(buffer, 0, buffer.length);
 }

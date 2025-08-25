@@ -28,6 +28,9 @@ import {getRootUrl} from 'common/url_utils';
 import {ConnectionState} from 'trace_collection/connection_state';
 import {VERSION} from 'trace_collection/winscope_proxy/utils';
 
+/**
+ * A component for displaying the Winscope proxy setup instructions.
+ */
 @Component({
   selector: 'winscope-proxy-setup',
   standalone: true,

@@ -33,6 +33,9 @@ import {
   TimelineTraces,
 } from './mini_canvas_drawer_data';
 
+/**
+ * Input data for the mini timeline drawer.
+ */
 export class MiniTimelineDrawerInput {
   constructor(
     public fullRange: TimeRange,

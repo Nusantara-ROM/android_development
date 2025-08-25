@@ -46,6 +46,9 @@ import {MiniTimelineDrawerInput} from './drawer/mini_timeline_drawer_input';
 import {MIN_SLIDER_WIDTH, SliderComponent} from './slider_component';
 import {Transformer} from './transformer';
 
+/**
+ * A component for displaying the mini timeline view.
+ */
 @Component({
   selector: 'mini-timeline',
   standalone: true,

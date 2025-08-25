@@ -16,6 +16,9 @@
 
 import {IDENTITY_MATRIX, TransformMatrix} from './transform_matrix';
 
+/**
+ * Flags for transform types.
+ */
 export enum TransformTypeFlags {
   EMPTY = 0x0,
   TRANSLATE_VAL = 0x0001,
@@ -27,6 +30,9 @@ export enum TransformTypeFlags {
   ROT_INVALID_VAL = 0x8000,
 }
 
+/**
+ * A transform with a type and a matrix.
+ */
 export class Transform {
   static EMPTY = new Transform(TransformTypeFlags.EMPTY, IDENTITY_MATRIX);
 
@@ -36,6 +42,9 @@ export class Transform {
   ) {}
 }
 
+/**
+ * Utility class for working with transforms.
+ */
 export class TransformType {
   static getTypeFlags(type: TransformTypeFlags): string {
     const typeFlags: string[] = [];

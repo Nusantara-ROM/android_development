@@ -82,6 +82,13 @@ function testTimestamps(
   return true;
 }
 
+/**
+ * A Jasmine custom equality tester for Timestamps.
+ *
+ * @param first The first object to compare.
+ * @param second The second object to compare.
+ * @return True if the objects are equal, false otherwise.
+ */
 export function timestampEqualityTester(
   first: unknown,
   second: unknown,
@@ -92,8 +99,17 @@ export function timestampEqualityTester(
   return undefined;
 }
 
+/**
+ * A utility class for creating TimestampConverter instances for tests.
+ */
 export const TimestampConverterUtils = new TimestampConverterTestUtils();
 
+/**
+ * Gets a TimestampConverter for tests.
+ *
+ * @param withUTCOffset Whether to create a converter with a UTC offset.
+ * @return A TimestampConverter.
+ */
 export function getTimestampConverter(
   withUTCOffset = false,
 ): TimestampConverter {

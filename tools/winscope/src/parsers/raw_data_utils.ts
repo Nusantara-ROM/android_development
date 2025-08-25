@@ -17,6 +17,9 @@
 import {GeometryFactory} from 'tree_node/geometry_factory';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 
+/**
+ * Utility class for working with raw data.
+ */
 export class RawDataUtils {
   static isEmptyObj(obj: PropertyTreeNode): boolean {
     if (RawDataUtils.isColor(obj)) {

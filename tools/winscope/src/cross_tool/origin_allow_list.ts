@@ -16,6 +16,9 @@
 
 import {globalConfig} from 'common/global_config';
 
+/**
+ * A class for managing the allow list of origins for cross-tool communication.
+ */
 export class OriginAllowList {
   private static readonly ALLOW_LIST_PROD = [
     new RegExp('^https://([^\\/]*\\.)*googleplex\\.com$'),

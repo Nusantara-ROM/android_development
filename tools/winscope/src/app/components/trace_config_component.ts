@@ -53,6 +53,9 @@ import {
 import {AbstractSelectComponent} from 'viewers/components/abstract_select_component';
 import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
 
+/**
+ * A component for displaying and editing trace configurations.
+ */
 @Component({
   selector: 'trace-config',
   standalone: true,

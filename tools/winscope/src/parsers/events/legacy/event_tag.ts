@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/**
+ * An enum for event tags.
+ */
 export enum EventTag {
   INPUT_FOCUS_TAG = 'input_focus',
   JANK_CUJ_BEGIN_TAG = 'jank_cuj_events_begin_request',

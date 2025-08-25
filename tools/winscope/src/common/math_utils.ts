@@ -14,4 +14,7 @@
  * limitations under the License.
  */
 
+/**
+ * The maximum value of a 32-bit unsigned integer.
+ */
 export const UINT32_MAX = 4294967295;

@@ -27,6 +27,12 @@ import {TraceType, TraceTypeUtils} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
+/**
+ * A container of all the timeline-related data.
+ *
+ * The timeline data is composed of the traces, plus a set of properties (e.g. the current
+ * position) that are used to render the timeline UI.
+ */
 export class TimelineData {
   private traces = new Traces();
   private screenRecordingVideo?: Blob;
