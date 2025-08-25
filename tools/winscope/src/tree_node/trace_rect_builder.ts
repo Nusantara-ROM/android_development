@@ -21,22 +21,22 @@ import {Transform} from 'common/geometry/transform_utils';
 import {TraceRect} from './trace_rect';
 
 export class TraceRectBuilder {
-  x: number | undefined;
-  y: number | undefined;
-  w: number | undefined;
-  h: number | undefined;
-  id: string | undefined;
-  name: string | undefined;
-  cornerRadii: CornerRadii | undefined;
-  transform: TransformMatrix = Transform.EMPTY.matrix;
-  groupId: number | undefined;
-  isVisible: boolean | undefined;
-  isDisplay: boolean | undefined;
-  isActiveDisplay = false;
-  depth: number | undefined;
-  opacity: number | undefined;
-  isSpy: boolean | undefined;
-  fillRegion: Region | undefined;
+  private x: number | undefined;
+  private y: number | undefined;
+  private w: number | undefined;
+  private h: number | undefined;
+  private id: string | undefined;
+  private name: string | undefined;
+  private cornerRadii: CornerRadii | undefined;
+  private transform: TransformMatrix = Transform.EMPTY.matrix;
+  private groupId: number | undefined;
+  private isVisible: boolean | undefined;
+  private isDisplay: boolean | undefined;
+  private isActiveDisplay = false;
+  private depth: number | undefined;
+  private opacity: number | undefined;
+  private isSpy: boolean | undefined;
+  private fillRegion: Region | undefined;
 
   setX(value: number) {
     this.x = value;

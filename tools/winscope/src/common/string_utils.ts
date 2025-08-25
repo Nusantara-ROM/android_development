@@ -160,11 +160,7 @@ export function isNumeric(str: string): boolean {
  * @return The encoded string.
  */
 export function binaryEncode(str: string): Uint8Array {
-  const data = new Uint8Array(str.length);
-  for (let i = 0; i < str.length; ++i) {
-    data[i] = str.charCodeAt(i);
-  }
-  return data;
+  return Uint8Array.from(str, (c) => c.charCodeAt(0));
 }
 
 /**
@@ -174,11 +170,7 @@ export function binaryEncode(str: string): Uint8Array {
  * @return The decoded string.
  */
 export function binaryDecode(buf: Uint8Array): string {
-  let str = '';
-  for (let i = 0; i < buf.length; i++) {
-    str += String.fromCharCode(buf[i]);
-  }
-  return str;
+  return String.fromCharCode(...buf);
 }
 
 /**
@@ -208,10 +200,9 @@ export function utf8Decode(data: Uint8Array): string {
  * @return The encoded string.
  */
 export function hexEncode(bytes: Uint8Array): string {
-  return bytes.reduce(
-    (prev, curr) => prev + ('0' + curr.toString(16)).slice(-2),
-    '',
-  );
+  return Array.from(bytes)
+    .map((byte) => ('0' + byte.toString(16)).slice(-2))
+    .join('');
 }
 
 /**

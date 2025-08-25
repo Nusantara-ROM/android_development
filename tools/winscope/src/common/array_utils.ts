@@ -35,8 +35,9 @@ type TypedArray =
  *
  * @param a The first array.
  * @param b The second array.
- * @param predicate A function that takes two elements and returns true if they are equal. Defaults to strict equality.
- *  True if the arrays are equal, false otherwise.
+ * @param predicate A function that takes two elements and returns true if they
+ *   are equal. Defaults to strict equality.
+ * @return True if the arrays are equal, false otherwise.
  */
 export function equal<T>(
   a: T[] | TypedArray,
@@ -61,7 +62,8 @@ export function equal<T>(
  *
  * @param array The array to search in.
  * @param subarray The subarray to search for.
- * @return The index of the first occurrence of the subarray, or undefined if it is not found.
+ * @return The index of the first occurrence of the subarray, or undefined if
+ *   it is not found.
  */
 export function searchSubarray<T>(
   array: T[] | TypedArray,
@@ -86,11 +88,13 @@ export function searchSubarray<T>(
 }
 
 /**
- * Performs a binary search to find the first element in the array that is greater than or equal to the target value.
+ * Performs a binary search to find the first element in the array that is
+ * greater than or equal to the target value.
  *
  * @param values The array to search in.
  * @param target The value to search for.
- * @return The index of the first element that is greater than or equal to the target value, or undefined if no such element exists.
+ * @return The index of the first element that is greater than or equal to the
+ *   target value, or undefined if no such element exists.
  */
 export function binarySearchFirstGreaterOrEqual<T>(
   values: T[] | TypedArray,
@@ -125,11 +129,13 @@ export function binarySearchFirstGreaterOrEqual<T>(
 }
 
 /**
- * Performs a binary search to find the first element in the array that is greater than the target value.
+ * Performs a binary search to find the first element in the array that is
+ * greater than the target value.
  *
  * @param values The array to search in.
  * @param target The value to search for.
- * @return The index of the first element that is greater than the target value, or undefined if no such element exists.
+ * @return The index of the first element that is greater than the target
+ *   value, or undefined if no such element exists.
  */
 export function binarySearchFirstGreater<T>(
   values: T[] | TypedArray,
@@ -184,12 +190,14 @@ export function toUintLittleEndian(
 }
 
 /**
- * Converts an array of bytes to a bigint in little-endian order, treating the bytes as a signed integer.
+ * Converts an array of bytes to a bigint in little-endian order, treating the
+ * bytes as a signed integer.
  *
  * @param buffer The array of bytes to convert.
  * @param start The starting index of the bytes to convert.
  * @param end The ending index of the bytes to convert.
- * @return The bigint representation of the bytes in little-endian order, treating the bytes as a signed integer.
+ * @return The bigint representation of the bytes in little-endian order,
+ *   treating the bytes as a signed integer.
  */
 export function toIntLittleEndian(
   buffer: Uint8Array,

@@ -158,13 +158,11 @@ export class PropertyTreeNodeFactory {
     value: any,
     source: PropertySource,
   ) {
-    const keys = this.getValidPropertyNames(value);
-
-    for (const key of keys) {
+    this.getValidPropertyNames(value).forEach((key) => {
       root.addOrReplaceChild(
         this.makeProperty(`${root.id}`, key, source, value[key]),
       );
-    }
+    });
   }
 
   private getValidPropertyNames(objProto: any): string[] {
