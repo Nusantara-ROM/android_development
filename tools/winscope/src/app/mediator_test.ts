@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {FunctionUtils} from 'common/function_utils';
+import {mixin} from 'common/function_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {TimezoneInfo} from 'common/time/time';
@@ -167,7 +167,7 @@ describe('Mediator', () => {
     jasmine.addCustomEqualityTester(tracePositionUpdateEqualityTester);
     tracePipeline = new TracePipeline();
     timelineData = new TimelineData();
-    abtChromeExtensionProtocol = FunctionUtils.mixin(
+    abtChromeExtensionProtocol = mixin(
       new WinscopeEventEmitterStub(),
       new WinscopeEventListenerStub(),
     );
@@ -175,22 +175,19 @@ describe('Mediator', () => {
       tracePipeline.getTimestampConverter(),
     );
     appComponent = new WinscopeEventListenerStub();
-    timelineComponent = FunctionUtils.mixin(
+    timelineComponent = mixin(
       new WinscopeEventEmitterStub(),
       new WinscopeEventListenerStub(),
     );
-    uploadTracesComponent = FunctionUtils.mixin(
+    uploadTracesComponent = mixin(
       new ProgressListenerStub(),
       new WinscopeEventListenerStub(),
     );
-    collectTracesComponent = FunctionUtils.mixin(
-      FunctionUtils.mixin(
-        new ProgressListenerStub(),
-        new WinscopeEventListenerStub(),
-      ),
+    collectTracesComponent = mixin(
+      mixin(new ProgressListenerStub(), new WinscopeEventListenerStub()),
       new WinscopeEventEmitterStub(),
     );
-    traceViewComponent = FunctionUtils.mixin(
+    traceViewComponent = mixin(
       new WinscopeEventEmitterStub(),
       new WinscopeEventListenerStub(),
     );

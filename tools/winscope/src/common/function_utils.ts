@@ -20,52 +20,47 @@
 export type OnProgressUpdateType = (percentage: number) => void;
 
 /**
- * Utility functions for working with functions.
+ * A function that does nothing.
  */
-export class FunctionUtils {
-  /**
-   * A function that does nothing.
-   */
-  static readonly DO_NOTHING = () => {
-    // do nothing
+export const DO_NOTHING = () => {
+  // do nothing
+};
+
+/**
+ * A function that does nothing asynchronously.
+ */
+export const DO_NOTHING_ASYNC = (): Promise<void> => {
+  return Promise.resolve();
+};
+
+/**
+ * Mixin two objects together.
+ *
+ * This function takes two objects and returns a new object that is the
+ * result of merging the two objects. The properties of the first object
+ * take precedence over the properties of the second object if there are
+ * any conflicts.
+ *
+ * @param a The first object.
+ * @param b The second object.
+ * @return The merged object.
+ */
+export function mixin<T extends object, U extends object>(a: T, b: U): T & U {
+  const ret = {};
+  Object.assign(ret, a);
+  Object.assign(ret, b);
+
+  const assignMethods = (dst: object, src: object) => {
+    for (const methodName of Object.getOwnPropertyNames(
+      Object.getPrototypeOf(src),
+    )) {
+      const method = (src as any)[methodName];
+      (dst as any)[methodName] = method;
+    }
   };
 
-  /**
-   * A function that does nothing asynchronously.
-   */
-  static readonly DO_NOTHING_ASYNC = (): Promise<void> => {
-    return Promise.resolve();
-  };
+  assignMethods(ret, a);
+  assignMethods(ret, b);
 
-  /**
-   * Mixin two objects together.
-   *
-   * This function takes two objects and returns a new object that is the
-   * result of merging the two objects. The properties of the first object
-   * take precedence over the properties of the second object if there are
-   * any conflicts.
-   *
-   * @param a The first object.
-   * @param b The second object.
-   * @return The merged object.
-   */
-  static mixin<T extends object, U extends object>(a: T, b: U): T & U {
-    const ret = {};
-    Object.assign(ret, a);
-    Object.assign(ret, b);
-
-    const assignMethods = (dst: object, src: object) => {
-      for (const methodName of Object.getOwnPropertyNames(
-        Object.getPrototypeOf(src),
-      )) {
-        const method = (src as any)[methodName];
-        (dst as any)[methodName] = method;
-      }
-    };
-
-    assignMethods(ret, a);
-    assignMethods(ret, b);
-
-    return ret as T & U;
-  }
+  return ret as T & U;
 }

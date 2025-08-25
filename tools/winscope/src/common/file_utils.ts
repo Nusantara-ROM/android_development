@@ -15,7 +15,7 @@
  */
 import * as JSZip from 'jszip';
 import {equal} from './array_utils';
-import {FunctionUtils, OnProgressUpdateType} from './function_utils';
+import {DO_NOTHING, OnProgressUpdateType} from './function_utils';
 
 /**
  * Type definition for a callback function that is called when a file is unzipped.
@@ -124,7 +124,7 @@ export async function createZipArchive(
  */
 export async function unzipFile(
   file: Blob,
-  onProgressUpdate: OnProgressUpdateType = FunctionUtils.DO_NOTHING,
+  onProgressUpdate: OnProgressUpdateType = DO_NOTHING,
 ): Promise<File[]> {
   const unzippedFiles: File[] = [];
   const zip = new JSZip();

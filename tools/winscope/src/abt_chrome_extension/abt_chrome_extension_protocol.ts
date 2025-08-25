@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {FunctionUtils} from 'common/function_utils';
+import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {
   RemoteToolDownloadStart,
   RemoteToolFilesReceived,
@@ -43,7 +43,7 @@ export class AbtChromeExtensionProtocol
 {
   static readonly ABT_EXTENSION_ID = 'mbbaofdfoekifkfpgehgffcpagbbjkmj';
 
-  private emitEvent: EmitEvent = FunctionUtils.DO_NOTHING_ASYNC;
+  private emitEvent: EmitEvent = DO_NOTHING_ASYNC;
 
   setEmitEvent(callback: EmitEvent) {
     this.emitEvent = callback;

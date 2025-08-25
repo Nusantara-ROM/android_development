@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {FunctionUtils} from 'common/function_utils';
+import {DO_NOTHING, DO_NOTHING_ASYNC} from 'common/function_utils';
 import {wait} from 'common/time/time_utils';
 
 export type ErrorListener = (msg: string) => Promise<void>;
@@ -27,8 +27,8 @@ export abstract class WebSocketStream {
 
   abstract connect(): Promise<void>;
 
-  protected onError: ErrorListener = FunctionUtils.DO_NOTHING_ASYNC;
-  protected onClose: () => void = FunctionUtils.DO_NOTHING;
+  protected onError: ErrorListener = DO_NOTHING_ASYNC;
+  protected onClose: () => void = DO_NOTHING;
 
   async write(data: string | Uint8Array): Promise<void> {
     await wait(() => this.isOpen());
