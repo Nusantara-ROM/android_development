@@ -17,7 +17,7 @@
 import {assertDefined} from 'common/assert_utils';
 import {Store} from 'common/store/store';
 import {Timestamp} from 'common/time/time';
-import {TimeUtils} from 'common/time/time_utils';
+import {sleepMs} from 'common/time/time_utils';
 import {CrossToolProtocol} from 'cross_tool/cross_tool_protocol';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';
@@ -529,7 +529,7 @@ export class Mediator {
         'Converting legacy traces to perfetto...',
         undefined,
       );
-      await TimeUtils.sleepMs(10); // allow the UI to update before making the main thread very busy
+      await sleepMs(10); // allow the UI to update before making the main thread very busy
       await this.tracePipeline.convertLegacyTracesToPerfetto();
       this.currentProgressListener?.onOperationFinished(true);
     }
@@ -539,7 +539,7 @@ export class Mediator {
       undefined,
     );
 
-    await TimeUtils.sleepMs(10); // allow the UI to update before making the main thread very busy
+    await sleepMs(10); // allow the UI to update before making the main thread very busy
 
     this.tracePipeline.filterTracesWithoutVisualization();
     if (this.tracePipeline.getTraces().getSize() === 0) {
@@ -565,7 +565,7 @@ export class Mediator {
 
     // TODO: move this into the ProgressListener
     // allow the UI to update before making the main thread very busy
-    await TimeUtils.sleepMs(10);
+    await sleepMs(10);
 
     try {
       await this.timelineData.initialize(

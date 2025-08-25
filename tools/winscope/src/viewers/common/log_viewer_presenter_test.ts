@@ -18,7 +18,7 @@ import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventKey} from 'common/dom_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TimestampConverterUtils} from 'common/time/test_utils';
-import {TimeUtils} from 'common/time/time_utils';
+import {wait} from 'common/time/time_utils';
 import {
   ActiveTraceChanged,
   DarkModeToggled,
@@ -613,7 +613,7 @@ describe('AbstractLogViewerPresenter', () => {
     await assertDefined(p).onAppEvent(update);
     if (isFirst) {
       expect(uiData.isFetchingData).toBeTrue(); // fetches data asynchronously
-      await TimeUtils.wait(() => !uiData.isFetchingData);
+      await wait(() => !uiData.isFetchingData);
     }
     expect(uiData.isFetchingData).toBeFalse();
   }

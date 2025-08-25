@@ -15,7 +15,7 @@
  */
 
 import {FunctionUtils} from 'common/function_utils';
-import {TimeUtils} from 'common/time/time_utils';
+import {wait} from 'common/time/time_utils';
 
 export type ErrorListener = (msg: string) => Promise<void>;
 
@@ -31,7 +31,7 @@ export abstract class WebSocketStream {
   protected onClose: () => void = FunctionUtils.DO_NOTHING;
 
   async write(data: string | Uint8Array): Promise<void> {
-    await TimeUtils.wait(() => this.isOpen());
+    await wait(() => this.isOpen());
     this.sock.send(data);
   }
 

@@ -15,7 +15,7 @@
  */
 
 import {base64Encode} from 'common/string_utils';
-import {TimeUtils} from 'common/time/time_utils';
+import {wait} from 'common/time/time_utils';
 import {
   makeFakeWebSocket,
   makeFakeWebSocketMessage,
@@ -100,7 +100,7 @@ describe('ShellStream', () => {
     await stream.connect();
     expect(completed).toBeFalse();
     webSocket.onclose!(new CloseEvent('close'));
-    await TimeUtils.wait(() => completed);
+    await wait(() => completed);
   });
 
   it('calls error listener if unexpected message type received - AdbResponse json without response', async () => {

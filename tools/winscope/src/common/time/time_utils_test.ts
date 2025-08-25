@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-import {TimeUtils} from './time_utils';
+import {sleepMs, wait} from './time_utils';
 
-describe('TimeUtils', () => {
+describe('time_utils', () => {
   it('waits for condition', async () => {
     let success = false;
     setTimeout(() => {
       success = true;
     }, 200);
-    await expectAsync(TimeUtils.wait(() => success, 1000)).toBeResolved();
+    await expectAsync(wait(() => success, 1000)).toBeResolved();
   });
 
   it('times out waiting for condition', async () => {
     let success = false;
-    const promise = TimeUtils.sleepMs(200).then(() => {
+    const promise = sleepMs(200).then(() => {
       success = true;
     });
-    await expectAsync(TimeUtils.wait(() => success, 100, 50)).toBeRejected();
+    await expectAsync(wait(() => success, 100, 50)).toBeRejected();
     await promise;
   });
 
   it('checks condition based on interval', async () => {
     let success = false;
-    const promise = TimeUtils.sleepMs(250).then(() => {
+    const promise = sleepMs(250).then(() => {
       success = true;
     });
-    await expectAsync(TimeUtils.wait(() => success, 500, 500)).toBeRejected();
+    await expectAsync(wait(() => success, 500, 500)).toBeRejected();
     await promise;
   });
 });

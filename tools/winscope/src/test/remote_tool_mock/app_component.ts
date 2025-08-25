@@ -17,7 +17,7 @@
 import {ChangeDetectorRef, Component, Inject} from '@angular/core';
 import {assertDefined, assertUnreachable} from 'common/assert_utils';
 import {FunctionUtils} from 'common/function_utils';
-import {TimeUtils} from 'common/time/time_utils';
+import {sleepMs} from 'common/time/time_utils';
 import {
   Message,
   MessageBugReport,
@@ -156,7 +156,7 @@ export class AppComponent {
           new MessagePing(),
           AppComponent.TARGET,
         );
-        await TimeUtils.sleepMs(10);
+        await sleepMs(10);
       }
     }, 0);
 

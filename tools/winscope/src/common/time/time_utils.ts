@@ -15,25 +15,30 @@
  */
 
 /**
- * Utility class for time operations.
+ * Pauses execution for a specified amount of time.
+ * @param ms The number of milliseconds to sleep.
  */
-export class TimeUtils {
-  static async sleepMs(ms: number) {
-    await new Promise<void>((resolve) => setTimeout(resolve, ms));
-  }
+export async function sleepMs(ms: number) {
+  await new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
 
-  static async wait(
-    condition: () => boolean,
-    timeoutMs = 5000,
-    intervalMs = 100,
-  ) {
-    const startTimeMs = Date.now();
-    while (Date.now() - startTimeMs < timeoutMs) {
-      if (condition()) {
-        return;
-      }
-      await TimeUtils.sleepMs(intervalMs);
+/**
+ * Waits for a condition to be met.
+ * @param condition The condition to wait for.
+ * @param timeoutMs The maximum amount of time to wait in milliseconds.
+ * @param intervalMs The amount of time to wait between checks in milliseconds.
+ */
+export async function wait(
+  condition: () => boolean,
+  timeoutMs = 5000,
+  intervalMs = 100,
+) {
+  const startTimeMs = Date.now();
+  while (Date.now() - startTimeMs < timeoutMs) {
+    if (condition()) {
+      return;
     }
-    throw new Error('Timed out waiting for condition');
+    await sleepMs(intervalMs);
   }
+  throw new Error('Timed out waiting for condition');
 }

@@ -42,7 +42,7 @@ import {
   KeyboardEventKey,
 } from 'common/dom_utils';
 import {Timestamp, TimestampFormatType} from 'common/time/time';
-import {TimeUtils} from 'common/time/time_utils';
+import {sleepMs} from 'common/time/time_utils';
 import {TraceType} from 'trace_api/trace_type';
 import {TextFilter} from 'viewers/common/text_filter';
 import {
@@ -377,7 +377,7 @@ export class LogComponent {
   }
 
   async ngAfterContentInit() {
-    await TimeUtils.sleepMs(10);
+    await sleepMs(10);
     this.updateTableMarginEnd();
   }
 
