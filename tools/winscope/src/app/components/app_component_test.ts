@@ -48,7 +48,7 @@ import {
 } from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {Download} from 'common/download';
-import {FileUtils} from 'common/file_utils';
+import {DOWNLOAD_FILENAME_REGEX} from 'common/file_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {
   FailedToInitializeTimelineData,
@@ -150,7 +150,7 @@ describe('AppComponent', () => {
       'winscope',
       Validators.compose([
         Validators.required,
-        Validators.pattern(FileUtils.DOWNLOAD_FILENAME_REGEX),
+        Validators.pattern(DOWNLOAD_FILENAME_REGEX),
       ]),
     );
     downloadTracesSpy = spyOn(Download, 'fromUrl');

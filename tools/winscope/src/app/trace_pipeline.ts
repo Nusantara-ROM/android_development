@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 
-import {FileUtils} from 'common/file_utils';
+import {
+  decompressGZipFile,
+  DOWNLOAD_FILENAME_REGEX,
+  ILLEGAL_FILENAME_CHARACTERS_REGEX,
+  isGZipFile,
+  isZipFile,
+  removeDirFromFileName,
+  removeExtensionFromFilename,
+  unzipFile,
+} from 'common/file_utils';
 import {OnProgressUpdateType} from 'common/function_utils';
 import {TimezoneInfo} from 'common/time/time';
 import {
@@ -486,19 +495,18 @@ export class TracePipeline
     let filenameWithCurrTime: string;
     const currTime = new Date().toISOString().slice(0, -5).replace('T', '_');
     if (!this.downloadArchiveFilename && files.length === 1) {
-      const filenameNoDir = FileUtils.removeDirFromFileName(files[0].name);
-      const filenameNoDirOrExt =
-        FileUtils.removeExtensionFromFilename(filenameNoDir);
+      const filenameNoDir = removeDirFromFileName(files[0].name);
+      const filenameNoDirOrExt = removeExtensionFromFilename(filenameNoDir);
       filenameWithCurrTime = `${filenameNoDirOrExt}_${currTime}`;
     } else {
       filenameWithCurrTime = `${source}_${currTime}`;
     }
 
     const archiveFilenameNoIllegalChars = filenameWithCurrTime.replace(
-      FileUtils.ILLEGAL_FILENAME_CHARACTERS_REGEX,
+      ILLEGAL_FILENAME_CHARACTERS_REGEX,
       '_',
     );
-    if (FileUtils.DOWNLOAD_FILENAME_REGEX.test(archiveFilenameNoIllegalChars)) {
+    if (DOWNLOAD_FILENAME_REGEX.test(archiveFilenameNoIllegalChars)) {
       return archiveFilenameNoIllegalChars;
     } else {
       console.error(
@@ -527,13 +535,13 @@ export class TracePipeline
         progressListener?.onProgressUpdate(progressMessage, totalPercentage);
       };
 
-      if (await FileUtils.isGZipFile(file)) {
-        file = await FileUtils.decompressGZipFile(file);
+      if (await isGZipFile(file)) {
+        file = await decompressGZipFile(file);
       }
 
-      if (await FileUtils.isZipFile(file)) {
+      if (await isZipFile(file)) {
         try {
-          const subFiles = await FileUtils.unzipFile(file, onSubProgressUpdate);
+          const subFiles = await unzipFile(file, onSubProgressUpdate);
           const subTraceFiles = subFiles.map((subFile) => {
             return new TraceFile(subFile, file);
           });

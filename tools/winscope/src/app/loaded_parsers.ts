@@ -15,7 +15,12 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {FileUtils} from 'common/file_utils';
+import {
+  createZipArchive,
+  getFileExtension,
+  removeDirFromFileName,
+  removeExtensionFromFilename,
+} from 'common/file_utils';
 import {OnProgressUpdateType} from 'common/function_utils';
 import {INVALID_TIME_NS, TimeRange, Timestamp} from 'common/time/time';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
@@ -153,9 +158,8 @@ export class LoadedParsers {
         return new File([file], filename);
       }
 
-      const filenameWithoutExt =
-        FileUtils.removeExtensionFromFilename(filename);
-      const extension = FileUtils.getFileExtension(filename);
+      const filenameWithoutExt = removeExtensionFromFilename(filename);
+      const extension = getFileExtension(filename);
 
       if (extension === undefined) {
         return new File([file], `${filename} (${clashCount})`);
@@ -169,8 +173,8 @@ export class LoadedParsers {
 
     const tryPushOutPerfettoFile = (parsers: FileAndParser[]) => {
       const file = parsers[0].file;
-      let outputFilename = FileUtils.removeDirFromFileName(file.file.name);
-      if (FileUtils.getFileExtension(file.file.name) === undefined) {
+      let outputFilename = removeDirFromFileName(file.file.name);
+      if (getFileExtension(file.file.name) === undefined) {
         outputFilename += '.perfetto-trace';
       }
       tryPushOutputFile(file.file, outputFilename);
@@ -195,9 +199,8 @@ export class LoadedParsers {
         TRACE_INFO[traceType].downloadArchiveDir.length > 0
           ? TRACE_INFO[traceType].downloadArchiveDir + '/'
           : '';
-      let outputFilename =
-        archiveDir + FileUtils.removeDirFromFileName(file.file.name);
-      if (FileUtils.getFileExtension(file.file.name) === undefined) {
+      let outputFilename = archiveDir + removeDirFromFileName(file.file.name);
+      if (getFileExtension(file.file.name) === undefined) {
         outputFilename += TRACE_INFO[traceType].legacyExt;
       }
       tryPushOutputFile(file.file, outputFilename);
@@ -218,7 +221,7 @@ export class LoadedParsers {
       })
       .flat();
 
-    return await FileUtils.createZipArchive(
+    return await createZipArchive(
       archiveFiles,
       onProgressUpdate
         ? (perc: number) => onProgressUpdate(0.5 * (1 + perc))

@@ -13,55 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {FileUtils} from 'common/file_utils';
+import {
+  createZipArchive,
+  decompressGZipFile,
+  DOWNLOAD_FILENAME_REGEX,
+  getFileDirectory,
+  getFileExtension,
+  removeDirFromFileName,
+  removeExtensionFromFilename,
+  unzipFile,
+} from 'common/file_utils';
 import {getFixtureFile} from 'test/unit/fixture_file_utils';
 
-describe('FileUtils', () => {
+describe('file_utils', () => {
   it('extracts file extensions', () => {
-    expect(FileUtils.getFileExtension('winscope.zip')).toEqual('zip');
-    expect(FileUtils.getFileExtension('win.scope.zip')).toEqual('zip');
-    expect(FileUtils.getFileExtension('winscopezip')).toEqual(undefined);
+    expect(getFileExtension('winscope.zip')).toEqual('zip');
+    expect(getFileExtension('win.scope.zip')).toEqual('zip');
+    expect(getFileExtension('winscopezip')).toEqual(undefined);
   });
 
   it('extracts file directories', () => {
-    expect(FileUtils.getFileDirectory('test/winscope.zip')).toEqual('test');
-    expect(FileUtils.getFileDirectory('test/test/winscope.zip')).toEqual(
-      'test/test',
-    );
-    expect(FileUtils.getFileDirectory('winscope.zip')).toEqual(undefined);
+    expect(getFileDirectory('test/winscope.zip')).toEqual('test');
+    expect(getFileDirectory('test/test/winscope.zip')).toEqual('test/test');
+    expect(getFileDirectory('winscope.zip')).toEqual(undefined);
   });
 
   it('removes directory from filename', () => {
-    expect(FileUtils.removeDirFromFileName('test/winscope.zip')).toEqual(
-      'winscope.zip',
-    );
-    expect(FileUtils.removeDirFromFileName('test/test/winscope.zip')).toEqual(
+    expect(removeDirFromFileName('test/winscope.zip')).toEqual('winscope.zip');
+    expect(removeDirFromFileName('test/test/winscope.zip')).toEqual(
       'winscope.zip',
     );
   });
 
   it('removes extension from filename', () => {
-    expect(FileUtils.removeExtensionFromFilename('winscope.zip')).toEqual(
-      'winscope',
-    );
-    expect(FileUtils.removeExtensionFromFilename('win.scope.zip')).toEqual(
-      'win.scope',
-    );
-    expect(FileUtils.removeExtensionFromFilename('winscopezip')).toEqual(
-      'winscopezip',
-    );
+    expect(removeExtensionFromFilename('winscope.zip')).toEqual('winscope');
+    expect(removeExtensionFromFilename('win.scope.zip')).toEqual('win.scope');
+    expect(removeExtensionFromFilename('winscopezip')).toEqual('winscopezip');
   });
 
   it('creates zip archive', async () => {
-    const zip = await FileUtils.createZipArchive([
-      new File([], 'test_file.txt'),
-    ]);
+    const zip = await createZipArchive([new File([], 'test_file.txt')]);
     expect(zip).toBeInstanceOf(Blob);
   });
 
   it('creates zip archive with progress listener', async () => {
     const progressSpy = jasmine.createSpy();
-    const zip = await FileUtils.createZipArchive(
+    const zip = await createZipArchive(
       [
         new File([], 'test_file.txt'),
         new File([], 'test_file_2.txt'),
@@ -80,7 +77,7 @@ describe('FileUtils', () => {
 
   it('unzips archive', async () => {
     const validZipFile = await getFixtureFile('archives/winscope.zip');
-    const unzippedFiles = await FileUtils.unzipFile(validZipFile);
+    const unzippedFiles = await unzipFile(validZipFile);
     expect(unzippedFiles.map((f) => f.name)).toEqual([
       'Surface Flinger/SurfaceFlinger.pb',
       'Window Manager/WindowManager.pb',
@@ -91,7 +88,7 @@ describe('FileUtils', () => {
     const validZipFile = await getFixtureFile(
       'archives/recursive_winscope.zip',
     );
-    const unzippedFiles = await FileUtils.unzipFile(validZipFile);
+    const unzippedFiles = await unzipFile(validZipFile);
     expect(unzippedFiles.map((f) => f.name)).toEqual([
       'Surface Flinger/SurfaceFlinger.pb',
       'Window Manager/WindowManager.pb',
@@ -100,7 +97,7 @@ describe('FileUtils', () => {
 
   it('decompresses gzipped file', async () => {
     const gzippedFile = await getFixtureFile('archives/WindowManager.pb.gz');
-    const unzippedFile = await FileUtils.decompressGZipFile(gzippedFile);
+    const unzippedFile = await decompressGZipFile(gzippedFile);
     expect(unzippedFile.name).toEqual('archives/WindowManager.pb');
     expect(unzippedFile.size).toEqual(377137);
   });
@@ -110,31 +107,31 @@ describe('FileUtils', () => {
       'archives/WindowManager.pb.gz',
       'archives/WindowManager.pb',
     );
-    const unzippedFile = await FileUtils.decompressGZipFile(gzippedFile);
+    const unzippedFile = await decompressGZipFile(gzippedFile);
     expect(unzippedFile.name).toEqual('archives/WindowManager.pb');
     expect(unzippedFile.size).toEqual(377137);
   });
 
   it('decompresses gzipped archive', async () => {
     const gzippedFile = await getFixtureFile('archives/WindowManager.zip.gz');
-    const unzippedFile = await FileUtils.decompressGZipFile(gzippedFile);
+    const unzippedFile = await decompressGZipFile(gzippedFile);
     expect(unzippedFile.name).toEqual('archives/WindowManager.zip');
     expect(unzippedFile.size).toEqual(10158);
   });
 
   it('has download filename regex that accepts all expected inputs', () => {
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('Winscope2')).toBeTrue();
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('win_scope')).toBeTrue();
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('win-scope')).toBeTrue();
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('win.scope')).toBeTrue();
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('win.sc.ope')).toBeTrue();
+    expect(DOWNLOAD_FILENAME_REGEX.test('Winscope2')).toBeTrue();
+    expect(DOWNLOAD_FILENAME_REGEX.test('win_scope')).toBeTrue();
+    expect(DOWNLOAD_FILENAME_REGEX.test('win-scope')).toBeTrue();
+    expect(DOWNLOAD_FILENAME_REGEX.test('win.scope')).toBeTrue();
+    expect(DOWNLOAD_FILENAME_REGEX.test('win.sc.ope')).toBeTrue();
   });
 
   it('has download filename regex that rejects all expected inputs', () => {
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('w?n$cope')).toBeFalse();
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('winscope.')).toBeFalse();
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('w..scope')).toBeFalse();
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('wins--pe')).toBeFalse();
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test('wi##cope')).toBeFalse();
+    expect(DOWNLOAD_FILENAME_REGEX.test('w?n$cope')).toBeFalse();
+    expect(DOWNLOAD_FILENAME_REGEX.test('winscope.')).toBeFalse();
+    expect(DOWNLOAD_FILENAME_REGEX.test('w..scope')).toBeFalse();
+    expect(DOWNLOAD_FILENAME_REGEX.test('wins--pe')).toBeFalse();
+    expect(DOWNLOAD_FILENAME_REGEX.test('wi##cope')).toBeFalse();
   });
 });

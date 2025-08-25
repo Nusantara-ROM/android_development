@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {FileUtils} from 'common/file_utils';
+import {unzipFile} from 'common/file_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {TimeRange} from 'common/time/time';
 import {UserWarning} from 'messaging/user_warning';
@@ -571,7 +571,7 @@ describe('LoadedParsers', () => {
 
   async function expectDownloadResult(expectedArchiveContents: string[]) {
     const zipArchive = await loadedParsers.makeZipArchive();
-    const actualArchiveContents = (await FileUtils.unzipFile(zipArchive))
+    const actualArchiveContents = (await unzipFile(zipArchive))
       .map((file) => file.name)
       .sort();
     expect(actualArchiveContents).toEqual(expectedArchiveContents);

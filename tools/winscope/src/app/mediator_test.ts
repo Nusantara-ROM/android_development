@@ -407,10 +407,10 @@ describe('Mediator', () => {
     expect(collectTracesComponent.onWinscopeEvent).toHaveBeenCalled();
   });
 
-  //TODO: test "bugreport data from cross-tool protocol" when FileUtils is fully compatible with
-  //      Node.js (b/262269229). FileUtils#unzipFile() currently can't execute on Node.js.
+  //TODO: test "bugreport data from cross-tool protocol" when file_utils is fully compatible with
+  //      Node.js (b/262269229). unzipFile() currently can't execute on Node.js.
 
-  //TODO: test "data from ABT chrome extension" when FileUtils is fully compatible with Node.js
+  //TODO: test "data from ABT chrome extension" when file_utils is fully compatible with Node.js
   //      (b/262269229).
 
   it('handles start download event from remote tool', async () => {

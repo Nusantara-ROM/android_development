@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {FileUtils} from 'common/file_utils';
+import {getFileDirectory, isZipFile, unzipFile} from 'common/file_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {utf8Decode} from 'common/string_utils';
 import {TimezoneInfo} from 'common/time/time';
@@ -371,9 +371,9 @@ export class TraceFileFilter
     const unzippedLegacyFiles: TraceFile[] = [];
 
     for (const file of legacyFiles) {
-      if (await FileUtils.isZipFile(file.file)) {
+      if (await isZipFile(file.file)) {
         try {
-          const subFiles = await FileUtils.unzipFile(file.file);
+          const subFiles = await unzipFile(file.file);
           const subTraceFiles = subFiles.map((subFile) => {
             return new TraceFile(subFile, file.file);
           });
@@ -387,7 +387,7 @@ export class TraceFileFilter
     }
     const brPerfettoFiles = perfettoFiles.filter(
       (file) =>
-        FileUtils.getFileDirectory(file.file.name) ===
+        getFileDirectory(file.file.name) ===
         TraceFileFilter.BUGREPORT_PERFETTO_TRACE_DIR,
     );
 

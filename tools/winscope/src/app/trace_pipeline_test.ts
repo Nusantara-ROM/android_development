@@ -15,7 +15,11 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {FileUtils} from 'common/file_utils';
+import {
+  createZipArchive,
+  DOWNLOAD_FILENAME_REGEX,
+  unzipFile,
+} from 'common/file_utils';
 import {
   TimestampConverterUtils,
   timestampEqualityTester,
@@ -183,7 +187,7 @@ describe('TracePipeline', () => {
     await loadFiles([fileWithIllegalName]);
     await expectLoadResult(1, []);
     const downloadFilename = tracePipeline.getDownloadArchiveFilename();
-    expect(FileUtils.DOWNLOAD_FILENAME_REGEX.test(downloadFilename)).toBeTrue();
+    expect(DOWNLOAD_FILENAME_REGEX.test(downloadFilename)).toBeTrue();
   });
 
   it('detects bugreports and filters out files based on their directory', async () => {
@@ -200,7 +204,7 @@ describe('TracePipeline', () => {
     ];
 
     const bugreportArchive = new File(
-      [await FileUtils.createZipArchive(bugreportFiles)],
+      [await createZipArchive(bugreportFiles)],
       'bugreport.zip',
     );
 
@@ -227,7 +231,7 @@ describe('TracePipeline', () => {
   it('detects bugreports and extracts timezone info, then calculates utc offset', async () => {
     const bugreportFiles = [brMainEntryFile, brCodenameFile, brSfFile];
     const bugreportArchive = new File(
-      [await FileUtils.createZipArchive(bugreportFiles)],
+      [await createZipArchive(bugreportFiles)],
       'bugreport.zip',
     );
 
@@ -668,7 +672,7 @@ describe('TracePipeline', () => {
 
   async function expectDownloadResult(expectedArchiveContents: string[]) {
     const zipArchive = await tracePipeline.makeZipArchiveWithLoadedTraceFiles();
-    const actualArchiveContents = (await FileUtils.unzipFile(zipArchive))
+    const actualArchiveContents = (await unzipFile(zipArchive))
       .map((file) => file.name)
       .sort();
     expect(actualArchiveContents).toEqual(expectedArchiveContents);

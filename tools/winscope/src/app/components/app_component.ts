@@ -43,7 +43,7 @@ import {Mediator} from 'app/mediator';
 import {TimelineData} from 'app/timeline_data';
 import {TracePipeline} from 'app/trace_pipeline';
 import {Download} from 'common/download';
-import {FileUtils} from 'common/file_utils';
+import {DOWNLOAD_FILENAME_REGEX} from 'common/file_utils';
 import {globalConfig} from 'common/global_config';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {PersistentStore} from 'common/store/persistent_store';
@@ -424,7 +424,7 @@ export class AppComponent implements WinscopeEventListener {
     'winscope',
     Validators.compose([
       Validators.required,
-      Validators.pattern(FileUtils.DOWNLOAD_FILENAME_REGEX),
+      Validators.pattern(DOWNLOAD_FILENAME_REGEX),
     ]),
   );
 
