@@ -98,6 +98,9 @@ import {
   WarningDialogResult,
 } from './warning_dialog_component';
 
+/**
+ * The root component of the Winscope app.
+ */
 @Component({
   selector: 'app-root',
   encapsulation: ViewEncapsulation.None,

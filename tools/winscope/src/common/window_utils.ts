@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 // TODO(b/311642700): Not google3 compatible recommended trySanitizeUrl and windowOpen
+/**
+ * Utility class for window operations.
+ */
 export class WindowUtils {
   static showPopupWindow(url: string): boolean {
     const popup = window.open(

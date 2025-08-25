@@ -31,12 +31,18 @@ import {
   getParserWithLatestRealToMonotonicTimeOffset,
 } from './parser_time_utils';
 
+/**
+ * An interface for a clock snapshot.
+ */
 export interface ClockSnapshot {
   realtime: bigint;
   boottime: bigint | undefined;
   monotonic: bigint | undefined;
 }
 
+/**
+ * A class for converting legacy traces to Perfetto format.
+ */
 export class LegacyToPerfettoConverter {
   static async convertToSinglePerfettoFile(
     legacyParsers: Array<Parser<object>>,

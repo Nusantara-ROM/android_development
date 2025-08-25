@@ -20,6 +20,9 @@ import {Component, ElementRef, Inject} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from '@angular/material/snack-bar';
 
+/**
+ * A component for displaying a snack bar with a message and action buttons.
+ */
 @Component({
   selector: 'snack-bar',
   standalone: true,

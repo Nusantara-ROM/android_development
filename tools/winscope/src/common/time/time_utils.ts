@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/**
+ * Utility class for time operations.
+ */
 export class TimeUtils {
   static async sleepMs(ms: number) {
     await new Promise<void>((resolve) => setTimeout(resolve, ms));

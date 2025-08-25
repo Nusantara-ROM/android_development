@@ -21,6 +21,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {proxySetupStyles} from 'app/styles/proxy_setup.styles';
 import {ConnectionState} from 'trace_collection/connection_state';
 
+/**
+ * A component for displaying the Web Device Proxy setup instructions.
+ */
 @Component({
   selector: 'wdp-setup',
   standalone: true,

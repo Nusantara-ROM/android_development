@@ -32,6 +32,9 @@ import {TracePosition} from 'trace_api/trace_position';
 import {TraceType} from 'trace_api/trace_type';
 import {CanvasDrawer} from './canvas_drawer';
 
+/**
+ * An abstract component for a single row in the expanded timeline view.
+ */
 @Directive()
 export abstract class AbstractTimelineRowComponent<T extends {}> {
   abstract selectedEntry: TraceEntry<T> | undefined;

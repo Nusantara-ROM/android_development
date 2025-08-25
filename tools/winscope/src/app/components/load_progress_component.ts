@@ -19,6 +19,9 @@ import {Component, Input} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 
+/**
+ * A component for displaying a progress bar with a message.
+ */
 @Component({
   selector: 'load-progress',
   standalone: true,

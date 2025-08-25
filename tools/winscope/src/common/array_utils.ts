@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * A type alias for a typed array.
+ */
 type TypedArray =
   | Int8Array
   | Uint8Array

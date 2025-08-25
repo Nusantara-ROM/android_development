@@ -22,6 +22,9 @@ import {SnackBarComponent} from './snack_bar_component';
 
 type Messages = string[];
 
+/**
+ * A class to handle opening snack bars for user notifications.
+ */
 @Injectable({providedIn: 'root'})
 export class SnackBarOpener {
   private static CROP_THRESHOLD = 5;

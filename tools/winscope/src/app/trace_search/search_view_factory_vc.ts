@@ -18,6 +18,9 @@ import {TraceType} from 'trace_api/trace_type';
 import {AbstractSearchViewFactory} from './abstract_search_view_factory';
 import {SearchView} from './search_view';
 
+/**
+ * A factory for creating search views for View Capture traces.
+ */
 export class SearchViewFactoryVc extends AbstractSearchViewFactory {
   override readonly traceType = TraceType.VIEW_CAPTURE;
   private static readonly VIEW: SearchView = {

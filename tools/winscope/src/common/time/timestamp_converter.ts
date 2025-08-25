@@ -86,6 +86,9 @@ class ElapsedTimestampFormatter {
 }
 const ELAPSED_TIMESTAMP_FORMATTER = new ElapsedTimestampFormatter();
 
+/**
+ * An interface for converting timestamps for parsers.
+ */
 export interface ParserTimestampConverter {
   makeTimestampFromRealNs(valueNs: bigint): Timestamp;
   makeTimestampFromMonotonicNs(valueNs: bigint): Timestamp;
@@ -93,6 +96,9 @@ export interface ParserTimestampConverter {
   makeZeroTimestamp(): Timestamp;
 }
 
+/**
+ * An interface for converting timestamps for UI components.
+ */
 export interface ComponentTimestampConverter {
   makeTimestampFromHuman(timestampHuman: string): Timestamp;
   getUTCOffset(): string;
@@ -100,6 +106,9 @@ export interface ComponentTimestampConverter {
   validateHumanInput(timestampHuman: string): boolean;
 }
 
+/**
+ * An interface for converting timestamps for remote tools.
+ */
 export interface RemoteToolTimestampConverter {
   makeTimestampFromBootTimeNs(valueNs: bigint): Timestamp;
   makeTimestampFromRealNs(valueNs: bigint): Timestamp;
@@ -107,6 +116,9 @@ export interface RemoteToolTimestampConverter {
   tryGetRealTimeNs(timestamp: Timestamp): bigint | undefined;
 }
 
+/**
+ * A class for converting timestamps between different formats.
+ */
 export class TimestampConverter
   implements
     ParserTimestampConverter,
@@ -125,6 +137,11 @@ export class TimestampConverter
     private realToBootTimeOffsetNs?: bigint,
   ) {}
 
+  /**
+   * Initializes the UTC offset.
+   *
+   * @param timestamp A timestamp to use for initialization.
+   */
   initializeUTCOffset(timestamp: Timestamp) {
     if (
       this.utcOffset.getValueNs() !== undefined ||
@@ -141,6 +158,11 @@ export class TimestampConverter
     this.utcOffset.initialize(utcOffsetNs);
   }
 
+  /**
+   * Sets the real-to-monotonic time offset.
+   *
+   * @param ns The offset in nanoseconds.
+   */
   setRealToMonotonicTimeOffsetNs(ns: bigint) {
     if (this.realToMonotonicTimeOffsetNs !== undefined) {
       return;
@@ -148,6 +170,11 @@ export class TimestampConverter
     this.realToMonotonicTimeOffsetNs = ns;
   }
 
+  /**
+   * Sets the real-to-boottime time offset.
+   *
+   * @param ns The offset in nanoseconds.
+   */
   setRealToBootTimeOffsetNs(ns: bigint) {
     if (this.realToBootTimeOffsetNs !== undefined) {
       return;
@@ -155,10 +182,21 @@ export class TimestampConverter
     this.realToBootTimeOffsetNs = ns;
   }
 
+  /**
+   * Gets the UTC offset.
+   *
+   * @return The UTC offset.
+   */
   getUTCOffset(): string {
     return this.utcOffset.format();
   }
 
+  /**
+   * Creates a timestamp from a monotonic time.
+   *
+   * @param valueNs The monotonic time in nanoseconds.
+   * @return The timestamp.
+   */
   makeTimestampFromMonotonicNs(valueNs: bigint): Timestamp {
     if (this.realToMonotonicTimeOffsetNs !== undefined) {
       return this.makeRealTimestamp(valueNs + this.realToMonotonicTimeOffsetNs);
@@ -166,6 +204,12 @@ export class TimestampConverter
     return this.makeElapsedTimestamp(valueNs);
   }
 
+  /**
+   * Creates a timestamp from a boottime.
+   *
+   * @param valueNs The boottime in nanoseconds.
+   * @return The timestamp.
+   */
   makeTimestampFromBootTimeNs(valueNs: bigint): Timestamp {
     if (this.realToBootTimeOffsetNs !== undefined) {
       return this.makeRealTimestamp(valueNs + this.realToBootTimeOffsetNs);
@@ -173,10 +217,22 @@ export class TimestampConverter
     return this.makeElapsedTimestamp(valueNs);
   }
 
+  /**
+   * Creates a timestamp from a real time.
+   *
+   * @param valueNs The real time in nanoseconds.
+   * @return The timestamp.
+   */
   makeTimestampFromRealNs(valueNs: bigint): Timestamp {
     return this.makeRealTimestamp(valueNs);
   }
 
+  /**
+   * Creates a timestamp from a human-readable string.
+   *
+   * @param timestampHuman The human-readable string.
+   * @return The timestamp.
+   */
   makeTimestampFromHuman(timestampHuman: string): Timestamp {
     if (TimestampUtils.isHumanElapsedTimeFormat(timestampHuman)) {
       return this.makeTimestampfromHumanElapsed(timestampHuman);
@@ -192,6 +248,12 @@ export class TimestampConverter
     throw new Error('Invalid timestamp format');
   }
 
+  /**
+   * Creates a timestamp from a value in nanoseconds.
+   *
+   * @param valueNs The value in nanoseconds.
+   * @return The timestamp.
+   */
   makeTimestampFromNs(valueNs: bigint): Timestamp {
     return new Timestamp(
       valueNs,
@@ -201,6 +263,11 @@ export class TimestampConverter
     );
   }
 
+  /**
+   * Creates a zero timestamp.
+   *
+   * @return The zero timestamp.
+   */
   makeZeroTimestamp(): Timestamp {
     if (this.canMakeRealTimestamps()) {
       return new Timestamp(INVALID_TIME_NS, REAL_TIMESTAMP_FORMATTER_UTC);
@@ -209,6 +276,12 @@ export class TimestampConverter
     }
   }
 
+  /**
+   * Tries to get the boottime from a timestamp.
+   *
+   * @param timestamp The timestamp.
+   * @return The boottime in nanoseconds, or undefined if it cannot be determined.
+   */
   tryGetBootTimeNs(timestamp: Timestamp): bigint | undefined {
     if (
       this.createdTimestampType !== TimestampType.REAL ||
@@ -219,6 +292,12 @@ export class TimestampConverter
     return timestamp.getValueNs() - this.realToBootTimeOffsetNs;
   }
 
+  /**
+   * Tries to get the real time from a timestamp.
+   *
+   * @param timestamp The timestamp.
+   * @return The real time in nanoseconds, or undefined if it cannot be determined.
+   */
   tryGetRealTimeNs(timestamp: Timestamp): bigint | undefined {
     if (this.createdTimestampType !== TimestampType.REAL) {
       return undefined;
@@ -226,6 +305,13 @@ export class TimestampConverter
     return timestamp.getValueNs();
   }
 
+  /**
+   * Validates a human-readable timestamp string.
+   *
+   * @param timestampHuman The human-readable timestamp string.
+   * @param context The context to use for validation.
+   * @return True if the string is valid, false otherwise.
+   */
   validateHumanInput(timestampHuman: string, context = this): boolean {
     if (context.canMakeRealTimestamps()) {
       return TimestampUtils.isHumanRealTimestampFormat(timestampHuman);
@@ -233,6 +319,9 @@ export class TimestampConverter
     return TimestampUtils.isHumanElapsedTimeFormat(timestampHuman);
   }
 
+  /**
+   * Clears the converter's state.
+   */
   clear() {
     this.createdTimestampType = undefined;
     this.realToBootTimeOffsetNs = undefined;
@@ -337,6 +426,9 @@ export class TimestampConverter
   }
 }
 
+/**
+ * Timezone information for UTC.
+ */
 export const UTC_TIMEZONE_INFO = {
   timezone: 'UTC',
   locale: 'en-US',

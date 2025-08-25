@@ -16,6 +16,9 @@
 
 import {binaryEncode} from './string_utils';
 
+/**
+ * A buffer that can be resized.
+ */
 export class ResizableBuffer {
   private buffer: Uint8Array;
   private capacityUsed = 0;
@@ -24,6 +27,11 @@ export class ResizableBuffer {
     this.buffer = new Uint8Array(128);
   }
 
+  /**
+   * Appends data to the buffer.
+   *
+   * @param data The data to append.
+   */
   append(data: ArrayLike<number>) {
     const capacityNeeded = this.capacityUsed + data.length;
     if (this.buffer.length < capacityNeeded) {
@@ -33,6 +41,11 @@ export class ResizableBuffer {
     this.capacityUsed = capacityNeeded;
   }
 
+  /**
+   * Gets the buffer.
+   *
+   * @return The buffer.
+   */
   get(): Uint8Array {
     return this.buffer.subarray(0, this.capacityUsed);
   }
@@ -49,11 +62,22 @@ export class ResizableBuffer {
   }
 }
 
+/**
+ * A token that can be appended to an ArrayBufferBuilder.
+ */
 export type BufferToken = string | number | Uint8Array;
 
+/**
+ * A builder for creating ArrayBuffers.
+ */
 export class ArrayBufferBuilder {
   private readonly tokens: BufferToken[] = [];
 
+  /**
+   * Builds the ArrayBuffer.
+   *
+   * @return The built ArrayBuffer.
+   */
   build(): ArrayBuffer {
     let byteLength = 0;
     this.tokens.forEach((token) => {
@@ -70,6 +94,12 @@ export class ArrayBufferBuilder {
     return buffer;
   }
 
+  /**
+   * Appends tokens to the builder.
+   *
+   * @param tokens The tokens to append.
+   * @return The builder.
+   */
   append(tokens: BufferToken[]): this {
     this.tokens.push(...tokens);
     return this;

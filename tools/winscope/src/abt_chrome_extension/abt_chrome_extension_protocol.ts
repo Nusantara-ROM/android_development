@@ -33,6 +33,11 @@ import {
   WebCommandMessage,
 } from './messages';
 
+/**
+ * Protocol for communication between Winscope and the ABT Chrome extension.
+ *
+ * The extension is used to download traces from Buganizer.
+ */
 export class AbtChromeExtensionProtocol
   implements WinscopeEventEmitter, WinscopeEventListener
 {

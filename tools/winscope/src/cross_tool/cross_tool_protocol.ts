@@ -50,6 +50,9 @@ class RemoteTool {
   ) {}
 }
 
+/**
+ * A protocol for communication between Winscope and other tools.
+ */
 export class CrossToolProtocol
   implements WinscopeEventEmitter, WinscopeEventListener
 {

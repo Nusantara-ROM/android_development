@@ -19,6 +19,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 
+/**
+ * A component for displaying a warning dialog.
+ */
 @Component({
   selector: 'warning-dialog',
   standalone: true,
@@ -112,6 +115,9 @@ export class WarningDialogComponent {
   }
 }
 
+/**
+ * Data for the warning dialog.
+ */
 export interface WarningDialogData {
   message: string | undefined;
   actions: string[] | undefined;
@@ -120,6 +126,9 @@ export interface WarningDialogData {
   singleSelection?: boolean;
 }
 
+/**
+ * Result of the warning dialog.
+ */
 export interface WarningDialogResult {
   closeActionText: string | undefined;
   selectedOptions: string[];

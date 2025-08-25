@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/**
+ * An enum for converting time units to nanoseconds.
+ */
 export enum TIME_UNIT_TO_NANO {
   ns = 1,
   ms = 1000000,
@@ -23,6 +26,9 @@ export enum TIME_UNIT_TO_NANO {
   d = 1000000 * 1000 * 60 * 60 * 24,
 }
 
+/**
+ * A list of time units and their conversion factors to nanoseconds.
+ */
 export const TIME_UNITS = [
   {nanosInUnit: TIME_UNIT_TO_NANO['ns'], unit: 'ns'},
   {nanosInUnit: TIME_UNIT_TO_NANO['ms'], unit: 'ms'},

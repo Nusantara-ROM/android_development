@@ -66,6 +66,9 @@ interface Tab {
   isTooltipStable: boolean;
 }
 
+/**
+ * A component for displaying the trace view.
+ */
 @Component({
   selector: 'trace-view',
   standalone: true,

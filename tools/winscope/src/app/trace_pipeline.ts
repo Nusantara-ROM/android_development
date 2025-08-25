@@ -68,6 +68,15 @@ import {FilesSource} from './files_source';
 import {LoadedParsers} from './loaded_parsers';
 import {TraceFileFilter} from './trace_file_filter';
 
+/**
+ * A pipeline that loads, parses and transforms traces.
+ *
+ * The pipeline is responsible for:
+ * - Unzipping and filtering files
+ * - Parsing files into traces
+ * - Transforming traces (e.g. merging, creating frame mapping)
+ * - Storing the final traces
+ */
 export class TracePipeline
   implements WinscopeEventListener, WinscopeEventEmitter
 {

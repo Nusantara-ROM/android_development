@@ -60,6 +60,9 @@ import {TimelineData} from './timeline_data';
 import {TracePipeline} from './trace_pipeline';
 import {TraceSearchInitializer} from './trace_search/trace_search_initializer';
 
+/**
+ * Mediator class for communication between components
+ */
 export class Mediator {
   private abtChromeExtensionProtocol: WinscopeEventEmitter &
     WinscopeEventListener;

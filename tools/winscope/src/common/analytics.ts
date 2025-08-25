@@ -16,6 +16,9 @@
 
 import {globalConfig} from 'common/global_config';
 
+/**
+ * A class for logging analytics events.
+ */
 export class Analytics {
   static analyticsLogEvent(
     eventName: Gtag.EventNames | (string & {}),

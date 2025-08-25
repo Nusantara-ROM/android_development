@@ -29,10 +29,22 @@ export function isElementVisible(element: HTMLElement) {
   return rect.height > 0 && rect.width > 0;
 }
 
+/**
+ * Checks if an element is overflowing its container.
+ *
+ * @param element The element to check.
+ * @return True if the element is overflowing, false otherwise.
+ */
 export function isElementOverflowing(element: HTMLElement) {
   return element.scrollWidth > element.clientWidth;
 }
 
+/**
+ * Checks if an element is an input text field.
+ *
+ * @param element The element to check.
+ * @return True if the element is an input text field, false otherwise.
+ */
 export function isInputTextField(element: HTMLElement): boolean {
   return (
     element instanceof HTMLInputElement &&
@@ -41,6 +53,9 @@ export function isInputTextField(element: HTMLElement): boolean {
   );
 }
 
+/**
+ * Keyboard event codes.
+ */
 export enum KeyboardEventCode {
   A = 'KeyA',
   D = 'KeyD',
@@ -48,6 +63,9 @@ export enum KeyboardEventCode {
   W = 'KeyW',
 }
 
+/**
+ * Keyboard event keys.
+ */
 export enum KeyboardEventKey {
   ARROW_DOWN = 'ArrowDown',
   ARROW_LEFT = 'ArrowLeft',
@@ -57,6 +75,9 @@ export enum KeyboardEventKey {
   ESCAPE = 'Escape',
 }
 
+/**
+ * Keyboard event key codes.
+ */
 export enum KeyboardEventKeyCode {
   SPACE = 32,
 }

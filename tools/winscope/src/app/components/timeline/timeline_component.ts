@@ -75,6 +75,9 @@ import {multlineTooltip} from 'viewers/components/styles/tooltip.styles';
 import {ExpandedTimelineComponent} from './expanded-timeline/expanded_timeline_component';
 import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
 
+/**
+ * A component for displaying the timeline view.
+ */
 @Component({
   selector: 'timeline',
   encapsulation: ViewEncapsulation.None,

@@ -24,6 +24,9 @@ import {SearchViewFactoryTransactions} from './search_view_factory_transactions'
 import {SearchViewFactoryTransitions} from './search_view_factory_transitions';
 import {SearchViewFactoryVc} from './search_view_factory_vc';
 
+/**
+ * A class for initializing trace search views.
+ */
 export class TraceSearchInitializer {
   static readonly FACTORIES = [
     SearchViewFactorySf,
@@ -54,6 +57,9 @@ export class TraceSearchInitializer {
   }
 }
 
+/**
+ * A list of all possible search views.
+ */
 export const SEARCH_VIEWS = TraceSearchInitializer.FACTORIES.flatMap(
   (factory) => factory.getPossibleSearchViews(),
 );
