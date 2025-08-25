@@ -21,7 +21,7 @@ import {TracePositionUpdate} from 'messaging/winscope_event';
 import {getWindowManagerState} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {UiTreeNodeUtils} from 'test/unit/ui_tree_node_utils';
+import {makeUiPropertyNode} from 'test/unit/ui_tree_node_utils';
 import {Trace} from 'trace_api/trace';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TraceType} from 'trace_api/trace_type';
@@ -233,9 +233,7 @@ the default for its data type.`,
   }
 
   override executeSpecializedTests(): void {
-    const invalidNode = UiPropertyTreeNode.from(
-      UiTreeNodeUtils.makeUiPropertyNode('', '', 0),
-    );
+    const invalidNode = UiPropertyTreeNode.from(makeUiPropertyNode('', '', 0));
 
     describe('Specialized tests', () => {
       let presenter: Presenter;
@@ -275,7 +273,7 @@ the default for its data type.`,
 
       it('does not propagate hashcode if matching node not found', async () => {
         const missingHashcode = UiPropertyTreeNode.from(
-          UiTreeNodeUtils.makeUiPropertyNode('', 'hashCode', 0),
+          makeUiPropertyNode('', 'hashCode', 0),
         );
         await presenter.onPropagatePropertyClick(missingHashcode);
         expect(uiData.highlightedItem).toEqual('');
@@ -283,7 +281,7 @@ the default for its data type.`,
 
       it('propagates node with matching hashcode', async () => {
         const validHashcode = UiPropertyTreeNode.from(
-          UiTreeNodeUtils.makeUiPropertyNode('', 'hashCode', 32720206),
+          makeUiPropertyNode('', 'hashCode', 32720206),
         );
         await presenter.onAppEvent(this.getPositionUpdate());
         await presenter.onPropagatePropertyClick(validHashcode);

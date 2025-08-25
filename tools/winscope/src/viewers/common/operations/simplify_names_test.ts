@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {UiTreeNodeUtils} from 'test/unit/ui_tree_node_utils';
+import {makeUiHierarchyNode} from 'test/unit/ui_tree_node_utils';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {SimplifyNames} from './simplify_names';
 
@@ -27,13 +27,13 @@ describe('SimplifyNames', () => {
   });
 
   it('shortens long names', () => {
-    hierarchyRoot = UiTreeNodeUtils.makeUiHierarchyNode({
+    hierarchyRoot = makeUiHierarchyNode({
       id: 'test',
       name: 'root',
     });
 
     for (let i = 0; i < 10; i++) {
-      const child = UiTreeNodeUtils.makeUiHierarchyNode({
+      const child = makeUiHierarchyNode({
         id: i,
         name: 'node' + '.child'.repeat(10),
       });
@@ -49,13 +49,13 @@ describe('SimplifyNames', () => {
   });
 
   it('does not change already short names', () => {
-    hierarchyRoot = UiTreeNodeUtils.makeUiHierarchyNode({
+    hierarchyRoot = makeUiHierarchyNode({
       id: 'test',
       name: 'root',
     });
 
     for (let i = 0; i < 10; i++) {
-      const child = UiTreeNodeUtils.makeUiHierarchyNode({
+      const child = makeUiHierarchyNode({
         id: i,
         name: 'node.child',
       });

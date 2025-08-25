@@ -15,7 +15,7 @@
  */
 
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
-import {UiTreeNodeUtils} from 'test/unit/ui_tree_node_utils';
+import {treeNodeEqualityTester} from 'test/unit/ui_tree_node_utils';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {OperationChain} from 'tree_node/operation_chain';
 import {PropertiesProvider} from 'tree_node/properties_provider';
@@ -94,7 +94,7 @@ describe('HierarchyTreeBuilderVc', () => {
   );
 
   beforeEach(() => {
-    jasmine.addCustomEqualityTester(UiTreeNodeUtils.treeNodeEqualityTester);
+    jasmine.addCustomEqualityTester(treeNodeEqualityTester);
     builder = new HierarchyTreeBuilderVc();
   });
 
