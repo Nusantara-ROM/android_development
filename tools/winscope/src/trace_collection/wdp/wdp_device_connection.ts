@@ -16,7 +16,7 @@
 
 import {ResizableBuffer} from 'common/buffer_utils';
 import {binaryEncode, utf8Decode} from 'common/string_utils';
-import {WindowUtils} from 'common/window_utils';
+import {showPopupWindow} from 'common/window_utils';
 import {
   ProxyTracingErrors,
   ProxyTracingWarnings,
@@ -43,6 +43,7 @@ export class WdpDeviceConnection extends AdbDeviceConnection {
     id: string,
     listener: AdbDeviceConnectionListener,
     private approveUrl?: string,
+    private showWindow: (url: string) => boolean = showPopupWindow,
   ) {
     super(id, listener);
   }
@@ -53,7 +54,7 @@ export class WdpDeviceConnection extends AdbDeviceConnection {
 
   override async tryAuthorize(): Promise<void> {
     if (this.approveUrl) {
-      const popup = WindowUtils.showPopupWindow(this.approveUrl);
+      const popup = this.showWindow(this.approveUrl);
       if (!popup) {
         await this.listener.onError(`Please enable popups and try again.`);
         this.authorizeDevicePopup = false;

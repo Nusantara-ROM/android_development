@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import {WindowUtils} from 'common/window_utils';
 import {
   makeFakeWebSocket,
   makeFakeWebSocketMessage,
@@ -52,8 +51,8 @@ describe('WdpHostConnection', () => {
   });
 
   beforeEach(() => {
-    popupSpy = spyOn(WindowUtils, 'showPopupWindow');
-    connection = new WdpHostConnection(listener);
+    popupSpy = jasmine.createSpy('showPWindow');
+    connection = new WdpHostConnection(listener, popupSpy);
     resetListener();
   });
 

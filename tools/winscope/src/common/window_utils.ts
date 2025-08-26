@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 // TODO(b/311642700): Not google3 compatible recommended trySanitizeUrl and windowOpen
+
 /**
- * Utility class for window operations.
+ * Opens a popup window with the specified URL.
+ *
+ * @param url The URL to open in the popup window.
+ * @return True if the popup was opened successfully, false otherwise.
  */
-export class WindowUtils {
-  static showPopupWindow(url: string): boolean {
-    const popup = window.open(
-      url,
-      '_blank',
-      'width=500,height=500,scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no',
-    );
-    if (popup === null) {
-      return false;
-    }
-    return true;
+export function showPopupWindow(url: string): boolean {
+  const popup = window.open(
+    url,
+    '_blank',
+    'width=500,height=500,scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no',
+  );
+  if (popup === null) {
+    return false;
   }
+  return true;
 }

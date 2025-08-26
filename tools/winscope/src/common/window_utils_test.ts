@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {WindowUtils} from './window_utils';
+import {showPopupWindow} from './window_utils';
 
-describe('WindowUtils', () => {
+describe('window_utils', () => {
   let windowSpy: jasmine.Spy;
 
   beforeEach(() => {
@@ -25,13 +25,13 @@ describe('WindowUtils', () => {
 
   it('opens new window', () => {
     windowSpy.and.returnValue(jasmine.any(Window));
-    expect(WindowUtils.showPopupWindow('test')).toEqual(true);
+    expect(showPopupWindow('test')).toEqual(true);
     expect(windowSpy).toHaveBeenCalledTimes(1);
     expect(windowSpy.calls.allArgs()[0][0]).toEqual('test');
   });
 
   it('returns false if window fails to open', () => {
     windowSpy.and.returnValue(null);
-    expect(WindowUtils.showPopupWindow('test')).toEqual(false);
+    expect(showPopupWindow('test')).toEqual(false);
   });
 });

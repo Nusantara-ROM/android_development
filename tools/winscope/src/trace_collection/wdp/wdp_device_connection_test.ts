@@ -17,7 +17,6 @@
 import {ArrayBufferBuilder} from 'common/buffer_utils';
 import {FunctionUtils} from 'common/function_utils';
 import {binaryEncode} from 'common/string_utils';
-import {WindowUtils} from 'common/window_utils';
 import {
   ProxyTracingErrors,
   ProxyTracingWarnings,
@@ -54,8 +53,8 @@ describe('WdpDeviceConnection', () => {
   let openStream: ShellStream | undefined;
 
   beforeEach(() => {
-    popupSpy = spyOn(WindowUtils, 'showPopupWindow');
-    connection = new WdpDeviceConnection(testId, listener);
+    popupSpy = jasmine.createSpy('showWindow');
+    connection = new WdpDeviceConnection(testId, listener, undefined, popupSpy);
     resetListener();
   });
 
@@ -71,14 +70,24 @@ describe('WdpDeviceConnection', () => {
     });
 
     it('shows popup on tryAuthorize', async () => {
-      connection = new WdpDeviceConnection(testId, listener, testApproveUrl);
+      connection = new WdpDeviceConnection(
+        testId,
+        listener,
+        testApproveUrl,
+        popupSpy,
+      );
       popupSpy.and.returnValue(true);
       await connection.tryAuthorize();
       expect(popupSpy).toHaveBeenCalledOnceWith(testApproveUrl);
     });
 
     it('calls listener if popup fails to show', async () => {
-      connection = new WdpDeviceConnection(testId, listener, testApproveUrl);
+      connection = new WdpDeviceConnection(
+        testId,
+        listener,
+        testApproveUrl,
+        popupSpy,
+      );
       popupSpy.and.returnValue(false);
       await connection.tryAuthorize();
       expect(popupSpy).toHaveBeenCalledOnceWith(testApproveUrl);
