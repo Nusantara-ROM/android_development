@@ -19,6 +19,7 @@ import {
   binarySearchFirstGreaterOrEqual,
 } from 'common/array_utils';
 import {assertDefined} from 'common/assert_utils';
+import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {INVALID_TIME_NS, Timestamp} from 'common/time/time';
 import {extractDateFromHumanTimestamp} from 'common/time/timestamp_utils';
 import {
@@ -39,7 +40,6 @@ import {
 import {Parser} from './parser';
 import {TRACE_INFO} from './trace_info';
 import {TraceType} from './trace_type';
-import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 
 export abstract class TraceEntry<T> {
   constructor(

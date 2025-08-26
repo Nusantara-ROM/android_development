@@ -199,8 +199,12 @@ export abstract class EngineBase implements Engine {
     // 1. We avoid protobufjs decoding the TraceProcessorRpc.query_result field.
     // 2. We stash (a view of) the original buffer into the |rawQueryResult| so
     //    the `case TPM_QUERY_STREAMING` below can take it.
-    perfetto.protos.QueryResult.decode = (reader: protobuf.Reader, length: number) => {
-      const res = perfetto.protos.QueryResult.create() as {} as QueryResultBypass;
+    perfetto.protos.QueryResult.decode = (
+      reader: protobuf.Reader,
+      length: number,
+    ) => {
+      const res =
+        perfetto.protos.QueryResult.create() as {} as QueryResultBypass;
       res.rawQueryResult = reader.buf.subarray(reader.pos, reader.pos + length);
       // All this works only if protobufjs returns the original ArrayBuffer
       // from |rpcMsgEncoded|. It should be always the case given the
@@ -272,9 +276,7 @@ export abstract class EngineBase implements Engine {
         }
         break;
       case TPM.TPM_COMPUTE_METRIC:
-        const metricRes = assertExists(
-          rpc.metricResult,
-        ) as ComputeMetricResult;
+        const metricRes = assertExists(rpc.metricResult) as ComputeMetricResult;
         const pendingComputeMetric = assertExists(
           this.pendingComputeMetrics.shift(),
         );
@@ -374,8 +376,7 @@ export abstract class EngineBase implements Engine {
     this.pendingResetTraceProcessors.push(asyncRes);
     const rpc = TraceProcessorRpc.create();
     rpc.request = TPM.TPM_RESET_TRACE_PROCESSOR;
-    const args = (rpc.resetTraceProcessorArgs =
-      new ResetTraceProcessorArgs());
+    const args = (rpc.resetTraceProcessorArgs = new ResetTraceProcessorArgs());
     args.dropTrackEventDataBefore = cropTrackEvents
       ? ResetTraceProcessorArgs.DropTrackEventDataBefore
           .TRACK_EVENT_RANGE_OF_INTEREST
@@ -505,7 +506,7 @@ export abstract class EngineBase implements Engine {
       const result = await this.query(sql, tag);
       return result;
     } catch (error) {
-      const e = (error as any);
+      const e = error as any;
       const msg = 'message' in e ? `${e.message}` : `${error}`;
       throw new Error(msg);
     }
@@ -518,10 +519,7 @@ export abstract class EngineBase implements Engine {
   enableMetatrace(categories?: MetatraceCategories) {
     const rpc = TraceProcessorRpc.create();
     rpc.request = TPM.TPM_ENABLE_METATRACE;
-    if (
-      categories !== undefined &&
-      categories !== MetatraceCategories.NONE
-    ) {
+    if (categories !== undefined && categories !== MetatraceCategories.NONE) {
       rpc.enableMetatraceArgs = new EnableMetatraceArgs();
       rpc.enableMetatraceArgs.categories = categories;
     }
@@ -557,8 +555,7 @@ export abstract class EngineBase implements Engine {
 
     const rpc = TraceProcessorRpc.create();
     rpc.request = TPM.TPM_REGISTER_SQL_PACKAGE;
-    const args = (rpc.registerSqlPackageArgs =
-      new RegisterSqlPackageArgs());
+    const args = (rpc.registerSqlPackageArgs = new RegisterSqlPackageArgs());
     args.packageName = pkg.name;
     args.modules = pkg.modules;
     args.allowOverride = true;

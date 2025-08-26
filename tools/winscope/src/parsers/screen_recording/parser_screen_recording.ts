@@ -26,15 +26,15 @@ import {CoarseVersion} from 'trace_api/coarse_version';
 import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
 import {TraceMetadata} from 'trace_api/trace_metadata';
 import {TraceType} from 'trace_api/trace_type';
+import {ParserExternalMetadata} from './parser_external_metadata';
 import {ParserFilename} from './parser_filename';
+import {ParserMetadataV1Or2} from './parser_metadata_v1_or_v2';
+import {ParserMetadataV3} from './parser_metadata_v3';
 import {
   parseIntFromBuffer,
   ScreenRecordingParser,
   WINSCOPE_MAGIC_STRING,
 } from './utils';
-import {ParserMetadataV3} from './parser_metadata_v3';
-import {ParserMetadataV1Or2} from './parser_metadata_v1_or_v2';
-import {ParserExternalMetadata} from './parser_external_metadata';
 
 export class ParserScreenRecording extends AbstractParser<
   MediaBasedTraceEntry,

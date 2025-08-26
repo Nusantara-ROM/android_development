@@ -45,8 +45,8 @@ import {Operation} from 'tree_node/operation';
 import {PropertiesProvider} from 'tree_node/properties_provider';
 import {PropertiesProviderBuilder} from 'tree_node/properties_provider_builder';
 import {
-  PropertyTreeNode,
   PropertyFormatter,
+  PropertyTreeNode,
 } from 'tree_node/property_tree_node';
 import {SetFormatters} from 'viewers/operations/set_formatters';
 

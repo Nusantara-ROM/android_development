@@ -15,6 +15,8 @@
  */
 
 import {assertTrue} from 'common/assert_utils';
+import {Sample} from 'mp4box';
+import {startsWithMagicNumber} from 'parsers/legacy/parsing_utils';
 import {
   MP4FileOnReady,
   parseLongFromBuffer,
@@ -23,8 +25,6 @@ import {
   ScreenRecordingParser,
   WINSCOPE_MAGIC_STRING,
 } from './utils';
-import {Sample} from 'mp4box';
-import {startsWithMagicNumber} from 'parsers/legacy/parsing_utils';
 
 // Metadata v3 is written sample-by-sample. Each sample contains:
 // - Realtime-to-elapsed time offset in ns (8B little endian)

@@ -17,11 +17,11 @@
 import {assertDefined} from 'common/assert_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {
-  makeColorNode,
-  makeRectNode,
   makeBufferNode,
-  makeSizeNode,
+  makeColorNode,
   makePositionNode,
+  makeRectNode,
+  makeSizeNode,
 } from 'test/unit/tree_node_utils';
 import {
   isBuffer,

@@ -53,9 +53,9 @@ import {PersistentStore} from 'common/store/persistent_store';
 import {parseBigIntStrippingUnit} from 'common/string_utils';
 import {TimeRange, Timestamp, TimestampFormatType} from 'common/time/time';
 import {
+  extractDateFromHumanTimestamp,
   isNsFormat,
   isRealTimeOnlyFormat,
-  extractDateFromHumanTimestamp,
 } from 'common/time/timestamp_utils';
 import {Analytics} from 'logging/analytics';
 import {
