@@ -35,7 +35,7 @@ import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
 import {PersistentStore} from 'common/store/persistent_store';
 import {TimeRange, Timestamp} from 'common/time/time';
-import {TimestampUtils} from 'common/time/timestamp_utils';
+import {maxTimestamp, minTimestamp} from 'common/time/timestamp_utils';
 import {Analytics} from 'logging/analytics';
 import {Trace} from 'trace_api/trace';
 import {TracePosition} from 'trace_api/trace_position';
@@ -584,15 +584,12 @@ export class MiniTimelineComponent {
     );
 
     if (newFrom.getValueNs() < fullRange.startNs) {
-      newTo = TimestampUtils.min(fullRange.to, newFrom.add(zoomToWidth));
+      newTo = minTimestamp(fullRange.to, newFrom.add(zoomToWidth));
       newFrom = fullRange.from;
     }
 
     if (newTo.getValueNs() > fullRange.endNs) {
-      newFrom = TimestampUtils.max(
-        fullRange.from,
-        fullRange.to.minus(zoomToWidth),
-      );
+      newFrom = maxTimestamp(fullRange.from, fullRange.to.minus(zoomToWidth));
       newTo = fullRange.to;
     }
 

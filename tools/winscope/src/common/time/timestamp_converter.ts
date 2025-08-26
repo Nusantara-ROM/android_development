@@ -24,7 +24,13 @@ import {
   TimezoneInfo,
 } from './time';
 import {TIME_UNIT_TO_NANO, TIME_UNITS} from './time_units';
-import {TimestampUtils} from './timestamp_utils';
+import {
+  extractTimeFromHumanTimestamp,
+  isHumanElapsedTimeFormat,
+  isHumanRealTimestampFormat,
+  isISOFormat,
+  isRealDateTimeFormat,
+} from './timestamp_utils';
 import {UTCOffset} from './utc_offset';
 
 // Pre-T traces do not provide real-to-boottime or real-to-monotonic offsets,so
@@ -51,9 +57,7 @@ class RealTimestampFormatter implements TimestampFormatter {
       .replace('Z', '')
       .replace('T', ', ');
     if (type === TimestampFormatType.DROP_DATE) {
-      return assertDefined(
-        TimestampUtils.extractTimeFromHumanTimestamp(formattedTimestamp),
-      );
+      return assertDefined(extractTimeFromHumanTimestamp(formattedTimestamp));
     }
     return formattedTimestamp;
   }
@@ -234,14 +238,11 @@ export class TimestampConverter
    * @return The timestamp.
    */
   makeTimestampFromHuman(timestampHuman: string): Timestamp {
-    if (TimestampUtils.isHumanElapsedTimeFormat(timestampHuman)) {
+    if (isHumanElapsedTimeFormat(timestampHuman)) {
       return this.makeTimestampfromHumanElapsed(timestampHuman);
     }
 
-    if (
-      TimestampUtils.isISOFormat(timestampHuman) ||
-      TimestampUtils.isRealDateTimeFormat(timestampHuman)
-    ) {
+    if (isISOFormat(timestampHuman) || isRealDateTimeFormat(timestampHuman)) {
       return this.makeTimestampFromHumanReal(timestampHuman);
     }
 
@@ -314,9 +315,9 @@ export class TimestampConverter
    */
   validateHumanInput(timestampHuman: string, context = this): boolean {
     if (context.canMakeRealTimestamps()) {
-      return TimestampUtils.isHumanRealTimestampFormat(timestampHuman);
+      return isHumanRealTimestampFormat(timestampHuman);
     }
-    return TimestampUtils.isHumanElapsedTimeFormat(timestampHuman);
+    return isHumanElapsedTimeFormat(timestampHuman);
   }
 
   /**
@@ -356,7 +357,7 @@ export class TimestampConverter
     timestampHuman = timestampHuman.replace('Z', '');
 
     // Convert to ISO format if required
-    if (TimestampUtils.isRealDateTimeFormat(timestampHuman)) {
+    if (isRealDateTimeFormat(timestampHuman)) {
       timestampHuman = timestampHuman.replace(', ', 'T');
     }
 

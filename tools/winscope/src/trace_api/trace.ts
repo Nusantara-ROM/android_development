@@ -20,7 +20,7 @@ import {
 } from 'common/array_utils';
 import {assertDefined} from 'common/assert_utils';
 import {INVALID_TIME_NS, Timestamp} from 'common/time/time';
-import {TimestampUtils} from 'common/time/timestamp_utils';
+import {extractDateFromHumanTimestamp} from 'common/time/timestamp_utils';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
@@ -519,9 +519,9 @@ export class Trace<T> {
       if (!firstTs) {
         return false;
       }
-      const firstDate = TimestampUtils.extractDateFromHumanTimestamp(firstTs);
+      const firstDate = extractDateFromHumanTimestamp(firstTs);
       if (firstDate) {
-        const lastDate = TimestampUtils.extractDateFromHumanTimestamp(
+        const lastDate = extractDateFromHumanTimestamp(
           this.getEntry(this.lengthEntries - 1)
             .getTimestamp()
             .format(),

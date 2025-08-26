@@ -15,9 +15,16 @@
  */
 
 import {TimestampConverterUtils, timestampEqualityTester} from './test_utils';
-import {TimestampUtils} from './timestamp_utils';
+import {
+  compareFn,
+  isHumanElapsedTimeFormat,
+  isISOFormat,
+  isNsFormat,
+  isRealDateTimeFormat,
+  isRealTimeOnlyFormat,
+} from './timestamp_utils';
 
-describe('TimestampUtils', () => {
+describe('timestamp_utils', () => {
   beforeAll(() => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
   });
@@ -31,7 +38,7 @@ describe('TimestampUtils', () => {
         TimestampConverterUtils.makeRealTimestamp(110n),
         TimestampConverterUtils.makeRealTimestamp(11n),
       ];
-      array.sort(TimestampUtils.compareFn);
+      array.sort(compareFn);
 
       const expected = [
         TimestampConverterUtils.makeRealTimestamp(10n),
@@ -46,161 +53,115 @@ describe('TimestampUtils', () => {
 
   describe('isNsFormat', () => {
     it('accepts all expected inputs', () => {
-      expect(TimestampUtils.isNsFormat('123')).toBeTrue();
-      expect(TimestampUtils.isNsFormat('123ns')).toBeTrue();
-      expect(TimestampUtils.isNsFormat('123 ns')).toBeTrue();
-      expect(TimestampUtils.isNsFormat(' 123 ns ')).toBeTrue();
-      expect(TimestampUtils.isNsFormat('   123  ')).toBeTrue();
+      expect(isNsFormat('123')).toBeTrue();
+      expect(isNsFormat('123ns')).toBeTrue();
+      expect(isNsFormat('123 ns')).toBeTrue();
+      expect(isNsFormat(' 123 ns ')).toBeTrue();
+      expect(isNsFormat('   123  ')).toBeTrue();
     });
 
     it('rejects all expected inputs', () => {
-      expect(TimestampUtils.isNsFormat('1a23')).toBeFalse();
-      expect(TimestampUtils.isNsFormat('a123 ns')).toBeFalse();
-      expect(TimestampUtils.isNsFormat('')).toBeFalse();
+      expect(isNsFormat('1a23')).toBeFalse();
+      expect(isNsFormat('a123 ns')).toBeFalse();
+      expect(isNsFormat('')).toBeFalse();
     });
   });
 
   describe('isHumanElapsedTimeFormat', () => {
     it('accepts all expected inputs', () => {
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1000ns')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1ms')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1s')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1s0ms')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1s0ms0ns')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('0d1s1ms')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1h0m')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1h1m1s1ms')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1d0s1ms')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1d1h0m1s1ms')).toBeTrue();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1d')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1000ns')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1ms')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1s')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1s0ms')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1s0ms0ns')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('0d1s1ms')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1h0m')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1h1m1s1ms')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1d0s1ms')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1d1h0m1s1ms')).toBeTrue();
+      expect(isHumanElapsedTimeFormat('1d')).toBeTrue();
     });
 
     it('rejects all expected inputs', () => {
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1n')).toBeFalse();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1hr')).toBeFalse();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1min')).toBeFalse();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1sec')).toBeFalse();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1')).toBeFalse();
-      expect(TimestampUtils.isHumanElapsedTimeFormat('1m0')).toBeFalse();
+      expect(isHumanElapsedTimeFormat('1n')).toBeFalse();
+      expect(isHumanElapsedTimeFormat('1hr')).toBeFalse();
+      expect(isHumanElapsedTimeFormat('1min')).toBeFalse();
+      expect(isHumanElapsedTimeFormat('1sec')).toBeFalse();
+      expect(isHumanElapsedTimeFormat('1')).toBeFalse();
+      expect(isHumanElapsedTimeFormat('1m0')).toBeFalse();
     });
   });
 
   describe('isRealTimeOnlyFormat', () => {
     it('accepts all expected inputs', () => {
-      expect(TimestampUtils.isRealTimeOnlyFormat('22:04:54.186')).toBeTrue();
-      expect(TimestampUtils.isRealTimeOnlyFormat('22:04:54.186777')).toBeTrue();
-      expect(
-        TimestampUtils.isRealTimeOnlyFormat('22:04:54.186234769'),
-      ).toBeTrue();
+      expect(isRealTimeOnlyFormat('22:04:54.186')).toBeTrue();
+      expect(isRealTimeOnlyFormat('22:04:54.186777')).toBeTrue();
+      expect(isRealTimeOnlyFormat('22:04:54.186234769')).toBeTrue();
     });
 
     it('rejects all expected inputs', () => {
       expect(
-        TimestampUtils.isRealTimeOnlyFormat('2022-11-10, 22:04:54.186123456'),
+        isRealTimeOnlyFormat('2022-11-10, 22:04:54.186123456'),
       ).toBeFalse();
-      expect(
-        TimestampUtils.isRealTimeOnlyFormat('2022-11-10T22:04:54.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isRealTimeOnlyFormat('2:04:54.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isRealTimeOnlyFormat('25:04:54.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isRealTimeOnlyFormat('22:4:54.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isRealTimeOnlyFormat('22:04:4.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isRealTimeOnlyFormat('22:60:54.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isRealTimeOnlyFormat('22:04:60.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isRealTimeOnlyFormat('22:04:54.1861234562'),
-      ).toBeFalse();
-      expect(TimestampUtils.isRealTimeOnlyFormat('22:04:54.')).toBeFalse();
+      expect(isRealTimeOnlyFormat('2022-11-10T22:04:54.186123456')).toBeFalse();
+      expect(isRealTimeOnlyFormat('2:04:54.186123456')).toBeFalse();
+      expect(isRealTimeOnlyFormat('25:04:54.186123456')).toBeFalse();
+      expect(isRealTimeOnlyFormat('22:4:54.186123456')).toBeFalse();
+      expect(isRealTimeOnlyFormat('22:04:4.186123456')).toBeFalse();
+      expect(isRealTimeOnlyFormat('22:60:54.186123456')).toBeFalse();
+      expect(isRealTimeOnlyFormat('22:04:60.186123456')).toBeFalse();
+      expect(isRealTimeOnlyFormat('22:04:54.1861234562')).toBeFalse();
+      expect(isRealTimeOnlyFormat('22:04:54.')).toBeFalse();
     });
   });
 
   describe('isRealDateTimeFormat', () => {
     it('accepts all expected inputs', () => {
-      expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-10, 22:04:54.186'),
-      ).toBeTrue();
-      expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-10, 22:04:54.186777'),
-      ).toBeTrue();
-      expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-10, 22:04:54.186234769'),
-      ).toBeTrue();
+      expect(isRealDateTimeFormat('2022-11-10, 22:04:54.186')).toBeTrue();
+      expect(isRealDateTimeFormat('2022-11-10, 22:04:54.186777')).toBeTrue();
+      expect(isRealDateTimeFormat('2022-11-10, 22:04:54.186234769')).toBeTrue();
     });
 
     it('rejects all expected inputs', () => {
+      expect(isRealDateTimeFormat('2022-11-10T22:04:54.186234769')).toBeFalse();
       expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-10T22:04:54.186234769'),
+        isRealDateTimeFormat('2022-13-10, 22:04:54.186123456'),
       ).toBeFalse();
       expect(
-        TimestampUtils.isRealDateTimeFormat('2022-13-10, 22:04:54.186123456'),
+        isRealDateTimeFormat('2022-11-32, 22:04:54.186123456'),
       ).toBeFalse();
       expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-32, 22:04:54.186123456'),
+        isRealDateTimeFormat('2022-11-10, 25:04:54.186123456'),
       ).toBeFalse();
       expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-10, 25:04:54.186123456'),
+        isRealDateTimeFormat('2022-11-10, 22:60:54.186123456'),
       ).toBeFalse();
       expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-10, 22:60:54.186123456'),
+        isRealDateTimeFormat('2022-11-10, 22:04:60.186123456'),
       ).toBeFalse();
       expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-10, 22:04:60.186123456'),
+        isRealDateTimeFormat('2022-11-10, 22:04:54.1861234568'),
       ).toBeFalse();
-      expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-10, 22:04:54.1861234568'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isRealDateTimeFormat('2022-11-10, 22:04:54.'),
-      ).toBeFalse();
+      expect(isRealDateTimeFormat('2022-11-10, 22:04:54.')).toBeFalse();
     });
   });
 
   describe('isISOFormat', () => {
     it('accepts all expected inputs', () => {
-      expect(TimestampUtils.isISOFormat('2022-11-10T22:04:54.186')).toBeTrue();
-      expect(
-        TimestampUtils.isISOFormat('2022-11-10T22:04:54.186777'),
-      ).toBeTrue();
-      expect(
-        TimestampUtils.isISOFormat('2022-11-10T22:04:54.186234769'),
-      ).toBeTrue();
+      expect(isISOFormat('2022-11-10T22:04:54.186')).toBeTrue();
+      expect(isISOFormat('2022-11-10T22:04:54.186777')).toBeTrue();
+      expect(isISOFormat('2022-11-10T22:04:54.186234769')).toBeTrue();
     });
 
     it('rejects all expected inputs', () => {
-      expect(
-        TimestampUtils.isISOFormat('2022-11-10, 22:04:54.186234769'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isISOFormat('2022-13-10T22:04:54.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isISOFormat('2022-11-32T22:04:54.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isISOFormat('2022-11-10T25:04:54.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isISOFormat('2022-11-10T22:60:54.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isISOFormat('2022-11-10T22:04:60.186123456'),
-      ).toBeFalse();
-      expect(
-        TimestampUtils.isISOFormat('2022-11-10T22:04:54.1861234568'),
-      ).toBeFalse();
-      expect(TimestampUtils.isISOFormat('2022-11-10T22:04:54.')).toBeFalse();
+      expect(isISOFormat('2022-11-10, 22:04:54.186234769')).toBeFalse();
+      expect(isISOFormat('2022-13-10T22:04:54.186123456')).toBeFalse();
+      expect(isISOFormat('2022-11-32T22:04:54.186123456')).toBeFalse();
+      expect(isISOFormat('2022-11-10T25:04:54.186123456')).toBeFalse();
+      expect(isISOFormat('2022-11-10T22:60:54.186123456')).toBeFalse();
+      expect(isISOFormat('2022-11-10T22:04:60.186123456')).toBeFalse();
+      expect(isISOFormat('2022-11-10T22:04:54.1861234568')).toBeFalse();
+      expect(isISOFormat('2022-11-10T22:04:54.')).toBeFalse();
     });
   });
 });
