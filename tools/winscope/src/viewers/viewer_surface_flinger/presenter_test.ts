@@ -41,7 +41,7 @@ import {VISIBLE_CHIP} from 'viewers/common/chip';
 import {TextFilter} from 'viewers/common/text_filter';
 import {UiDataHierarchy} from 'viewers/common/ui_data_hierarchy';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
-import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
+import {makeIdMatchFilter, makeNodeFilter} from 'viewers/common/ui_tree_utils';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {TraceRectType} from 'viewers/components/rects/rect_spec';
 import {Presenter} from './presenter';
@@ -202,7 +202,7 @@ the default for its data type.`,
 
     const layer = assertDefined(
       firstEntryDataTree.findDfs(
-        UiTreeUtils.makeIdMatchFilter(
+        makeIdMatchFilter(
           '576 com.android.car.carlauncher/com.android.car.carlauncher.CarLauncher#576',
         ),
       ),
@@ -220,7 +220,7 @@ the default for its data type.`,
       assertDefined(
         firstEntryDataTree
           .findDfs(
-            UiTreeUtils.makeIdMatchFilter(
+            makeIdMatchFilter(
               '630 com.google.android.apps.maps/com.google.android.maps.LimitedMapsActivity#630',
             ),
           )
@@ -526,7 +526,7 @@ the default for its data type.`,
         const nodeWithRelZChild = this.getSelectedTree();
         const nodeWithRelZParent = assertDefined(
           assertDefined(uiData.hierarchyTrees)[0].findDfs(
-            UiTreeUtils.makeNodeFilter(
+            makeNodeFilter(
               new TextFilter(
                 '626 SurfaceView[com.android.car.carlauncher/com.android.car.carlauncher.CarLauncher]#626',
               ).getFilterPredicate(),

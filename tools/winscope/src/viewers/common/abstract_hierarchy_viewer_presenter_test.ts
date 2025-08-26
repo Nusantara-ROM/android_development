@@ -27,7 +27,7 @@ import {
 } from 'viewers/common/abstract_hierarchy_viewer_presenter';
 import {TextFilter} from 'viewers/common/text_filter';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
-import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
+import {makeNodeFilter} from 'viewers/common/ui_tree_utils';
 import {UserOptions} from 'viewers/common/user_options';
 import {RectSpec} from 'viewers/components/rects/rect_spec';
 import {Chip} from './chip';
@@ -163,7 +163,7 @@ export abstract class AbstractHierarchyViewerPresenterTest<
           };
 
           await presenter.onAppEvent(this.getPositionUpdate());
-          const longNameFilter = UiTreeUtils.makeNodeFilter(
+          const longNameFilter = makeNodeFilter(
             new TextFilter(longName).getFilterPredicate(),
           );
           let nodeWithLongName = assertDefined(

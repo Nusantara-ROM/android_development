@@ -39,7 +39,7 @@ import {RectShowState} from 'viewers/common/rect_show_state';
 import {TableProperties} from 'viewers/common/table_properties';
 import {TextFilter} from 'viewers/common/text_filter';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
-import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
+import {isHighlighted} from 'viewers/common/ui_tree_utils';
 import {UserOptions} from 'viewers/common/user_options';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {CollapsibleSectionTitleComponent} from 'viewers/components/collapsible_section_title_component';
@@ -177,7 +177,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
   ],
 })
 export class HierarchyComponent {
-  isHighlighted = UiTreeUtils.isHighlighted;
+  isHighlighted = isHighlighted;
   ViewerEvents = ViewerEvents;
   Analytics = Analytics;
   treeStorage = new InMemoryStorage();

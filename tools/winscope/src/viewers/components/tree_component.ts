@@ -30,7 +30,7 @@ import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {RectShowState} from 'viewers/common/rect_show_state';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
-import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
+import {isHighlighted} from 'viewers/common/ui_tree_utils';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {
   nodeInnerItemStyles,
@@ -100,7 +100,7 @@ import {TreeNodeComponent} from './tree_node_component';
   styles: [nodeStyles, treeNodeDataViewStyles, nodeInnerItemStyles],
 })
 export class TreeComponent {
-  isHighlighted = UiTreeUtils.isHighlighted;
+  isHighlighted = isHighlighted;
 
   @Input() node?: UiPropertyTreeNode | UiHierarchyTreeNode;
   @Input() store: InMemoryStorage | undefined;

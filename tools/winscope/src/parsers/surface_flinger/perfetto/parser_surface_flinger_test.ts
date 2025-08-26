@@ -31,7 +31,7 @@ import {Parser} from 'trace_api/parser';
 import {Trace} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
-import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
+import {makeIdMatchFilter} from 'viewers/common/ui_tree_utils';
 
 describe('PerfettoParserSurfaceFlinger', () => {
   let userNotifierChecker: UserNotifierChecker;
@@ -100,7 +100,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
     it('provides eager properties', async () => {
       const entry = await parser.getEntry(0);
       const leaf = assertDefined(
-        entry.findDfs(UiTreeUtils.makeIdMatchFilter('27 Leaf:24:25#27')),
+        entry.findDfs(makeIdMatchFilter('27 Leaf:24:25#27')),
       );
       expect(leaf.getEagerPropertyByName('isVisible')?.getValue()).toBeTrue();
       expect(
@@ -112,7 +112,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
       expect(leaf.getParent()?.name).toEqual('WindowedMagnification:0:31#4');
 
       const task = assertDefined(
-        entry.findDfs(UiTreeUtils.makeIdMatchFilter('45 Task=1#45')),
+        entry.findDfs(makeIdMatchFilter('45 Task=1#45')),
       );
       expect(task.getEagerPropertyByName('isVisible')?.getValue()).toBeFalse();
       expect(
@@ -120,12 +120,10 @@ describe('PerfettoParserSurfaceFlinger', () => {
       ).toBeTrue();
 
       const relZParent = assertDefined(
-        entry.findDfs(
-          UiTreeUtils.makeIdMatchFilter('11 ImePlaceholder:13:14#11'),
-        ),
+        entry.findDfs(makeIdMatchFilter('11 ImePlaceholder:13:14#11')),
       );
       const relZChild = assertDefined(
-        entry.findDfs(UiTreeUtils.makeIdMatchFilter('12 ImeContainer#12')),
+        entry.findDfs(makeIdMatchFilter('12 ImeContainer#12')),
       );
       expect(relZParent.getRelativeChildren()).toEqual([relZChild]);
       expect(relZChild.getZParent()).toEqual(relZParent);
@@ -141,9 +139,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
       expect(displays?.[0].isDisplay).toBeTrue();
 
       const overlay = assertDefined(
-        entry.findDfs(
-          UiTreeUtils.makeIdMatchFilter('60 ScreenDecorOverlay#60'),
-        ),
+        entry.findDfs(makeIdMatchFilter('60 ScreenDecorOverlay#60')),
       );
       const layerRect = assertDefined(overlay.getRects()?.[0]);
       expect(layerRect.isDisplay).toBeFalse();
@@ -164,7 +160,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
       const entry = await parser.getEntry(0);
       {
         const layer = assertDefined(
-          entry.findDfs(UiTreeUtils.makeIdMatchFilter('27 Leaf:24:25#27')),
+          entry.findDfs(makeIdMatchFilter('27 Leaf:24:25#27')),
         );
         expect(layer.name).toEqual('Leaf:24:25#27');
 
@@ -175,7 +171,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
       }
       {
         const layer = assertDefined(
-          entry.findDfs(UiTreeUtils.makeIdMatchFilter('48 Task=4#48')),
+          entry.findDfs(makeIdMatchFilter('48 Task=4#48')),
         );
         expect(layer.name).toEqual('Task=4#48');
 
@@ -186,9 +182,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
       }
       {
         const layer = assertDefined(
-          entry.findDfs(
-            UiTreeUtils.makeIdMatchFilter('77 Wallpaper BBQ wrapper#77'),
-          ),
+          entry.findDfs(makeIdMatchFilter('77 Wallpaper BBQ wrapper#77')),
         );
         expect(layer.name).toEqual('Wallpaper BBQ wrapper#77');
 
@@ -232,7 +226,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
 
       const layer = assertDefined(
         entry.findDfs(
-          UiTreeUtils.makeIdMatchFilter(
+          makeIdMatchFilter(
             '-2147483595 Input Consumer recents_animation_input_consumer#408(Mirror)',
           ),
         ),
@@ -244,7 +238,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
 
       const dupLayer = assertDefined(
         entry.findDfs(
-          UiTreeUtils.makeIdMatchFilter(
+          makeIdMatchFilter(
             '-2147483595 Input Consumer recents_animation_input_consumer#408(Mirror) duplicate(1)',
           ),
         ),

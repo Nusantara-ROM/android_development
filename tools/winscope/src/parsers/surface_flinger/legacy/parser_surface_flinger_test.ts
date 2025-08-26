@@ -30,7 +30,7 @@ import {Parser} from 'trace_api/parser';
 import {Trace} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
-import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
+import {makeIdMatchFilter} from 'viewers/common/ui_tree_utils';
 
 describe('ParserSurfaceFlinger', () => {
   let userNotifierChecker: UserNotifierChecker;
@@ -121,7 +121,7 @@ describe('ParserSurfaceFlinger', () => {
       it('decodes layer state flags', async () => {
         const entry = await perfettoParser.getEntry(0);
         const layer = assertDefined(
-          entry.findDfs(UiTreeUtils.makeIdMatchFilter('48 Task=4#48')),
+          entry.findDfs(makeIdMatchFilter('48 Task=4#48')),
         );
         expect(layer.name).toEqual('Task=4#48');
 
@@ -166,7 +166,7 @@ describe('ParserSurfaceFlinger', () => {
 
         const layer = assertDefined(
           entry.findDfs(
-            UiTreeUtils.makeIdMatchFilter(
+            makeIdMatchFilter(
               '-2147483595 Input Consumer recents_animation_input_consumer#408(Mirror)',
             ),
           ),
@@ -178,7 +178,7 @@ describe('ParserSurfaceFlinger', () => {
 
         const dupLayer = assertDefined(
           entry.findDfs(
-            UiTreeUtils.makeIdMatchFilter(
+            makeIdMatchFilter(
               '-2147483595 Input Consumer recents_animation_input_consumer#408(Mirror) duplicate(1)',
             ),
           ),

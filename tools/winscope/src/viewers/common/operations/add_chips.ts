@@ -28,7 +28,7 @@ import {
   VISIBLE_CHIP,
 } from 'viewers/common/chip';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
-import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
+import {isVisible} from 'viewers/common/ui_tree_utils';
 
 export class AddChips implements Operation<UiHierarchyTreeNode> {
   private relZParentIds: Array<bigint> = [];
@@ -49,7 +49,7 @@ export class AddChips implements Operation<UiHierarchyTreeNode> {
         node.addChip(HWC_CHIP);
       }
 
-      if (UiTreeUtils.isVisible(node)) {
+      if (isVisible(node)) {
         node.addChip(VISIBLE_CHIP);
       }
 

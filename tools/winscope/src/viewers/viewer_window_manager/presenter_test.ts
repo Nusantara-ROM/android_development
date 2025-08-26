@@ -33,7 +33,7 @@ import {VISIBLE_CHIP} from 'viewers/common/chip';
 import {TextFilter} from 'viewers/common/text_filter';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {UiPropertyTreeNode} from 'viewers/common/ui_property_tree_node';
-import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
+import {makeNodeFilter} from 'viewers/common/ui_tree_utils';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {TraceRectType} from 'viewers/components/rects/rect_spec';
 import {Presenter} from './presenter';
@@ -148,18 +148,14 @@ the default for its data type.`,
     this.selectedTree = UiHierarchyTreeNode.from(
       assertDefined(
         firstEntryDataTree.findDfs(
-          UiTreeUtils.makeNodeFilter(
-            new TextFilter('93d3f3c').getFilterPredicate(),
-          ),
+          makeNodeFilter(new TextFilter('93d3f3c').getFilterPredicate()),
         ),
       ),
     );
     this.selectedTreeAfterPositionUpdate = UiHierarchyTreeNode.from(
       assertDefined(
         firstEntryDataTree.findDfs(
-          UiTreeUtils.makeNodeFilter(
-            new TextFilter('f7092ed').getFilterPredicate(),
-          ),
+          makeNodeFilter(new TextFilter('f7092ed').getFilterPredicate()),
         ),
       ),
     );

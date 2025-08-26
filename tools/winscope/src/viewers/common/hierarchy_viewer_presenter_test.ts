@@ -18,7 +18,6 @@ import {assertDefined} from 'common/assert_utils';
 import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TimestampConverterUtils} from 'common/time/test_utils';
-import {treeNodeEqualityTester} from 'test/unit/ui_tree_node_utils';
 import {
   DarkModeToggled,
   FilterPresetApplyRequest,
@@ -29,7 +28,10 @@ import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {MockPresenter} from 'test/unit/mock_hierarchy_viewer_presenter';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {makeUiHierarchyNode} from 'test/unit/ui_tree_node_utils';
+import {
+  makeUiHierarchyNode,
+  treeNodeEqualityTester,
+} from 'test/unit/ui_tree_node_utils';
 import {Trace} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';
 import {Traces} from 'trace_api/traces';

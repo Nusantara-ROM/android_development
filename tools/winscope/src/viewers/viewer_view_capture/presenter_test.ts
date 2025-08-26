@@ -38,7 +38,7 @@ import {AbstractHierarchyViewerPresenterTest} from 'viewers/common/abstract_hier
 import {VISIBLE_CHIP} from 'viewers/common/chip';
 import {UiDataHierarchy} from 'viewers/common/ui_data_hierarchy';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
-import {UiTreeUtils} from 'viewers/common/ui_tree_utils';
+import {makeIdMatchFilter} from 'viewers/common/ui_tree_utils';
 import {ViewerEvents} from 'viewers/common/viewer_events';
 import {TraceRectType} from 'viewers/components/rects/rect_spec';
 import {Presenter} from 'viewers/viewer_view_capture/presenter';
@@ -150,11 +150,7 @@ the default for its data type.`,
     this.selectedTree = UiHierarchyTreeNode.from(
       assertDefined(
         firstEntryDataTree
-          .findDfs(
-            UiTreeUtils.makeIdMatchFilter(
-              'ViewNode44 ' + this.treeNodeLongName,
-            ),
-          )
+          .findDfs(makeIdMatchFilter('ViewNode44 ' + this.treeNodeLongName))
           ?.getParent(),
       ),
     ).getChildByName(this.treeNodeLongName);

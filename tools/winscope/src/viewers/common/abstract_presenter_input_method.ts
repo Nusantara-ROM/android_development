@@ -43,7 +43,7 @@ import {HierarchyPresenter} from './hierarchy_presenter';
 import {UpdateSfSubtreeDisplayNames} from './operations/update_sf_subtree_display_names';
 import {PropertiesPresenter} from './properties_presenter';
 import {UiHierarchyTreeNode} from './ui_hierarchy_tree_node';
-import {UiTreeUtils} from './ui_tree_utils';
+import {isHighlighted} from './ui_tree_utils';
 import {ViewerEvents} from './viewer_events';
 
 export abstract class AbstractPresenterInputMethod extends AbstractHierarchyViewerPresenter<ImeUiData> {
@@ -227,7 +227,7 @@ the default for its data type.`,
 
       if (!selected && highlightedItem !== undefined) {
         const isHighlightedFilter = (node: HierarchyTreeNode) =>
-          UiTreeUtils.isHighlighted(node, highlightedItem);
+          isHighlighted(node, highlightedItem);
         let selectedTree =
           this.additionalProperties?.sf?.taskLayerOfImeContainer?.findDfs(
             isHighlightedFilter,
