@@ -20,7 +20,7 @@ import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {MonotonicScreenRecording} from 'messaging/user_warnings';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
 import {UserNotifier} from 'services/user_notifier';
-import {ScreenRecordingUtils} from 'trace/screen_recording_utils';
+import {timestampToVideoTimeSeconds} from 'trace/screen_recording_utils';
 import {TraceFile} from 'trace/trace_file';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
@@ -102,7 +102,7 @@ export class ParserScreenRecording extends AbstractParser<
     index: number,
     entry: bigint,
   ): MediaBasedTraceEntry {
-    const videoTimeSeconds = ScreenRecordingUtils.timestampToVideoTimeSeconds(
+    const videoTimeSeconds = timestampToVideoTimeSeconds(
       this.decodedEntries[0],
       entry,
     );

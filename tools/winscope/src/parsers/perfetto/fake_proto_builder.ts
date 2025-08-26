@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {ObjectUtils} from 'common/object_utils';
+import {setProperty} from 'common/object_utils';
 import {convertSnakeToCamelCase} from 'common/string_utils';
 
 export type FakeProto = any;
@@ -36,7 +36,7 @@ export class FakeProtoBuilder {
       })
       .join('.');
     const value = this.makeValue(valueType, intValue, realValue, stringValue);
-    ObjectUtils.setProperty(this.proto, keyCamelCase, value);
+    setProperty(this.proto, keyCamelCase, value);
     return this;
   }
 

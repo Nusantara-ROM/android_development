@@ -17,7 +17,7 @@
 import {searchSubarray} from 'common/array_utils';
 import {Timestamp} from 'common/time/time';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
-import {ScreenRecordingUtils} from 'trace/screen_recording_utils';
+import {timestampToVideoTimeSeconds} from 'trace/screen_recording_utils';
 import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
 import {TraceType} from 'trace_api/trace_type';
 import {parseIntFromBuffer, parseLongFromBuffer} from './utils';
@@ -57,7 +57,7 @@ export class ParserScreenRecordingLegacy extends AbstractParser<
     index: number,
     entry: bigint,
   ): MediaBasedTraceEntry {
-    const videoTimeSeconds = ScreenRecordingUtils.timestampToVideoTimeSeconds(
+    const videoTimeSeconds = timestampToVideoTimeSeconds(
       this.decodedEntries[0],
       entry,
     );

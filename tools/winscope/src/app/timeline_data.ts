@@ -19,7 +19,7 @@ import {ComponentTimestampConverter} from 'common/time/timestamp_converter';
 import {Analytics} from 'logging/analytics';
 import {CannotParseAllTransitions} from 'messaging/user_warnings';
 import {UserNotifier} from 'services/user_notifier';
-import {ScreenRecordingUtils} from 'trace/screen_recording_utils';
+import {timestampToVideoTimeSeconds} from 'trace/screen_recording_utils';
 import {Trace, TraceEntry} from 'trace_api/trace';
 import {TraceEntryFinder} from 'trace_api/trace_entry_finder';
 import {TracePosition} from 'trace_api/trace_position';
@@ -273,7 +273,7 @@ export class TimelineData {
       return undefined;
     }
 
-    return ScreenRecordingUtils.timestampToVideoTimeSeconds(
+    return timestampToVideoTimeSeconds(
       firstTimestamp.getValueNs(),
       entry.getTimestamp().getValueNs(),
     );
