@@ -461,6 +461,9 @@ export class ShowTraceUploadWarning extends WinscopeEvent {
   }
 }
 
+/**
+ * An event for when playback should start.
+ */
 export class PlaybackStart extends WinscopeEvent {
   override readonly type = WinscopeEventType.PLAYBACK_START;
   readonly traceType: TraceType;

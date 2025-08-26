@@ -16,9 +16,32 @@
 
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {Trace} from 'trace_api/trace';
+import {EmitEvent} from 'messaging/winscope_event_emitter';
+import {TracePositionUpdate} from 'messaging/winscope_event';
+import {TracePosition} from 'trace_api/trace_position';
+import {TimeUtils} from 'common/time/time_utils';
 
 export class PlaybackPresenter {
+  constructor(private emitWinscopeEvent: EmitEvent) {}
+
   async playbackStart(trace: Trace<HierarchyTreeNode>) {
-    return trace.getAllEntryValues()
+    const buffer = await this.buildBuffer(trace);
+    let entryIndex = 0;
+    while (entryIndex < buffer.length) {
+      await this.emitWinscopeEvent(
+        new TracePositionUpdate(
+          TracePosition.fromTraceEntry(buffer[entryIndex]),
+          true,
+        ),
+      );
+      await TimeUtils.sleepMs(10);
+      entryIndex = entryIndex + 1;
+    }
+  }
+
+  private async buildBuffer(trace: Trace<HierarchyTreeNode>) {
+    const length = trace.lengthEntries;
+    const buffer = await trace.getRangeEntryValues({start: 0, end: length});
+    return buffer;
   }
 }

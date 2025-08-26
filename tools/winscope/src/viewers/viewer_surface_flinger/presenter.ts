@@ -176,7 +176,9 @@ the default for its data type.`,
     },
   ];
   private rectSpecIndex = 0;
-  private playbackPresenter = new PlaybackPresenter();
+  private playbackPresenter = new PlaybackPresenter((event) => {
+    return this.emitWinscopeEvent(event);
+  });
 
   constructor(
     trace: Trace<HierarchyTreeNode>,
