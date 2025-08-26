@@ -18,6 +18,7 @@ import {assertDefined} from 'common/assert_utils';
 import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TimestampConverterUtils} from 'common/time/test_utils';
+import {treeNodeEqualityTester} from 'test/unit/ui_tree_node_utils';
 import {
   DarkModeToggled,
   FilterPresetApplyRequest,

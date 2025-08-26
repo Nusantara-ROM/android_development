@@ -18,7 +18,7 @@ import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {Store} from 'common/store/store';
 import {TracePositionUpdate} from 'messaging/winscope_event';
-import {UiTreeNodeUtils} from 'test/unit/ui_tree_node_utils';
+import {treeNodeEqualityTester} from 'test/unit/ui_tree_node_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {PropertySource} from 'tree_node/property_tree_node';
 import {
@@ -44,7 +44,7 @@ export abstract class AbstractHierarchyViewerPresenterTest<
       let storage: InMemoryStorage;
 
       beforeAll(async () => {
-        jasmine.addCustomEqualityTester(UiTreeNodeUtils.treeNodeEqualityTester);
+        jasmine.addCustomEqualityTester(treeNodeEqualityTester);
         jasmine.addCustomEqualityTester(chipEqualityTester);
         userNotifierChecker = new UserNotifierChecker();
         await this.setUpTestEnvironment();

@@ -16,6 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
+import {treeNodeEqualityTester} from 'test/unit/ui_tree_node_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';

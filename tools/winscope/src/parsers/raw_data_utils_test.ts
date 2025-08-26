@@ -16,7 +16,13 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
-import {TreeNodeUtils} from 'test/unit/tree_node_utils';
+import {
+  makeColorNode,
+  makeRectNode,
+  makeBufferNode,
+  makeSizeNode,
+  makePositionNode,
+} from 'test/unit/tree_node_utils';
 import {
   isBuffer,
   isColor,
@@ -29,48 +35,38 @@ import {
 
 describe('RawDataUtils', () => {
   it('identifies color', () => {
-    const color = TreeNodeUtils.makeColorNode(0, 0, 0, 1);
+    const color = makeColorNode(0, 0, 0, 1);
     expect(isColor(color)).toBeTrue();
 
-    const colorOnlyA = TreeNodeUtils.makeColorNode(
-      undefined,
-      undefined,
-      undefined,
-      1,
-    );
+    const colorOnlyA = makeColorNode(undefined, undefined, undefined, 1);
     expect(isColor(colorOnlyA)).toBeTrue();
   });
 
   it('identifies rect', () => {
-    const rect = TreeNodeUtils.makeRectNode(0, 0, 1, 1);
+    const rect = makeRectNode(0, 0, 1, 1);
     expect(isRect(rect)).toBeTrue();
 
-    const rectLeftTop = TreeNodeUtils.makeRectNode(0, 0, undefined, undefined);
+    const rectLeftTop = makeRectNode(0, 0, undefined, undefined);
     expect(isRect(rectLeftTop)).toBeTrue();
 
-    const rectRightBottom = TreeNodeUtils.makeRectNode(
-      undefined,
-      undefined,
-      1,
-      1,
-    );
+    const rectRightBottom = makeRectNode(undefined, undefined, 1, 1);
     expect(isRect(rectRightBottom)).toBeTrue();
   });
 
   it('identifies buffer', () => {
-    const buffer = TreeNodeUtils.makeBufferNode();
+    const buffer = makeBufferNode();
     expect(isBuffer(buffer)).toBeTrue();
   });
 
   it('identifies size', () => {
-    const size = TreeNodeUtils.makeSizeNode(0, 0);
+    const size = makeSizeNode(0, 0);
     expect(isSize(size)).toBeTrue();
     expect(isBuffer(size)).toBeFalse();
 
-    const sizeOnlyW = TreeNodeUtils.makeSizeNode(0, undefined);
+    const sizeOnlyW = makeSizeNode(0, undefined);
     expect(isSize(sizeOnlyW)).toBeTrue();
 
-    const sizeOnlyH = TreeNodeUtils.makeSizeNode(undefined, 0);
+    const sizeOnlyH = makeSizeNode(undefined, 0);
     expect(isSize(sizeOnlyH)).toBeTrue();
 
     const notSize = new PropertyTreeBuilder()
@@ -88,14 +84,14 @@ describe('RawDataUtils', () => {
   });
 
   it('identifies position', () => {
-    const pos = TreeNodeUtils.makePositionNode(0, 0);
+    const pos = makePositionNode(0, 0);
     expect(isPosition(pos)).toBeTrue();
     expect(isRect(pos)).toBeFalse();
 
-    const posOnlyX = TreeNodeUtils.makePositionNode(0, undefined);
+    const posOnlyX = makePositionNode(0, undefined);
     expect(isPosition(posOnlyX)).toBeTrue();
 
-    const posOnlyY = TreeNodeUtils.makePositionNode(undefined, 0);
+    const posOnlyY = makePositionNode(undefined, 0);
     expect(isPosition(posOnlyY)).toBeTrue();
 
     const notPos = new PropertyTreeBuilder()
@@ -121,67 +117,60 @@ describe('RawDataUtils', () => {
     expect(isRegion(region)).toBeTrue();
 
     const rectNode = assertDefined(region.getChildByName('rect'));
+    rectNode.addOrReplaceChild(makeRectNode(0, 0, 1, 1, rectNode.id));
     rectNode.addOrReplaceChild(
-      TreeNodeUtils.makeRectNode(0, 0, 1, 1, rectNode.id),
+      makeRectNode(0, 0, undefined, undefined, rectNode.id),
     );
     rectNode.addOrReplaceChild(
-      TreeNodeUtils.makeRectNode(0, 0, undefined, undefined, rectNode.id),
-    );
-    rectNode.addOrReplaceChild(
-      TreeNodeUtils.makeRectNode(undefined, undefined, 1, 1, rectNode.id),
+      makeRectNode(undefined, undefined, 1, 1, rectNode.id),
     );
     expect(isRegion(region)).toBeTrue();
 
-    rectNode.addOrReplaceChild(TreeNodeUtils.makeColorNode(0, 0, 0, 0));
+    rectNode.addOrReplaceChild(makeColorNode(0, 0, 0, 0));
     expect(isRegion(region)).toBeFalse();
   });
 
   describe('identifies empty object', () => {
     it('rect', () => {
-      const rectWithUndefinedValues = TreeNodeUtils.makeRectNode(
-        0,
-        0,
-        undefined,
-        undefined,
-      );
+      const rectWithUndefinedValues = makeRectNode(0, 0, undefined, undefined);
       expect(isEmptyObj(rectWithUndefinedValues)).toBeTrue();
 
-      const rectAllZeroValues = TreeNodeUtils.makeRectNode(0, 0, 0, 0);
+      const rectAllZeroValues = makeRectNode(0, 0, 0, 0);
       expect(isEmptyObj(rectAllZeroValues)).toBeTrue();
 
-      const rectWithMinusOneValues = TreeNodeUtils.makeRectNode(0, 0, -1, -1);
+      const rectWithMinusOneValues = makeRectNode(0, 0, -1, -1);
       expect(isEmptyObj(rectWithMinusOneValues)).toBeTrue();
     });
 
     it('color', () => {
-      const bMinusOne = TreeNodeUtils.makeColorNode(153, 23, -1, 1);
+      const bMinusOne = makeColorNode(153, 23, -1, 1);
       expect(isEmptyObj(bMinusOne)).toBeTrue();
 
-      const rgbMinusOne = TreeNodeUtils.makeColorNode(-1, -1, -1, 0.9);
+      const rgbMinusOne = makeColorNode(-1, -1, -1, 0.9);
       expect(isEmptyObj(rgbMinusOne)).toBeTrue();
 
-      const alphaZero = TreeNodeUtils.makeColorNode(1, 1, 1, 0);
+      const alphaZero = makeColorNode(1, 1, 1, 0);
       expect(isEmptyObj(alphaZero)).toBeTrue();
     });
   });
 
   describe('identifies non-empty object', () => {
     it('rect', () => {
-      const rect = TreeNodeUtils.makeRectNode(0, 0, 1, 1);
+      const rect = makeRectNode(0, 0, 1, 1);
       expect(isEmptyObj(rect)).toBeFalse();
     });
 
     it('color', () => {
-      const color = TreeNodeUtils.makeColorNode(0, 8, 0, 1);
+      const color = makeColorNode(0, 8, 0, 1);
       expect(isEmptyObj(color)).toBeFalse();
 
-      const missingB = TreeNodeUtils.makeColorNode(153, 23, undefined, 1);
+      const missingB = makeColorNode(153, 23, undefined, 1);
       expect(isEmptyObj(missingB)).toBeFalse();
 
-      const rgbZeroAlphaNonZero = TreeNodeUtils.makeColorNode(0, 0, 0, 0.7);
+      const rgbZeroAlphaNonZero = makeColorNode(0, 0, 0, 0.7);
       expect(isEmptyObj(rgbZeroAlphaNonZero)).toBeFalse();
 
-      const rgbZeroAlphaOne = TreeNodeUtils.makeColorNode(0, 0, 0, 1);
+      const rgbZeroAlphaOne = makeColorNode(0, 0, 0, 1);
       expect(isEmptyObj(rgbZeroAlphaOne)).toBeFalse();
     });
   });

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import {FileUtils} from 'common/file_utils';
+import {
+  removeDirFromFileName,
+  removeExtensionFromFilename,
+} from 'common/file_utils';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {
   ParserResult,
@@ -31,8 +34,8 @@ export class ParserFilename implements ScreenRecordingParser {
 
   async parse(videoData: Uint8Array): Promise<ParserResult> {
     // try parse offset from filename
-    let filename = FileUtils.removeDirFromFileName(this.filename);
-    filename = FileUtils.removeExtensionFromFilename(filename);
+    let filename = removeDirFromFileName(this.filename);
+    filename = removeExtensionFromFilename(filename);
     let offsetMs = AndroidScreenRecording.tryParseFilename(filename);
     if (offsetMs === undefined) {
       offsetMs = ScreenRecordingWithUID.tryParseFilename(filename);
