@@ -29,7 +29,7 @@ import {AbsoluteEntryIndex, EntriesRange} from 'trace_api/index_types';
 import {Parser} from 'trace_api/parser';
 import {TraceMetadata} from 'trace_api/trace_metadata';
 import {TraceType} from 'trace_api/trace_type';
-import {ParsingUtils} from './parsing_utils';
+import {throwIfMagicNumberDoesNotMatch} from './parsing_utils';
 
 export abstract class AbstractParser<
   T extends object,
@@ -62,10 +62,7 @@ export abstract class AbstractParser<
 
   async parse() {
     const traceBuffer = new Uint8Array(await this.traceFile.file.arrayBuffer());
-    ParsingUtils.throwIfMagicNumberDoesNotMatch(
-      traceBuffer,
-      this.getMagicNumber(),
-    );
+    throwIfMagicNumberDoesNotMatch(traceBuffer, this.getMagicNumber());
     this.decodedEntries = await this.decodeTrace(traceBuffer);
   }
 

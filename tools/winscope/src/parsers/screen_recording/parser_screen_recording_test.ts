@@ -73,6 +73,51 @@ describe('ParserScreenRecording', () => {
     });
   });
 
+  describe('metadata v3', () => {
+    beforeAll(async () => {
+      jasmine.addCustomEqualityTester(timestampEqualityTester);
+      parser = await new LegacyParserProvider()
+        .addFile(
+          'traces/elapsed_and_real_timestamp/screen_recording_metadata_v3.mp4',
+        )
+        .getParser<MediaBasedTraceEntry>();
+    });
+
+    it('has expected trace type', () => {
+      expect(parser.getTraceType()).toEqual(TraceType.SCREEN_RECORDING);
+    });
+
+    it('has expected coarse version', () => {
+      expect(parser.getCoarseVersion()).toEqual(CoarseVersion.LATEST);
+    });
+
+    it('provides timestamps', () => {
+      const timestamps = assertDefined(parser.getTimestamps());
+      expect(timestamps.length).toEqual(105);
+      const expected = [
+        TimestampConverterUtils.makeRealTimestamp(1755862820270527000n),
+        TimestampConverterUtils.makeRealTimestamp(1755862820414660000n),
+        TimestampConverterUtils.makeRealTimestamp(1755862820431423000n),
+        TimestampConverterUtils.makeRealTimestamp(1755862820447282000n),
+        TimestampConverterUtils.makeRealTimestamp(1755862820464489000n),
+      ];
+      expect(timestamps.slice(0, 5)).toEqual(expected);
+    });
+
+    it('retrieves trace entry', async () => {
+      {
+        const entry = await parser.getEntry(0);
+        expect(entry).toBeInstanceOf(MediaBasedTraceEntry);
+        expect(Number(entry.videoTimeSeconds)).toBeCloseTo(0);
+      }
+      {
+        const entry = await parser.getEntry(parser.getLengthEntries() - 1);
+        expect(entry).toBeInstanceOf(MediaBasedTraceEntry);
+        expect(Number(entry.videoTimeSeconds)).toBeCloseTo(3.251884, 0.001);
+      }
+    });
+  });
+
   describe('separate metadata file', () => {
     const elapsedNs = 5n;
     const realtoElapsedNs = 10n;

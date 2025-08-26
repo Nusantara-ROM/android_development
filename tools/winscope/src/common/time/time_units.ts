@@ -19,6 +19,7 @@
  */
 export enum TIME_UNIT_TO_NANO {
   ns = 1,
+  us = 1000,
   ms = 1000000,
   s = 1000000 * 1000,
   m = 1000000 * 1000 * 60,
