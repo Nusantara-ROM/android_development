@@ -319,7 +319,7 @@ describe('TraceFileFilter', () => {
         tryParsePerfetto,
       );
       expect(result.perfetto?.file).toEqual(perfettoSysTrace);
-      expect(result.criticalWarnings?.length).toEqual(0); // No warnings expected
+      expect(result.criticalWarnings?.length).toBe(0); // No warnings expected
       userNotifierChecker.expectNone();
     });
 
@@ -484,7 +484,7 @@ describe('TraceFileFilter', () => {
 
     expect(result.perfetto).toBeUndefined();
     expect(result.criticalWarnings).toBeDefined();
-    expect(result.criticalWarnings?.length).toEqual(1);
+    expect(result.criticalWarnings?.length).toBe(1);
     const warning = assertDefined(
       result.criticalWarnings,
     )[0] as MissingPersistentTrace;

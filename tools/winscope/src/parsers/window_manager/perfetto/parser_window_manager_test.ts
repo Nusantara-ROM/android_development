@@ -63,14 +63,14 @@ describe('PerfettoParserWindowManager', () => {
   it('retrieves trace entry', async () => {
     const entry = await parser.getEntry(1);
     expect(entry).toBeInstanceOf(HierarchyTreeNode);
-    expect(entry.id).toEqual('WindowManagerState root');
+    expect(entry.id).toBe('WindowManagerState root');
   });
 
   it('supports WM_WINDOWS_TOKEN_AND_TITLE custom query', async () => {
     const tokenAndTitles = await trace
       .sliceEntries(0, 1)
       .customQuery(CustomQueryType.WM_WINDOWS_TOKEN_AND_TITLE);
-    expect(tokenAndTitles.length).toEqual(69);
+    expect(tokenAndTitles.length).toBe(69);
     expect(tokenAndTitles).toContain({token: '86f4c23', title: 'Leaf:36:36'});
   });
 });

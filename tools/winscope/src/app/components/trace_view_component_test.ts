@@ -102,7 +102,7 @@ describe('TraceViewComponent', () => {
 
   it('creates viewer tabs', () => {
     const tabs = getTabs();
-    expect(tabs.length).toEqual(3);
+    expect(tabs.length).toBe(3);
     tabs[0].checkText('Title0');
     tabs[1].checkText('Title1 Dump');
   });
@@ -129,21 +129,21 @@ describe('TraceViewComponent', () => {
     // Initially tab 0
     dom.detectChanges();
     let visibleTabContents = getVisibleTabContents();
-    expect(visibleTabContents.length).toEqual(1);
-    expect(visibleTabContents[0].innerHTML).toEqual('Content0');
+    expect(visibleTabContents.length).toBe(1);
+    expect(visibleTabContents[0].innerHTML).toBe('Content0');
 
     // Switch to tab 1
     tabs[1].click();
     visibleTabContents = getVisibleTabContents();
-    expect(visibleTabContents.length).toEqual(1);
-    expect(visibleTabContents[0].innerHTML).toEqual('Content1');
+    expect(visibleTabContents.length).toBe(1);
+    expect(visibleTabContents[0].innerHTML).toBe('Content1');
 
     // Switch to tab 0
     tabs[1].click();
     tabs[0].click();
     visibleTabContents = getVisibleTabContents();
-    expect(visibleTabContents.length).toEqual(1);
-    expect(visibleTabContents[0].innerHTML).toEqual('Content0');
+    expect(visibleTabContents.length).toBe(1);
+    expect(visibleTabContents[0].innerHTML).toBe('Content0');
   });
 
   it("emits 'view switched' events", () => {
@@ -176,8 +176,8 @@ describe('TraceViewComponent', () => {
 
     // Initially tab 0
     let visibleTabContents = getVisibleTabContents();
-    expect(visibleTabContents.length).toEqual(1);
-    expect(visibleTabContents[0].innerHTML).toEqual('Content0');
+    expect(visibleTabContents.length).toBe(1);
+    expect(visibleTabContents[0].innerHTML).toBe('Content0');
 
     // Switch to tab 1
     await traceViewComponent.onWinscopeEvent(
@@ -185,8 +185,8 @@ describe('TraceViewComponent', () => {
     );
     dom.detectChanges();
     visibleTabContents = getVisibleTabContents();
-    expect(visibleTabContents.length).toEqual(1);
-    expect(visibleTabContents[0].innerHTML).toEqual('Content1');
+    expect(visibleTabContents.length).toBe(1);
+    expect(visibleTabContents[0].innerHTML).toBe('Content1');
 
     // Switch to tab 0
     await traceViewComponent.onWinscopeEvent(
@@ -194,8 +194,8 @@ describe('TraceViewComponent', () => {
     );
     dom.detectChanges();
     visibleTabContents = getVisibleTabContents();
-    expect(visibleTabContents.length).toEqual(1);
-    expect(visibleTabContents[0].innerHTML).toEqual('Content0');
+    expect(visibleTabContents.length).toBe(1);
+    expect(visibleTabContents[0].innerHTML).toBe('Content0');
   });
 
   it('emits TabbedViewSwitched event on viewer changes', () => {
@@ -332,8 +332,8 @@ describe('TraceViewComponent', () => {
     ];
     dom.detectChanges();
     const visibleTabContents = getVisibleTabContents();
-    expect(visibleTabContents.length).toEqual(1);
-    expect(visibleTabContents[0].innerHTML).toEqual('Content1');
+    expect(visibleTabContents.length).toBe(1);
+    expect(visibleTabContents[0].innerHTML).toBe('Content1');
   });
 
   it('shows tooltips for tabs with trace descriptors', async () => {

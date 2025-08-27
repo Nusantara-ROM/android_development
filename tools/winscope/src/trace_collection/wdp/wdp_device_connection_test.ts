@@ -219,7 +219,7 @@ describe('WdpDeviceConnection', () => {
         [{command: 'test cmd', resps: ['cmd complete']}],
       );
       const output = await connection.runShellCommand('test cmd');
-      expect(output).toEqual('cmd complete');
+      expect(output).toBe('cmd complete');
       expect(listener.onConnectionStateChange).not.toHaveBeenCalled();
     });
 
@@ -229,7 +229,7 @@ describe('WdpDeviceConnection', () => {
         [{command: 'test cmd', resps: ['cmd ', 'complete']}],
       );
       const output = await connection.runShellCommand('test cmd');
-      expect(output).toEqual('cmd complete');
+      expect(output).toBe('cmd complete');
     });
 
     it('calls listener on shell command error', async () => {
@@ -240,7 +240,7 @@ describe('WdpDeviceConnection', () => {
         [{command: 'test cmd', resps: ['test error']}],
       );
       const output = await connection.runShellCommand('test cmd');
-      expect(output).toEqual('');
+      expect(output).toBe('');
       expect(listener.onError).toHaveBeenCalledTimes(1);
       listener.onError.calls.reset();
     });

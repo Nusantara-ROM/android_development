@@ -37,9 +37,9 @@ describe('function_utils', () => {
 
     const mixinObj = mixin(a, b);
 
-    expect(mixinObj.a).toEqual('a');
-    expect(mixinObj.b).toEqual('b');
-    expect(mixinObj.foo()).toEqual('a');
-    expect(mixinObj.bar()).toEqual('b');
+    expect(mixinObj.a).toBe('a');
+    expect(mixinObj.b).toBe('b');
+    expect(mixinObj.foo()).toBe('a');
+    expect(mixinObj.bar()).toBe('b');
   });
 });

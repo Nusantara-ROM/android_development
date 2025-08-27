@@ -26,12 +26,12 @@ describe('Point3D', () => {
   it('isEqual should return true for equal points', () => {
     const point1 = new Point3D(1, 2, 3);
     const point2 = new Point3D(1, 2, 3);
-    expect(point1.isEqual(point2)).toBe(true);
+    expect(point1.isEqual(point2)).toBeTrue();
   });
 
   it('isEqual should return false for unequal points', () => {
     const point1 = new Point3D(1, 2, 3);
     const point2 = new Point3D(4, 5, 6);
-    expect(point1.isEqual(point2)).toBe(false);
+    expect(point1.isEqual(point2)).toBeFalse();
   });
 });

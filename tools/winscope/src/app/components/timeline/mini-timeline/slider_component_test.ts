@@ -133,7 +133,7 @@ describe('SliderComponent', () => {
 
     const box = assertDefined(component.sliderBox);
     spyOnProperty(box.nativeElement, 'offsetWidth', 'get').and.returnValue(100);
-    expect(box.nativeElement.offsetWidth).toEqual(100);
+    expect(box.nativeElement.offsetWidth).toBe(100);
 
     slider.style.width = '587px';
     window.dispatchEvent(new Event('resize'));
@@ -353,6 +353,6 @@ describe('SliderComponent', () => {
   });
 
   function checkVisible(element: HTMLElement) {
-    expect(window.getComputedStyle(element).visibility).toEqual('visible');
+    expect(window.getComputedStyle(element).visibility).toBe('visible');
   }
 });

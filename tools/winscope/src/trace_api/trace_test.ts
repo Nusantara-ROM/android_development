@@ -58,14 +58,14 @@ describe('Trace', () => {
   });
 
   it('getEntry()', async () => {
-    expect(await trace.getEntry(0).getValue()).toEqual('entry-0');
-    expect(await trace.getEntry(4).getValue()).toEqual('entry-4');
+    expect(await trace.getEntry(0).getValue()).toBe('entry-0');
+    expect(await trace.getEntry(4).getValue()).toBe('entry-4');
     expect(() => {
       trace.getEntry(5);
     }).toThrow();
 
-    expect(await trace.getEntry(-1).getValue()).toEqual('entry-4');
-    expect(await trace.getEntry(-5).getValue()).toEqual('entry-0');
+    expect(await trace.getEntry(-1).getValue()).toBe('entry-4');
+    expect(await trace.getEntry(-5).getValue()).toBe('entry-0');
     expect(() => {
       trace.getEntry(-6);
     }).toThrow();
@@ -101,20 +101,20 @@ describe('Trace', () => {
 
     // slice
     const slice = trace.sliceEntries(1, -1);
-    expect(await slice.findClosestEntry(time9)?.getValue()).toEqual('entry-1');
-    expect(await slice.findClosestEntry(time10)?.getValue()).toEqual('entry-1');
-    expect(await slice.findClosestEntry(time11)?.getValue()).toEqual('entry-1');
-    expect(await slice.findClosestEntry(time12)?.getValue()).toEqual('entry-3');
-    expect(await slice.findClosestEntry(time13)?.getValue()).toEqual('entry-3');
-    expect(await slice.findClosestEntry(time14)?.getValue()).toEqual('entry-3');
+    expect(await slice.findClosestEntry(time9)?.getValue()).toBe('entry-1');
+    expect(await slice.findClosestEntry(time10)?.getValue()).toBe('entry-1');
+    expect(await slice.findClosestEntry(time11)?.getValue()).toBe('entry-1');
+    expect(await slice.findClosestEntry(time12)?.getValue()).toBe('entry-3');
+    expect(await slice.findClosestEntry(time13)?.getValue()).toBe('entry-3');
+    expect(await slice.findClosestEntry(time14)?.getValue()).toBe('entry-3');
 
     // full trace
-    expect(await trace.findClosestEntry(time9)?.getValue()).toEqual('entry-0');
-    expect(await trace.findClosestEntry(time10)?.getValue()).toEqual('entry-0');
-    expect(await trace.findClosestEntry(time11)?.getValue()).toEqual('entry-1');
-    expect(await trace.findClosestEntry(time12)?.getValue()).toEqual('entry-3');
-    expect(await trace.findClosestEntry(time13)?.getValue()).toEqual('entry-4');
-    expect(await trace.findClosestEntry(time14)?.getValue()).toEqual('entry-4');
+    expect(await trace.findClosestEntry(time9)?.getValue()).toBe('entry-0');
+    expect(await trace.findClosestEntry(time10)?.getValue()).toBe('entry-0');
+    expect(await trace.findClosestEntry(time11)?.getValue()).toBe('entry-1');
+    expect(await trace.findClosestEntry(time12)?.getValue()).toBe('entry-3');
+    expect(await trace.findClosestEntry(time13)?.getValue()).toBe('entry-4');
+    expect(await trace.findClosestEntry(time14)?.getValue()).toBe('entry-4');
   });
 
   it('findFirstGreaterOrEqualEntry()', async () => {
@@ -128,33 +128,33 @@ describe('Trace', () => {
     expect(await slice.findFirstGreaterOrEqualEntry(time9)?.getValue()).toEqual(
       'entry-1',
     );
-    expect(
-      await slice.findFirstGreaterOrEqualEntry(time10)?.getValue(),
-    ).toEqual('entry-1');
-    expect(
-      await slice.findFirstGreaterOrEqualEntry(time11)?.getValue(),
-    ).toEqual('entry-1');
-    expect(
-      await slice.findFirstGreaterOrEqualEntry(time12)?.getValue(),
-    ).toEqual('entry-3');
+    expect(await slice.findFirstGreaterOrEqualEntry(time10)?.getValue()).toBe(
+      'entry-1',
+    );
+    expect(await slice.findFirstGreaterOrEqualEntry(time11)?.getValue()).toBe(
+      'entry-1',
+    );
+    expect(await slice.findFirstGreaterOrEqualEntry(time12)?.getValue()).toBe(
+      'entry-3',
+    );
     expect(await slice.findFirstGreaterOrEqualEntry(time13)).toBeUndefined();
 
     // full trace
     expect(await trace.findFirstGreaterOrEqualEntry(time9)?.getValue()).toEqual(
       'entry-0',
     );
-    expect(
-      await trace.findFirstGreaterOrEqualEntry(time10)?.getValue(),
-    ).toEqual('entry-0');
-    expect(
-      await trace.findFirstGreaterOrEqualEntry(time11)?.getValue(),
-    ).toEqual('entry-1');
-    expect(
-      await trace.findFirstGreaterOrEqualEntry(time12)?.getValue(),
-    ).toEqual('entry-3');
-    expect(
-      await trace.findFirstGreaterOrEqualEntry(time13)?.getValue(),
-    ).toEqual('entry-4');
+    expect(await trace.findFirstGreaterOrEqualEntry(time10)?.getValue()).toBe(
+      'entry-0',
+    );
+    expect(await trace.findFirstGreaterOrEqualEntry(time11)?.getValue()).toBe(
+      'entry-1',
+    );
+    expect(await trace.findFirstGreaterOrEqualEntry(time12)?.getValue()).toBe(
+      'entry-3',
+    );
+    expect(await trace.findFirstGreaterOrEqualEntry(time13)?.getValue()).toBe(
+      'entry-4',
+    );
     expect(await trace.findFirstGreaterOrEqualEntry(time14)).toBeUndefined();
   });
 
@@ -1005,7 +1005,7 @@ describe('Trace', () => {
     expect(trace.sliceEntries(2).getFramesRange()).toEqual({start: 1, end: 7});
     expect(trace.sliceEntries(3).getFramesRange()).toEqual({start: 4, end: 7});
     expect(trace.sliceEntries(4).getFramesRange()).toEqual({start: 6, end: 7});
-    expect(trace.sliceEntries(5).getFramesRange()).toEqual(undefined);
+    expect(trace.sliceEntries(5).getFramesRange()).toBeUndefined();
 
     expect(trace.sliceEntries(undefined, 5).getFramesRange()).toEqual({
       start: 0,
@@ -1188,7 +1188,7 @@ describe('Trace', () => {
       .setFrameMap(undefined)
       .build();
 
-    expect(await trace.getEntry(0).getValue()).toEqual('entry-0');
+    expect(await trace.getEntry(0).getValue()).toBe('entry-0');
     expect(await extractEntries(trace)).toEqual([
       'entry-0',
       'entry-1',

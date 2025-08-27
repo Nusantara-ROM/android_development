@@ -28,7 +28,7 @@ describe('WmCustomQueryUtils', () =>
         .sliceEntries(0, 1)
         .customQuery(CustomQueryType.WM_WINDOWS_TOKEN_AND_TITLE);
 
-      expect(tokenAndTitles.length).toEqual(69);
+      expect(tokenAndTitles.length).toBe(69);
 
       // RootWindowContainerProto
       expect(tokenAndTitles).toContain({

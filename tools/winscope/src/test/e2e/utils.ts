@@ -154,7 +154,7 @@ export async function checkInitialRealTimestamp(timestamp: string) {
   await checkWinscopeRealTimestamp(timestamp.slice(12));
   const prevEntryButton = element(by.css('#prev_entry_button'));
   const isDisabled = await prevEntryButton.getAttribute('disabled');
-  expect(isDisabled).toEqual('true');
+  expect(isDisabled).toBe('true');
 }
 
 export async function checkFinalRealTimestamp(timestamp: string) {
@@ -162,7 +162,7 @@ export async function checkFinalRealTimestamp(timestamp: string) {
   await checkWinscopeRealTimestamp(timestamp.slice(12));
   const nextEntryButton = element(by.css('#next_entry_button'));
   const isDisabled = await nextEntryButton.getAttribute('disabled');
-  expect(isDisabled).toEqual('true');
+  expect(isDisabled).toBe('true');
 }
 
 export async function checkWinscopeRealTimestamp(timestamp: string) {

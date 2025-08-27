@@ -74,7 +74,7 @@ describe('TracesParserInput', () => {
 
   it('retrieves all entries', async () => {
     const entries = await parser.getAllEntries();
-    expect(entries.length).toEqual(8);
+    expect(entries.length).toBe(8);
     expect(entries.every((entry) => entry !== undefined)).toBeTrue();
   });
 
@@ -91,9 +91,9 @@ describe('TracesParserInput', () => {
     expect(motionEvent.getEagerPropertyByName('eventId')?.getValue()).toEqual(
       330184796n,
     );
-    expect(
-      motionEvent.getEagerPropertyByName('type')?.formattedValue(),
-    ).toEqual('MOTION');
+    expect(motionEvent.getEagerPropertyByName('type')?.formattedValue()).toBe(
+      'MOTION',
+    );
   });
 
   it('supports VSYNCID custom query', async () => {

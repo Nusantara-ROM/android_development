@@ -44,7 +44,7 @@ describe('SimplifyNames', () => {
     hierarchyRoot
       .getAllChildren()
       .forEach((child) =>
-        expect(child.getDisplayName()).toEqual('node.child.(...).child'),
+        expect(child.getDisplayName()).toBe('node.child.(...).child'),
       );
   });
 
@@ -65,6 +65,6 @@ describe('SimplifyNames', () => {
     operation.apply(hierarchyRoot);
     hierarchyRoot
       .getAllChildren()
-      .forEach((child) => expect(child.getDisplayName()).toEqual('node.child'));
+      .forEach((child) => expect(child.getDisplayName()).toBe('node.child'));
   });
 });

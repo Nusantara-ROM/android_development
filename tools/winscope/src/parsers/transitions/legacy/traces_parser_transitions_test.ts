@@ -118,9 +118,9 @@ describe('TracesParserTransitions', () => {
 
   it('converts to valid perfetto packets', () => {
     const packets = parser.convertToPerfettoPackets!(10);
-    expect(packets.length).toEqual(5);
+    expect(packets.length).toBe(5);
     packets.forEach((packet) => {
-      expect(packet.trustedPacketSequenceId).toEqual(10);
+      expect(packet.trustedPacketSequenceId).toBe(10);
     });
 
     const handlerMappingPacket = packets[0];
@@ -141,7 +141,7 @@ describe('TracesParserTransitions', () => {
 
     const transition6Packet = packets[1];
     const transition6 = assertDefined(transition6Packet.shellTransition);
-    expect(transition6.id).toEqual(6);
+    expect(transition6.id).toBe(6);
     const dispatchTime6 = Long.fromString('57649649922341');
     expect(transition6Packet.timestamp).toEqual(dispatchTime6);
     expect(transition6Packet.timestampClockId).toEqual(
@@ -151,20 +151,20 @@ describe('TracesParserTransitions', () => {
     expect(transition6.sendTimeNs).toEqual(Long.fromString('57649646973488'));
     expect(transition6.wmAbortTimeNs).toBeUndefined();
     expect(transition6.finishTimeNs).toEqual(Long.fromString('57650183020323'));
-    expect(transition6.type).toEqual(1);
-    expect(transition6.targets?.length).toEqual(2);
+    expect(transition6.type).toBe(1);
+    expect(transition6.targets?.length).toBe(2);
     expect(transition6.flags).toBeUndefined();
     expect(transition6.startingWindowRemoveTimeNs).toBeUndefined();
     expect(transition6.dispatchTimeNs).toEqual(dispatchTime6);
     expect(transition6.mergeTimeNs).toBeUndefined();
     expect(transition6.mergeRequestTimeNs).toBeUndefined();
     expect(transition6.shellAbortTimeNs).toBeUndefined();
-    expect(transition6.handler).toEqual(2);
+    expect(transition6.handler).toBe(2);
     expect(transition6.mergeTarget).toBeUndefined();
 
     const transition7Packet = packets[2];
     const transition7 = assertDefined(transition7Packet.shellTransition);
-    expect(transition7.id).toEqual(7);
+    expect(transition7.id).toBe(7);
     const sendTime7 = Long.fromString('57649828043313');
     expect(transition7Packet.timestamp).toEqual(sendTime7);
     expect(transition7Packet.timestampClockId).toEqual(
@@ -179,15 +179,15 @@ describe('TracesParserTransitions', () => {
     expect(transition7.handler).toBeUndefined();
 
     const transition8 = assertDefined(packets[3].shellTransition);
-    expect(transition8.id).toEqual(8);
-    expect(transition8.flags).toEqual(128);
+    expect(transition8.id).toBe(8);
+    expect(transition8.flags).toBe(128);
 
     const transition9 = assertDefined(packets[4].shellTransition);
-    expect(transition9.id).toEqual(9);
+    expect(transition9.id).toBe(9);
     expect(transition9.mergeRequestTimeNs).toEqual(
       Long.fromString('57653389780131'),
     );
-    expect(transition9.mergeTarget).toEqual(8);
+    expect(transition9.mergeTarget).toBe(8);
   });
 
   it('converts to valid perfetto trace', async () => {
@@ -222,9 +222,7 @@ describe('TracesParserTransitions', () => {
 
     const entry = entries[2];
     const entryProperties = await entry.getAllProperties();
-    expect(entry.getEagerPropertyByName('status')?.getValue()).toEqual(
-      'played',
-    );
+    expect(entry.getEagerPropertyByName('status')?.getValue()).toBe('played');
 
     checkEagerPropertyValue(entry, 'sendTimeNs', '2023-05-04, 08:21:19.252');
     checkPropertyValue(entryProperties, 'startTransactionId', '13086765351920');
@@ -233,21 +231,21 @@ describe('TracesParserTransitions', () => {
     const layerParticipants = assertDefined(
       entry.getEagerPropertyByName('layers'),
     );
-    expect(layerParticipants.getAllChildren().length).toEqual(2);
+    expect(layerParticipants.getAllChildren().length).toBe(2);
     checkPropertyValue(layerParticipants, '0', '113');
     checkPropertyValue(layerParticipants, '1', '190');
 
     const windowParticipants = assertDefined(
       entry.getEagerPropertyByName('windows'),
     );
-    expect(windowParticipants.getAllChildren().length).toEqual(2);
+    expect(windowParticipants.getAllChildren().length).toBe(2);
     checkPropertyValue(windowParticipants, '0', '179781688');
     checkPropertyValue(windowParticipants, '1', '184699222');
 
     const targets = assertDefined(
       entryProperties.getChildByName('targets'),
     ).getAllChildren();
-    expect(targets.length).toEqual(2);
+    expect(targets.length).toBe(2);
     checkPropertyValue(targets[0], 'layerId', '113');
     checkPropertyValue(targets[0], 'mode', 'TO_FRONT');
     checkPropertyValue(
@@ -274,9 +272,7 @@ describe('TracesParserTransitions', () => {
     property: string,
     value: string,
   ) {
-    expect(node.getEagerPropertyByName(property)?.formattedValue()).toEqual(
-      value,
-    );
+    expect(node.getEagerPropertyByName(property)?.formattedValue()).toBe(value);
   }
 
   function checkPropertyValue(
@@ -284,6 +280,6 @@ describe('TracesParserTransitions', () => {
     property: string,
     value: string,
   ) {
-    expect(node.getChildByName(property)?.formattedValue()).toEqual(value);
+    expect(node.getChildByName(property)?.formattedValue()).toBe(value);
   }
 });

@@ -28,22 +28,22 @@ describe('Rect', () => {
   it('containsPoint should return true for a point inside the rect', () => {
     const rect = new Rect(0, 0, 10, 10);
     const point: Point = {x: 5, y: 5};
-    expect(rect.containsPoint(point)).toBe(true);
+    expect(rect.containsPoint(point)).toBeTrue();
   });
 
   it('containsPoint should return false for a point outside the rect', () => {
     const rect = new Rect(0, 0, 10, 10);
     const point: Point = {x: 15, y: 15};
-    expect(rect.containsPoint(point)).toBe(false);
+    expect(rect.containsPoint(point)).toBeFalse();
   });
 
   it('isEmpty should return true for an empty rect', () => {
     const rect = new Rect(-1, -1, 0, 0);
-    expect(rect.isEmpty()).toBe(true);
+    expect(rect.isEmpty()).toBeTrue();
   });
 
   it('isEmpty should return false for a non-empty rect', () => {
     const rect = new Rect(0, 0, 10, 10);
-    expect(rect.isEmpty()).toBe(false);
+    expect(rect.isEmpty()).toBeFalse();
   });
 });

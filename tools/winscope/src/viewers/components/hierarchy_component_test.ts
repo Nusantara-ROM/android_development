@@ -127,7 +127,7 @@ describe('HierarchyComponent', () => {
     ];
     dom.detectChanges();
     const trees = dom.findAll('.tree-wrapper .tree');
-    expect(trees.length).toEqual(2);
+    expect(trees.length).toBe(2);
     trees[1].checkText('subtree');
   });
 
@@ -220,7 +220,7 @@ describe('HierarchyComponent', () => {
     component.trees[1].addWarning(warning2);
     dom.detectChanges();
     const warnings = dom.findAll('.warning');
-    expect(warnings.length).toEqual(2);
+    expect(warnings.length).toBe(2);
     warnings[0].checkTextExact('warning ' + warning1.getMessage());
     warnings[1].checkTextExact('warning ' + warning2.getMessage());
   });

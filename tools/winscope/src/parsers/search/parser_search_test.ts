@@ -67,7 +67,7 @@ describe('ParserSearch', () => {
     });
 
     it('has length entries equal to number of rows', () => {
-      expect(parser.getLengthEntries()).toEqual(21);
+      expect(parser.getLengthEntries()).toBe(21);
     });
 
     it('provides timestamps', () => {
@@ -83,10 +83,10 @@ describe('ParserSearch', () => {
 
     it('provides query result', async () => {
       const entry = await parser.getEntry(0);
-      expect(entry.numRows()).toEqual(21);
+      expect(entry.numRows()).toBe(21);
       const firstRow = entry.iter({});
-      expect(firstRow.get('id')).toEqual(0n);
-      expect(firstRow.get('ts')).toEqual(14500282843n);
+      expect(firstRow.get('id')).toBe(0n);
+      expect(firstRow.get('ts')).toBe(14500282843n);
     });
   });
 
@@ -101,7 +101,7 @@ describe('ParserSearch', () => {
     });
 
     it('has length entries equal to 1 so query result can be accessed', () => {
-      expect(parser.getLengthEntries()).toEqual(1);
+      expect(parser.getLengthEntries()).toBe(1);
     });
 
     it('provides one invalid timestamp so query result can be accessed', () => {
@@ -112,11 +112,11 @@ describe('ParserSearch', () => {
 
     it('provides query result', async () => {
       const entry = await parser.getEntry(0);
-      expect(entry.numRows()).toEqual(1815);
+      expect(entry.numRows()).toBe(1815);
       const firstRow = entry.iter({});
-      expect(firstRow.get('id')).toEqual(0n);
-      expect(firstRow.get('snapshot_id')).toEqual(0n);
-      expect(firstRow.get('layer_id')).toEqual(3n);
+      expect(firstRow.get('id')).toBe(0n);
+      expect(firstRow.get('snapshot_id')).toBe(0n);
+      expect(firstRow.get('layer_id')).toBe(3n);
     });
   });
 
@@ -130,7 +130,7 @@ describe('ParserSearch', () => {
     });
 
     it('has length entries equal to 1 so query result can be accessed', () => {
-      expect(parser.getLengthEntries()).toEqual(1);
+      expect(parser.getLengthEntries()).toBe(1);
     });
 
     it('provides one invalid timestamp so query result can be accessed', () => {
@@ -148,7 +148,7 @@ describe('ParserSearch', () => {
         'base64_proto_id',
         'vsync_id',
       ]);
-      expect(entry.numRows()).toEqual(0);
+      expect(entry.numRows()).toBe(0);
     });
   });
 

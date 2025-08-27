@@ -63,7 +63,7 @@ describe('TracesParserCujs', () => {
     ];
 
     const timestamps = assertDefined(parser.getTimestamps());
-    expect(timestamps.length).toEqual(16);
+    expect(timestamps.length).toBe(16);
     expect(timestamps.slice(0, 3)).toEqual(expected);
   });
 

@@ -135,7 +135,7 @@ abstract class ParserProtologTest {
           this.expectedConfig,
         );
         expect(viewerConfigPacket.trustedUid).toEqual(trustedUid);
-        expect(viewerConfigPacket.trustedPid).toEqual(0);
+        expect(viewerConfigPacket.trustedPid).toBe(0);
         expect(viewerConfigPacket.internedData).toBeNull();
         expect(viewerConfigPacket.protologMessage).toBeNull();
 

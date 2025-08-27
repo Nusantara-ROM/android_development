@@ -53,7 +53,7 @@ describe('SnackBarComponent', () => {
 
   it('shows all messages', () => {
     const messageElements = dom.findAll('.message');
-    expect(messageElements.length).toEqual(2);
+    expect(messageElements.length).toBe(2);
     messageElements[0].checkTextExact(messages[0]);
     messageElements[1].checkTextExact(messages[1]);
   });

@@ -81,8 +81,8 @@ describe('PerfettoParserSurfaceFlinger', () => {
 
     it('provides correct root entry node', async () => {
       const entry = await parser.getEntry(1);
-      expect(entry.id).toEqual('LayerTraceEntry root');
-      expect(entry.name).toEqual('root');
+      expect(entry.id).toBe('LayerTraceEntry root');
+      expect(entry.name).toBe('root');
     });
 
     it('gets a range of entries that excludes the end index', async () => {
@@ -109,7 +109,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
       expect(
         leaf.getEagerPropertyByName('isMissingZParent')?.getValue(),
       ).toBeFalse();
-      expect(leaf.getParent()?.name).toEqual('WindowedMagnification:0:31#4');
+      expect(leaf.getParent()?.name).toBe('WindowedMagnification:0:31#4');
 
       const task = assertDefined(
         entry.findDfs(makeIdMatchFilter('45 Task=1#45')),
@@ -129,13 +129,13 @@ describe('PerfettoParserSurfaceFlinger', () => {
       expect(relZChild.getZParent()).toEqual(relZParent);
       expect(
         relZChild.getEagerPropertyByName('zOrderRelativeOf')?.getValue(),
-      ).toEqual(11n);
+      ).toBe(11n);
     });
 
     it('provides rects', async () => {
       const entry = await parser.getEntry(0);
       const displays = entry.getRects();
-      expect(displays?.length).toEqual(1);
+      expect(displays?.length).toBe(1);
       expect(displays?.[0].isDisplay).toBeTrue();
 
       const overlay = assertDefined(
@@ -143,14 +143,14 @@ describe('PerfettoParserSurfaceFlinger', () => {
       );
       const layerRect = assertDefined(overlay.getRects()?.[0]);
       expect(layerRect.isDisplay).toBeFalse();
-      expect(layerRect.w).toEqual(1080);
-      expect(layerRect.h).toEqual(118);
+      expect(layerRect.w).toBe(1080);
+      expect(layerRect.h).toBe(118);
       expect(layerRect.fillRegion).toBeUndefined();
 
       const inputRect = assertDefined(overlay.getSecondaryRects()?.[0]);
       expect(inputRect.isDisplay).toBeFalse();
-      expect(inputRect.w).toEqual(1080);
-      expect(inputRect.h).toEqual(118);
+      expect(inputRect.w).toBe(1080);
+      expect(inputRect.h).toBe(118);
       expect(inputRect.fillRegion).toEqual(
         new Region([new Rect(492, 0, 124, 118)]),
       );
@@ -162,34 +162,34 @@ describe('PerfettoParserSurfaceFlinger', () => {
         const layer = assertDefined(
           entry.findDfs(makeIdMatchFilter('27 Leaf:24:25#27')),
         );
-        expect(layer.name).toEqual('Leaf:24:25#27');
+        expect(layer.name).toBe('Leaf:24:25#27');
 
         const props = await layer.getAllProperties();
         expect(
           assertDefined(props.getChildByName('flags')).formattedValue(),
-        ).toEqual('0');
+        ).toBe('0');
       }
       {
         const layer = assertDefined(
           entry.findDfs(makeIdMatchFilter('48 Task=4#48')),
         );
-        expect(layer.name).toEqual('Task=4#48');
+        expect(layer.name).toBe('Task=4#48');
 
         const props = await layer.getAllProperties();
         expect(
           assertDefined(props.getChildByName('flags')).formattedValue(),
-        ).toEqual('HIDDEN (0x1)');
+        ).toBe('HIDDEN (0x1)');
       }
       {
         const layer = assertDefined(
           entry.findDfs(makeIdMatchFilter('77 Wallpaper BBQ wrapper#77')),
         );
-        expect(layer.name).toEqual('Wallpaper BBQ wrapper#77');
+        expect(layer.name).toBe('Wallpaper BBQ wrapper#77');
 
         const props = await layer.getAllProperties();
         expect(
           assertDefined(props.getChildByName('flags')).formattedValue(),
-        ).toEqual('ENABLE_BACKPRESSURE (0x100)');
+        ).toBe('ENABLE_BACKPRESSURE (0x100)');
       }
     });
 
@@ -234,7 +234,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
       expect(layer.name).toEqual(
         'Input Consumer recents_animation_input_consumer#408(Mirror)',
       );
-      expect(layer.getAllChildren().length).toEqual(0);
+      expect(layer.getAllChildren().length).toBe(0);
 
       const dupLayer = assertDefined(
         entry.findDfs(
@@ -246,7 +246,7 @@ describe('PerfettoParserSurfaceFlinger', () => {
       expect(dupLayer.name).toEqual(
         'Input Consumer recents_animation_input_consumer#408(Mirror) duplicate(1)',
       );
-      expect(dupLayer.getAllChildren().length).toEqual(0);
+      expect(dupLayer.getAllChildren().length).toBe(0);
     });
   });
 });

@@ -174,14 +174,14 @@ describe('HierarchyTreeBuilderSf', () => {
     const recursiveRootProps = assertDefined(
       await root.getChildByName(expRecurRootProps.name)?.getAllProperties(),
     );
-    expect(recursiveRootProps.getAllChildren().length).toEqual(2);
+    expect(recursiveRootProps.getAllChildren().length).toBe(2);
 
     const recursiveRootId = assertDefined(
       recursiveRootProps.getChildByName('layerId'),
     );
-    expect(recursiveRootId.getValue()).toEqual(2n);
-    expect(recursiveRootId.formattedValue()).toEqual('2');
-    expect(recursiveRootProps.getChildByName('detail')?.getValue()).toEqual(
+    expect(recursiveRootId.getValue()).toBe(2n);
+    expect(recursiveRootId.formattedValue()).toBe('2');
+    expect(recursiveRootProps.getChildByName('detail')?.getValue()).toBe(
       'This node was artificially created by Winscope as a parent for all recursive layers',
     );
   });

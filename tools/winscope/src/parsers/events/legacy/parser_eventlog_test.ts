@@ -49,7 +49,7 @@ describe('ParserEventLog', () => {
     it('has expected timestamps', () => {
       const timestamps = assertDefined(parser.getTimestamps());
 
-      expect(timestamps.length).toEqual(184);
+      expect(timestamps.length).toBe(184);
 
       const expected = [
         TimestampConverterUtils.makeRealTimestamp(1681207047981157174n),
@@ -98,7 +98,7 @@ describe('ParserEventLog', () => {
     it('sorts entries to make timestamps monotonically increasing', () => {
       const timestamps = assertDefined(parser.getTimestamps());
 
-      expect(timestamps.length).toEqual(3);
+      expect(timestamps.length).toBe(3);
 
       const expected = [
         TimestampConverterUtils.makeRealTimestamp(1681207047981157174n),

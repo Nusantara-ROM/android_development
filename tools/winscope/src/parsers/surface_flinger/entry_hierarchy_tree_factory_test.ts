@@ -260,7 +260,7 @@ describe('EntryHierarchyTreeFactory', () => {
         createMapWithoutLayerRects(defaultSnapshotId),
       );
 
-      expect(tree.getAllChildren().length).toEqual(1);
+      expect(tree.getAllChildren().length).toBe(1);
       expect(tree.getChildByName('LayerWithMissingId')).toBeUndefined();
       expect(tree.getChildByName(layerName1)).toBeDefined();
       expect(tree.getWarnings()).toEqual([new MissingLayerIds()]);
@@ -280,7 +280,7 @@ describe('EntryHierarchyTreeFactory', () => {
       const tree = makeEntryHierarchyTree(
         createMapWithoutLayerRects(defaultSnapshotId),
       );
-      expect(tree.getAllChildren().length).toEqual(2);
+      expect(tree.getAllChildren().length).toBe(2);
       expect(tree.getChildByName(layerName1)).toBeDefined();
       expect(tree.getChildByName(layerName1 + ' duplicate(1)')).toBeDefined();
       expect(tree.getWarnings()).toEqual([new DuplicateLayerIds([1])]);

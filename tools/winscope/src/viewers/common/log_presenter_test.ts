@@ -115,45 +115,45 @@ describe('LogPresenter', () => {
     it('applies log entry click', () => {
       // selects index
       presenter.applyLogEntryClick(1);
-      expect(presenter.getSelectedIndex()).toEqual(1);
+      expect(presenter.getSelectedIndex()).toBe(1);
       expect(presenter.getCurrentIndex()).toBeUndefined();
       expect(presenter.getScrollToIndex()).toBeUndefined();
 
       // on same index, clears scroll but leaves current and selected unchanged
       presenter.applyTracePositionUpdate(trace.getEntry(0));
       presenter.applyLogEntryClick(1);
-      expect(presenter.getSelectedIndex()).toEqual(1);
-      expect(presenter.getCurrentIndex()).toEqual(0);
+      expect(presenter.getSelectedIndex()).toBe(1);
+      expect(presenter.getCurrentIndex()).toBe(0);
       expect(presenter.getScrollToIndex()).toBeUndefined();
     });
 
     it('applies arrow down press', () => {
       // selects and scrolls to first index if no selected or current index
       presenter.applyArrowDownPress();
-      expect(presenter.getSelectedIndex()).toEqual(0);
-      expect(presenter.getScrollToIndex()).toEqual(0);
+      expect(presenter.getSelectedIndex()).toBe(0);
+      expect(presenter.getScrollToIndex()).toBe(0);
       expect(presenter.getCurrentIndex()).toBeUndefined();
 
       // selects next index after selected index
       presenter.applyArrowDownPress();
-      expect(presenter.getSelectedIndex()).toEqual(1);
-      expect(presenter.getScrollToIndex()).toEqual(1);
+      expect(presenter.getSelectedIndex()).toBe(1);
+      expect(presenter.getScrollToIndex()).toBe(1);
       expect(presenter.getCurrentIndex()).toBeUndefined();
 
       // handles index out of range
       presenter.applyArrowDownPress();
       presenter.applyArrowDownPress();
       presenter.applyArrowDownPress();
-      expect(presenter.getSelectedIndex()).toEqual(3);
-      expect(presenter.getScrollToIndex()).toEqual(3);
+      expect(presenter.getSelectedIndex()).toBe(3);
+      expect(presenter.getScrollToIndex()).toBe(3);
       expect(presenter.getCurrentIndex()).toBeUndefined();
 
       // selects next index after current index
       presenter.applyTracePositionUpdate(trace.getEntry(0));
       presenter.applyArrowDownPress();
-      expect(presenter.getSelectedIndex()).toEqual(1);
-      expect(presenter.getScrollToIndex()).toEqual(1);
-      expect(presenter.getCurrentIndex()).toEqual(0);
+      expect(presenter.getSelectedIndex()).toBe(1);
+      expect(presenter.getScrollToIndex()).toBe(1);
+      expect(presenter.getCurrentIndex()).toBe(0);
 
       // handles no entries
       presenter.setAllEntries([]);
@@ -164,31 +164,31 @@ describe('LogPresenter', () => {
     it('applies arrow up press', () => {
       // selects first index if no selected or current index
       presenter.applyArrowUpPress();
-      expect(presenter.getSelectedIndex()).toEqual(0);
-      expect(presenter.getScrollToIndex()).toEqual(0);
+      expect(presenter.getSelectedIndex()).toBe(0);
+      expect(presenter.getScrollToIndex()).toBe(0);
       expect(presenter.getCurrentIndex()).toBeUndefined();
 
       // selects index before selected index
       presenter.applyLogEntryClick(2);
       presenter.applyArrowUpPress();
-      expect(presenter.getSelectedIndex()).toEqual(1);
-      expect(presenter.getScrollToIndex()).toEqual(1);
+      expect(presenter.getSelectedIndex()).toBe(1);
+      expect(presenter.getScrollToIndex()).toBe(1);
       expect(presenter.getCurrentIndex()).toBeUndefined();
 
       // handles index out of range
       presenter.applyArrowUpPress();
       presenter.applyArrowUpPress();
       presenter.applyArrowUpPress();
-      expect(presenter.getSelectedIndex()).toEqual(0);
-      expect(presenter.getScrollToIndex()).toEqual(0);
+      expect(presenter.getSelectedIndex()).toBe(0);
+      expect(presenter.getScrollToIndex()).toBe(0);
       expect(presenter.getCurrentIndex()).toBeUndefined();
 
       // selects index before current index
       presenter.applyTracePositionUpdate(trace.getEntry(1));
       presenter.applyArrowUpPress();
-      expect(presenter.getSelectedIndex()).toEqual(0);
-      expect(presenter.getScrollToIndex()).toEqual(0);
-      expect(presenter.getCurrentIndex()).toEqual(1);
+      expect(presenter.getSelectedIndex()).toBe(0);
+      expect(presenter.getScrollToIndex()).toBe(0);
+      expect(presenter.getCurrentIndex()).toBe(1);
 
       // handles no entries
       presenter.setAllEntries([]);
@@ -199,9 +199,9 @@ describe('LogPresenter', () => {
     it('applies trace position update', () => {
       // updates current index, clears selected index, scrolls to current index
       presenter.applyTracePositionUpdate(trace.getEntry(1));
-      expect(presenter.getCurrentIndex()).toEqual(1);
+      expect(presenter.getCurrentIndex()).toBe(1);
       expect(presenter.getSelectedIndex()).toBeUndefined();
-      expect(presenter.getScrollToIndex()).toEqual(1);
+      expect(presenter.getScrollToIndex()).toBe(1);
 
       // if no current entry, current index undefined
       presenter.applyTracePositionUpdate(undefined);
@@ -215,9 +215,9 @@ describe('LogPresenter', () => {
         testEntries[2],
       ]);
       presenter.applyTracePositionUpdate(trace.getEntry(1));
-      expect(presenter.getCurrentIndex()).toEqual(1);
+      expect(presenter.getCurrentIndex()).toBe(1);
       expect(presenter.getSelectedIndex()).toBeUndefined();
-      expect(presenter.getScrollToIndex()).toEqual(1);
+      expect(presenter.getScrollToIndex()).toBe(1);
 
       // handles no filtered entries
       updateStringFilterAndCheckEntries('no matches', []);
@@ -238,14 +238,14 @@ describe('LogPresenter', () => {
       expectAllIndicesUndefined();
 
       presenter.applyTracePositionUpdate(trace.getEntry(1));
-      expect(presenter.getCurrentIndex()).toEqual(2);
+      expect(presenter.getCurrentIndex()).toBe(2);
       expect(presenter.getSelectedIndex()).toBeUndefined();
-      expect(presenter.getScrollToIndex()).toEqual(2);
+      expect(presenter.getScrollToIndex()).toBe(2);
 
       presenter.applyTracePositionUpdate(trace.getEntry(3));
-      expect(presenter.getCurrentIndex()).toEqual(0);
+      expect(presenter.getCurrentIndex()).toBe(0);
       expect(presenter.getSelectedIndex()).toBeUndefined();
-      expect(presenter.getScrollToIndex()).toEqual(0);
+      expect(presenter.getScrollToIndex()).toBe(0);
     });
 
     it('applies text filter change', () => {

@@ -200,12 +200,12 @@ the default for its data type.`,
     const propertiesTree = assertDefined(uiData.propertiesTree);
     expect(
       assertDefined(propertiesTree.getChildByName('state')).formattedValue(),
-    ).toEqual('STOPPED');
+    ).toBe('STOPPED');
     expect(
       assertDefined(
         propertiesTree.findDfs((node) => node.name === 'hashCode'),
       ).formattedValue(),
-    ).toEqual('0xf7092ed');
+    ).toBe('0xf7092ed');
     expect(uiData.displays).toEqual([
       {
         displayId: 'DisplayContent 1f3454e Built-in Screen',
@@ -218,14 +218,14 @@ the default for its data type.`,
 
   override executeSpecializedChecksForPropertiesFromRect(uiData: UiData) {
     const propertiesTree = assertDefined(uiData.propertiesTree);
-    expect(propertiesTree.getAllChildren().length).toEqual(10);
+    expect(propertiesTree.getAllChildren().length).toBe(10);
   }
 
   override executePropertiesChecksAfterSecondPositionUpdate(uiData: UiData) {
     const propertiesTree = assertDefined(uiData.propertiesTree);
     expect(
       assertDefined(propertiesTree.getChildByName('state')).formattedValue(),
-    ).toEqual('RESUMED');
+    ).toBe('RESUMED');
   }
 
   override executeSpecializedTests(): void {
@@ -264,7 +264,7 @@ the default for its data type.`,
 
       it('does not propagate hashcode if name does not match', async () => {
         await presenter.onPropagatePropertyClick(invalidNode);
-        expect(uiData.highlightedItem).toEqual('');
+        expect(uiData.highlightedItem).toBe('');
       });
 
       it('does not propagate hashcode if matching node not found', async () => {
@@ -272,7 +272,7 @@ the default for its data type.`,
           makeUiPropertyNode('', 'hashCode', 0),
         );
         await presenter.onPropagatePropertyClick(missingHashcode);
-        expect(uiData.highlightedItem).toEqual('');
+        expect(uiData.highlightedItem).toBe('');
       });
 
       it('propagates node with matching hashcode', async () => {

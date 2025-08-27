@@ -321,7 +321,7 @@ describe('TraceConfigComponent', () => {
   it('shows config desc', () => {
     const panel = getAdvancedSettingsPanelForKey(layersTraceKey);
     const configDesc = panel.get('.config-desc');
-    expect(configDesc.getText()).toEqual('Layers trace config description');
+    expect(configDesc.getText()).toBe('Layers trace config description');
   });
 
   it('applies chip configuration changes', async () => {
@@ -361,7 +361,7 @@ describe('TraceConfigComponent', () => {
 
     const hiddenCss = 'hidden-option';
     const allOptions = dom.getMatSelectPanel().findAll('.option');
-    expect(allOptions.length).toEqual(3);
+    expect(allOptions.length).toBe(3);
     allOptions.forEach((opt) => opt.checkClassName(hiddenCss, false));
 
     const panel = dom.getMatSelectPanel();

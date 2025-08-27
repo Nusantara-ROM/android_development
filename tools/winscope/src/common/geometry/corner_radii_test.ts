@@ -26,23 +26,23 @@ describe('CornerRadii', () => {
 
   it('isEmpty should return true for all zero radii', () => {
     const radii = new CornerRadii(0, 0, 0, 0);
-    expect(radii.isEmpty()).toBe(true);
+    expect(radii.isEmpty()).toBeTrue();
   });
 
   it('isEmpty should return false for non-zero radii', () => {
     const radii = new CornerRadii(1, 0, 0, 0);
-    expect(radii.isEmpty()).toBe(false);
+    expect(radii.isEmpty()).toBeFalse();
   });
 
   it('isEqual should return true for equal radii', () => {
     const radii1 = new CornerRadii(1, 2, 3, 4);
     const radii2 = new CornerRadii(1, 2, 3, 4);
-    expect(radii1.isEqual(radii2)).toBe(true);
+    expect(radii1.isEqual(radii2)).toBeTrue();
   });
 
   it('isEqual should return false for unequal radii', () => {
     const radii1 = new CornerRadii(1, 2, 3, 4);
     const radii2 = new CornerRadii(5, 6, 7, 8);
-    expect(radii1.isEqual(radii2)).toBe(false);
+    expect(radii1.isEqual(radii2)).toBeFalse();
   });
 });

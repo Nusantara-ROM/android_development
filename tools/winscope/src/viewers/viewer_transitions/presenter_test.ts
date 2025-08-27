@@ -171,18 +171,18 @@ class PresenterTransitionsTest extends AbstractLogViewerPresenterTest<UiData> {
   }
 
   override executePropertiesChecksAfterPositionUpdate(uiData: UiDataLog) {
-    expect(uiData.entries.length).toEqual(4);
+    expect(uiData.entries.length).toBe(4);
 
     const selectedTransition = assertDefined(uiData.propertiesTree);
-    expect(selectedTransition.getChildByName('id')?.formattedValue()).toEqual(
+    expect(selectedTransition.getChildByName('id')?.formattedValue()).toBe(
       '32',
     );
-    expect(selectedTransition.getChildByName('type')?.formattedValue()).toEqual(
+    expect(selectedTransition.getChildByName('type')?.formattedValue()).toBe(
       'OPEN',
     );
     expect(
       selectedTransition.getChildByName('createTimeNs')?.formattedValue(),
-    ).toEqual('2023-11-21, 13:30:25.429');
+    ).toBe('2023-11-21, 13:30:25.429');
 
     const dispatchTimeEntryTs = uiData.entries[0].fields[3];
     expect(dispatchTimeEntryTs?.propagateEntryTimestamp).toBeTrue();

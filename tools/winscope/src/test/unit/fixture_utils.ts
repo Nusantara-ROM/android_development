@@ -175,7 +175,7 @@ export async function getTrace<T extends TraceType>(
   }
 
   const perfettoParsers = await getPerfettoParsers(filename);
-  expect(perfettoParsers.length).toEqual(1);
+  expect(perfettoParsers.length).toBe(1);
   expect(perfettoParsers[0].getTraceType()).toEqual(type);
   return new TraceBuilder<T>()
     .setType(type)

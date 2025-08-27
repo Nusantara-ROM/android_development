@@ -91,7 +91,7 @@ describe('ImeAdditionalPropertiesComponent', () => {
     const button = dom.get('.ime-container-button');
     button.checkClassName('selected', false);
     button.click();
-    expect(component.highlightedItem).toEqual('123');
+    expect(component.highlightedItem).toBe('123');
     button.checkClassName('selected', true);
   });
 
@@ -99,7 +99,7 @@ describe('ImeAdditionalPropertiesComponent', () => {
     const button = dom.get('.input-method-surface-button');
     button.checkClassName('selected', false);
     button.click();
-    expect(component.highlightedItem).toEqual('456');
+    expect(component.highlightedItem).toBe('456');
     button.checkClassName('selected', true);
   });
 
@@ -119,7 +119,7 @@ describe('ImeAdditionalPropertiesComponent', () => {
     const button = dom.get('.ime-control-target-button');
     button.checkClassName('selected', false);
     button.click();
-    expect(component.additionalPropertieTreeName).toEqual('Ime Control Target');
+    expect(component.additionalPropertieTreeName).toBe('Ime Control Target');
     button.checkClassName('selected', true);
   });
 

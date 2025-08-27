@@ -183,10 +183,10 @@ describe('ActiveSearchComponent', () => {
     );
     expect(
       currentSearch.querySelector('.test-query')?.textContent?.trim(),
-    ).toEqual('test query');
+    ).toBe('test query');
     expect(
       currentSearch.querySelector('.test-control-value')?.textContent?.trim(),
-    ).toEqual('test name');
+    ).toBe('test name');
   });
 
   function getTextInput(): DOMTestHelper<ActiveSearchComponent> {

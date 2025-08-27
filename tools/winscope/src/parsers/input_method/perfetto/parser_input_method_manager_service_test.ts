@@ -46,7 +46,7 @@ describe('PerfettoParserInputMethodManagerService', () => {
   });
 
   it('provides timestamps', () => {
-    expect(assertDefined(parser.getTimestamps()).length).toEqual(7);
+    expect(assertDefined(parser.getTimestamps()).length).toBe(7);
 
     const expected = [
       TimestampConverterUtils.makeRealTimestamp(1714659587704398638n),
@@ -59,6 +59,6 @@ describe('PerfettoParserInputMethodManagerService', () => {
   it('retrieves trace entry', async () => {
     const entry = await parser.getEntry(0);
     expect(entry).toBeInstanceOf(HierarchyTreeNode);
-    expect(entry.id).toEqual('InputMethodManagerService entry');
+    expect(entry.id).toBe('InputMethodManagerService entry');
   });
 });

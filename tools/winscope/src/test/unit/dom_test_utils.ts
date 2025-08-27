@@ -312,7 +312,7 @@ export class DOMTestHelper<T> {
     if (hasValue) {
       expect((this.root as any).value).toEqual(value);
     } else {
-      expect(value.length).toEqual(0);
+      expect(value.length).toBe(0);
     }
   }
 

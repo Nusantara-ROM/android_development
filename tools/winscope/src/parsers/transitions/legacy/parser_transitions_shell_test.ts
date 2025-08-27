@@ -59,9 +59,9 @@ describe('ParserTransitionsShell', () => {
 
   it('provides decoded proto', async () => {
     const entry = await parser.getEntry(0);
-    expect(entry.id).toEqual(6);
-    expect(entry.dispatchTimeNs.toString()).toEqual('57649649922341');
-    expect(entry.handler).toEqual(2);
+    expect(entry.id).toBe(6);
+    expect(entry.dispatchTimeNs.toString()).toBe('57649649922341');
+    expect(entry.handler).toBe(2);
   });
 
   it('provides shell mapping', async () => {
@@ -69,13 +69,13 @@ describe('ParserTransitionsShell', () => {
     const mapping = (
       parser as unknown as ParserTransitionsShell
     ).getShellHandlerMapping();
-    expect(mapping.length).toEqual(2);
-    expect(mapping[0].id).toEqual(2);
-    expect(mapping[0].name).toEqual(
+    expect(mapping.length).toBe(2);
+    expect(mapping[0].id).toBe(2);
+    expect(mapping[0].name).toBe(
       'com.android.wm.shell.transition.DefaultMixedHandler',
     );
-    expect(mapping[1].id).toEqual(3);
-    expect(mapping[1].name).toEqual(
+    expect(mapping[1].id).toBe(3);
+    expect(mapping[1].name).toBe(
       'com.android.wm.shell.recents.RecentsTransitionHandler',
     );
   });

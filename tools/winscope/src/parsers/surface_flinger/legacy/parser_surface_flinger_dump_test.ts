@@ -80,15 +80,15 @@ describe('ParserSurfaceFlingerDump', () => {
 
     it('converts to valid perfetto packets', async () => {
       const packets = parser.convertToPerfettoPackets!(10);
-      expect(packets.length).toEqual(1);
+      expect(packets.length).toBe(1);
       expect(packets[0].timestamp).toEqual(Long.fromInt(0));
       expect(packets[0].timestampClockId).toEqual(
         perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.MONOTONIC,
       );
-      expect(packets[0].trustedPacketSequenceId).toEqual(10);
+      expect(packets[0].trustedPacketSequenceId).toBe(10);
       expect(
         packets[0].surfaceflingerLayersSnapshot?.layers?.layers?.length,
-      ).toEqual(94);
+      ).toBe(94);
     });
 
     it('converts to valid perfetto trace', async () => {
@@ -123,15 +123,15 @@ describe('ParserSurfaceFlingerDump', () => {
 
     it('converts to valid perfetto packets', async () => {
       const packets = parser.convertToPerfettoPackets!(10);
-      expect(packets.length).toEqual(1);
+      expect(packets.length).toBe(1);
       expect(packets[0].timestamp).toEqual(Long.fromInt(0));
       expect(packets[0].timestampClockId).toEqual(
         perfetto.protos.ClockSnapshot.Clock.BuiltinClocks.MONOTONIC,
       );
-      expect(packets[0].trustedPacketSequenceId).toEqual(10);
+      expect(packets[0].trustedPacketSequenceId).toBe(10);
       expect(
         packets[0].surfaceflingerLayersSnapshot?.layers?.layers?.length,
-      ).toEqual(91);
+      ).toBe(91);
     });
 
     it('does not provide entry', () => {

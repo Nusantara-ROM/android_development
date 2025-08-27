@@ -50,7 +50,7 @@ describe('Parser', () => {
         TimestampConverterUtils.TIMESTAMP_CONVERTER,
         {},
       );
-      expect(processed.parsers.length).toEqual(0);
+      expect(processed.parsers.length).toBe(0);
       expect(processed.unsupportedFiles).toEqual(unsupported ? [trace] : []);
     }
   });
@@ -83,12 +83,12 @@ describe('Parser', () => {
       let entry = await parser.getEntry(0);
       expect(
         assertDefined(entry.getEagerPropertyByName('focusedApp')).getValue(),
-      ).toEqual('com.google.android.apps.nexuslauncher/.NexusLauncherActivity');
+      ).toBe('com.google.android.apps.nexuslauncher/.NexusLauncherActivity');
 
       entry = await parser.getEntry(parser.getLengthEntries() - 1);
       expect(
         assertDefined(entry.getEagerPropertyByName('focusedApp')).getValue(),
-      ).toEqual('com.google.android.apps.nexuslauncher/.NexusLauncherActivity');
+      ).toBe('com.google.android.apps.nexuslauncher/.NexusLauncherActivity');
     });
   });
 
@@ -114,12 +114,12 @@ describe('Parser', () => {
       let entry = await parser.getEntry(0);
       expect(
         assertDefined(entry.getEagerPropertyByName('focusedApp')).getValue(),
-      ).toEqual('com.google.android.apps.nexuslauncher/.NexusLauncherActivity');
+      ).toBe('com.google.android.apps.nexuslauncher/.NexusLauncherActivity');
 
       entry = await parser.getEntry(parser.getLengthEntries() - 1);
       expect(
         assertDefined(entry.getEagerPropertyByName('focusedApp')).getValue(),
-      ).toEqual('com.google.android.apps.nexuslauncher/.NexusLauncherActivity');
+      ).toBe('com.google.android.apps.nexuslauncher/.NexusLauncherActivity');
     });
   });
 });

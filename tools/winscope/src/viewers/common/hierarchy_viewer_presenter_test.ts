@@ -151,9 +151,9 @@ describe('AbstractHierarchyViewerPresenter', () => {
       );
       expect(uiData.hierarchyTrees).toBeUndefined();
       expect(uiData.propertiesTree).toBeUndefined();
-      expect(uiData.highlightedItem).toEqual('');
-      expect(uiData.highlightedProperty).toEqual('');
-      expect(uiData.pinnedItems.length).toEqual(0);
+      expect(uiData.highlightedItem).toBe('');
+      expect(uiData.highlightedProperty).toBe('');
+      expect(uiData.pinnedItems.length).toBe(0);
       expect(
         Object.keys(assertDefined(uiData?.rectsUserOptions)).length,
       ).toBeGreaterThan(0);
@@ -166,7 +166,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
     pinNode(selectedTree);
     await presenter.onAppEvent(positionUpdate);
 
-    expect(uiData.highlightedItem?.length).toEqual(0);
+    expect(uiData.highlightedItem?.length).toBe(0);
     expect(Object.keys(uiData.hierarchyUserOptions).length).toBeGreaterThan(0);
     expect(Object.keys(uiData.propertiesUserOptions).length).toBeGreaterThan(0);
     assertDefined(uiData.hierarchyTrees).forEach((tree) => {
@@ -188,7 +188,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
       ),
     );
     expect(uiData.hierarchyTrees).toBeUndefined();
-    expect(uiData.pinnedItems.length).toEqual(0);
+    expect(uiData.pinnedItems.length).toBe(0);
     expect(uiData.rectsToDraw).toEqual([]);
     expect(uiData.displays).toEqual([]);
     expect(uiData.propertiesTree).toBeUndefined();
@@ -398,7 +398,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
     const userOptions: UserOptions = {flat: {name: '', enabled: true}};
     await presenter.onHierarchyUserOptionsChange(userOptions);
     expect(uiData.hierarchyUserOptions).toEqual(userOptions);
-    expect(uiData.hierarchyTrees?.at(0)?.getAllChildren().length).toEqual(3);
+    expect(uiData.hierarchyTrees?.at(0)?.getAllChildren().length).toBe(3);
   });
 
   it('updates highlighted property', () => {
@@ -406,7 +406,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
     presenter.onHighlightedPropertyChange(id);
     expect(uiData.highlightedProperty).toEqual(id);
     presenter.onHighlightedPropertyChange(id);
-    expect(uiData.highlightedProperty).toEqual('');
+    expect(uiData.highlightedProperty).toBe('');
   });
 
   it('sets properties tree and associated ui data from tree node', async () => {
@@ -414,7 +414,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
     await presenter.onHighlightedNodeChange(selectedTree);
     const propertiesTree = assertDefined(uiData.propertiesTree);
     expect(propertiesTree.id).toContain(selectedTree.id);
-    expect(propertiesTree.getAllChildren().length).toEqual(2);
+    expect(propertiesTree.getAllChildren().length).toBe(2);
   });
 
   it('updates and applies properties user options, calculating diffs from prev hierarchy tree', async () => {

@@ -248,12 +248,12 @@ describe('Canvas', () => {
       const rect = makeUiRect3D(rectId);
       canvas.updateRects([rect]);
       const rectMesh = getRectMesh(rectId);
-      expect(rectMesh.position.z).toEqual(0);
+      expect(rectMesh.position.z).toBe(0);
 
       const newRect = makeUiRect3D(rectId);
       newRect.topLeft = new Point3D(0, 0, 1);
       canvas.updateRects([newRect]);
-      expect(rectMesh.position.z).toEqual(1);
+      expect(rectMesh.position.z).toBe(1);
       expect(getRectMesh('rect1')).toEqual(rectMesh);
     });
 
@@ -263,7 +263,7 @@ describe('Canvas', () => {
       rect.bottomRight = new Point3D(2, 2, 5);
       canvas.updateRects([rect]);
       const rectMesh = getRectMesh(rectId);
-      expect(rectMesh.position.z).toEqual(5);
+      expect(rectMesh.position.z).toBe(5);
       checkBorderColor(rectId, Canvas.RECT_EDGE_COLOR_LIGHT_MODE);
 
       isDarkMode = true;
@@ -287,7 +287,7 @@ describe('Canvas', () => {
       canvas.updateRects([visibleWithOpacity]);
       const material = rectMesh.material as THREE.MeshBasicMaterial;
       expect(material.color).not.toEqual(defaultVisibleRectColor);
-      expect(material.opacity).toEqual(1);
+      expect(material.opacity).toBe(1);
 
       const nonVisible = makeUiRect3D(rectId);
       nonVisible.colorType = ColorType.NOT_VISIBLE;
@@ -370,7 +370,7 @@ describe('Canvas', () => {
       expect(rectMesh.material).toEqual(Canvas.TRANSPARENT_MATERIAL);
 
       const fillRegionMesh = getFillRegionMesh(rectId);
-      expect(fillRegionMesh.position.z).toEqual(1);
+      expect(fillRegionMesh.position.z).toBe(1);
       checkMaterialColorAndOpacity(
         fillRegionMesh,
         Canvas.RECT_COLOR_HAS_CONTENT,
@@ -459,7 +459,7 @@ describe('Canvas', () => {
       ).toBeUndefined();
       expect(
         (rectMesh.material as THREE.MeshBasicMaterial).color.getHex(),
-      ).toEqual(13166775);
+      ).toBe(13166775);
 
       const emptyFillRegion = makeUiRect3D(rectId);
       emptyFillRegion.fillRegion = [];
@@ -468,7 +468,7 @@ describe('Canvas', () => {
       expect(rectMesh.material).toEqual(Canvas.TRANSPARENT_MATERIAL);
       expect(
         (fillRegionMesh.material as THREE.MeshBasicMaterial).color.getHex(),
-      ).toEqual(13166775);
+      ).toBe(13166775);
       let fillRegionGeometryId = fillRegionMesh.geometry.id;
 
       const emptyFillRegionWithContent = makeUiRect3D(rectId);
@@ -552,9 +552,9 @@ describe('Canvas', () => {
       const rect2 = makeUiRect3D(rectId);
       rect2.pointerLocationsInRect = [new Point3D(2, 2, 2)];
       canvas.updateRects([rect2]);
-      expect(getPointerCircle(rectId).id).toEqual(circleId);
-      expect(getPointerCrosshairs(rectId).id).toEqual(crosshairsId);
-      expect(countPointers(rectId)).toEqual(1);
+      expect(getPointerCircle(rectId).id).toBe(circleId);
+      expect(getPointerCrosshairs(rectId).id).toBe(crosshairsId);
+      expect(countPointers(rectId)).toBe(1);
 
       const rect3 = makeUiRect3D(rectId);
       rect3.pointerLocationsInRect = [
@@ -562,17 +562,17 @@ describe('Canvas', () => {
         new Point3D(1, 2, 2),
       ];
       canvas.updateRects([rect3]);
-      expect(getPointerCircle(rectId).id).not.toEqual(circleId);
-      expect(getPointerCrosshairs(rectId).id).not.toEqual(crosshairsId);
-      expect(countPointers(rectId)).toEqual(2);
+      expect(getPointerCircle(rectId).id).not.toBe(circleId);
+      expect(getPointerCrosshairs(rectId).id).not.toBe(crosshairsId);
+      expect(countPointers(rectId)).toBe(2);
 
       const rect4 = makeUiRect3D(rectId);
       rect4.pointerLocationsInRect = [new Point3D(1, 2, 2)];
       canvas.updateRects([rect4]);
       const newCircle = getPointerCircle(rectId);
-      expect(newCircle.id).not.toEqual(circleId);
-      expect(getPointerCrosshairs(rectId).id).not.toEqual(crosshairsId);
-      expect(countPointers(rectId)).toEqual(1);
+      expect(newCircle.id).not.toBe(circleId);
+      expect(getPointerCrosshairs(rectId).id).not.toBe(crosshairsId);
+      expect(countPointers(rectId)).toBe(1);
       checkVectorEqualToPoint(newCircle.position, new Point3D(1, 2, 2));
     });
 
@@ -616,21 +616,21 @@ describe('Canvas', () => {
       const rect2 = makeUiRect3D(rectId);
       rect2.rayLocationsInScene = [new Point3D(2, 3, 4)];
       canvas.updateRects([rect2]);
-      expect(getRayLine(rectId).id).toEqual(rayId);
-      expect(countObject(rayName, graphicsScene)).toEqual(1);
+      expect(getRayLine(rectId).id).toBe(rayId);
+      expect(countObject(rayName, graphicsScene)).toBe(1);
 
       const rect3 = makeUiRect3D(rectId);
       rect3.rayLocationsInScene = [new Point3D(2, 3, 4), new Point3D(4, 4, 4)];
       canvas.updateRects([rect3]);
-      expect(getRayLine(rectId).id).not.toEqual(rayId);
-      expect(countObject(rayName, graphicsScene)).toEqual(2);
+      expect(getRayLine(rectId).id).not.toBe(rayId);
+      expect(countObject(rayName, graphicsScene)).toBe(2);
 
       const rect4 = makeUiRect3D(rectId);
       rect4.rayLocationsInScene = [new Point3D(4, 4, 4)];
       canvas.updateRects([rect4]);
       const newRay = getRayLine(rectId);
-      expect(newRay.id).not.toEqual(rayId);
-      expect(countObject(rayName, graphicsScene)).toEqual(1);
+      expect(newRay.id).not.toBe(rayId);
+      expect(countObject(rayName, graphicsScene)).toBe(1);
       checkVectorEqualToPoint(newRay.position, rect4.rayLocationsInScene[0]);
     });
 
@@ -689,9 +689,9 @@ describe('Canvas', () => {
       const expectedColor = Canvas.RECT_EDGE_COLOR_LIGHT_MODE;
 
       const circle = getPointerCircle(rectId);
-      expect(
-        (circle.geometry as THREE.CircleGeometry).parameters.radius,
-      ).toEqual(10);
+      expect((circle.geometry as THREE.CircleGeometry).parameters.radius).toBe(
+        10,
+      );
       checkVectorEqualToPoint(circle.position, expCircle);
       checkMaterialColorAndOpacity(circle, expectedColor, 1);
 
@@ -851,7 +851,7 @@ describe('Canvas', () => {
       canvas.updateLabels([newLabel]);
       expect(
         (circleMesh.geometry as THREE.CircleGeometry).parameters.radius,
-      ).toEqual(2);
+      ).toBe(2);
     });
 
     it('handles change in circle center', () => {
@@ -877,7 +877,7 @@ describe('Canvas', () => {
       expect((line.material as THREE.LineBasicMaterial).color.getHex()).toEqual(
         Canvas.LABEL_LINE_COLOR,
       );
-      expect(text.element.style.color).toEqual('gray');
+      expect(text.element.style.color).toBe('gray');
 
       const highlighted = makeRectLabel(rectId);
       highlighted.isHighlighted = true;
@@ -888,7 +888,7 @@ describe('Canvas', () => {
       expect((line.material as THREE.LineBasicMaterial).color.getHex()).toEqual(
         Canvas.RECT_EDGE_COLOR_LIGHT_MODE,
       );
-      expect(text.element.style.color).toEqual('');
+      expect(text.element.style.color).toBe('');
 
       isDarkMode = true;
       canvas.updateLabels([highlighted]);
@@ -898,7 +898,7 @@ describe('Canvas', () => {
       expect((line.material as THREE.LineBasicMaterial).color.getHex()).toEqual(
         Canvas.RECT_EDGE_COLOR_DARK_MODE,
       );
-      expect(text.element.style.color).toEqual('');
+      expect(text.element.style.color).toBe('');
 
       canvas.updateLabels([label]);
       expect(
@@ -907,7 +907,7 @@ describe('Canvas', () => {
       expect((line.material as THREE.LineBasicMaterial).color.getHex()).toEqual(
         Canvas.LABEL_LINE_COLOR,
       );
-      expect(text.element.style.color).toEqual('gray');
+      expect(text.element.style.color).toBe('gray');
     });
 
     it('handles change in line points', () => {
@@ -1032,7 +1032,7 @@ describe('Canvas', () => {
       canvas.renderView();
 
       const id = canvas.getClickedRectId(0.1, 0.1);
-      expect(id).toEqual('rect1');
+      expect(id).toBe('rect1');
     });
 
     it('identifies clicked rect from fill region', () => {
@@ -1045,7 +1045,7 @@ describe('Canvas', () => {
       canvas.renderView();
 
       const id = canvas.getClickedRectId(0.1, 0.1);
-      expect(id).toEqual('rect1');
+      expect(id).toBe('rect1');
     });
 
     it('does not identify rect if not clickable', () => {

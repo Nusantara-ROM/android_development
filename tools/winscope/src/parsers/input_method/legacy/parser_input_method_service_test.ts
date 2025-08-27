@@ -57,14 +57,14 @@ describe('ParserInputMethodService', () => {
 
     it('converts to valid perfetto packets', async () => {
       const packets = parser.convertToPerfettoPackets!(10);
-      expect(packets.length).toEqual(1);
-      expect(packets[0].trustedPacketSequenceId).toEqual(10);
+      expect(packets.length).toBe(1);
+      expect(packets[0].trustedPacketSequenceId).toBe(10);
       const data =
         packets[0].winscopeExtensions?.[
           '.perfetto.protos.WinscopeExtensionsImpl.inputmethodService'
         ];
       expect(data?.inputMethodService).toBeDefined();
-      expect(data?.where).toEqual('InputMethodService#doStartInput');
+      expect(data?.where).toBe('InputMethodService#doStartInput');
       const ts = Long.fromString(BigInt(16578752896).toString());
       ts.unsigned = true;
       expect(packets[0].timestamp).toEqual(ts);
@@ -82,7 +82,7 @@ describe('ParserInputMethodService', () => {
 
       const entry = await perfettoParser.getEntry(0);
       expect(entry).toBeInstanceOf(HierarchyTreeNode);
-      expect(entry.getEagerPropertyByName('where')?.getValue()).toEqual(
+      expect(entry.getEagerPropertyByName('where')?.getValue()).toBe(
         'InputMethodService#doStartInput',
       );
     });
@@ -113,15 +113,15 @@ describe('ParserInputMethodService', () => {
 
     it('converts to valid perfetto packets', async () => {
       const packets = parser.convertToPerfettoPackets!(10);
-      expect(packets.length).toEqual(7);
-      expect(packets[0].trustedPacketSequenceId).toEqual(10);
+      expect(packets.length).toBe(7);
+      expect(packets[0].trustedPacketSequenceId).toBe(10);
 
       const data = assertDefined(
         packets[0].winscopeExtensions?.[
           '.perfetto.protos.WinscopeExtensionsImpl.inputmethodService'
         ],
       );
-      expect(data.where).toEqual('InputMethodService#doFinishInput');
+      expect(data.where).toBe('InputMethodService#doFinishInput');
       expect(data?.inputMethodService).toBeDefined();
       const ts = Long.fromString(BigInt(1149230019887).toString());
       ts.unsigned = true;

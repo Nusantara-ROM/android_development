@@ -179,10 +179,10 @@ describe('PresenterSearch', () => {
     await presenter.onAppEvent(
       TracePositionUpdate.fromTraceEntry(trace.getEntry(0)),
     );
-    expect(uiData.currentSearches.length).toEqual(1);
-    expect(uiData.currentSearches[0].result?.currentIndex).toEqual(0);
-    expect(uiData.currentSearches[0].result?.headers.length).toEqual(4);
-    expect(uiData.currentSearches[0].result?.entries.length).toEqual(1);
+    expect(uiData.currentSearches.length).toBe(1);
+    expect(uiData.currentSearches[0].result?.currentIndex).toBe(0);
+    expect(uiData.currentSearches[0].result?.headers.length).toBe(4);
+    expect(uiData.currentSearches[0].result?.entries.length).toBe(1);
     expect(spyTimestamp).toHaveBeenCalledTimes(2);
     expect(spyTimestamp).toHaveBeenCalledWith(200n);
     expect(spyTimestamp).toHaveBeenCalledWith(123n);
@@ -247,11 +247,11 @@ describe('PresenterSearch', () => {
     expect(emitEventSpy).toHaveBeenCalledWith(
       new TraceSearchRequest(testQuery),
     );
-    expect(uiData.currentSearches.length).toEqual(1);
+    expect(uiData.currentSearches.length).toBe(1);
     emitEventSpy.calls.reset();
 
     await presenter.onAppEvent(new TraceSearchFailed());
-    expect(uiData.currentSearches.length).toEqual(1);
+    expect(uiData.currentSearches.length).toBe(1);
     expect(uiData.recentSearches).toEqual([new ListedSearch(testQuery)]);
     emitEventSpy.calls.reset();
 
@@ -262,12 +262,12 @@ describe('PresenterSearch', () => {
 
     // check removed presenter cannot still affect ui data
     element.dispatchEvent(new CustomEvent(ViewerEvents.ArrowDownPress));
-    expect(uiData.currentSearches.length).toEqual(1);
+    expect(uiData.currentSearches.length).toBe(1);
 
     await presenter.onSearchQueryClick(newQuery, 1);
     expect(emitEventSpy).toHaveBeenCalledWith(new TraceRemoveRequest(newTrace));
     expect(emitEventSpy).toHaveBeenCalledWith(new TraceSearchRequest(newQuery));
-    expect(uiData.currentSearches.length).toEqual(1);
+    expect(uiData.currentSearches.length).toBe(1);
     expect(uiData.recentSearches).toEqual([
       new ListedSearch(newQuery),
       new ListedSearch(testQuery),
@@ -308,9 +308,9 @@ describe('PresenterSearch', () => {
     await runSearchWithNoRowsAndCheckUiData(testQuery, trace);
 
     await presenter.onClearQueryClick(0);
-    expect(uiData.currentSearches.length).toEqual(1);
+    expect(uiData.currentSearches.length).toBe(1);
     await presenter.onClearQueryClick(1);
-    expect(uiData.currentSearches.length).toEqual(0);
+    expect(uiData.currentSearches.length).toBe(0);
   });
 
   it('retains at most 10 recent searches', async () => {
@@ -320,8 +320,8 @@ describe('PresenterSearch', () => {
       await presenter.onSearchQueryClick(testQuery, 1);
       await presenter.onAppEvent(new TraceAddRequest(trace));
     }
-    expect(uiData.currentSearches.length).toEqual(1);
-    expect(uiData.recentSearches.length).toEqual(10);
+    expect(uiData.currentSearches.length).toBe(1);
+    expect(uiData.recentSearches.length).toBe(10);
   });
 
   function searchEqualityTester(

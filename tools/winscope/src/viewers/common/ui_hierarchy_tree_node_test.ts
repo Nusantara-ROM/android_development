@@ -38,7 +38,7 @@ describe('UiHierarchyTreeNode', () => {
 
   it('transfers rects', () => {
     const nodeNoRects = UiHierarchyTreeNode.from(node);
-    expect(nodeNoRects.getRects()).toEqual(undefined);
+    expect(nodeNoRects.getRects()).toBeUndefined();
     const rects = [
       new TraceRectBuilder()
         .setX(0)
@@ -76,7 +76,7 @@ describe('UiHierarchyTreeNode', () => {
 
   it('formats id as heading', () => {
     const uiNode = UiHierarchyTreeNode.from(node);
-    expect(uiNode.heading()).toEqual('1');
+    expect(uiNode.heading()).toBe('1');
     uiNode.setShowHeading(false);
     expect(uiNode.heading()).toBeUndefined();
   });

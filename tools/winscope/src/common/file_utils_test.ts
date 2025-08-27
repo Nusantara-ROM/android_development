@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {
   createZipArchive,
   decompressGZipFile,
@@ -22,33 +23,32 @@ import {
   removeDirFromFileName,
   removeExtensionFromFilename,
   unzipFile,
-} from 'common/file_utils';
-import {getFixtureFile} from 'test/unit/fixture_file_utils';
+} from './file_utils';
 
 describe('file_utils', () => {
   it('extracts file extensions', () => {
-    expect(getFileExtension('winscope.zip')).toEqual('zip');
-    expect(getFileExtension('win.scope.zip')).toEqual('zip');
-    expect(getFileExtension('winscopezip')).toEqual(undefined);
+    expect(getFileExtension('winscope.zip')).toBe('zip');
+    expect(getFileExtension('win.scope.zip')).toBe('zip');
+    expect(getFileExtension('winscopezip')).toBeUndefined();
   });
 
   it('extracts file directories', () => {
-    expect(getFileDirectory('test/winscope.zip')).toEqual('test');
-    expect(getFileDirectory('test/test/winscope.zip')).toEqual('test/test');
-    expect(getFileDirectory('winscope.zip')).toEqual(undefined);
+    expect(getFileDirectory('test/winscope.zip')).toBe('test');
+    expect(getFileDirectory('test/test/winscope.zip')).toBe('test/test');
+    expect(getFileDirectory('winscope.zip')).toBeUndefined();
   });
 
   it('removes directory from filename', () => {
-    expect(removeDirFromFileName('test/winscope.zip')).toEqual('winscope.zip');
-    expect(removeDirFromFileName('test/test/winscope.zip')).toEqual(
+    expect(removeDirFromFileName('test/winscope.zip')).toBe('winscope.zip');
+    expect(removeDirFromFileName('test/test/winscope.zip')).toBe(
       'winscope.zip',
     );
   });
 
   it('removes extension from filename', () => {
-    expect(removeExtensionFromFilename('winscope.zip')).toEqual('winscope');
-    expect(removeExtensionFromFilename('win.scope.zip')).toEqual('win.scope');
-    expect(removeExtensionFromFilename('winscopezip')).toEqual('winscopezip');
+    expect(removeExtensionFromFilename('winscope.zip')).toBe('winscope');
+    expect(removeExtensionFromFilename('win.scope.zip')).toBe('win.scope');
+    expect(removeExtensionFromFilename('winscopezip')).toBe('winscopezip');
   });
 
   it('creates zip archive', async () => {
@@ -98,8 +98,8 @@ describe('file_utils', () => {
   it('decompresses gzipped file', async () => {
     const gzippedFile = await getFixtureFile('archives/WindowManager.pb.gz');
     const unzippedFile = await decompressGZipFile(gzippedFile);
-    expect(unzippedFile.name).toEqual('archives/WindowManager.pb');
-    expect(unzippedFile.size).toEqual(377137);
+    expect(unzippedFile.name).toBe('archives/WindowManager.pb');
+    expect(unzippedFile.size).toBe(377137);
   });
 
   it('decompresses gzipped file without gz ext', async () => {
@@ -108,15 +108,15 @@ describe('file_utils', () => {
       'archives/WindowManager.pb',
     );
     const unzippedFile = await decompressGZipFile(gzippedFile);
-    expect(unzippedFile.name).toEqual('archives/WindowManager.pb');
-    expect(unzippedFile.size).toEqual(377137);
+    expect(unzippedFile.name).toBe('archives/WindowManager.pb');
+    expect(unzippedFile.size).toBe(377137);
   });
 
   it('decompresses gzipped archive', async () => {
     const gzippedFile = await getFixtureFile('archives/WindowManager.zip.gz');
     const unzippedFile = await decompressGZipFile(gzippedFile);
-    expect(unzippedFile.name).toEqual('archives/WindowManager.zip');
-    expect(unzippedFile.size).toEqual(10158);
+    expect(unzippedFile.name).toBe('archives/WindowManager.zip');
+    expect(unzippedFile.size).toBe(10158);
   });
 
   it('has download filename regex that accepts all expected inputs', () => {

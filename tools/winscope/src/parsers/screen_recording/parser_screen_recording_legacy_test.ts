@@ -42,7 +42,7 @@ describe('ParserScreenRecordingLegacy', () => {
   it('provides timestamps', () => {
     const timestamps = assertDefined(parser.getTimestamps());
 
-    expect(timestamps.length).toEqual(85);
+    expect(timestamps.length).toBe(85);
 
     let expected = [
       TimestampConverterUtils.makeElapsedTimestamp(19446131807000n),

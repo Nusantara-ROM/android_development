@@ -201,7 +201,7 @@ the default for its data type.`,
       assertDefined(
         propertiesTree.getChildByName('translationY'),
       ).formattedValue(),
-    ).toEqual('786.506');
+    ).toBe('786.506');
     expect(propertiesTree.getChildByName('translationX')).toBeUndefined();
     expect(uiData.displays).toEqual([
       {displayId: 0, groupId: 0, name: 'PhoneWindow@4f9be60', isActive: true},
@@ -209,8 +209,8 @@ the default for its data type.`,
     const curatedProperties = assertDefined(
       (uiData as UiData).curatedProperties,
     );
-    expect(curatedProperties.translationY).toEqual('786.506');
-    expect(curatedProperties.translationX).toEqual('0');
+    expect(curatedProperties.translationY).toBe('786.506');
+    expect(curatedProperties.translationX).toBe('0');
   }
 
   override executePropertiesChecksAfterSecondPositionUpdate(
@@ -221,10 +221,10 @@ the default for its data type.`,
       assertDefined(
         propertiesTree.getChildByName('translationY'),
       ).formattedValue(),
-    ).toEqual('785.500');
+    ).toBe('785.500');
     expect(
       assertDefined((uiData as UiData).curatedProperties).translationY,
-    ).toEqual('785.500');
+    ).toBe('785.500');
   }
 
   override executeSpecializedChecksForPropertiesFromRect(
@@ -233,10 +233,10 @@ the default for its data type.`,
     const curatedProperties = assertDefined(
       (uiData as UiData).curatedProperties,
     );
-    expect(curatedProperties.translationX).toEqual('-9.800');
-    expect(curatedProperties.translationY).toEqual('210.700');
-    expect(curatedProperties.alpha).toEqual('0');
-    expect(curatedProperties.willNotDraw).toEqual('true');
+    expect(curatedProperties.translationX).toBe('-9.800');
+    expect(curatedProperties.translationY).toBe('210.700');
+    expect(curatedProperties.alpha).toBe('0');
+    expect(curatedProperties.willNotDraw).toBe('true');
   }
 
   override executeSpecializedTests() {

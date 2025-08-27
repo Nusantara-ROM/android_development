@@ -113,9 +113,9 @@ export abstract class AbstractLogViewerComponentTest<
           const logComponent = assertDefined(component.logComponent);
           expect(logComponent.isFetchingData).toBeFalse();
           expect(logComponent.checkScrollViewport).toBeFalse();
-          expect(logComponent.selectedIndex).not.toEqual(10);
-          expect(logComponent.scrollToIndex).not.toEqual(20);
-          expect(logComponent.currentIndex).not.toEqual(30);
+          expect(logComponent.selectedIndex).not.toBe(10);
+          expect(logComponent.scrollToIndex).not.toBe(20);
+          expect(logComponent.currentIndex).not.toBe(30);
 
           const inputData = assertDefined(component.inputData);
           inputData.checkScrollViewport = true;
@@ -127,9 +127,9 @@ export abstract class AbstractLogViewerComponentTest<
 
           expect(logComponent.isFetchingData).toBeTrue();
           expect(logComponent.checkScrollViewport).toBeTrue();
-          expect(logComponent.selectedIndex).toEqual(10);
-          expect(logComponent.scrollToIndex).toEqual(20);
-          expect(logComponent.currentIndex).toEqual(30);
+          expect(logComponent.selectedIndex).toBe(10);
+          expect(logComponent.scrollToIndex).toBe(20);
+          expect(logComponent.currentIndex).toBe(30);
         });
 
         if (this.testProperties) {
@@ -177,7 +177,7 @@ export abstract class AbstractLogViewerComponentTest<
           });
 
           it('gets data length', () => {
-            expect(viewport.getDataLength()).toEqual(200);
+            expect(viewport.getDataLength()).toBe(200);
           });
 
           it('should get the rendered range', () => {

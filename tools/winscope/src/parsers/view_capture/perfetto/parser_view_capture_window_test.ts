@@ -55,7 +55,7 @@ describe('PerfettoParserViewCaptureWindow', () => {
   });
 
   it('provides timestamps', () => {
-    expect(assertDefined(parser.getTimestamps()).length).toEqual(36);
+    expect(assertDefined(parser.getTimestamps()).length).toBe(36);
 
     const expected = [
       TimestampConverterUtils.makeRealTimestamp(1716828479973482553n),
@@ -68,33 +68,29 @@ describe('PerfettoParserViewCaptureWindow', () => {
   it('builds trace entry', async () => {
     const root = await parser.getEntry(1);
     expect(root).toBeInstanceOf(HierarchyTreeNode);
-    expect(root.name).toEqual(
-      'com.android.internal.policy.DecorView@203589466',
-    );
-    expect(root.getRects()?.length).toEqual(1);
+    expect(root.name).toBe('com.android.internal.policy.DecorView@203589466');
+    expect(root.getRects()?.length).toBe(1);
 
     const children = root.getAllChildren();
-    expect(children.length).toEqual(1);
-    expect(children[0].name).toEqual('android.widget.LinearLayout@160251275');
-    expect(children[0].getRects()?.length).toEqual(1);
+    expect(children.length).toBe(1);
+    expect(children[0].name).toBe('android.widget.LinearLayout@160251275');
+    expect(children[0].getRects()?.length).toBe(1);
   });
 
   it('sets property default values + formatters', async () => {
     const root = await parser.getEntry(1);
     const properties = await root.getAllProperties();
     const defaultProperty = assertDefined(properties.getChildByName('left'));
-    expect(defaultProperty.getValue()).toEqual(0);
-    expect(defaultProperty.formattedValue()).toEqual('0');
+    expect(defaultProperty.getValue()).toBe(0);
+    expect(defaultProperty.formattedValue()).toBe('0');
   });
 
   it('supports VIEW_CAPTURE_METADATA custom query', async () => {
     const metadata = await trace.customQuery(
       CustomQueryType.VIEW_CAPTURE_METADATA,
     );
-    expect(metadata.packageName).toEqual(
-      'com.google.android.apps.nexuslauncher',
-    );
-    expect(metadata.windowName).toEqual(
+    expect(metadata.packageName).toBe('com.google.android.apps.nexuslauncher');
+    expect(metadata.windowName).toBe(
       'com.android.internal.policy.PhoneWindow@4f9be60',
     );
   });

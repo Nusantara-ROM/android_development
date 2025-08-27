@@ -27,7 +27,7 @@ describe('window_utils', () => {
     windowSpy.and.returnValue(jasmine.any(Window));
     expect(showPopupWindow('test')).toEqual(true);
     expect(windowSpy).toHaveBeenCalledTimes(1);
-    expect(windowSpy.calls.allArgs()[0][0]).toEqual('test');
+    expect(windowSpy.calls.allArgs()[0][0]).toBe('test');
   });
 
   it('returns false if window fails to open', () => {

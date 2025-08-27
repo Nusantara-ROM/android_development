@@ -48,7 +48,7 @@ describe('FlattenChildren', () => {
     }
 
     operation.apply(hierarchyRoot);
-    expect(hierarchyRoot.getAllChildren().length).toEqual(10);
+    expect(hierarchyRoot.getAllChildren().length).toBe(10);
   });
 
   it('flattens children in expected order for multiple root children', () => {
@@ -112,8 +112,8 @@ describe('FlattenChildren', () => {
       });
       hierarchyRoot.addOrReplaceChild(child);
     }
-    expect(hierarchyRoot.getAllChildren().length).toEqual(10);
+    expect(hierarchyRoot.getAllChildren().length).toBe(10);
     operation.apply(hierarchyRoot);
-    expect(hierarchyRoot.getAllChildren().length).toEqual(10);
+    expect(hierarchyRoot.getAllChildren().length).toBe(10);
   });
 });

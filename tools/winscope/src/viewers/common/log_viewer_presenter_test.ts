@@ -213,7 +213,7 @@ describe('AbstractLogViewerPresenter', () => {
     expect(uiData.scrollToIndex).toBeUndefined();
     expect(uiData.currentIndex).toBeUndefined();
     expect(uiData.selectedIndex).toBeUndefined();
-    expect(uiData.entries.length).toEqual(0);
+    expect(uiData.entries.length).toBe(0);
     expect(uiData.propertiesTree).toBeUndefined();
     expect(uiData.headers).toEqual([]);
 
@@ -222,11 +222,11 @@ describe('AbstractLogViewerPresenter', () => {
     expect(uiData.scrollToIndex).toBeDefined();
     expect(uiData.currentIndex).toBeDefined();
     expect(uiData.selectedIndex).toBeUndefined();
-    expect(uiData.entries.length).toEqual(4);
+    expect(uiData.entries.length).toBe(4);
     expect(assertDefined(uiData.propertiesTree).id).toEqual(
       (await getPropertiesTree(0)).id,
     );
-    expect(uiData.headers.length).toEqual(3);
+    expect(uiData.headers.length).toBe(3);
     expect((uiData.headers[0].filter as LogSelectFilter).options).toEqual([
       'stringValue',
       'differentValue',
@@ -235,7 +235,7 @@ describe('AbstractLogViewerPresenter', () => {
 
   it('processes trace position update and updates ui data', async () => {
     await sendPositionUpdate(secondPositionUpdate, true);
-    expect(uiData.currentIndex).toEqual(1);
+    expect(uiData.currentIndex).toBe(1);
     expect(assertDefined(uiData.propertiesTree).id).toEqual(
       (await getPropertiesTree(1)).id,
     );
@@ -411,21 +411,21 @@ describe('AbstractLogViewerPresenter', () => {
   it('updates indices when filters change', async () => {
     await sendPositionUpdate(lastEntryPositionUpdate, true);
     presenter.onLogEntryClick(1);
-    expect(uiData.currentIndex).toEqual(3);
-    expect(uiData.selectedIndex).toEqual(1);
+    expect(uiData.currentIndex).toBe(3);
+    expect(uiData.selectedIndex).toBe(1);
 
     const header = uiData.headers[1];
     await presenter.onSelectFilterChange(header, ['0']);
-    expect(uiData.currentIndex).toEqual(0);
-    expect(uiData.selectedIndex).toEqual(0);
+    expect(uiData.currentIndex).toBe(0);
+    expect(uiData.selectedIndex).toBe(0);
 
     await presenter.onSelectFilterChange(header, ['0', '2']);
-    expect(uiData.currentIndex).toEqual(1);
-    expect(uiData.selectedIndex).toEqual(0);
+    expect(uiData.currentIndex).toBe(1);
+    expect(uiData.selectedIndex).toBe(0);
 
     await presenter.onSelectFilterChange(header, []);
-    expect(uiData.currentIndex).toEqual(3);
-    expect(uiData.selectedIndex).toEqual(0);
+    expect(uiData.currentIndex).toBe(3);
+    expect(uiData.selectedIndex).toBe(0);
   });
 
   it('updates properties tree when entry clicked', async () => {
@@ -446,7 +446,7 @@ describe('AbstractLogViewerPresenter', () => {
     await presenter.onLogEntryClick(0);
 
     await presenter.onArrowDownPress();
-    expect(uiData.selectedIndex).toEqual(1);
+    expect(uiData.selectedIndex).toBe(1);
     expect(assertDefined(uiData.propertiesTree).id).toEqual(
       (await getPropertiesTree(1)).id,
     );
@@ -454,18 +454,18 @@ describe('AbstractLogViewerPresenter', () => {
     const expectedId0 = (await getPropertiesTree(0)).id;
 
     await presenter.onArrowUpPress();
-    expect(uiData.selectedIndex).toEqual(0);
+    expect(uiData.selectedIndex).toBe(0);
     expect(assertDefined(uiData.propertiesTree).id).toEqual(expectedId0);
 
     // does not remove selection if index out of range
     await presenter.onArrowUpPress();
-    expect(uiData.selectedIndex).toEqual(0);
+    expect(uiData.selectedIndex).toBe(0);
     expect(assertDefined(uiData.propertiesTree).id).toEqual(expectedId0);
 
     // does not remove selection if index out of range
     await presenter.onLogEntryClick(3);
     await presenter.onArrowDownPress();
-    expect(uiData.selectedIndex).toEqual(3);
+    expect(uiData.selectedIndex).toBe(3);
     expect(assertDefined(uiData.propertiesTree).id).toEqual(
       (await getPropertiesTree(3)).id,
     );
@@ -496,20 +496,20 @@ describe('AbstractLogViewerPresenter', () => {
 
   it('filters properties tree', async () => {
     await sendPositionUpdate(positionUpdate, true);
-    expect(
-      assertDefined(uiData.propertiesTree).getAllChildren().length,
-    ).toEqual(3);
+    expect(assertDefined(uiData.propertiesTree).getAllChildren().length).toBe(
+      3,
+    );
     await presenter.onPropertiesFilterChange(new TextFilter('pass'));
-    expect(
-      assertDefined(uiData.propertiesTree).getAllChildren().length,
-    ).toEqual(2);
+    expect(assertDefined(uiData.propertiesTree).getAllChildren().length).toBe(
+      2,
+    );
   });
 
   it('shows/hides defaults', async () => {
     await sendPositionUpdate(positionUpdate, true);
-    expect(
-      assertDefined(uiData.propertiesTree).getAllChildren().length,
-    ).toEqual(3);
+    expect(assertDefined(uiData.propertiesTree).getAllChildren().length).toBe(
+      3,
+    );
     const userOptions: UserOptions = {
       showDefaults: {
         name: 'Show defaults',
@@ -518,9 +518,9 @@ describe('AbstractLogViewerPresenter', () => {
     };
     await presenter.onPropertiesUserOptionsChange(userOptions);
     expect(uiData.propertiesUserOptions).toEqual(userOptions);
-    expect(
-      assertDefined(uiData.propertiesTree).getAllChildren().length,
-    ).toEqual(4);
+    expect(assertDefined(uiData.propertiesTree).getAllChildren().length).toBe(
+      4,
+    );
   });
 
   it('updates dark mode', async () => {
@@ -549,7 +549,7 @@ describe('AbstractLogViewerPresenter', () => {
     expect(uiData.selectedIndex).toBeUndefined();
     expect(uiData.scrollToIndex).toBeUndefined();
     expect(uiData.currentIndex).toBeUndefined();
-    expect(uiData.headers.length).toEqual(3);
+    expect(uiData.headers.length).toBe(3);
     expect(uiData.propertiesTree).toBeUndefined();
     expect(uiData.propertiesUserOptions).toBeDefined();
     expect(uiData.propertiesFilter).toBeDefined();

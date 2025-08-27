@@ -44,7 +44,7 @@ describe('PerfettoParserInputMethodClients', () => {
   });
 
   it('provides timestamps', () => {
-    expect(assertDefined(parser.getTimestamps()).length).toEqual(56);
+    expect(assertDefined(parser.getTimestamps()).length).toBe(56);
 
     const expected = [
       TimestampConverterUtils.makeRealTimestamp(1714659585862265133n),
@@ -57,7 +57,7 @@ describe('PerfettoParserInputMethodClients', () => {
   it('retrieves trace entry', async () => {
     const entry = await parser.getEntry(1);
     expect(entry).toBeInstanceOf(HierarchyTreeNode);
-    expect(entry.id).toEqual('InputMethodClients entry');
+    expect(entry.id).toBe('InputMethodClients entry');
   });
 
   it('translates intdefs', async () => {
@@ -70,6 +70,6 @@ describe('PerfettoParserInputMethodClients', () => {
         ?.getChildByName('windowAttributes')
         ?.getChildByName('type'),
     );
-    expect(intdefProperty.formattedValue()).toEqual('TYPE_BASE_APPLICATION');
+    expect(intdefProperty.formattedValue()).toBe('TYPE_BASE_APPLICATION');
   });
 });

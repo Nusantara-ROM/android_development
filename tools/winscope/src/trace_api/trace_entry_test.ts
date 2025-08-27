@@ -58,9 +58,9 @@ describe('TraceEntry', () => {
   });
 
   it('getIndex()', () => {
-    expect(trace.getEntry(0).getIndex()).toEqual(0);
-    expect(trace.sliceEntries(2, 4).getEntry(0).getIndex()).toEqual(2);
-    expect(trace.sliceEntries(2, 4).getEntry(1).getIndex()).toEqual(3);
+    expect(trace.getEntry(0).getIndex()).toBe(0);
+    expect(trace.sliceEntries(2, 4).getEntry(0).getIndex()).toBe(2);
+    expect(trace.sliceEntries(2, 4).getEntry(1).getIndex()).toBe(3);
   });
 
   it('getTimestamp()', () => {
@@ -77,12 +77,12 @@ describe('TraceEntry', () => {
     expect(trace.getEntry(1).getFramesRange()).toEqual({start: 1, end: 2});
     expect(trace.getEntry(2).getFramesRange()).toEqual({start: 1, end: 2});
     expect(trace.getEntry(3).getFramesRange()).toEqual({start: 2, end: 3});
-    expect(trace.getEntry(4).getFramesRange()).toEqual(undefined);
+    expect(trace.getEntry(4).getFramesRange()).toBeUndefined();
     expect(trace.getEntry(5).getFramesRange()).toEqual({start: 4, end: 5});
   });
 
   it('getValue()', async () => {
-    expect(await trace.getEntry(0).getValue()).toEqual('entry-0');
-    expect(await trace.getEntry(1).getValue()).toEqual('entry-1');
+    expect(await trace.getEntry(0).getValue()).toBe('entry-0');
+    expect(await trace.getEntry(1).getValue()).toBe('entry-1');
   });
 });

@@ -343,9 +343,9 @@ describe('TimelineComponent', () => {
     matOptions[0].checkText('Search test query');
     const sfOption = matOptions[2];
     sfOption.checkText('Surface Flinger');
-    expect(sfOption.getHTMLElement().ariaDisabled).toEqual('true');
+    expect(sfOption.getHTMLElement().ariaDisabled).toBe('true');
     for (const i of [1, 3, 4]) {
-      expect(matOptions[1].getHTMLElement().ariaDisabled).toEqual('false');
+      expect(matOptions[1].getHTMLElement().ariaDisabled).toBe('false');
     }
 
     matOptions[3].click();
@@ -389,10 +389,10 @@ describe('TimelineComponent', () => {
     const matOptions = dom.getMatSelectPanel().findAll('.mat-mdc-option'); // [WM, SF, SR, ProtoLog, VC]
 
     for (const i of [0, 2, 4]) {
-      expect(matOptions[i].getHTMLElement().ariaDisabled).toEqual('false');
+      expect(matOptions[i].getHTMLElement().ariaDisabled).toBe('false');
     }
     for (const i of [1, 3]) {
-      expect(matOptions[i].getHTMLElement().ariaDisabled).toEqual('true');
+      expect(matOptions[i].getHTMLElement().ariaDisabled).toBe('true');
     }
     matOptions[3].checkText('ProtoLog Dump');
     matOptions[4].checkText('View Capture Test Window');
@@ -462,7 +462,7 @@ describe('TimelineComponent', () => {
       assertDefined(component.timelineData)
         .getCurrentPosition()
         ?.timestamp.getValueNs(),
-    ).toEqual(100n);
+    ).toBe(100n);
     const nextEntryButton = dom.get(nextEntrySelector);
 
     testCurrentTimestampOnButtonClick(nextEntryButton, position105, 110n);
@@ -485,7 +485,7 @@ describe('TimelineComponent', () => {
       assertDefined(component.timelineData)
         .getCurrentPosition()
         ?.timestamp.getValueNs(),
-    ).toEqual(100n);
+    ).toBe(100n);
     const prevEntryButton = dom.get(prevEntrySelector);
 
     // In this state we are already on the first entry at timestamp 100, so
@@ -537,7 +537,7 @@ describe('TimelineComponent', () => {
       assertDefined(component.timelineData)
         .getCurrentPosition()
         ?.timestamp.getValueNs(),
-    ).toEqual(100n);
+    ).toBe(100n);
 
     const timeInputField = dom.get('.time-input.nano');
 
@@ -581,7 +581,7 @@ describe('TimelineComponent', () => {
       assertDefined(component.timelineData)
         .getCurrentPosition()
         ?.timestamp.getValueNs(),
-    ).toEqual(100n);
+    ).toBe(100n);
 
     const timeInputField = dom.get('.time-input.human');
 
@@ -630,7 +630,7 @@ describe('TimelineComponent', () => {
       assertDefined(component.timelineData)
         .getCurrentPosition()
         ?.timestamp.valueOf(),
-    ).toEqual(100n);
+    ).toBe(100n);
 
     const timeInputField = dom.get('.time-input.human');
 
@@ -649,7 +649,7 @@ describe('TimelineComponent', () => {
       assertDefined(component.timelineData)
         .getCurrentPosition()
         ?.timestamp.valueOf(),
-    ).toEqual(100n);
+    ).toBe(100n);
 
     const timeInputField = dom.get('.time-input.human');
 
@@ -944,34 +944,34 @@ describe('TimelineComponent', () => {
     loadTracesWithLargeTimeRange();
 
     const timelineComponent = assertDefined(component.timeline);
-    expect(timelineComponent.bookmarks.length).toEqual(0);
+    expect(timelineComponent.bookmarks.length).toBe(0);
 
     openContextMenu();
     clickToggleBookmarkOption();
-    expect(timelineComponent.bookmarks.length).toEqual(1);
+    expect(timelineComponent.bookmarks.length).toBe(1);
 
     // click within marker y-pos, x-pos close enough to remove bookmark
     openContextMenu(5);
     clickToggleBookmarkOption();
-    expect(timelineComponent.bookmarks.length).toEqual(0);
+    expect(timelineComponent.bookmarks.length).toBe(0);
 
     openContextMenu();
     clickToggleBookmarkOption();
-    expect(timelineComponent.bookmarks.length).toEqual(1);
+    expect(timelineComponent.bookmarks.length).toBe(1);
 
     // click within marker y-pos, x-pos too large so new bookmark added
     openContextMenu(20);
     clickToggleBookmarkOption();
-    expect(timelineComponent.bookmarks.length).toEqual(2);
+    expect(timelineComponent.bookmarks.length).toBe(2);
 
     openContextMenu(20);
     clickToggleBookmarkOption();
-    expect(timelineComponent.bookmarks.length).toEqual(1);
+    expect(timelineComponent.bookmarks.length).toBe(1);
 
     // click below marker y-pos, x-pos now too large so new bookmark added
     openContextMenu(5, true);
     clickToggleBookmarkOption();
-    expect(timelineComponent.bookmarks.length).toEqual(2);
+    expect(timelineComponent.bookmarks.length).toBe(2);
   });
 
   it('removes all bookmarks', () => {

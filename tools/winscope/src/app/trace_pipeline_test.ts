@@ -124,7 +124,7 @@ describe('TracePipeline', () => {
   });
 
   it('can load valid trace files', async () => {
-    expect(tracePipeline.getTraces().getSize()).toEqual(0);
+    expect(tracePipeline.getTraces().getSize()).toBe(0);
 
     await loadFiles([validSfFile, validWmFile], FilesSource.TEST);
     await expectLoadResult(2, []);
@@ -132,7 +132,7 @@ describe('TracePipeline', () => {
     expect(tracePipeline.getDownloadArchiveFilename()).toMatch(
       new RegExp(`${FilesSource.TEST}_`),
     );
-    expect(tracePipeline.getTraces().getSize()).toEqual(2);
+    expect(tracePipeline.getTraces().getSize()).toBe(2);
 
     const traces = tracePipeline.getTraces();
     expect(
@@ -144,7 +144,7 @@ describe('TracePipeline', () => {
   });
 
   it('can load valid gzipped file and archive', async () => {
-    expect(tracePipeline.getTraces().getSize()).toEqual(0);
+    expect(tracePipeline.getTraces().getSize()).toBe(0);
 
     const gzippedFile = await getFixtureFile('archives/WindowManager.pb.gz');
     const gzippedArchive = await getFixtureFile(
@@ -155,8 +155,8 @@ describe('TracePipeline', () => {
     await expectLoadResult(2, []);
 
     const traces = tracePipeline.getTraces();
-    expect(traces.getSize()).toEqual(2);
-    expect(traces.getTraces(TraceType.WINDOW_MANAGER).length).toEqual(2);
+    expect(traces.getSize()).toBe(2);
+    expect(traces.getTraces(TraceType.WINDOW_MANAGER).length).toBe(2);
 
     const traceEntries = await extractEntries(traces);
     expect(traceEntries.get(TraceType.WINDOW_MANAGER)?.length).toBeGreaterThan(
@@ -191,7 +191,7 @@ describe('TracePipeline', () => {
   });
 
   it('detects bugreports and filters out files based on their directory', async () => {
-    expect(tracePipeline.getTraces().getSize()).toEqual(0);
+    expect(tracePipeline.getTraces().getSize()).toBe(0);
 
     const bugreportFiles = [
       brMainEntryFile,
@@ -240,7 +240,7 @@ describe('TracePipeline', () => {
 
     const timestampConverter = tracePipeline.getTimestampConverter();
     expect(timestampConverter);
-    expect(timestampConverter.getUTCOffset()).toEqual('UTC+05:30');
+    expect(timestampConverter.getUTCOffset()).toBe('UTC+05:30');
 
     const expectedTimestamp =
       TimestampConverterUtils.makeRealTimestampWithUTCOffset(
@@ -319,7 +319,7 @@ describe('TracePipeline', () => {
 
   it('surfaces information about packet loss', async () => {
     await loadFiles([perfettoFileProtolog]);
-    expect(tracePipeline.lostPackets()).toEqual(0);
+    expect(tracePipeline.lostPackets()).toBe(0);
 
     const queryResultObj = jasmine.createSpyObj<QueryResult>('result', [
       'numRows',
@@ -342,21 +342,21 @@ describe('TracePipeline', () => {
       )
       .and.returnValue(Promise.resolve(queryResultObj));
     await loadFiles([perfettoFileProtolog]);
-    expect(tracePipeline.lostPackets()).toEqual(2);
+    expect(tracePipeline.lostPackets()).toBe(2);
 
     queryResultObj.numRows.and.returnValue(0);
     await loadFiles([perfettoFileProtolog]); // clears lost packets from previous load on overwrite
-    expect(tracePipeline.lostPackets()).toEqual(0);
+    expect(tracePipeline.lostPackets()).toBe(0);
 
     queryResultObj.numRows.and.returnValue(1);
     await loadFiles([perfettoFileProtolog]);
-    expect(tracePipeline.lostPackets()).toEqual(2);
+    expect(tracePipeline.lostPackets()).toBe(2);
     tracePipeline.clear(); // resets lost packets on explicit clear call
-    expect(tracePipeline.lostPackets()).toEqual(0);
+    expect(tracePipeline.lostPackets()).toBe(0);
   });
 
   it('is robust to mixed valid and invalid trace files', async () => {
-    expect(tracePipeline.getTraces().getSize()).toEqual(0);
+    expect(tracePipeline.getTraces().getSize()).toBe(0);
     const files = [jpgFile, elapsedFile];
 
     await loadFiles(files);
@@ -516,7 +516,7 @@ describe('TracePipeline', () => {
     await expectLoadResult(2, []);
 
     tracePipeline.clear();
-    expect(tracePipeline.getTraces().getSize()).toEqual(0);
+    expect(tracePipeline.getTraces().getSize()).toBe(0);
   });
 
   it('can filter traces without visualization', async () => {
@@ -524,7 +524,7 @@ describe('TracePipeline', () => {
     await expectLoadResult(1, []);
 
     tracePipeline.filterTracesWithoutVisualization();
-    expect(tracePipeline.getTraces().getSize()).toEqual(0);
+    expect(tracePipeline.getTraces().getSize()).toBe(0);
     expect(
       tracePipeline.getTraces().getTrace(TraceType.SHELL_TRANSITION),
     ).toBeUndefined();
@@ -554,7 +554,7 @@ describe('TracePipeline', () => {
     expectLoadResult(2, []);
     tracePipeline.discardLegacyTraces();
     const traces = tracePipeline.getTraces();
-    expect(traces.getSize()).toEqual(1);
+    expect(traces.getSize()).toBe(1);
     expect(traces.getTrace(TraceType.SCREENSHOT)).toBeDefined();
   });
 
@@ -609,7 +609,7 @@ describe('TracePipeline', () => {
         [parserSf],
         undefined,
       );
-      expect(tracePipeline.getTraces().getSize()).toEqual(1);
+      expect(tracePipeline.getTraces().getSize()).toBe(1);
       checkSfTraceIsPerfetto();
     });
 
@@ -622,7 +622,7 @@ describe('TracePipeline', () => {
         [parserSf, parserPerfetto],
         new TraceFile(perfettoFileProtolog),
       );
-      expect(tracePipeline.getTraces().getSize()).toEqual(2);
+      expect(tracePipeline.getTraces().getSize()).toBe(2);
       checkSfTraceIsPerfetto();
     });
 
@@ -635,7 +635,7 @@ describe('TracePipeline', () => {
         [parserSf, parserWm],
         undefined,
       );
-      expect(tracePipeline.getTraces().getSize()).toEqual(2);
+      expect(tracePipeline.getTraces().getSize()).toBe(2);
       checkSfTraceIsPerfetto();
     });
 

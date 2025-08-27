@@ -54,22 +54,22 @@ describe('Formatters', () => {
         DEFAULT_PROPERTY_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, 12345),
         ),
-      ).toEqual('12345');
+      ).toBe('12345');
       expect(
         DEFAULT_PROPERTY_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, 'test_string'),
         ),
-      ).toEqual('test_string');
+      ).toBe('test_string');
       expect(
         DEFAULT_PROPERTY_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, 0.1234),
         ),
-      ).toEqual('0.123');
+      ).toBe('0.123');
       expect(
         DEFAULT_PROPERTY_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, 1.5),
         ),
-      ).toEqual('1.500');
+      ).toBe('1.500');
     });
 
     it('translates values with toString method correctly', () => {
@@ -77,7 +77,7 @@ describe('Formatters', () => {
         DEFAULT_PROPERTY_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, BigInt(123)),
         ),
-      ).toEqual('123');
+      ).toBe('123');
     });
 
     it('translates default values correctly', () => {
@@ -90,12 +90,12 @@ describe('Formatters', () => {
         DEFAULT_PROPERTY_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, false),
         ),
-      ).toEqual('false');
+      ).toBe('false');
       expect(
         DEFAULT_PROPERTY_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, null),
         ),
-      ).toEqual('null');
+      ).toBe('null');
     });
   });
 
@@ -124,7 +124,7 @@ describe('Formatters', () => {
       );
       expect(
         COLOR_FORMATTER.format(makeColorNode(0.106, 0.203, 0.313, undefined)),
-      ).toEqual('(0.106, 0.203, 0.313)');
+      ).toBe('(0.106, 0.203, 0.313)');
     });
   });
 
@@ -147,7 +147,7 @@ describe('Formatters', () => {
       );
       expect(
         RECT_FORMATTER.format(makeRectNode(0, 1.6431, 10456.9086, 10)),
-      ).toEqual('(0, 1.643) - (10456.909, 10)');
+      ).toBe('(0, 1.643) - (10456.909, 10)');
     });
   });
 
@@ -166,7 +166,7 @@ describe('Formatters', () => {
         LAYER_ID_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, -1),
         ),
-      ).toEqual('none');
+      ).toBe('none');
     });
 
     it('translates valid id correctly', () => {
@@ -174,12 +174,12 @@ describe('Formatters', () => {
         LAYER_ID_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, 1),
         ),
-      ).toEqual('1');
+      ).toBe('1');
       expect(
         LAYER_ID_FORMATTER.format(
           new PropertyTreeNode('', '', PropertySource.PROTO, -10),
         ),
-      ).toEqual('-10');
+      ).toBe('-10');
     });
   });
 
@@ -194,10 +194,10 @@ describe('Formatters', () => {
             TransformMatrix.IDENTITY.dsdy,
           ),
         ),
-      ).toEqual('dsdx: 1, dtdx: 0, dtdy: 0, dsdy: 1');
-      expect(
-        MATRIX_FORMATTER.format(makeMatrixNode(0.4, 100, 1, 0.1232)),
-      ).toEqual('dsdx: 0.400, dtdx: 100, dtdy: 1, dsdy: 0.123');
+      ).toBe('dsdx: 1, dtdx: 0, dtdy: 0, dsdy: 1');
+      expect(MATRIX_FORMATTER.format(makeMatrixNode(0.4, 100, 1, 0.1232))).toBe(
+        'dsdx: 0.400, dtdx: 100, dtdy: 1, dsdy: 0.123',
+      );
       expect(MATRIX_FORMATTER.format(makeMatrixNode(0, 0, 0, 0))).toEqual(
         'null',
       );
@@ -212,7 +212,7 @@ describe('Formatters', () => {
             ty: 10,
           }),
         ),
-      ).toEqual('dsdx: 1, dtdx: 0, dtdy: 0, dsdy: 1, tx: 5, ty: 10');
+      ).toBe('dsdx: 1, dtdx: 0, dtdy: 0, dsdy: 1, tx: 5, ty: 10');
     });
   });
 
@@ -220,43 +220,43 @@ describe('Formatters', () => {
     it('translates type correctly', () => {
       expect(
         TRANSFORM_FORMATTER.format(makeTransformNode(TransformTypeFlags.EMPTY)),
-      ).toEqual('IDENTITY');
+      ).toBe('IDENTITY');
       expect(
         TRANSFORM_FORMATTER.format(
           makeTransformNode(TransformTypeFlags.TRANSLATE_VAL),
         ),
-      ).toEqual('TRANSLATE');
+      ).toBe('TRANSLATE');
       expect(
         TRANSFORM_FORMATTER.format(
           makeTransformNode(TransformTypeFlags.SCALE_VAL),
         ),
-      ).toEqual('SCALE');
+      ).toBe('SCALE');
       expect(
         TRANSFORM_FORMATTER.format(
           makeTransformNode(TransformTypeFlags.FLIP_H_VAL),
         ),
-      ).toEqual('IDENTITY|FLIP_H');
+      ).toBe('IDENTITY|FLIP_H');
       expect(
         TRANSFORM_FORMATTER.format(
           makeTransformNode(TransformTypeFlags.FLIP_V_VAL),
         ),
-      ).toEqual('IDENTITY|FLIP_V');
+      ).toBe('IDENTITY|FLIP_V');
       expect(
         TRANSFORM_FORMATTER.format(
           makeTransformNode(TransformTypeFlags.ROT_90_VAL),
         ),
-      ).toEqual('IDENTITY|ROT_90');
+      ).toBe('IDENTITY|ROT_90');
       expect(
         TRANSFORM_FORMATTER.format(
           makeTransformNode(TransformTypeFlags.ROT_INVALID_VAL),
         ),
-      ).toEqual('IDENTITY|ROT_INVALID');
+      ).toBe('IDENTITY|ROT_INVALID');
     });
   });
 
   describe('SizeFormatter', () => {
     it('translates size correctly', () => {
-      expect(SIZE_FORMATTER.format(makeSizeNode(1, 2))).toEqual('1 x 2');
+      expect(SIZE_FORMATTER.format(makeSizeNode(1, 2))).toBe('1 x 2');
     });
   });
 
@@ -308,16 +308,16 @@ describe('Formatters', () => {
         .setValue(-1)
         .build();
 
-      expect(CUJ_TYPE_FORMATTER.format(cujType)).toEqual('UNKNOWN (-1)');
+      expect(CUJ_TYPE_FORMATTER.format(cujType)).toBe('UNKNOWN (-1)');
     });
   });
 
   describe('hex formatting', () => {
     it('formatAsHex()', () => {
-      expect(formatAsHex(0)).toEqual('0x0');
-      expect(formatAsHex(1024)).toEqual('0x400');
-      expect(formatAsHex(-1024)).toEqual('0xfffffc00');
-      expect(formatAsHex(-1024, true)).toEqual('0xFFFFFC00');
+      expect(formatAsHex(0)).toBe('0x0');
+      expect(formatAsHex(1024)).toBe('0x400');
+      expect(formatAsHex(-1024)).toBe('0xfffffc00');
+      expect(formatAsHex(-1024, true)).toBe('0xFFFFFC00');
     });
 
     it('HexFormatter', () => {
@@ -326,7 +326,7 @@ describe('Formatters', () => {
         .setName('hashcode')
         .setValue(1024)
         .build();
-      expect(HEX_FORMATTER.format(hashcode)).toEqual('0x400');
+      expect(HEX_FORMATTER.format(hashcode)).toBe('0x400');
     });
   });
 });

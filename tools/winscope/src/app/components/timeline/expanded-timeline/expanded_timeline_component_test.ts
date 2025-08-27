@@ -122,17 +122,17 @@ describe('ExpandedTimelineComponent', () => {
     dom.detectChanges();
 
     const timelineElements = dom.findAll('.timeline.row single-timeline');
-    expect(timelineElements.length).toEqual(4);
+    expect(timelineElements.length).toBe(4);
 
     const transitionElement = dom.findAll('.timeline.row transition-timeline');
-    expect(transitionElement.length).toEqual(1);
+    expect(transitionElement.length).toBe(1);
   });
 
   it('passes initial selectedEntry of correct type into each timeline', () => {
     dom.detectChanges();
 
     const singleTimelines = assertDefined(component.singleTimelines);
-    expect(singleTimelines.length).toEqual(4);
+    expect(singleTimelines.length).toBe(4);
 
     // initially only first entry of SF is set
     singleTimelines.forEach((timeline) => {
@@ -158,7 +158,7 @@ describe('ExpandedTimelineComponent', () => {
     dom.detectChanges();
 
     const singleTimelines = assertDefined(component.singleTimelines);
-    expect(singleTimelines.length).toEqual(4);
+    expect(singleTimelines.length).toBe(4);
 
     singleTimelines.forEach((timeline) => {
       // protolog and transactions traces have no timestamps before current position

@@ -54,7 +54,7 @@ describe('TimestampConverter', () => {
         TimestampConverterUtils.UTC_TIMEZONE_INFO,
       ).makeTimestampFromRealNs(testRealNs);
       expect(timestamp.getValueNs()).toBe(testRealNs);
-      expect(timestamp.format()).toEqual('2022-07-31, 04:55:41.051');
+      expect(timestamp.format()).toBe('2022-07-31, 04:55:41.051');
     });
 
     it('can create real-formatted timestamp with real to monotonic offset', () => {
@@ -63,7 +63,7 @@ describe('TimestampConverter', () => {
       expect(timestamp.getValueNs()).toBe(
         testRealNs + testMonotonicTimeOffsetNs,
       );
-      expect(timestamp.format()).toEqual('2022-07-31, 04:55:41.056');
+      expect(timestamp.format()).toBe('2022-07-31, 04:55:41.056');
     });
 
     it('can create real-formatted timestamp with real to boot time offset', () => {
@@ -72,7 +72,7 @@ describe('TimestampConverter', () => {
       expect(timestamp.getValueNs()).toBe(
         testRealNs + testRealToBootTimeOffsetNs,
       );
-      expect(timestamp.format()).toEqual('2022-07-31, 04:55:41.052');
+      expect(timestamp.format()).toBe('2022-07-31, 04:55:41.052');
     });
 
     it('can create elapsed-formatted timestamp', () => {
@@ -80,7 +80,7 @@ describe('TimestampConverter', () => {
         TimestampConverterUtils.UTC_TIMEZONE_INFO,
       ).makeTimestampFromMonotonicNs(testElapsedNs);
       expect(timestamp.getValueNs()).toBe(testElapsedNs);
-      expect(timestamp.format()).toEqual('100ns');
+      expect(timestamp.format()).toBe('100ns');
     });
 
     it('formats real-formatted timestamp with offset correctly', () => {
@@ -88,12 +88,12 @@ describe('TimestampConverter', () => {
         converterWithMonotonicOffset
           .makeTimestampFromMonotonicNs(100n * MILLISECOND)
           .format(),
-      ).toEqual('1970-01-01, 00:00:00.105');
+      ).toBe('1970-01-01, 00:00:00.105');
       expect(
         converterWithMonotonicOffset
           .makeTimestampFromRealNs(100n * MILLISECOND)
           .format(),
-      ).toEqual('1970-01-01, 00:00:00.100');
+      ).toBe('1970-01-01, 00:00:00.100');
     });
   });
 
@@ -128,7 +128,7 @@ describe('TimestampConverter', () => {
 
       const timestamp = converter.makeTimestampFromRealNs(testRealNs);
       expect(timestamp.getValueNs()).toBe(testRealNs);
-      expect(timestamp.format()).toEqual('2022-07-31, 10:25:41.051');
+      expect(timestamp.format()).toBe('2022-07-31, 10:25:41.051');
     });
 
     it('can create real-formatted timestamp with monotonic offset', () => {
@@ -137,7 +137,7 @@ describe('TimestampConverter', () => {
       expect(timestamp.getValueNs()).toBe(
         testRealNs + testMonotonicTimeOffsetNs,
       );
-      expect(timestamp.format()).toEqual('2022-07-31, 10:25:41.056');
+      expect(timestamp.format()).toBe('2022-07-31, 10:25:41.056');
     });
 
     it('can create real-formatted timestamp with real to boot time offset', () => {
@@ -146,7 +146,7 @@ describe('TimestampConverter', () => {
       expect(timestamp.getValueNs()).toBe(
         testRealNs + testRealToBootTimeOffsetNs,
       );
-      expect(timestamp.format()).toEqual('2022-07-31, 10:25:41.052');
+      expect(timestamp.format()).toBe('2022-07-31, 10:25:41.052');
     });
 
     it('can create elapsed-formatted timestamp', () => {
@@ -154,7 +154,7 @@ describe('TimestampConverter', () => {
         TimestampConverterUtils.ASIA_TIMEZONE_INFO,
       ).makeTimestampFromMonotonicNs(testElapsedNs);
       expect(timestamp.getValueNs()).toBe(testElapsedNs);
-      expect(timestamp.format()).toEqual('100ns');
+      expect(timestamp.format()).toBe('100ns');
     });
 
     describe('adds correct offset for different timezones', () => {
@@ -171,7 +171,7 @@ describe('TimestampConverter', () => {
         );
         expect(
           londonConverter.makeTimestampFromRealNs(testRealNs).format(),
-        ).toEqual('2022-07-31, 05:55:41.051');
+        ).toBe('2022-07-31, 05:55:41.051');
 
         const zurichConverter = new TimestampConverter(
           {
@@ -185,7 +185,7 @@ describe('TimestampConverter', () => {
         );
         expect(
           zurichConverter.makeTimestampFromRealNs(testRealNs).format(),
-        ).toEqual('2022-07-31, 06:55:41.051');
+        ).toBe('2022-07-31, 06:55:41.051');
 
         const westCoastConverter = new TimestampConverter(
           {
@@ -199,7 +199,7 @@ describe('TimestampConverter', () => {
         );
         expect(
           westCoastConverter.makeTimestampFromRealNs(testRealNs).format(),
-        ).toEqual('2022-07-30, 21:55:41.051');
+        ).toBe('2022-07-30, 21:55:41.051');
 
         const indiaConverter = new TimestampConverter(
           {
@@ -213,7 +213,7 @@ describe('TimestampConverter', () => {
         );
         expect(
           indiaConverter.makeTimestampFromRealNs(testRealNs).format(),
-        ).toEqual('2022-07-31, 10:25:41.051');
+        ).toBe('2022-07-31, 10:25:41.051');
       });
     });
   });
@@ -461,7 +461,7 @@ describe('TimestampConverter', () => {
         converterWithMonotonicOffset
           .makeTimestampFromHuman('2022-11-10, 22:04:54.186123212')
           .format(),
-      ).toEqual('2022-11-10, 22:04:54.186');
+      ).toBe('2022-11-10, 22:04:54.186');
     });
   });
 
@@ -532,7 +532,7 @@ describe('TimestampConverter', () => {
         converter
           .makeTimestampFromHuman('2022-11-11, 03:34:54.186123212')
           .format(),
-      ).toEqual('2022-11-11, 03:34:54.186');
+      ).toBe('2022-11-11, 03:34:54.186');
     });
 
     function testMakeTimestampFromHumanReal(

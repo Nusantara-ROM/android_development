@@ -49,7 +49,7 @@ describe('ParserScreenRecording', () => {
     it('provides timestamps', () => {
       const timestamps = assertDefined(parser.getTimestamps());
 
-      expect(timestamps.length).toEqual(123);
+      expect(timestamps.length).toBe(123);
 
       const expected = [
         TimestampConverterUtils.makeRealTimestamp(1666361048792787045n),
@@ -93,7 +93,7 @@ describe('ParserScreenRecording', () => {
 
     it('provides timestamps', () => {
       const timestamps = assertDefined(parser.getTimestamps());
-      expect(timestamps.length).toEqual(105);
+      expect(timestamps.length).toBe(105);
       const expected = [
         TimestampConverterUtils.makeRealTimestamp(1755862820270527000n),
         TimestampConverterUtils.makeRealTimestamp(1755862820414660000n),
@@ -142,16 +142,16 @@ describe('ParserScreenRecording', () => {
           'traces/elapsed_and_real_timestamp/screen_recording_no_metadata.mp4',
         )
         .getParsers();
-      expect(parsers.length).toEqual(0);
+      expect(parsers.length).toBe(0);
     });
 
     it('sets real to boot time offset', () => {
-      expect(parser.getRealToBootTimeOffsetNs()).toEqual(10n);
+      expect(parser.getRealToBootTimeOffsetNs()).toBe(10n);
     });
 
     it('provides timestamps', () => {
       const timestamps = assertDefined(parser.getTimestamps());
-      expect(timestamps.length).toEqual(158);
+      expect(timestamps.length).toBe(158);
 
       const totalOffset = elapsedNs + realtoElapsedNs;
       const expected = [
@@ -251,12 +251,12 @@ describe('ParserScreenRecording', () => {
       });
 
       it('sets real to boot time offset', () => {
-        expect(parser.getRealToBootTimeOffsetNs()).toEqual(0n);
+        expect(parser.getRealToBootTimeOffsetNs()).toBe(0n);
       });
 
       it('provides timestamps', () => {
         const timestamps = assertDefined(parser.getTimestamps());
-        expect(timestamps.length).toEqual(158);
+        expect(timestamps.length).toBe(158);
 
         const expected = [
           TimestampConverterUtils.makeRealTimestamp(599300000n + startTimeNs),
@@ -287,7 +287,7 @@ describe('ParserScreenRecording', () => {
           filename,
         )
         .getParsers();
-      expect(parsers.length).toEqual(0);
+      expect(parsers.length).toBe(0);
     }
   });
 });

@@ -112,7 +112,7 @@ describe('LogComponent', () => {
   });
 
   it('renders filters', () => {
-    expect(dom.findAll('.entries .filter').length).toEqual(2);
+    expect(dom.findAll('.entries .filter').length).toBe(2);
   });
 
   it('renders entries', () => {
@@ -134,7 +134,7 @@ describe('LogComponent', () => {
     });
     dom.findAndClick('.go-to-first-entry');
     expect(spy).toHaveBeenCalledWith(0);
-    expect(clicked?.getIndex()).toEqual(0);
+    expect(clicked?.getIndex()).toBe(0);
   });
 
   it('scrolls to current entry on button click', () => {
@@ -159,7 +159,7 @@ describe('LogComponent', () => {
     });
     dom.findAndClick('.go-to-last-entry');
     expect(spy).toHaveBeenCalledWith(1);
-    expect(clicked?.getIndex()).toEqual(1);
+    expect(clicked?.getIndex()).toBe(1);
   });
 
   it('applies select filter correctly', async () => {
@@ -180,15 +180,15 @@ describe('LogComponent', () => {
         return entryValue.includes(detail.value);
       });
     });
-    expect(dom.findAll('.entry').length).toEqual(2);
+    expect(dom.findAll('.entry').length).toBe(2);
     await dom.openMatSelect();
 
     const firstOption = dom.getMatSelectPanel().get('mat-option');
     firstOption.click();
-    expect(dom.findAll('.entry').length).toEqual(1);
+    expect(dom.findAll('.entry').length).toBe(1);
 
     firstOption.click();
-    expect(dom.findAll('.entry').length).toEqual(2);
+    expect(dom.findAll('.entry').length).toBe(2);
   });
 
   it('applies text filter correctly', async () => {
@@ -206,21 +206,21 @@ describe('LogComponent', () => {
         return entryValue.includes(detail.filter.filterString);
       });
     });
-    expect(dom.findAll('.entry').length).toEqual(2);
+    expect(dom.findAll('.entry').length).toBe(2);
 
     const inputEl = dom.get('.headers input');
 
     inputEl.dispatchInput('123');
-    expect(dom.findAll('.entry').length).toEqual(2);
+    expect(dom.findAll('.entry').length).toBe(2);
 
     inputEl.dispatchInput('1234');
-    expect(dom.findAll('.entry').length).toEqual(1);
+    expect(dom.findAll('.entry').length).toBe(1);
 
     inputEl.dispatchInput('12345');
-    expect(dom.findAll('.entry').length).toEqual(0);
+    expect(dom.findAll('.entry').length).toBe(0);
 
     inputEl.dispatchInput('');
-    expect(dom.findAll('.entry').length).toEqual(2);
+    expect(dom.findAll('.entry').length).toBe(2);
   });
 
   it('emits event on arrow key press', () => {
@@ -234,16 +234,16 @@ describe('LogComponent', () => {
     });
 
     dom.keydownArrowUp(true);
-    expect(upArrowPressedTimes).toEqual(1);
+    expect(upArrowPressedTimes).toBe(1);
 
     dom.keydownArrowDown(true);
-    expect(downArrowPressedTimes).toEqual(1);
+    expect(downArrowPressedTimes).toBe(1);
 
     dom.keydownArrowUp(true);
-    expect(upArrowPressedTimes).toEqual(2);
+    expect(upArrowPressedTimes).toBe(2);
 
     dom.keydownArrowDown(true);
-    expect(downArrowPressedTimes).toEqual(2);
+    expect(downArrowPressedTimes).toBe(2);
   });
 
   it('propagates entry on trace entry timestamp click', () => {

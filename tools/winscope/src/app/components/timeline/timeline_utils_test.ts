@@ -208,7 +208,7 @@ describe('TimelineUtils', () => {
     });
 
     it('robust to invalid hex string', () => {
-      expect(convertHexToRgb('#1')).toEqual(undefined);
+      expect(convertHexToRgb('#1')).toBeUndefined();
     });
   });
 

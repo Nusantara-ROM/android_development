@@ -66,7 +66,7 @@ describe('UserOptionsComponent', () => {
 
   it('displays options', () => {
     const options = dom.findAll('.user-option');
-    expect(options.length).toEqual(3);
+    expect(options.length).toBe(3);
 
     options[0].checkText('option 1');
     expect(options[0].find('.user-option-chip')).toBeUndefined();

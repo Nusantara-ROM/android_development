@@ -72,8 +72,8 @@ describe('WmPropertiesProviderFactory', () => {
       expectedName: string,
     ) {
       const provider = factory.makeContainerProperties(entry);
-      expect(provider.length).toEqual(2);
-      expect(provider[1].getEagerProperties().name).toEqual(expectedName);
+      expect(provider.length).toBe(2);
+      expect(provider[1].getEagerProperties().name).toBe(expectedName);
     }
   });
 });

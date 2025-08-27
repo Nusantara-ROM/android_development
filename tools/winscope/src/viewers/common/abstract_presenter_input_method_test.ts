@@ -166,14 +166,14 @@ the default for its data type.`,
 
   override executePropertiesChecksAfterPositionUpdate(uiData: UiDataHierarchy) {
     const trees = assertDefined(uiData.hierarchyTrees);
-    expect(trees.length).toEqual(this.numberOfNestedChildren);
+    expect(trees.length).toBe(this.numberOfNestedChildren);
   }
 
   override executePropertiesChecksAfterSecondPositionUpdate(
     uiData: UiDataHierarchy,
   ) {
     const trees = assertDefined(uiData.hierarchyTrees);
-    expect(trees.length).toEqual(1);
+    expect(trees.length).toBe(1);
   }
 
   override executeSpecializedTests() {
@@ -276,7 +276,7 @@ the default for its data type.`,
 
         await presenter.onHighlightedIdChange(selectedTree.id);
         expect(uiData.propertiesTree).toEqual(propertiesTree);
-        expect(uiData.highlightedItem).toEqual('');
+        expect(uiData.highlightedItem).toBe('');
       });
 
       if (this.getPropertiesTree) {

@@ -68,7 +68,7 @@ describe('SearchListComponent', () => {
     dom.detectChanges();
 
     const listedSearches = dom.findAll('.listed-search');
-    expect(listedSearches.length).toEqual(2);
+    expect(listedSearches.length).toBe(2);
 
     const queryName1 = listedSearches[0].get('.listed-search-name');
     const queryName2 = listedSearches[1].get('.listed-search-name');

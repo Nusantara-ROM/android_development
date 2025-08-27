@@ -52,7 +52,7 @@ describe('PerfettoParserTransactions', () => {
   it('provides timestamps', () => {
     const timestamps = assertDefined(parser.getTimestamps());
 
-    expect(timestamps.length).toEqual(712);
+    expect(timestamps.length).toBe(712);
 
     const expected = [
       TimestampConverterUtils.makeRealTimestamp(1659507541051480997n),
@@ -64,13 +64,13 @@ describe('PerfettoParserTransactions', () => {
 
   it('retrieves all entries', async () => {
     const entries = await parser.getAllEntries();
-    expect(entries.length).toEqual(712);
+    expect(entries.length).toBe(712);
     expect(entries.every((entry) => entry !== undefined)).toBeTrue();
   });
 
   it('retrieves trace entry', async () => {
     const entry = await parser.getEntry(1);
-    expect(entry.id).toEqual('TransactionsTraceEntry entry');
+    expect(entry.id).toBe('TransactionsTraceEntry entry');
   });
 
   describe('eager property fetching', () => {
@@ -227,15 +227,15 @@ describe('PerfettoParserTransactions', () => {
       const layerChange1 = await entry0.getAllChildren()[1].getAllProperties();
 
       // Add default values
-      expect(layerChange1?.getChildByName('alpha')?.getValue()).toEqual(0);
+      expect(layerChange1?.getChildByName('alpha')?.getValue()).toBe(0);
 
       // Convert value types (bigint -> number)
-      expect(layerChange1?.getChildByName('flags')?.getValue()).toEqual(256);
+      expect(layerChange1?.getChildByName('flags')?.getValue()).toBe(256);
 
       // Decode enum IDs
       expect(
         layerChange1?.getChildByName('dropInputMode')?.formattedValue(),
-      ).toEqual('NONE');
+      ).toBe('NONE');
 
       const entry2 = await parser.getEntry(2);
       const layerChange2 = await entry2.getAllChildren()[0].getAllProperties();
@@ -244,7 +244,7 @@ describe('PerfettoParserTransactions', () => {
           ?.getChildByName('bufferData')
           ?.getChildByName('pixelFormat')
           ?.formattedValue(),
-      ).toEqual('PIXEL_FORMAT_RGBA_1010102');
+      ).toBe('PIXEL_FORMAT_RGBA_1010102');
     });
 
     it("decodes 'what' field", async () => {

@@ -242,7 +242,7 @@ describe('SyncStream', () => {
       .build();
     setMessageResponses([messageData1, messageData2]);
     const receivedData = await stream.pullFile(testFilepath);
-    expect(utf8Decode(receivedData)).toEqual('tes');
+    expect(utf8Decode(receivedData)).toBe('tes');
   });
 
   it('pulls file data from blob', async () => {

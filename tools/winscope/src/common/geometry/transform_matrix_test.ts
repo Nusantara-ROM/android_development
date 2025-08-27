@@ -93,7 +93,7 @@ describe('TransformMatrix', () => {
   it('should check for equality', () => {
     const sameMatrix = new TransformMatrix(2, 0, 10, 0, 3, 20);
     const differentMatrix = new TransformMatrix(1, 1, 1, 1, 1, 1);
-    expect(matrix.isEqual(sameMatrix)).toBe(true);
-    expect(matrix.isEqual(differentMatrix)).toBe(false);
+    expect(matrix.isEqual(sameMatrix)).toBeTrue();
+    expect(matrix.isEqual(differentMatrix)).toBeFalse();
   });
 });

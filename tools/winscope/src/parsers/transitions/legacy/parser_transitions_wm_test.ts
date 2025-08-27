@@ -45,15 +45,15 @@ describe('ParserTransitionsWm', () => {
 
   it('provides timestamps', () => {
     const timestamps = assertDefined(parser.getTimestamps());
-    expect(timestamps.length).toEqual(8);
+    expect(timestamps.length).toBe(8);
     const expected = TimestampConverterUtils.makeZeroTimestamp();
     timestamps.forEach((timestamp) => expect(timestamp).toEqual(expected));
   });
 
   it('provides decoded proto', async () => {
     const entry = await parser.getEntry(0);
-    expect(entry.id).toEqual(6);
-    expect(entry.startTransactionId?.toString()).toEqual('13086765351818');
-    expect(entry.sendTimeNs?.toString()).toEqual('57649646973488');
+    expect(entry.id).toBe(6);
+    expect(entry.startTransactionId?.toString()).toBe('13086765351818');
+    expect(entry.sendTimeNs?.toString()).toBe('57649646973488');
   });
 });

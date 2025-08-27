@@ -60,7 +60,7 @@ describe('CollapsedSectionsComponent', () => {
 
   it('displays only collapsed sections', () => {
     let sections = dom.findAll('.collapsed-section');
-    expect(sections.length).toEqual(1);
+    expect(sections.length).toBe(1);
     sections[0].checkText('HIERARCHY');
     expect(sections[0].find('.mat-icon')).toBeDefined();
 
@@ -70,7 +70,7 @@ describe('CollapsedSectionsComponent', () => {
     );
     dom.detectChanges();
     sections = dom.findAll('.collapsed-section');
-    expect(sections.length).toEqual(2);
+    expect(sections.length).toBe(2);
     sections[0].checkText('RECTS');
     expect(sections[0].find('.mat-icon')).toBeDefined();
     sections[1].checkText('HIERARCHY');

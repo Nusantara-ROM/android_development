@@ -157,10 +157,10 @@ describe('TransformUtils', () => {
   });
 
   it('should check if transform is simple', () => {
-    expect(isSimpleTransform(TransformTypeFlags.EMPTY)).toBe(true);
-    expect(isSimpleTransform(TransformTypeFlags.TRANSLATE_VAL)).toBe(true);
-    expect(isSimpleTransform(TransformTypeFlags.ROT_90_VAL)).toBe(true);
-    expect(isSimpleTransform(TransformTypeFlags.SCALE_VAL)).toBe(false);
-    expect(isSimpleTransform(TransformTypeFlags.ROT_INVALID_VAL)).toBe(false);
+    expect(isSimpleTransform(TransformTypeFlags.EMPTY)).toBeTrue();
+    expect(isSimpleTransform(TransformTypeFlags.TRANSLATE_VAL)).toBeTrue();
+    expect(isSimpleTransform(TransformTypeFlags.ROT_90_VAL)).toBeTrue();
+    expect(isSimpleTransform(TransformTypeFlags.SCALE_VAL)).toBeFalse();
+    expect(isSimpleTransform(TransformTypeFlags.ROT_INVALID_VAL)).toBeFalse();
   });
 });

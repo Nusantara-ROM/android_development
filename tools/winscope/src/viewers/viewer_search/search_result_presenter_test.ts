@@ -155,7 +155,7 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
           trace,
           TracePositionUpdate.fromTraceEntry(trace.getEntry(0)),
         );
-        expect(result.entries[0].fields[0].value).toEqual(0);
+        expect(result.entries[0].fields[0].value).toBe(0);
       });
 
       describe('value conversions', () => {
@@ -178,7 +178,7 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
             .and.returnValue('test_time_ns');
           this.spyIter?.get.withArgs('value').and.returnValue('123');
           await presenter.onAppEvent(assertDefined(this.getPositionUpdate()));
-          expect(result.entries[0].fields[2].value).toEqual('test_time_ns');
+          expect(result.entries[0].fields[2].value).toBe('test_time_ns');
           expect(result.entries[0].fields[3].value).toEqual(
             TimestampConverterUtils.makeRealTimestamp(123n),
           );
@@ -187,19 +187,19 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
         it("converts value to 'NULL' if null", async () => {
           this.spyIter?.get.withArgs('value').and.returnValue(null);
           await presenter.onAppEvent(assertDefined(this.getPositionUpdate()));
-          expect(result.entries[0].fields[3].value).toEqual('NULL');
+          expect(result.entries[0].fields[3].value).toBe('NULL');
         });
 
         it('converts value to number if bigint', async () => {
           this.spyIter?.get.withArgs('value').and.returnValue(321n);
           await presenter.onAppEvent(assertDefined(this.getPositionUpdate()));
-          expect(result.entries[0].fields[3].value).toEqual(321);
+          expect(result.entries[0].fields[3].value).toBe(321);
         });
 
         it("converts value to '[]' if Uint8Array", async () => {
           this.spyIter?.get.withArgs('value').and.returnValue(new Uint8Array());
           await presenter.onAppEvent(assertDefined(this.getPositionUpdate()));
-          expect(result.entries[0].fields[3].value).toEqual('[]');
+          expect(result.entries[0].fields[3].value).toBe('[]');
         });
       });
     });

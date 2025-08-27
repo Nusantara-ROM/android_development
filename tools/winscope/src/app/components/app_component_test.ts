@@ -162,7 +162,7 @@ describe('AppComponent', () => {
   });
 
   it('has the expected title', () => {
-    expect(component.title).toEqual('winscope');
+    expect(component.title).toBe('winscope');
   });
 
   it('shows permanent header items on homepage', () => {
@@ -454,7 +454,7 @@ describe('AppComponent', () => {
 
     const mediatorSpy = spyOn(component.mediator, 'onWinscopeEvent');
     const actions = dialog.findAll('.warning-action-buttons button');
-    expect(actions.length).toEqual(1);
+    expect(actions.length).toBe(1);
     actions[0].click();
     await dom.whenStable();
     expect(eventHandled).toBeTrue();

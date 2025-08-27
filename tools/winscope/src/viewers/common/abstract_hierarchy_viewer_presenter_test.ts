@@ -147,7 +147,7 @@ export abstract class AbstractHierarchyViewerPresenterTest<
           expect(uiData.rectSpec).toEqual(this.expectedInitialRectSpec);
 
           await presenter.onHighlightedIdChange(rect.id);
-          expect(uiData.highlightedItem).toEqual('');
+          expect(uiData.highlightedItem).toBe('');
         });
       }
 

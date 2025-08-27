@@ -234,8 +234,8 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
   }
 
   override executePropertiesChecksAfterPositionUpdate(uiData: UiData): void {
-    expect(uiData.entries.length).toEqual(8);
-    expect(uiData.currentIndex).toEqual(0);
+    expect(uiData.entries.length).toBe(8);
+    expect(uiData.currentIndex).toBe(0);
     expect(uiData.selectedIndex).toBeUndefined();
     const curEntry = uiData.entries[0];
     const expectedFields: LogField[] = [
@@ -294,17 +294,15 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
     });
 
     const motionEvent = assertDefined(uiData.propertiesTree);
-    expect(motionEvent.getChildByName('eventId')?.getValue()).toEqual(
-      330184796,
-    );
-    expect(motionEvent.getChildByName('action')?.formattedValue()).toEqual(
+    expect(motionEvent.getChildByName('eventId')?.getValue()).toBe(330184796);
+    expect(motionEvent.getChildByName('action')?.formattedValue()).toBe(
       'ACTION_DOWN',
     );
 
     const dispatchProperties = assertDefined(uiData.dispatchPropertiesTree);
-    expect(dispatchProperties.getAllChildren().length).toEqual(5);
+    expect(dispatchProperties.getAllChildren().length).toBe(5);
 
-    expect(dispatchProperties.getChildByName('0')?.getDisplayName()).toEqual(
+    expect(dispatchProperties.getChildByName('0')?.getDisplayName()).toBe(
       'win-212',
     );
   }
@@ -315,10 +313,8 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
     action: string,
   ) {
     const properties = assertDefined(uiData.propertiesTree);
-    expect(properties.getChildByName('action')?.formattedValue()).toEqual(
-      action,
-    );
-    expect(properties.getChildByName('eventId')?.getValue()).toEqual(eventId);
+    expect(properties.getChildByName('action')?.formattedValue()).toBe(action);
+    expect(properties.getChildByName('eventId')?.getValue()).toBe(eventId);
   }
 
   override executeSpecializedTests() {
@@ -499,13 +495,13 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         const motionDispatchProperties = assertDefined(
           uiData.dispatchPropertiesTree,
         );
-        expect(motionDispatchProperties.getAllChildren().length).toEqual(1);
+        expect(motionDispatchProperties.getAllChildren().length).toBe(1);
         expect(
           motionDispatchProperties
             .getChildByName('0')
             ?.getChildByName('windowId')
             ?.getValue(),
-        ).toEqual(98n);
+        ).toBe(98n);
       });
 
       it('finds entry by time', async () => {
@@ -678,23 +674,23 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         });
         const dispatchEvents = properties.getChildByName('dispatchEvents');
         const spyArgs = spy.calls.allArgs();
-        expect(spyArgs.length).toEqual(1);
+        expect(spyArgs.length).toBe(1);
         expect(spyArgs[0][2]).toEqual(dispatchEvents);
         expect(uiData.rectsToDraw).toHaveSize(1);
-        expect(uiData.rectsToDraw?.at(0)?.id).toEqual('1 inputRect');
+        expect(uiData.rectsToDraw?.at(0)?.id).toBe('1 inputRect');
 
         await presenter.onAppEvent(
           TracePositionUpdate.fromTraceEntry(trace.getEntry(2)),
         );
         expect(uiData.rectsToDraw).toHaveSize(1);
-        expect(uiData.rectsToDraw?.at(0)?.id).toEqual('1 inputRect');
+        expect(uiData.rectsToDraw?.at(0)?.id).toBe('1 inputRect');
 
         await presenter.onAppEvent(
           TracePositionUpdate.fromTraceEntry(trace.getEntry(3)),
         );
         expect(uiData.rectsToDraw).toHaveSize(3);
         uiData.rectsToDraw?.forEach((rect) =>
-          expect(rect.id).toEqual('1 inputRect'),
+          expect(rect.id).toBe('1 inputRect'),
         );
       });
 
@@ -707,11 +703,11 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         await presenter.onLogEntryClick(3);
         expect(
           assertDefined(uiData.dispatchPropertiesTree).getAllChildren().length,
-        ).toEqual(5);
+        ).toBe(5);
         await presenter.onDispatchPropertiesFilterChange(new TextFilter('212'));
         expect(
           assertDefined(uiData.dispatchPropertiesTree).getAllChildren().length,
-        ).toEqual(1);
+        ).toBe(1);
       });
 
       it('updates highlighted property', async () => {
@@ -719,12 +715,12 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
           (uiDataLog) => (uiData = uiDataLog as UiData),
           false,
         );
-        expect(uiData.highlightedProperty).toEqual('');
+        expect(uiData.highlightedProperty).toBe('');
         const id = '4';
         presenter.onHighlightedPropertyChange(id);
-        expect(uiData.highlightedProperty).toEqual(id);
+        expect(uiData.highlightedProperty).toBe(id);
         presenter.onHighlightedPropertyChange(id);
-        expect(uiData.highlightedProperty).toEqual('');
+        expect(uiData.highlightedProperty).toBe('');
       });
 
       it('highlights the proper selected node', async () => {
@@ -743,7 +739,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
           }),
         );
         await presenter.onLogEntryClick(testLogId);
-        expect(uiData.highlightedProperty).toEqual('2');
+        expect(uiData.highlightedProperty).toBe('2');
       });
 
       it('updates highlighted property on target window click', async () => {
@@ -790,7 +786,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
         await presenter.onHighlightedIdChange(rect.id);
         expect(uiData.highlightedRect).toEqual(rect.id);
         await presenter.onHighlightedIdChange(rect.id);
-        expect(uiData.highlightedRect).toEqual('');
+        expect(uiData.highlightedRect).toBe('');
       });
 
       it('filters rects by having content or visibility', async () => {

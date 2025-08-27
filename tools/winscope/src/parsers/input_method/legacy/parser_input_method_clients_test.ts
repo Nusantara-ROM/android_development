@@ -60,14 +60,14 @@ describe('ParserInputMethodClients', () => {
 
     it('converts to valid perfetto packets', async () => {
       const packets = parser.convertToPerfettoPackets!(10);
-      expect(packets.length).toEqual(13);
-      expect(packets[0].trustedPacketSequenceId).toEqual(10);
+      expect(packets.length).toBe(13);
+      expect(packets[0].trustedPacketSequenceId).toBe(10);
       const data =
         packets[0].winscopeExtensions?.[
           '.perfetto.protos.WinscopeExtensionsImpl.inputmethodClients'
         ];
       expect(data?.client).toBeDefined();
-      expect(data?.where).toEqual('InsetsSourceConsumer#setControl');
+      expect(data?.where).toBe('InsetsSourceConsumer#setControl');
       const ts = Long.fromString(BigInt(15613638434).toString());
       ts.unsigned = true;
       expect(packets[0].timestamp).toEqual(ts);
@@ -96,7 +96,7 @@ describe('ParserInputMethodClients', () => {
         ?.getChildByName('viewRootImpl')
         ?.getChildByName('windowAttributes')
         ?.getChildByName('type');
-      expect(intdefProperty?.formattedValue()).toEqual('TYPE_BASE_APPLICATION');
+      expect(intdefProperty?.formattedValue()).toBe('TYPE_BASE_APPLICATION');
     });
   });
 
@@ -126,14 +126,14 @@ describe('ParserInputMethodClients', () => {
 
     it('converts to valid perfetto packets', async () => {
       const packets = parser.convertToPerfettoPackets!(10);
-      expect(packets.length).toEqual(33);
-      expect(packets[0].trustedPacketSequenceId).toEqual(10);
+      expect(packets.length).toBe(33);
+      expect(packets[0].trustedPacketSequenceId).toBe(10);
       const data =
         packets[0].winscopeExtensions?.[
           '.perfetto.protos.WinscopeExtensionsImpl.inputmethodClients'
         ];
       expect(data?.client).toBeDefined();
-      expect(data?.where).toEqual('InsetsSourceConsumer#setControl');
+      expect(data?.where).toBe('InsetsSourceConsumer#setControl');
       const ts = Long.fromString(BigInt(1149083651642).toString());
       ts.unsigned = true;
       expect(packets[0].timestamp).toEqual(ts);

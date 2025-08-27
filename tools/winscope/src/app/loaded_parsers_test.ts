@@ -142,7 +142,7 @@ describe('LoadedParsers', () => {
 
   beforeEach(() => {
     loadedParsers = new LoadedParsers();
-    expect(loadedParsers.getParsers().length).toEqual(0);
+    expect(loadedParsers.getParsers().length).toBe(0);
     userNotifierChecker.reset();
   });
 

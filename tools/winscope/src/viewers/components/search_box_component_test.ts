@@ -65,10 +65,10 @@ describe('SearchBoxComponent', () => {
 
   it('handles change in filter', () => {
     const spy = spyOn(component.filterChange, 'emit');
-    expect(component.textFilter?.filterString).toEqual('');
+    expect(component.textFilter?.filterString).toBe('');
     expect(dom.find('.highlighted')).toBeUndefined();
     dom.findAndDispatchInput('.search-box', 'Test');
-    expect(component.textFilter?.filterString).toEqual('Test');
+    expect(component.textFilter?.filterString).toBe('Test');
     expect(spy).toHaveBeenCalledWith(new TextFilter('Test'));
     expect(dom.find('.highlighted')).toBeDefined();
   });
@@ -76,7 +76,7 @@ describe('SearchBoxComponent', () => {
   it('handles change in flags', () => {
     const spy = spyOn(component.filterChange, 'emit');
     const buttons = dom.findAll('.search-box button');
-    expect(buttons.length).toEqual(3);
+    expect(buttons.length).toBe(3);
 
     buttons[0].click();
     expect(spy).toHaveBeenCalledWith(

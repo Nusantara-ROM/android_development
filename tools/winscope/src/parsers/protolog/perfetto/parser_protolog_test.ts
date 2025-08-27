@@ -44,7 +44,7 @@ describe('PerfettoParserProtolog', () => {
   it('provides timestamps', () => {
     const timestamps = assertDefined(parser.getTimestamps());
 
-    expect(timestamps.length).toEqual(3);
+    expect(timestamps.length).toBe(3);
 
     const expected = [
       TimestampConverterUtils.makeRealTimestamp(1713866817780323315n),
@@ -56,7 +56,7 @@ describe('PerfettoParserProtolog', () => {
 
   it('retrieves all entries', async () => {
     const entries = await parser.getAllEntries();
-    expect(entries.length).toEqual(3);
+    expect(entries.length).toBe(3);
     expect(entries.every((entry) => entry !== undefined)).toBeTrue();
   });
 
@@ -65,23 +65,23 @@ describe('PerfettoParserProtolog', () => {
 
     expect(
       assertDefined(message.getEagerPropertyByName('message')).formattedValue(),
-    ).toEqual(
+    ).toBe(
       'Test message with different int formats: 888, 0o1570, 0x378, 888.000000, 8.880000e+02.',
     );
     expect(
       assertDefined(message.getEagerPropertyByName('ts')).formattedValue(),
-    ).toEqual('2024-04-23, 10:06:57.780');
+    ).toBe('2024-04-23, 10:06:57.780');
     expect(
       assertDefined(message.getEagerPropertyByName('tag')).formattedValue(),
-    ).toEqual('MySecondGroup');
+    ).toBe('MySecondGroup');
     expect(
       assertDefined(message.getEagerPropertyByName('level')).formattedValue(),
-    ).toEqual('WARN');
+    ).toBe('WARN');
     expect(
       assertDefined(
         message.getEagerPropertyByName('location'),
       ).formattedValue(),
-    ).toEqual('file1');
+    ).toBe('file1');
 
     const message2 = await parser.getEntry(1);
     expect(message2.getEagerPropertyByName('location')).toBeUndefined();

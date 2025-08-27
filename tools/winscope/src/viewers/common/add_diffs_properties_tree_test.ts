@@ -93,7 +93,7 @@ class AddDiffsPropertiesTreeTest extends AbstractAddDiffsTest<UiPropertyTreeNode
 
         await addDiffs.executeInPlace(newRoot, oldRoot);
         expect(newRoot).toEqual(expectedRoot);
-        expect(newRoot.getChildByName('child')?.getOldValue()).toEqual('null');
+        expect(newRoot.getChildByName('child')?.getOldValue()).toBe('null');
       });
 
       it('processes MODIFIED node by setting old value to old formatted value', async () => {
@@ -105,7 +105,7 @@ class AddDiffsPropertiesTreeTest extends AbstractAddDiffsTest<UiPropertyTreeNode
 
         await addDiffs.executeInPlace(newRoot, oldRoot);
         expect(newRoot).toEqual(expectedRoot);
-        expect(newRoot.getChildByName('child')?.getOldValue()).toEqual('old');
+        expect(newRoot.getChildByName('child')?.getOldValue()).toBe('old');
       });
 
       it('processes MODIFIED flag values into diff value parts', async () => {

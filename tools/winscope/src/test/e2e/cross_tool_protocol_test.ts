@@ -253,7 +253,7 @@ describe('Cross-Tool Protocol', () => {
 
   async function getWindowHandleWinscope(): Promise<string> {
     const handles = await browser.getAllWindowHandles();
-    expect(handles.length).toEqual(2);
+    expect(handles.length).toBe(2);
     return handles[1];
   }
 
