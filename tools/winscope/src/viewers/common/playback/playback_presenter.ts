@@ -19,29 +19,56 @@ import {Trace} from 'trace_api/trace';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {TracePosition} from 'trace_api/trace_position';
-import {TimeUtils} from 'common/time/time_utils';
+import {sleepMs} from 'common/time/time_utils';
+import {TraceEntryEager} from 'trace_api/trace';
 
 export class PlaybackPresenter {
-  constructor(private emitWinscopeEvent: EmitEvent) {}
+  private paused: boolean = true;
+  private entryIndex: number = 0;
+  private entryStepSize: number = 1;
+  private buffer: Array<
+    TraceEntryEager<HierarchyTreeNode, HierarchyTreeNode | undefined>
+  > = [];
+  private emitWinscopeEvent: EmitEvent;
 
-  async playbackStart(trace: Trace<HierarchyTreeNode>) {
-    const buffer = await this.buildBuffer(trace);
-    let entryIndex = 0;
-    while (entryIndex < buffer.length) {
+  constructor(emitWinscopeEvent: EmitEvent) {
+    this.emitWinscopeEvent = emitWinscopeEvent;
+  }
+
+  isPlaying() {
+    return !this.paused;
+  }
+
+  async start(trace: Trace<HierarchyTreeNode>, currentPosition: number) {
+    this.paused = false;
+    await this.buildBuffer(trace);
+    this.entryIndex = currentPosition;
+    this.runPlaybackLoop();
+  }
+
+  async pause() {
+    this.paused = true;
+  }
+
+  private async runPlaybackLoop() {
+    while (this.entryIndex < this.buffer.length && !this.paused) {
       await this.emitWinscopeEvent(
         new TracePositionUpdate(
-          TracePosition.fromTraceEntry(buffer[entryIndex]),
+          TracePosition.fromTraceEntry(this.buffer[this.entryIndex]),
           true,
         ),
       );
-      await TimeUtils.sleepMs(10);
-      entryIndex = entryIndex + 1;
+      // we debounce the trace position updates to allow time for UI to render
+      await sleepMs(10);
+      this.entryIndex += this.entryStepSize;
     }
+    this.paused = true;
   }
 
   private async buildBuffer(trace: Trace<HierarchyTreeNode>) {
-    const length = trace.lengthEntries;
-    const buffer = await trace.getRangeEntryValues({start: 0, end: length});
-    return buffer;
+    if (this.buffer.length === 0) {
+      const length = trace.lengthEntries;
+      this.buffer = await trace.getRangeEntryValues({start: 0, end: length});
+    }
   }
 }

@@ -58,6 +58,7 @@ export enum WinscopeEventType {
   TRACE_SEARCH_INITIALIZED,
   SHOW_TRACE_UPLOAD_WARNING,
   PLAYBACK_START,
+  PLAYBACK_PAUSE,
 }
 
 interface TypeMap {
@@ -93,6 +94,7 @@ interface TypeMap {
   [WinscopeEventType.TRACE_SEARCH_COMPLETED]: TraceSearchCompleted;
   [WinscopeEventType.SHOW_TRACE_UPLOAD_WARNING]: ShowTraceUploadWarning;
   [WinscopeEventType.PLAYBACK_START]: PlaybackStart;
+  [WinscopeEventType.PLAYBACK_PAUSE]: PlaybackPause;
 }
 
 /**
@@ -467,6 +469,22 @@ export class ShowTraceUploadWarning extends WinscopeEvent {
 export class PlaybackStart extends WinscopeEvent {
   override readonly type = WinscopeEventType.PLAYBACK_START;
   readonly traceType: TraceType;
+  readonly currentTraceIndex: number;
+
+  constructor(traceType: TraceType, currentTraceIndex: number) {
+    super();
+    this.traceType = traceType;
+    this.currentTraceIndex = currentTraceIndex;
+  }
+}
+
+/**
+ * An event for when playback should pause.
+ */
+export class PlaybackPause extends WinscopeEvent {
+  override readonly type = WinscopeEventType.PLAYBACK_PAUSE;
+  readonly traceType: TraceType;
+
   constructor(traceType: TraceType) {
     super();
     this.traceType = traceType;

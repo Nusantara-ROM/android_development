@@ -48,7 +48,7 @@ import {
 import {WinscopeEventEmitter} from 'messaging/winscope_event_emitter';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
 import {UserNotifier} from 'services/user_notifier';
-import {TraceEntry} from 'trace_api/trace';
+import {Trace, TraceEntry} from 'trace_api/trace';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TracePosition} from 'trace_api/trace_position';
 import {TraceType} from 'trace_api/trace_type';
@@ -385,13 +385,26 @@ export class Mediator {
     );
 
     await event.visit(WinscopeEventType.PLAYBACK_START, async (event) => {
-      const traceType = event.traceType;
-      const viewer = this.findViewerByType(traceType);
+      const viewer = this.findViewerByType(event.traceType);
       if (viewer) {
         const visible = this.isViewerVisible(viewer);
         if (visible) {
+          const trace = this.tracePipeline
+            .getTraces()
+            .getTrace(event.traceType);
+          if (trace === undefined) {
+            return;
+          }
+          this.timelineData.trySetActiveTrace(trace as Trace<object>);
           await viewer.onWinscopeEvent(event);
         }
+      }
+    });
+
+    await event.visit(WinscopeEventType.PLAYBACK_PAUSE, async (event) => {
+      const viewer = this.findViewerByType(event.traceType);
+      if (viewer) {
+        await viewer.onWinscopeEvent(event);
       }
     });
   }

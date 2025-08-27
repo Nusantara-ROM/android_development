@@ -157,6 +157,10 @@ the default for its data type.`,
     undefined,
     ['a', 'type'],
   );
+  protected override playbackPresenter = new PlaybackPresenter((event) => {
+    this.hierarchyPresenter.setShowDiffAvailability(true);
+    return this.emitWinscopeEvent(event);
+  });
   protected override multiTraceType = undefined;
 
   private viewCapturePackageNames: string[] | undefined;
@@ -176,9 +180,6 @@ the default for its data type.`,
     },
   ];
   private rectSpecIndex = 0;
-  private playbackPresenter = new PlaybackPresenter((event) => {
-    return this.emitWinscopeEvent(event);
-  });
 
   constructor(
     trace: Trace<HierarchyTreeNode>,
@@ -257,12 +258,25 @@ the default for its data type.`,
     await this.setInitialWmActiveDisplay(event);
   }
 
-  protected override async initializePlayback(trace: Trace<HierarchyTreeNode>) {
-    this.playbackPresenter.playbackStart(trace);
+  protected override async startPlayback(
+    trace: Trace<HierarchyTreeNode>,
+    currentPosition: number,
+  ) {
+    this.hierarchyPresenter.setShowDiffAvailability(false);
+    this.playbackPresenter.start(trace, currentPosition);
+  }
+
+  protected override async pausePlayback(): Promise<void> {
+    this.hierarchyPresenter.setShowDiffAvailability(true);
+    this.playbackPresenter.pause();
   }
 
   protected override async processDataAfterPositionUpdate(): Promise<void> {
-    this.updateCuratedProperties();
+    if (this.playbackPresenter.isPlaying()) {
+      this.hierarchyPresenter.setShowDiffAvailability(false);
+    } else {
+      this.updateCuratedProperties();
+    }
   }
 
   protected override refreshUIData() {

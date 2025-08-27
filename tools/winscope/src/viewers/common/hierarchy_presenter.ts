@@ -115,6 +115,16 @@ export class HierarchyPresenter {
     return this.getCurrentTreesByTrace(trace)?.displayNames;
   }
 
+  setShowDiffAvailability(isAvailable: boolean) {
+    const hierarchyShowDiff = this.userOptions['showDiff'];
+    if (hierarchyShowDiff) {
+      hierarchyShowDiff.isUnavailable = !isAvailable;
+      if (!isAvailable) {
+        hierarchyShowDiff.enabled = false;
+      }
+    }
+  }
+
   async addCurrentHierarchyTrees(
     value: TraceAndTrees,
     highlightedItem: string | undefined,
