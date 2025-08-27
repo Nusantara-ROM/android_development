@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
+import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {
@@ -544,7 +544,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
         .setWidth(1)
         .setHeight(1)
         .setLabel('test rect')
-        .setTransform(IDENTITY_MATRIX)
+        .setTransform(TransformMatrix.IDENTITY)
         .setIsVisible(true)
         .setIsDisplay(false)
         .setIsActiveDisplay(true)
@@ -559,7 +559,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
         .setWidth(1)
         .setHeight(1)
         .setLabel('test rect 2')
-        .setTransform(IDENTITY_MATRIX)
+        .setTransform(TransformMatrix.IDENTITY)
         .setIsVisible(true)
         .setIsDisplay(false)
         .setIsActiveDisplay(true)
@@ -574,7 +574,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
         .setWidth(1)
         .setHeight(1)
         .setLabel('test rect 3')
-        .setTransform(IDENTITY_MATRIX)
+        .setTransform(TransformMatrix.IDENTITY)
         .setIsVisible(false)
         .setIsDisplay(false)
         .setIsActiveDisplay(true)

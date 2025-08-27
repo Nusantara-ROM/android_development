@@ -17,10 +17,7 @@
 import {CornerRadii} from 'common/geometry/corner_radii';
 import {Rect} from 'common/geometry/rect';
 import {Region} from 'common/geometry/region';
-import {
-  IDENTITY_MATRIX,
-  TransformMatrix,
-} from 'common/geometry/transform_matrix';
+import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {TraceGeometryData} from 'parsers/trace_geometry_data';
 import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {makeSpyRowIterator} from 'trace_processor/test_utils';
@@ -823,7 +820,7 @@ describe('SurfaceFlinger RectExtractor', () => {
         .setHeight(2000)
         .setId('Display - 456')
         .setName('Display 456')
-        .setTransform(IDENTITY_MATRIX)
+        .setTransform(TransformMatrix.IDENTITY)
         .setGroupId(654)
         .setIsVisible(false)
         .setIsDisplay(true)
@@ -923,7 +920,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       .setHeight(2000)
       .setId(`Display - ${displayId}`)
       .setName(name)
-      .setTransform(IDENTITY_MATRIX)
+      .setTransform(TransformMatrix.IDENTITY)
       .setGroupId(321)
       .setIsVisible(false)
       .setIsDisplay(true)

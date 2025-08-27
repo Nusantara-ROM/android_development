@@ -20,10 +20,7 @@ import {Distance} from 'common/geometry/distance';
 import {Point3D} from 'common/geometry/point3d';
 import {Rect3D} from 'common/geometry/rect3d';
 import {Size} from 'common/geometry/size';
-import {
-  IDENTITY_MATRIX,
-  TransformMatrix,
-} from 'common/geometry/transform_matrix';
+import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {ColorType} from './color_type';
@@ -288,7 +285,7 @@ class Mapper3D {
           };
         });
       }
-      const transform = rect2d.transform ?? IDENTITY_MATRIX;
+      const transform = rect2d.transform ?? TransformMatrix.IDENTITY;
 
       const rect: UiRect3D = {
         id: rect2d.id,

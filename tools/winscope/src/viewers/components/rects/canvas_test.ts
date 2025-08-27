@@ -20,7 +20,7 @@ import {Box3D} from 'common/geometry/box3d';
 import {CornerRadii} from 'common/geometry/corner_radii';
 import {Distance} from 'common/geometry/distance';
 import {Point3D} from 'common/geometry/point3d';
-import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
+import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {
   getDefaultTransform,
   TransformTypeFlags,
@@ -1090,7 +1090,7 @@ describe('Canvas', () => {
       darkFactor: 1,
       colorType: ColorType.VISIBLE,
       isClickable: false,
-      transform: IDENTITY_MATRIX,
+      transform: TransformMatrix.IDENTITY,
       isOversized: false,
       fillRegion: undefined,
       isPinned: false,
