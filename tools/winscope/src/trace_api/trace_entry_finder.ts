@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Analytics} from 'common/analytics';
+import {analyticsLogEvent} from 'common/analytics';
 import {Trace, TraceEntry} from './trace';
 import {TracePosition} from './trace_position';
 import {TraceTypeUtils} from './trace_type';
@@ -46,7 +46,7 @@ export class TraceEntryFinder {
       } catch (e) {
         const message = (e as Error).message;
         console.warn(`Could not retrieve frame: ${message}`);
-        Analytics.analyticsLogEvent('frame_map_error', {
+        analyticsLogEvent('frame_map_error', {
           message,
         });
       }
