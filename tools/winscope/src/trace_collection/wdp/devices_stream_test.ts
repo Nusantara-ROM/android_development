@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TimeUtils} from 'common/time/time_utils';
+import {wait} from 'common/time/time_utils';
 import {
   makeFakeWebSocket,
   makeFakeWebSocketMessage,
@@ -47,7 +47,7 @@ describe('DevicesStream', () => {
     expect(called).toBeFalse();
     await stream.connect();
     receiveMessage();
-    await TimeUtils.wait(() => called);
+    await wait(() => called);
     expect(dataListener).toHaveBeenCalledOnceWith(testMessage);
   });
 

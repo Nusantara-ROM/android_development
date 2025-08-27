@@ -15,7 +15,7 @@
  */
 
 import {removeDirFromFileName} from 'common/file_utils';
-import {TimeUtils} from 'common/time/time_utils';
+import {sleepMs} from 'common/time/time_utils';
 import {ProgressListener} from 'messaging/progress_listener';
 import {ProxyTracingWarnings} from 'messaging/user_warnings';
 import {UserNotifier} from 'services/user_notifier';
@@ -96,7 +96,7 @@ export class TraceCollectionController {
       this.activeTracingSessions.push(session);
     }
     // TODO(b/330118129): identify source of additional start latency that affects some traces
-    await TimeUtils.sleepMs(1000); // 1s timeout ensures SR fully started
+    await sleepMs(1000); // 1s timeout ensures SR fully started
   }
 
   async endTrace(device: AdbDeviceConnection) {
