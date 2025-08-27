@@ -171,7 +171,7 @@ import {LoadProgressComponent} from './load_progress_component';
                 *ngFor="let descriptor of trace.getDescriptors(); index as i"
                 [style.margin-bottom]="i < trace.getDescriptors().length - 1 ? '0' : undefined">{{ descriptor }}</p>
 
-              <div matListItemMeta>
+              <div matListItemMeta [style.margin-top]="'9px'">
                 <mat-icon
                   class="warning-icon"
                   *ngIf="!canVisualizeTrace(trace)"
