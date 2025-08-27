@@ -81,6 +81,7 @@ import {ViewerTransactionsComponent} from 'viewers/viewer_transactions/viewer_tr
 import {ViewerTransitionsComponent} from 'viewers/viewer_transitions/viewer_transitions_component';
 import {ViewerViewCaptureComponent} from 'viewers/viewer_view_capture/viewer_view_capture_component';
 import {ViewerWindowManagerComponent} from 'viewers/viewer_window_manager/viewer_window_manager_component';
+import {OriginAllowList} from 'cross_tool/origin_allow_list';
 import {
   MatDrawer,
   MatDrawerContainer,
@@ -253,6 +254,15 @@ import {
           <mat-icon>
             {{ isDarkModeOn ? 'brightness_5' : 'brightness_4' }}
           </mat-icon>
+        </button>
+
+        <button
+          *ngIf="isInsideWinscopeProxyFrame()"
+          mat-icon-button
+          class="iframe-settings"
+          matTootltip="Settings"
+          (click)="openSettings()">
+          <mat-icon>settings</mat-icon>
         </button>
       </div>
     </mat-toolbar>
@@ -714,6 +724,58 @@ export class AppComponent implements WinscopeEventListener {
       Analytics.Settings.logDarkModeEnabled();
     }
     this.setDarkMode(!this.isDarkModeOn);
+  }
+
+  isInsideWinscopeProxyFrame(): boolean {
+    // NOTE: Technically anyone can pass whatever they want as the origin parameter,
+    // but that is fine; in those cases we would just show a settings button that does nothing,
+    // because we would fail posting the message due to origin check failures.
+    const reportedParentOrigin = this.getReportedParentOrigin();
+    if (
+      !reportedParentOrigin ||
+      !this.isSupportedReportedParentOrigin(reportedParentOrigin)
+    ) {
+      return false;
+    }
+
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      // Catch potential cross-origin errors when accessing window.top
+      return true;
+    }
+  }
+
+  getReportedParentOrigin() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('parentOrigin');
+  }
+
+  isSupportedReportedParentOrigin(parentOrigin: string): boolean {
+    return OriginAllowList.isAllowedIframeParentOrigin(parentOrigin);
+  }
+
+  openSettings() {
+    const parentOrigin = this.getReportedParentOrigin();
+
+    if (parentOrigin == null) {
+      console.warn(
+        "Provided 'parentOrigin' is null cannot send request to open settings menu",
+      );
+      return;
+    }
+
+    // Check if inside an iframe
+    if (
+      this.isInsideWinscopeProxyFrame() &&
+      this.isSupportedReportedParentOrigin(parentOrigin)
+    ) {
+      // Send message to the parent window
+      console.log('Sending message to parent window...', window.parent);
+      window.parent.postMessage({winscopeAction: 'openSettings'}, parentOrigin);
+    } else {
+      console.warn('Not inside and iframe...', window.self, window.top);
+    }
   }
 
   allTracesAreDumps(): boolean {

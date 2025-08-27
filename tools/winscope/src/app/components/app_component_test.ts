@@ -464,6 +464,53 @@ describe('AppComponent', () => {
     expect(dom.findInDocument('warning-dialog')).toBeUndefined();
   });
 
+  describe('settings button', () => {
+    let isInsideWinscopeProxyFrameSpy: jasmine.Spy;
+    let getReportedParentOriginSpy: jasmine.Spy;
+    let isSupportedParentOriginSpy: jasmine.Spy;
+
+    beforeEach(() => {
+      isInsideWinscopeProxyFrameSpy = spyOn(
+        component,
+        'isInsideWinscopeProxyFrame',
+      ).and.returnValue(false);
+      getReportedParentOriginSpy = spyOn(
+        component,
+        'getReportedParentOrigin',
+      ).and.returnValue(null);
+      isSupportedParentOriginSpy = spyOn(
+        component,
+        'isSupportedReportedParentOrigin',
+      ).and.returnValue(false);
+    });
+
+    it('is not shown if not in winscope proxy iframe', () => {
+      isInsideWinscopeProxyFrameSpy.and.returnValue(false);
+      dom.detectChanges();
+      expect(dom.find('.iframe-settings')).toBeUndefined();
+    });
+
+    it('is shown if in winscope proxy iframe', () => {
+      isInsideWinscopeProxyFrameSpy.and.returnValue(true);
+      dom.detectChanges();
+      expect(dom.find('.iframe-settings')).toBeTruthy();
+    });
+
+    it('sends message to parent on click', () => {
+      const parentOrigin = 'https://allowed.origin';
+      isInsideWinscopeProxyFrameSpy.and.returnValue(true);
+      getReportedParentOriginSpy.and.returnValue(parentOrigin);
+      isSupportedParentOriginSpy.and.returnValue(true);
+      dom.detectChanges();
+      const postMessageSpy = spyOn(window.parent, 'postMessage');
+      dom.findAndClick('.iframe-settings');
+      expect(postMessageSpy).toHaveBeenCalledOnceWith(
+        {winscopeAction: 'openSettings'},
+        parentOrigin,
+      );
+    });
+  });
+
   function goToTraceView() {
     component.dataLoaded = true;
     component.showDataLoadedElements = true;

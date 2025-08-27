@@ -41,6 +41,16 @@ export class OriginAllowList {
     new RegExp('^(http|https)://localhost:9876$'), // Karma test environment
   ];
 
+  private static readonly IFRAME_PARENT_ALLOW_LIST_PROD = [
+    /https:\/\/winscope.corp.google.com/,
+    /https:\/\/winscope-staging.corp.google.com/,
+    /https:\/\/winscope-autopush.corp.google.com/,
+  ];
+
+  private static readonly IFRAME_PARENT_ALLOW_LIST_DEV = [
+    /https:\/\/[a-z0-9]+\.proxy\.googlers\.com/,
+  ];
+
   static isAllowed(originUrl: string, mode = globalConfig.MODE): boolean {
     const list = OriginAllowList.getAllowList(mode);
 
@@ -66,6 +76,27 @@ export class OriginAllowList {
     }
 
     return false;
+  }
+
+  static isAllowedIframeParentOrigin(
+    originUrl: string,
+    mode = globalConfig.MODE,
+  ): boolean {
+    let allowList: RegExp[];
+
+    switch (mode) {
+      case 'DEV':
+      case 'KARMA_TEST':
+        allowList = OriginAllowList.IFRAME_PARENT_ALLOW_LIST_DEV;
+        break;
+      case 'PROD':
+        allowList = OriginAllowList.IFRAME_PARENT_ALLOW_LIST_PROD;
+        break;
+      default:
+        throw new Error(`Unhandled mode: ${globalConfig.MODE}`);
+    }
+
+    return allowList.some((regex) => regex.test(originUrl));
   }
 
   private static getAllowList(mode: typeof globalConfig.MODE): RegExp[] {
