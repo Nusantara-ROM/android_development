@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {FunctionUtils} from 'common/function_utils';
+import {DO_NOTHING} from 'common/function_utils';
 import {MakeTimestampStrategyType} from 'common/time/time';
 import {Trace, TraceEntry} from 'trace_api/trace';
 import {
@@ -52,7 +52,7 @@ export class SearchResultPresenter extends AbstractLogViewerPresenter<
   onDestroy() {
     // until presenter is garbage collected it may still receive events
     // so we must make sure it can no longer affect ui data
-    this.notifyViewChanged = FunctionUtils.DO_NOTHING;
+    this.notifyViewChanged = DO_NOTHING;
   }
 
   protected override makeHeaders(): LogHeader[] {

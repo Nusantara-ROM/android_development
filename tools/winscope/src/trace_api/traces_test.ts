@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {FunctionUtils} from 'common/function_utils';
+import {DO_NOTHING} from 'common/function_utils';
 import {TimestampConverterUtils} from 'common/time/test_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {
@@ -351,10 +351,10 @@ describe('Traces', () => {
       traces.sliceFrames();
     }).toThrow();
     expect(() => {
-      traces.forEachFrame(FunctionUtils.DO_NOTHING);
+      traces.forEachFrame(DO_NOTHING);
     }).toThrow();
     expect(() => {
-      traces.mapFrame(FunctionUtils.DO_NOTHING);
+      traces.mapFrame(DO_NOTHING);
     }).toThrow();
   });
 

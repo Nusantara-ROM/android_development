@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {FunctionUtils} from './function_utils';
+import {mixin} from './function_utils';
 
-describe('FunctionUtils', () => {
+describe('function_utils', () => {
   class A {
     a = 'a';
     foo(): string {
@@ -35,11 +35,11 @@ describe('FunctionUtils', () => {
     const a = new A();
     const b = new B();
 
-    const mixin = FunctionUtils.mixin(a, b);
+    const mixinObj = mixin(a, b);
 
-    expect(mixin.a).toEqual('a');
-    expect(mixin.b).toEqual('b');
-    expect(mixin.foo()).toEqual('a');
-    expect(mixin.bar()).toEqual('b');
+    expect(mixinObj.a).toEqual('a');
+    expect(mixinObj.b).toEqual('b');
+    expect(mixinObj.foo()).toEqual('a');
+    expect(mixinObj.bar()).toEqual('b');
   });
 });

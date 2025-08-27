@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {FunctionUtils} from 'common/function_utils';
+import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {TimestampConverter} from 'common/time/timestamp_converter';
@@ -50,7 +50,7 @@ interface ActiveSearch {
 }
 
 export class Presenter {
-  private emitWinscopeEvent: EmitEvent = FunctionUtils.DO_NOTHING_ASYNC;
+  private emitWinscopeEvent: EmitEvent = DO_NOTHING_ASYNC;
   private uiData = UiData.createEmpty();
   private activeSearchUid = 0;
   private activeSearches: ActiveSearch[] = [];

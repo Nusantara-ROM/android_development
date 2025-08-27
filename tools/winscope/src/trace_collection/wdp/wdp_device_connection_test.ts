@@ -15,7 +15,7 @@
  */
 
 import {ArrayBufferBuilder} from 'common/buffer_utils';
-import {FunctionUtils} from 'common/function_utils';
+import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {binaryEncode} from 'common/string_utils';
 import {
   ProxyTracingErrors,
@@ -99,7 +99,7 @@ describe('WdpDeviceConnection', () => {
 
     it('closes active trace stream onDestroy', async () => {
       spyOn(AdbWebSocketStream.prototype, 'write').and.callFake(
-        FunctionUtils.DO_NOTHING_ASYNC,
+        DO_NOTHING_ASYNC,
       );
       await connection.startTrace(new TraceTarget('', [], '', '', [], true));
       const closeSpy = spyOn(AdbWebSocketStream.prototype, 'close');
