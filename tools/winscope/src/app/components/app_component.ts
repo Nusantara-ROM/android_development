@@ -132,6 +132,7 @@ import {
     <mat-toolbar class="toolbar">
       <div class="horizontal-align vertical-align fixed">
         <img class="app-title" [src]="getLogoUrl()"/>
+        <span *ngIf="isBeta" class="beta-tag">BETA</span>
       </div>
 
       <div class="horizontal-align vertical-align icon-actions">
@@ -313,6 +314,15 @@ import {
       .app-title {
         height: 100%;
       }
+      .beta-tag {
+        vertical-align: super;
+        text-size-adjust: 10%;
+        font-size: 0.8rem;
+        margin-top: -0.8rem;
+        margin-left: 0.2rem;
+        color: var(--primary);
+        font-weight: 800;
+      }
       .welcome-info {
         margin: 16px 0 6px 0;
         text-align: center;
@@ -410,6 +420,7 @@ export class AppComponent implements WinscopeEventListener {
   crossToolProtocol: CrossToolProtocol;
   dataLoaded = false;
   showDataLoadedElements = false;
+  isBeta = /beta(_[a-z]+)?\/index\.html/.test(window.location.href);
   collapsedTimelineHeight = 0;
   isEditingFilename = false;
   persistentStore = new PersistentStore();
