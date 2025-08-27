@@ -13,12 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// TODO(b/311642700): Not google3 compatible
-import {
-  decode as protobufBase64Decode,
-  encode as protobufBase64Encode,
-  length as protobufBase64Length,
-} from '@protobufjs/base64';
 import {assertTrue} from './assert_utils';
 
 /**
@@ -213,11 +207,13 @@ export function hexEncode(bytes: Uint8Array): string {
  */
 export function base64Decode(str: string): Uint8Array {
   // if the string is in base64url format, convert to base64
-  const b64 = str.replace('-', '+').replace('_', '/');
-  const arr = new Uint8Array(protobufBase64Length(b64));
-  const written = protobufBase64Decode(b64, arr, 0);
-  assertTrue(written === arr.length);
-  return arr;
+  const b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  const binaryStr = atob(b64);
+  const bytes = new Uint8Array(binaryStr.length);
+  for (let i = 0; i < binaryStr.length; i++) {
+    bytes[i] = binaryStr.charCodeAt(i);
+  }
+  return bytes;
 }
 
 /**
@@ -227,7 +223,10 @@ export function base64Decode(str: string): Uint8Array {
  * @return The encoded string.
  */
 export function base64Encode(buffer: Uint8Array): string {
-  return protobufBase64Encode(buffer, 0, buffer.length);
+  const binaryStr = Array.from(buffer)
+    .map((c) => String.fromCharCode(c))
+    .join('');
+  return btoa(binaryStr);
 }
 
 function capitalizeFirstCharIfAlpha(word: string): string {

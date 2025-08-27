@@ -116,7 +116,7 @@ describe('PersistentStoreObject', () => {
       defaultValues,
       mockStorage,
     );
-    expect(() => (storeObject.key2 = { key3: false })).toThrowError();
+    expect(() => (storeObject.key2 = {key3: false})).toThrowError();
   });
 
   it('can get and update nested configs', () => {
