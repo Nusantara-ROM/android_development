@@ -115,8 +115,8 @@ describe('ParserSearch', () => {
       expect(entry.numRows()).toEqual(1815);
       const firstRow = entry.iter({});
       expect(firstRow.get('id')).toEqual(0n);
-      expect(firstRow.get('arg_set_id')).toEqual(0n);
       expect(firstRow.get('snapshot_id')).toEqual(0n);
+      expect(firstRow.get('layer_id')).toEqual(3n);
     });
   });
 
