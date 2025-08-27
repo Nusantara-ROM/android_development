@@ -28,9 +28,9 @@ import {makeSpyRowIterator} from 'trace_processor/test_utils';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {TraceRect} from 'tree_node/trace_rect';
+import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
 import {EntryHierarchyTreeFactory} from './entry_hierarchy_tree_factory';
 import {LayerRects, RectExtractor} from './rect_extractor';
-import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
 
 describe('EntryHierarchyTreeFactory', () => {
   const factory = new EntryHierarchyTreeFactory();

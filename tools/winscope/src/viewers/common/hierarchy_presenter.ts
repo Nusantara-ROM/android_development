@@ -29,9 +29,9 @@ import {TextFilter} from 'viewers/common/text_filter';
 import {UiHierarchyTreeNode} from 'viewers/common/ui_hierarchy_tree_node';
 import {
   TreeNodeFilter,
-  makeNodeFilter,
-  makeIdMatchFilter,
   isVisible,
+  makeIdMatchFilter,
+  makeNodeFilter,
   shouldGetProperties,
 } from 'viewers/common/ui_tree_utils';
 import {UserOptions} from 'viewers/common/user_options';

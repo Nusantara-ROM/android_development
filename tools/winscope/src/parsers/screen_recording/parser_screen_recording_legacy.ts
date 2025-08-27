@@ -16,12 +16,12 @@
 
 import {searchSubarray} from 'common/array_utils';
 import {Timestamp} from 'common/time/time';
+import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
 import {timestampToVideoTimeSeconds} from 'trace/screen_recording_utils';
 import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
 import {TraceType} from 'trace_api/trace_type';
 import {parseIntFromBuffer, parseLongFromBuffer} from './utils';
-import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 
 export class ParserScreenRecordingLegacy extends AbstractParser<
   MediaBasedTraceEntry,

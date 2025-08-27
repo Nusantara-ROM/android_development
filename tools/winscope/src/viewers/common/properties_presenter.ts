@@ -28,13 +28,13 @@ import {Filter} from './operations/filter';
 import {UiPropertyTreeNode} from './ui_property_tree_node';
 import {UiTreeFormatter} from './ui_tree_formatter';
 import {
-  makeNodeFilter,
+  isNotCalculated,
+  isNotFromTP,
+  makeDenyListFilterByName,
   makeIdMatchFilter,
   makeIsNotDefaultFilter,
+  makeNodeFilter,
   TreeNodeFilter,
-  makeDenyListFilterByName,
-  isNotFromTP,
-  isNotCalculated,
 } from './ui_tree_utils';
 import {UserOptions} from './user_options';
 

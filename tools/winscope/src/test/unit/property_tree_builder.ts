@@ -16,8 +16,8 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {
-  PropertySource,
   PropertyFormatter,
+  PropertySource,
   PropertyTreeNode,
 } from 'tree_node/property_tree_node';
 import {TreeBuilder} from './tree_builder';
