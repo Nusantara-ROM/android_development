@@ -19,7 +19,7 @@ import {
   assertDefined,
   assertStringOrUndefined,
 } from 'common/assert_utils';
-import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
+import {createPersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {Analytics} from 'logging/analytics';
 import {TabbedViewSwitchRequest} from 'messaging/winscope_event';
@@ -153,7 +153,7 @@ export class Presenter extends AbstractLogViewerPresenter<
     this.traces = traces;
     this.surfaceFlingerTrace = this.traces.getTrace(TraceType.SURFACE_FLINGER);
     this.rectsPresenter = new RectsPresenter(
-      PersistentStoreProxy.new<UserOptions>(
+      createPersistentStoreProxy<UserOptions>(
         'InputWindowRectsOptions',
         {
           showOnlyWithContent: {

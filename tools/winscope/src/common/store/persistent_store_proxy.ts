@@ -20,17 +20,15 @@ import {Store} from './store';
  * A proxy class that allows you to create objects that are backed by a persistent store.
  * The proxy will automatically save changes made to the object to the store.
  */
-export class PersistentStoreProxy {
-  static new<T extends object>(
-    key: string,
-    defaultState: T,
-    storage: Store,
-  ): T {
-    const storedState = JSON.parse(storage.get(key) ?? '{}', parseMap);
-    const currentState = mergeDeep({}, structuredClone(defaultState));
-    mergeDeepKeepingStructure(currentState, storedState);
-    return wrapWithPersistentStoreProxy(key, currentState, storage) as T;
-  }
+export function createPersistentStoreProxy<T extends object>(
+  key: string,
+  defaultState: T,
+  storage: Store,
+): T {
+  const storedState = JSON.parse(storage.get(key) ?? '{}', parseMap);
+  const currentState = mergeDeep({}, structuredClone(defaultState));
+  mergeDeepKeepingStructure(currentState, storedState);
+  return wrapWithPersistentStoreProxy(key, currentState, storage) as T;
 }
 
 function wrapWithPersistentStoreProxy(

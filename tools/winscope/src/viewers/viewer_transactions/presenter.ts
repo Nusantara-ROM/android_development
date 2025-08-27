@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
+import {createPersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {FLAG_SEPARATOR} from 'trace/formatters';
 import {TransactionColumnType} from 'trace/transactions/transaction_column_type';
@@ -94,7 +94,7 @@ export class Presenter extends AbstractLogViewerPresenter<
   ) {
     super(trace, notifyViewCallback, UiData.createEmpty());
     this.propertiesPresenter = new PropertiesPresenter(
-      PersistentStoreProxy.new<UserOptions>(
+      createPersistentStoreProxy<UserOptions>(
         'TransactionsPropertyOptions',
         {
           showDefaults: {
