@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
+import {createPersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {Timestamp} from 'common/time/time';
 import {Trace, TraceEntry} from 'trace_api/trace';
@@ -55,7 +55,7 @@ export abstract class AbstractPresenterInputMethod extends AbstractHierarchyView
     return this.getEntryFormattedTimestamp(entry) + ' - ' + where;
   };
   protected override hierarchyPresenter = new HierarchyPresenter(
-    PersistentStoreProxy.new<UserOptions>(
+    createPersistentStoreProxy<UserOptions>(
       'ImeHierarchyOptions',
       {
         simplifyNames: {
@@ -82,7 +82,7 @@ export abstract class AbstractPresenterInputMethod extends AbstractHierarchyView
     [[TraceType.SURFACE_FLINGER, [new UpdateSfSubtreeDisplayNames()]]],
   );
   protected override propertiesPresenter = new PropertiesPresenter(
-    PersistentStoreProxy.new<UserOptions>(
+    createPersistentStoreProxy<UserOptions>(
       'ImePropertiesOptions',
       {
         showDefaults: {

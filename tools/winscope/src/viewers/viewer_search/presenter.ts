@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {DO_NOTHING_ASYNC} from 'common/function_utils';
-import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
+import {createPersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {TimestampConverter} from 'common/time/timestamp_converter';
 import {
@@ -64,7 +64,7 @@ export class Presenter {
     private readonly notifyViewCallback: (uiData: UiData) => void,
     private readonly timestampConverter: TimestampConverter,
   ) {
-    this.savedSearches = PersistentStoreProxy.new<{searches: ListedSearch[]}>(
+    this.savedSearches = createPersistentStoreProxy<{searches: ListedSearch[]}>(
       'savedSearches',
       {searches: []},
       this.storage,

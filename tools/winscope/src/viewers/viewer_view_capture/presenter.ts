@@ -15,7 +15,7 @@
  */
 
 import {assertDefined, assertTrue} from 'common/assert_utils';
-import {PersistentStoreProxy} from 'common/store/persistent_store_proxy';
+import {createPersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {
   TabbedViewSwitchRequest,
@@ -56,7 +56,7 @@ export class Presenter extends AbstractHierarchyViewerPresenter<UiData> {
 
   private windowNames: string[] = [];
   protected override hierarchyPresenter = new HierarchyPresenter(
-    PersistentStoreProxy.new<UserOptions>(
+    createPersistentStoreProxy<UserOptions>(
       'VcHierarchyOptions',
       {
         showDiff: {
@@ -82,7 +82,7 @@ export class Presenter extends AbstractHierarchyViewerPresenter<UiData> {
     true,
   );
   protected override rectsPresenter = new RectsPresenter(
-    PersistentStoreProxy.new<UserOptions>(
+    createPersistentStoreProxy<UserOptions>(
       'VcRectsOptions',
       {
         ignoreRectShowState: {
@@ -106,7 +106,7 @@ export class Presenter extends AbstractHierarchyViewerPresenter<UiData> {
     undefined,
   );
   protected override propertiesPresenter = new PropertiesPresenter(
-    PersistentStoreProxy.new<UserOptions>(
+    createPersistentStoreProxy<UserOptions>(
       'VcPropertyOptions',
       {
         showDiff: {
