@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {IDENTITY_MATRIX} from 'common/geometry/transform_matrix';
+import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {TransformTypeFlags} from 'common/geometry/transform_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {
@@ -188,10 +188,10 @@ describe('Formatters', () => {
       expect(
         MATRIX_FORMATTER.format(
           makeMatrixNode(
-            IDENTITY_MATRIX.dsdx,
-            IDENTITY_MATRIX.dtdx,
-            IDENTITY_MATRIX.dtdy,
-            IDENTITY_MATRIX.dsdy,
+            TransformMatrix.IDENTITY.dsdx,
+            TransformMatrix.IDENTITY.dtdx,
+            TransformMatrix.IDENTITY.dtdy,
+            TransformMatrix.IDENTITY.dsdy,
           ),
         ),
       ).toEqual('dsdx: 1, dtdx: 0, dtdy: 0, dsdy: 1');

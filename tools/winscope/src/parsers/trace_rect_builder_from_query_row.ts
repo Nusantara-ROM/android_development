@@ -23,10 +23,7 @@ import {
 import {CornerRadii} from 'common/geometry/corner_radii';
 import {Rect} from 'common/geometry/rect';
 import {Region} from 'common/geometry/region';
-import {
-  IDENTITY_MATRIX,
-  TransformMatrix,
-} from 'common/geometry/transform_matrix';
+import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {RowIterator} from 'trace_processor/query_result';
 import {TraceRect} from 'tree_node/trace_rect';
 import {TraceRectBuilder} from 'tree_node/trace_rect_builder';
@@ -176,7 +173,7 @@ export class TraceRectBuilderFromQueryRow {
       ? assertBigInt(this.row.get('is_spy') ?? 0n)
       : 0n;
 
-    let matrix = IDENTITY_MATRIX;
+    let matrix = TransformMatrix.IDENTITY;
     if (this.extractMatrix) {
       if (this.transformMatrix) {
         matrix = this.transformMatrix;

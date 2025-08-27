@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {IDENTITY_MATRIX, TransformMatrix} from './transform_matrix';
+import {TransformMatrix} from './transform_matrix';
 
 /**
  * Flags for transform types.
@@ -34,7 +34,10 @@ export enum TransformTypeFlags {
  * A transform with a type and a matrix.
  */
 export class Transform {
-  static EMPTY = new Transform(TransformTypeFlags.EMPTY, IDENTITY_MATRIX);
+  static EMPTY = new Transform(
+    TransformTypeFlags.EMPTY,
+    TransformMatrix.IDENTITY,
+  );
 
   constructor(
     public type: TransformTypeFlags,
