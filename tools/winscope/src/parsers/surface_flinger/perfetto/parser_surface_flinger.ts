@@ -23,6 +23,7 @@ import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {queryVsyncId} from 'parsers/perfetto/utils';
 import {EntryHierarchyTreeFactory} from 'parsers/surface_flinger/entry_hierarchy_tree_factory';
 import {RectExtractor} from 'parsers/surface_flinger/rect_extractor';
+import {TraceGeometryData} from 'parsers/trace_geometry_data';
 import {
   CustomQueryParserResultTypeMap,
   CustomQueryType,
@@ -32,9 +33,17 @@ import {EntriesRange} from 'trace_api/index_types';
 import {TraceType} from 'trace_api/trace_type';
 import {QueryResult} from 'trace_processor/query_result';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
+import {LayerRects} from 'parsers/surface_flinger/rect_extractor';
+import {TraceRect} from 'tree_node/trace_rect';
 
 export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
   private readonly factory = new EntryHierarchyTreeFactory();
+  private visibleAndDisplayRects:
+    | Map<
+        bigint,
+        {displayRects: TraceRect[]; layerRects: Map<bigint, LayerRects>}
+      >
+    | undefined = undefined;
 
   override getTraceType(): TraceType {
     return TraceType.SURFACE_FLINGER;
@@ -72,22 +81,12 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
       entriesSnapshotRangeStart,
       entriesSnapshotRangeEnd,
     );
-    const visibleRectsResult = await this.queryAllVisibleAndDisplayRects();
-    const allSnapshotsResults = await this.queryRangeSnapshots(
-      0,
-      this.getLengthEntries(),
-    );
     const traceGeometryData = assertDefined(this.traceGeometryData);
-    const allVisibleRectsAndDisplay =
-      RectExtractor.extractAllVisibleAndDisplayRects(
-        allSnapshotsResults,
-        visibleRectsResult,
-        traceGeometryData,
-      );
+    await this.fetchAllRects(traceGeometryData);
     return this.factory.makeEntryHierarchyTrees(
       snapshotResult,
       layersResult,
-      allVisibleRectsAndDisplay,
+      assertDefined(this.visibleAndDisplayRects),
       this.traceProcessor,
       traceGeometryData,
     );
@@ -133,6 +132,22 @@ export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
 
   protected override getStdLibModuleName(): string {
     return 'android.winscope.surfaceflinger';
+  }
+
+  private async fetchAllRects(traceGeometryData: TraceGeometryData) {
+    if (this.visibleAndDisplayRects === undefined) {
+      const visibleRectsResult = await this.queryAllVisibleAndDisplayRects();
+      const allSnapshotsResults = await this.queryRangeSnapshots(
+        0,
+        this.getLengthEntries(),
+      );
+      this.visibleAndDisplayRects =
+        RectExtractor.extractAllVisibleAndDisplayRects(
+          allSnapshotsResults,
+          visibleRectsResult,
+          traceGeometryData,
+        );
+    }
   }
 
   private async queryRangeSnapshots(
