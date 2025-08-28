@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import Long from 'long';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
+import {
+  makeRealTimestamp,
+  makeElapsedTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {CustomQueryType} from 'trace_api/custom_query';
 import {Parser} from 'trace_api/parser';
@@ -53,9 +54,9 @@ describe('ParserTransactions', () => {
       expect(timestamps.length).toBe(712);
 
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1659507541051480997n),
-        TimestampConverterUtils.makeRealTimestamp(1659507541118452067n),
-        TimestampConverterUtils.makeRealTimestamp(1659507542621651001n),
+        makeRealTimestamp(1659507541051480997n),
+        makeRealTimestamp(1659507541118452067n),
+        makeRealTimestamp(1659507542621651001n),
       ];
       expect(timestamps.slice(0, 3)).toEqual(expected);
     });
@@ -95,9 +96,9 @@ describe('ParserTransactions', () => {
         expect(timestamps.length).toBe(712);
 
         const expected = [
-          TimestampConverterUtils.makeRealTimestamp(1659507541051480997n),
-          TimestampConverterUtils.makeRealTimestamp(1659507541118452067n),
-          TimestampConverterUtils.makeRealTimestamp(1659507542621651001n),
+          makeRealTimestamp(1659507541051480997n),
+          makeRealTimestamp(1659507541118452067n),
+          makeRealTimestamp(1659507542621651001n),
         ];
         expect(timestamps.slice(0, 3)).toEqual(expected);
       });
@@ -164,9 +165,9 @@ describe('ParserTransactions', () => {
       expect(timestamps.length).toBe(4997);
 
       const expected = [
-        TimestampConverterUtils.makeElapsedTimestamp(14862317023n),
-        TimestampConverterUtils.makeElapsedTimestamp(14873423549n),
-        TimestampConverterUtils.makeElapsedTimestamp(14884850511n),
+        makeElapsedTimestamp(14862317023n),
+        makeElapsedTimestamp(14873423549n),
+        makeElapsedTimestamp(14884850511n),
       ];
       expect(timestamps.slice(0, 3)).toEqual(expected);
     });

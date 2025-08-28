@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {
   getTimestampConverter,
-  TimestampConverterUtils,
+  makeElapsedTimestamp,
   timestampEqualityTester,
-} from 'common/time/time_test_helpers';
-import {LegacyParserProvider} from 'test/unit/fixture_utils';
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {CustomQueryType} from 'trace_api/custom_query';
@@ -52,7 +52,7 @@ describe('ParserWindowManagerDump', () => {
   });
 
   it('provides timestamp (always zero)', () => {
-    const expected = [TimestampConverterUtils.makeElapsedTimestamp(0n)];
+    const expected = [makeElapsedTimestamp(0n)];
     expect(parser.getTimestamps()).toEqual(expected);
   });
 
@@ -65,9 +65,7 @@ describe('ParserWindowManagerDump', () => {
       TraceType.WINDOW_MANAGER,
     );
 
-    expect(parser.getTimestamps()).toEqual([
-      TimestampConverterUtils.makeElapsedTimestamp(0n),
-    ]);
+    expect(parser.getTimestamps()).toEqual([makeElapsedTimestamp(0n)]);
   });
 
   it('retrieves trace entry', async () => {

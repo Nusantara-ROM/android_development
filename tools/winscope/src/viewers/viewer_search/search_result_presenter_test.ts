@@ -15,8 +15,11 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TracePositionUpdate} from 'messaging/winscope_event';
+import {
+  makeRealTimestamp,
+  makeZeroTimestamp,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {Trace} from 'trace_api/trace';
@@ -61,7 +64,7 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
   private spyIter: jasmine.SpyObj<RowIterator> | undefined;
 
   override async setUpTestEnvironment(): Promise<void> {
-    const time100 = TimestampConverterUtils.makeRealTimestamp(100n);
+    const time100 = makeRealTimestamp(100n);
     const [spyQueryResult, spyIter] = makeSearchTraceSpies(time100, 123);
     this.spyIter = spyIter;
     this.trace = new TraceBuilder<QueryResult>()
@@ -81,14 +84,14 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
   override async createPresenterWithEmptyTrace(
     callback: NotifyLogViewCallbackType<SearchResult>,
   ): Promise<SearchResultPresenter> {
-    const time100 = TimestampConverterUtils.makeRealTimestamp(100n);
+    const time100 = makeRealTimestamp(100n);
     const [spyQueryResult, spyIter] = makeSearchTraceSpies(time100, 123);
     this.spyIter = spyIter;
     const trace = makeEmptyTrace(TraceType.SEARCH);
     return new SearchResultPresenter(
       trace,
       callback,
-      (valueNs: bigint) => TimestampConverterUtils.makeRealTimestamp(valueNs),
+      (valueNs: bigint) => makeRealTimestamp(valueNs),
       spyQueryResult,
     );
   }
@@ -101,7 +104,7 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
     const presenter = new SearchResultPresenter(
       trace,
       callback,
-      (valueNs: bigint) => TimestampConverterUtils.makeRealTimestamp(valueNs),
+      (valueNs: bigint) => makeRealTimestamp(valueNs),
       await trace.getEntry(0).getValue(),
     );
     if (positionUpdate) {
@@ -126,7 +129,7 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
           },
           {
             spec: this.expectedHeaders[1].header.spec,
-            value: TimestampConverterUtils.makeRealTimestamp(200n),
+            value: makeRealTimestamp(200n),
           },
           {spec: this.expectedHeaders[2].header.spec, value: 'test_property'},
           {spec: this.expectedHeaders[3].header.spec, value: 123},
@@ -141,7 +144,7 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
       let result: SearchResult;
 
       it("does not convert 'ts' column value to timestamp if entry timestamp is not valid", async () => {
-        const time0 = TimestampConverterUtils.makeZeroTimestamp();
+        const time0 = makeZeroTimestamp();
         const [spyQueryResult, _] = makeSearchTraceSpies(time0);
         const trace = new TraceBuilder<QueryResult>()
           .setEntries([spyQueryResult])
@@ -180,7 +183,7 @@ class SearchResultPresenterTest extends AbstractLogViewerPresenterTest<SearchRes
           await presenter.onAppEvent(assertDefined(this.getPositionUpdate()));
           expect(result.entries[0].fields[2].value).toBe('test_time_ns');
           expect(result.entries[0].fields[3].value).toEqual(
-            TimestampConverterUtils.makeRealTimestamp(123n),
+            makeRealTimestamp(123n),
           );
         });
 

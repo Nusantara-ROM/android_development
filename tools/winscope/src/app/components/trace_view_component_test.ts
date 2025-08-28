@@ -33,7 +33,6 @@ import {
 } from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {
   FilterPresetApplyRequest,
   FilterPresetSaveRequest,
@@ -42,6 +41,7 @@ import {
   WinscopeEventType,
 } from 'messaging/winscope_event';
 import {checkTooltips, DOMTestHelper} from 'test/unit/dom_test_utils';
+import {makeZeroTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {TraceType} from 'trace_api/trace_type';
@@ -54,7 +54,7 @@ describe('TraceViewComponent', () => {
   const traceWm = new TraceBuilder<object>()
     .setType(TraceType.WINDOW_MANAGER)
     .setEntries([{}])
-    .setTimestamps([TimestampConverterUtils.makeZeroTimestamp()])
+    .setTimestamps([makeZeroTimestamp()])
     .setDescriptors(['file_1', 'file_1'])
     .build();
   const traceSr = makeEmptyTrace(TraceType.SCREEN_RECORDING);

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {CustomQueryType} from 'trace_api/custom_query';
@@ -51,8 +51,8 @@ describe('PerfettoParserKeyEvent', () => {
     expect(timestamps.length).toBe(2);
 
     const expected = [
-      TimestampConverterUtils.makeRealTimestamp(1718386905115026232n),
-      TimestampConverterUtils.makeRealTimestamp(1718386905123057319n),
+      makeRealTimestamp(1718386905115026232n),
+      makeRealTimestamp(1718386905123057319n),
     ];
     expect(timestamps).toEqual(expected);
   });

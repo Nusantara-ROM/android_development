@@ -16,9 +16,12 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
+import {
+  makeRealTimestamp,
+  makeElapsedTimestamp,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {ProtologColumnType} from 'trace/protolog/protolog_column_type';
@@ -84,12 +87,12 @@ class PresenterProtologTest extends AbstractLogViewerPresenterTest<UiData> {
   private positionUpdate: TracePositionUpdate | undefined;
 
   override async setUpTestEnvironment(): Promise<void> {
-    const time10 = TimestampConverterUtils.makeRealTimestamp(10n);
-    const time11 = TimestampConverterUtils.makeRealTimestamp(11n);
-    const time12 = TimestampConverterUtils.makeRealTimestamp(12n);
-    const elapsedTime10 = TimestampConverterUtils.makeElapsedTimestamp(10n);
-    const elapsedTime20 = TimestampConverterUtils.makeElapsedTimestamp(20n);
-    const elapsedTime30 = TimestampConverterUtils.makeElapsedTimestamp(30n);
+    const time10 = makeRealTimestamp(10n);
+    const time11 = makeRealTimestamp(11n);
+    const time12 = makeRealTimestamp(12n);
+    const elapsedTime10 = makeElapsedTimestamp(10n);
+    const elapsedTime20 = makeElapsedTimestamp(20n);
+    const elapsedTime30 = makeElapsedTimestamp(30n);
 
     const entries = [
       new HierarchyTreeBuilder()

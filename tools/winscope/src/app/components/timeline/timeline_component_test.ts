@@ -35,7 +35,6 @@ import {
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
 import {PersistentStore} from 'common/store/persistent_store';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimeRange} from 'common/time/time';
 import {
   ActiveTraceChanged,
@@ -50,6 +49,7 @@ import {
   WinscopeEvent,
 } from 'messaging/winscope_event';
 import {checkTooltips, DOMTestHelper} from 'test/unit/dom_test_utils';
+import {makeRealTimestamp, UTC_CONVERTER} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {TracesBuilder} from 'test/unit/traces_builder';
@@ -70,18 +70,18 @@ import {SliderComponent} from './mini-timeline/slider_component';
 import {TimelineComponent} from './timeline_component';
 
 describe('TimelineComponent', () => {
-  const time90 = TimestampConverterUtils.makeRealTimestamp(90n);
-  const time100 = TimestampConverterUtils.makeRealTimestamp(100n);
-  const time101 = TimestampConverterUtils.makeRealTimestamp(101n);
-  const time105 = TimestampConverterUtils.makeRealTimestamp(105n);
-  const time110 = TimestampConverterUtils.makeRealTimestamp(110n);
-  const time112 = TimestampConverterUtils.makeRealTimestamp(112n);
+  const time90 = makeRealTimestamp(90n);
+  const time100 = makeRealTimestamp(100n);
+  const time101 = makeRealTimestamp(101n);
+  const time105 = makeRealTimestamp(105n);
+  const time110 = makeRealTimestamp(110n);
+  const time112 = makeRealTimestamp(112n);
 
-  const time2000 = TimestampConverterUtils.makeRealTimestamp(2000n);
-  const time3000 = TimestampConverterUtils.makeRealTimestamp(3000n);
-  const time4000 = TimestampConverterUtils.makeRealTimestamp(4000n);
-  const time6000 = TimestampConverterUtils.makeRealTimestamp(6000n);
-  const time8000 = TimestampConverterUtils.makeRealTimestamp(8000n);
+  const time2000 = makeRealTimestamp(2000n);
+  const time3000 = makeRealTimestamp(3000n);
+  const time4000 = makeRealTimestamp(4000n);
+  const time6000 = makeRealTimestamp(6000n);
+  const time8000 = makeRealTimestamp(8000n);
 
   const position90 = TracePosition.fromTimestamp(time90);
   const position100 = TracePosition.fromTimestamp(time100);
@@ -142,7 +142,7 @@ describe('TimelineComponent', () => {
     assertDefined(component.timelineData).initialize(
       traces,
       undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
+      UTC_CONVERTER,
     );
     dom.detectChanges();
 
@@ -180,7 +180,7 @@ describe('TimelineComponent', () => {
     assertDefined(assertDefined(component.timelineData)).initialize(
       traces,
       undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
+      UTC_CONVERTER,
     );
     dom.detectChanges();
 
@@ -273,11 +273,7 @@ describe('TimelineComponent', () => {
       .build();
 
     const timelineData = assertDefined(component.timelineData);
-    timelineData.initialize(
-      traces,
-      undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
-    );
+    timelineData.initialize(traces, undefined, UTC_CONVERTER);
     timelineData.setPosition(position100);
     dom.detectChanges();
     const nextEntryButton = dom.get(nextEntrySelector);
@@ -1127,11 +1123,7 @@ describe('TimelineComponent', () => {
       .build();
 
     const timelineData = assertDefined(hostComponent.timelineData);
-    timelineData.initialize(
-      traces,
-      undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
-    );
+    timelineData.initialize(traces, undefined, UTC_CONVERTER);
     timelineData.setPosition(position100);
     hostComponent.allTraces = hostComponent.timelineData.getTraces();
     domHelper.detectChanges();
@@ -1178,7 +1170,7 @@ describe('TimelineComponent', () => {
     assertDefined(hostComponent.timelineData).initialize(
       timelineDataTraces,
       undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
+      UTC_CONVERTER,
     );
     hostComponent.allTraces = traces;
     domHelper.detectChanges();
@@ -1201,11 +1193,7 @@ describe('TimelineComponent', () => {
       .build();
 
     const timelineData = assertDefined(component.timelineData);
-    timelineData.initialize(
-      traces,
-      undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
-    );
+    timelineData.initialize(traces, undefined, UTC_CONVERTER);
     timelineData.setPosition(position100);
     component.allTraces = timelineData.getTraces();
     dom.detectChanges();
@@ -1230,7 +1218,7 @@ describe('TimelineComponent', () => {
     assertDefined(hostComponent.timelineData).initialize(
       traces,
       undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
+      UTC_CONVERTER,
     );
     hostComponent.allTraces = traces;
     await domHelper.detectChangesAndWaitStable();

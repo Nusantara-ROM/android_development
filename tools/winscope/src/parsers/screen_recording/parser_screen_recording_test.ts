@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';
 import {Parser} from 'trace_api/parser';
@@ -52,9 +52,9 @@ describe('ParserScreenRecording', () => {
       expect(timestamps.length).toBe(123);
 
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1666361048792787045n),
-        TimestampConverterUtils.makeRealTimestamp(1666361048807348045n),
-        TimestampConverterUtils.makeRealTimestamp(1666361048827119045n),
+        makeRealTimestamp(1666361048792787045n),
+        makeRealTimestamp(1666361048807348045n),
+        makeRealTimestamp(1666361048827119045n),
       ];
       expect(timestamps.slice(0, 3)).toEqual(expected);
     });
@@ -95,11 +95,11 @@ describe('ParserScreenRecording', () => {
       const timestamps = assertDefined(parser.getTimestamps());
       expect(timestamps.length).toBe(105);
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1755862820270527000n),
-        TimestampConverterUtils.makeRealTimestamp(1755862820414660000n),
-        TimestampConverterUtils.makeRealTimestamp(1755862820431423000n),
-        TimestampConverterUtils.makeRealTimestamp(1755862820447282000n),
-        TimestampConverterUtils.makeRealTimestamp(1755862820464489000n),
+        makeRealTimestamp(1755862820270527000n),
+        makeRealTimestamp(1755862820414660000n),
+        makeRealTimestamp(1755862820431423000n),
+        makeRealTimestamp(1755862820447282000n),
+        makeRealTimestamp(1755862820464489000n),
       ];
       expect(timestamps.slice(0, 5)).toEqual(expected);
     });
@@ -155,9 +155,9 @@ describe('ParserScreenRecording', () => {
 
       const totalOffset = elapsedNs + realtoElapsedNs;
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(599300000n + totalOffset),
-        TimestampConverterUtils.makeRealTimestamp(599400000n + totalOffset),
-        TimestampConverterUtils.makeRealTimestamp(1066066666n + totalOffset),
+        makeRealTimestamp(599300000n + totalOffset),
+        makeRealTimestamp(599400000n + totalOffset),
+        makeRealTimestamp(1066066666n + totalOffset),
       ];
       expect(timestamps.slice(0, 3)).toEqual(expected);
     });
@@ -259,9 +259,9 @@ describe('ParserScreenRecording', () => {
         expect(timestamps.length).toBe(158);
 
         const expected = [
-          TimestampConverterUtils.makeRealTimestamp(599300000n + startTimeNs),
-          TimestampConverterUtils.makeRealTimestamp(599400000n + startTimeNs),
-          TimestampConverterUtils.makeRealTimestamp(1066066666n + startTimeNs),
+          makeRealTimestamp(599300000n + startTimeNs),
+          makeRealTimestamp(599400000n + startTimeNs),
+          makeRealTimestamp(1066066666n + startTimeNs),
         ];
         expect(timestamps.slice(0, 3)).toEqual(expected);
       });

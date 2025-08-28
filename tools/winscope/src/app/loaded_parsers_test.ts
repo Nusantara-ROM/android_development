@@ -16,13 +16,16 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {unzipFile} from 'common/file_utils';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimeRange} from 'common/time/time';
 import {UserWarning} from 'messaging/user_warning';
 import {TraceHasOldData, TraceOverridden} from 'messaging/user_warnings';
 import {FileAndParser} from 'parsers/file_and_parser';
 import {FileAndParsers} from 'parsers/file_and_parsers';
 import {ParserBuilder} from 'test/unit/parser_builder';
+import {
+  makeRealTimestamp,
+  makeElapsedTimestamp,
+} from 'test/unit/time_test_helpers';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {TraceFile} from 'trace/trace_file';
 import {Parser} from 'trace_api/parser';
@@ -30,28 +33,28 @@ import {TraceType} from 'trace_api/trace_type';
 import {LoadedParsers} from './loaded_parsers';
 
 describe('LoadedParsers', () => {
-  const realZeroTimestamp = TimestampConverterUtils.makeRealTimestamp(0n);
-  const elapsedZeroTimestamp = TimestampConverterUtils.makeElapsedTimestamp(0n);
+  const realZeroTimestamp = makeRealTimestamp(0n);
+  const elapsedZeroTimestamp = makeElapsedTimestamp(0n);
   const oldTimestamps = [
     realZeroTimestamp,
-    TimestampConverterUtils.makeRealTimestamp(1n),
-    TimestampConverterUtils.makeRealTimestamp(2n),
-    TimestampConverterUtils.makeRealTimestamp(3n),
-    TimestampConverterUtils.makeRealTimestamp(4n),
+    makeRealTimestamp(1n),
+    makeRealTimestamp(2n),
+    makeRealTimestamp(3n),
+    makeRealTimestamp(4n),
   ];
 
   const elapsedTimestamps = [
     elapsedZeroTimestamp,
-    TimestampConverterUtils.makeElapsedTimestamp(1n),
-    TimestampConverterUtils.makeElapsedTimestamp(2n),
-    TimestampConverterUtils.makeElapsedTimestamp(3n),
-    TimestampConverterUtils.makeElapsedTimestamp(4n),
+    makeElapsedTimestamp(1n),
+    makeElapsedTimestamp(2n),
+    makeElapsedTimestamp(3n),
+    makeElapsedTimestamp(4n),
   ];
 
   const timestamps = [
-    TimestampConverterUtils.makeRealTimestamp(5n * 60n * 1000000000n + 10n), // 5m10ns
-    TimestampConverterUtils.makeRealTimestamp(5n * 60n * 1000000000n + 11n), // 5m11ns
-    TimestampConverterUtils.makeRealTimestamp(5n * 60n * 1000000000n + 12n), // 5m12ns
+    makeRealTimestamp(5n * 60n * 1000000000n + 10n), // 5m10ns
+    makeRealTimestamp(5n * 60n * 1000000000n + 11n), // 5m11ns
+    makeRealTimestamp(5n * 60n * 1000000000n + 12n), // 5m12ns
   ];
 
   const parserSf0 = new ParserBuilder<object>()

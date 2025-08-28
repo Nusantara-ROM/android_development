@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
+import {makeElapsedTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {TraceType} from 'trace_api/trace_type';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
@@ -26,10 +26,10 @@ import {LogEntry, LogHeader} from './ui_data_log';
 
 describe('LogPresenter', () => {
   let presenter: LogPresenter<LogEntry>;
-  const timestamp1 = TimestampConverterUtils.makeElapsedTimestamp(1n);
-  const timestamp2 = TimestampConverterUtils.makeElapsedTimestamp(2n);
-  const timestamp3 = TimestampConverterUtils.makeElapsedTimestamp(3n);
-  const timestamp4 = TimestampConverterUtils.makeElapsedTimestamp(4n);
+  const timestamp1 = makeElapsedTimestamp(1n);
+  const timestamp2 = makeElapsedTimestamp(2n);
+  const timestamp3 = makeElapsedTimestamp(3n);
+  const timestamp4 = makeElapsedTimestamp(4n);
   const trace = new TraceBuilder<PropertyTreeNode>()
     .setType(TraceType.TRANSACTIONS)
     .setEntries([

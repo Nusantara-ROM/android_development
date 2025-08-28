@@ -15,15 +15,16 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {
-  getTimestampConverter,
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {TraceSearchQueryFailed} from 'messaging/user_warnings';
 import {ParserSurfaceFlinger} from 'parsers/surface_flinger/perfetto/parser_surface_flinger';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
+import {
+  getTimestampConverter,
+  makeElapsedTimestamp,
+  makeZeroTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {TraceType} from 'trace_api/trace_type';
 import {ParserSearch} from './parser_search';
@@ -72,9 +73,9 @@ describe('ParserSearch', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeElapsedTimestamp(14500282843n),
-        TimestampConverterUtils.makeElapsedTimestamp(14631249355n),
-        TimestampConverterUtils.makeElapsedTimestamp(15403446377n),
+        makeElapsedTimestamp(14500282843n),
+        makeElapsedTimestamp(14631249355n),
+        makeElapsedTimestamp(15403446377n),
       ];
       const actual = assertDefined(parser.getTimestamps()).slice(0, 3);
       expect(actual).toEqual(expected);
@@ -105,9 +106,7 @@ describe('ParserSearch', () => {
     });
 
     it('provides one invalid timestamp so query result can be accessed', () => {
-      expect(parser.getTimestamps()).toEqual([
-        TimestampConverterUtils.makeZeroTimestamp(),
-      ]);
+      expect(parser.getTimestamps()).toEqual([makeZeroTimestamp()]);
     });
 
     it('provides query result', async () => {
@@ -134,9 +133,7 @@ describe('ParserSearch', () => {
     });
 
     it('provides one invalid timestamp so query result can be accessed', () => {
-      expect(parser.getTimestamps()).toEqual([
-        TimestampConverterUtils.makeZeroTimestamp(),
-      ]);
+      expect(parser.getTimestamps()).toEqual([makeZeroTimestamp()]);
     });
 
     it('provides query result', async () => {

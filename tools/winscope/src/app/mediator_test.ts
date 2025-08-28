@@ -17,7 +17,6 @@
 import {assertDefined} from 'common/assert_utils';
 import {mixin} from 'common/function_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimezoneInfo} from 'common/time/time';
 import {TimestampConverter} from 'common/time/timestamp_converter';
 import {CrossToolProtocol} from 'cross_tool/cross_tool_protocol';
@@ -72,6 +71,10 @@ import {WinscopeEventEmitterStub} from 'messaging/winscope_event_emitter_stub';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
 import {WinscopeEventListenerStub} from 'messaging/winscope_event_listener_stub';
 import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {
+  makeRealTimestamp,
+  makeZeroTimestamp,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {Trace} from 'trace_api/trace';
@@ -87,8 +90,8 @@ import {TracePipeline} from './trace_pipeline';
 import {TraceSearchInitializer} from './trace_search/trace_search_initializer';
 
 describe('Mediator', () => {
-  const TIMESTAMP_10 = TimestampConverterUtils.makeRealTimestamp(10n);
-  const TIMESTAMP_11 = TimestampConverterUtils.makeRealTimestamp(11n);
+  const TIMESTAMP_10 = makeRealTimestamp(10n);
+  const TIMESTAMP_11 = makeRealTimestamp(11n);
 
   const POSITION_10 = TracePosition.fromTimestamp(TIMESTAMP_10);
   const POSITION_11 = TracePosition.fromTimestamp(TIMESTAMP_11);
@@ -103,7 +106,7 @@ describe('Mediator', () => {
     .build();
   const traceDump = new TraceBuilder<HierarchyTreeNode>()
     .setType(TraceType.SURFACE_FLINGER)
-    .setTimestamps([TimestampConverterUtils.makeZeroTimestamp()])
+    .setTimestamps([makeZeroTimestamp()])
     .build();
 
   let inputFiles: File[];
@@ -488,8 +491,7 @@ describe('Mediator', () => {
     // notify position
     resetSpyCalls();
     const finalTimestampNs = timelineData.getFullTimeRange().endNs;
-    const timestamp =
-      TimestampConverterUtils.makeRealTimestamp(finalTimestampNs);
+    const timestamp = makeRealTimestamp(finalTimestampNs);
     const position = TracePosition.fromTimestamp(timestamp);
 
     await mediator.onWinscopeEvent(new TracePositionUpdate(position, true));

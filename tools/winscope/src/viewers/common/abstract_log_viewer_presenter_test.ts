@@ -15,9 +15,9 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {wait} from 'common/time/time_utils';
 import {TracePositionUpdate} from 'messaging/winscope_event';
+import {makeRealTimestamp} from 'test/unit/time_test_helpers';
 import {setNumRowsSpyQueryResult} from 'trace_processor/test_utils';
 import {TraceProcessor} from 'trace_processor/trace_processor';
 import {
@@ -56,9 +56,7 @@ export abstract class AbstractLogViewerPresenterTest<UiData extends UiDataLog> {
           Promise.resolve(setNumRowsSpyQueryResult(0)),
         );
         await presenter.onAppEvent(
-          TracePositionUpdate.fromTimestamp(
-            TimestampConverterUtils.makeRealTimestamp(0n),
-          ),
+          TracePositionUpdate.fromTimestamp(makeRealTimestamp(0n)),
         );
         await wait(() => !uiData.isFetchingData);
         for (const [index, expectedHeader] of this.expectedHeaders.entries()) {

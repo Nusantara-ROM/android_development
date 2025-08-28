@@ -29,9 +29,9 @@ import {
   NoopAnimationsModule,
 } from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimeRange} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
+import {makeRealTimestamp, UTC_CONVERTER} from 'test/unit/time_test_helpers';
 import {TracePosition} from 'trace_api/trace_position';
 import {MIN_SLIDER_WIDTH, SliderComponent} from './slider_component';
 
@@ -40,12 +40,12 @@ describe('SliderComponent', () => {
   let dom: DOMTestHelper<SliderComponent>;
   const leftCropperSelector = '.slider .cropper.left';
   const rightCropperSelector = '.slider .cropper.right';
-  const time100 = TimestampConverterUtils.makeRealTimestamp(100n);
-  const time125 = TimestampConverterUtils.makeRealTimestamp(125n);
-  const time126 = TimestampConverterUtils.makeRealTimestamp(126n);
-  const time150 = TimestampConverterUtils.makeRealTimestamp(150n);
-  const time175 = TimestampConverterUtils.makeRealTimestamp(175n);
-  const time200 = TimestampConverterUtils.makeRealTimestamp(200n);
+  const time100 = makeRealTimestamp(100n);
+  const time125 = makeRealTimestamp(125n);
+  const time126 = makeRealTimestamp(126n);
+  const time150 = makeRealTimestamp(150n);
+  const time175 = makeRealTimestamp(175n);
+  const time200 = makeRealTimestamp(200n);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -74,7 +74,7 @@ describe('SliderComponent', () => {
     component.fullRange = new TimeRange(time100, time200);
     component.zoomRange = new TimeRange(time125, time175);
     component.currentPosition = TracePosition.fromTimestamp(time150);
-    component.timestampConverter = TimestampConverterUtils.TIMESTAMP_CONVERTER;
+    component.timestampConverter = UTC_CONVERTER;
     dom.detectChanges();
   });
 

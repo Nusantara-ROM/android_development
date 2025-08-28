@@ -15,12 +15,12 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {com} from 'protos/transitions/udc/static';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
@@ -47,12 +47,12 @@ describe('ParserTransitionsShell', () => {
   it('provides timestamps', () => {
     const timestamps = assertDefined(parser.getTimestamps());
     const expected = [
-      TimestampConverterUtils.makeRealTimestamp(1683188477607285317n),
-      TimestampConverterUtils.makeRealTimestamp(1683130827957362976n),
-      TimestampConverterUtils.makeRealTimestamp(1683130827957362976n),
-      TimestampConverterUtils.makeRealTimestamp(1683188479256449868n),
-      TimestampConverterUtils.makeRealTimestamp(1683130827957362976n),
-      TimestampConverterUtils.makeRealTimestamp(1683130827957362976n),
+      makeRealTimestamp(1683188477607285317n),
+      makeRealTimestamp(1683130827957362976n),
+      makeRealTimestamp(1683130827957362976n),
+      makeRealTimestamp(1683188479256449868n),
+      makeRealTimestamp(1683130827957362976n),
+      makeRealTimestamp(1683130827957362976n),
     ];
     expect(timestamps).toEqual(expected);
   });

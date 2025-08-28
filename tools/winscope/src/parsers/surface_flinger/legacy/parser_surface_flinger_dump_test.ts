@@ -15,15 +15,16 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {
-  getTimestampConverter,
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import Long from 'long';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
+import {
+  getTimestampConverter,
+  makeElapsedTimestamp,
+  makeZeroTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
@@ -60,7 +61,7 @@ describe('ParserSurfaceFlingerDump', () => {
     });
 
     it('provides timestamps (always zero)', () => {
-      const expected = [TimestampConverterUtils.makeElapsedTimestamp(0n)];
+      const expected = [makeElapsedTimestamp(0n)];
       expect(parser.getTimestamps()).toEqual(expected);
     });
 
@@ -70,7 +71,7 @@ describe('ParserSurfaceFlingerDump', () => {
         .setTimestampConverter(getTimestampConverter(true))
         .getParser<HierarchyTreeNode>();
 
-      const expected = [TimestampConverterUtils.makeElapsedTimestamp(0n)];
+      const expected = [makeElapsedTimestamp(0n)];
       expect(parserWithTimezoneInfo.getTimestamps()).toEqual(expected);
     });
 
@@ -117,7 +118,7 @@ describe('ParserSurfaceFlingerDump', () => {
     });
 
     it('provides timestamp (always zero)', () => {
-      const expected = [TimestampConverterUtils.makeElapsedTimestamp(0n)];
+      const expected = [makeElapsedTimestamp(0n)];
       expect(parser.getTimestamps()).toEqual(expected);
     });
 
@@ -154,7 +155,7 @@ describe('ParserSurfaceFlingerDump', () => {
       .addFile(filename)
       .setConvertToPerfetto(true)
       .getParser<HierarchyTreeNode>();
-    const expected = [TimestampConverterUtils.makeZeroTimestamp()];
+    const expected = [makeZeroTimestamp()];
     expect(assertDefined(perfettoParser.getTimestamps())).toEqual(expected);
     const entry = await perfettoParser.getEntry(0);
     let count = 0;

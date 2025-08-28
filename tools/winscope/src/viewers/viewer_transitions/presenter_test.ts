@@ -16,11 +16,11 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {wait} from 'common/time/time_utils';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
 import {ParserBuilder} from 'test/unit/parser_builder';
+import {makeRealTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {TracesBuilder} from 'test/unit/traces_builder';
 import {Trace} from 'trace_api/trace';
@@ -198,7 +198,7 @@ class PresenterTransitionsTest extends AbstractLogViewerPresenterTest<UiData> {
   override executeSpecializedTests() {
     describe('Specialized tests', () => {
       it('robust to corrupted transitions trace', async () => {
-        const timestamp10 = TimestampConverterUtils.makeRealTimestamp(10n);
+        const timestamp10 = makeRealTimestamp(10n);
         const trace = new TraceBuilder<HierarchyTreeNode | undefined>()
           .setType(TraceType.TRANSITION)
           .setParser(

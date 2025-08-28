@@ -20,10 +20,6 @@ import {
   DOWNLOAD_FILENAME_REGEX,
   unzipFile,
 } from 'common/file_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {ProgressListenerStub} from 'messaging/progress_listener_stub';
 import {UserWarning} from 'messaging/user_warning';
 import {
@@ -36,6 +32,10 @@ import {
 import {BugreportFileSelected} from 'messaging/winscope_event';
 import {LegacyToPerfettoConverter} from 'parsers/legacy_to_perfetto_converter';
 import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {
+  makeRealTimestampWithUTCOffset,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {extractEntries} from 'test/unit/traces_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {TraceFile} from 'trace/trace_file';
@@ -243,9 +243,7 @@ describe('TracePipeline', () => {
     expect(timestampConverter.getUTCOffset()).toBe('UTC+05:30');
 
     const expectedTimestamp =
-      TimestampConverterUtils.makeRealTimestampWithUTCOffset(
-        1659107089102062832n,
-      );
+      makeRealTimestampWithUTCOffset(1659107089102062832n);
     expect(
       timestampConverter.makeTimestampFromMonotonicNs(14500282843n),
     ).toEqual(expectedTimestamp);

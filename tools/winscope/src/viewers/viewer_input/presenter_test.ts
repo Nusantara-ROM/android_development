@@ -17,7 +17,6 @@
 import {assertDefined} from 'common/assert_utils';
 import {Transform} from 'common/geometry/transform_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {wait} from 'common/time/time_utils';
 import {
   TabbedViewSwitchRequest,
@@ -25,6 +24,7 @@ import {
 } from 'messaging/winscope_event';
 import {getTracesParser} from 'test/unit/fixture_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
+import {makeRealTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {TracesBuilder} from 'test/unit/traces_builder';
 import {FixedStringFormatter} from 'trace/formatters';
@@ -319,14 +319,14 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
 
   override executeSpecializedTests() {
     describe('Specialized tests', () => {
-      const time0 = TimestampConverterUtils.makeRealTimestamp(0n);
-      const time10 = TimestampConverterUtils.makeRealTimestamp(10n);
-      const time19 = TimestampConverterUtils.makeRealTimestamp(19n);
-      const time20 = TimestampConverterUtils.makeRealTimestamp(20n);
-      const time25 = TimestampConverterUtils.makeRealTimestamp(25n);
-      const time30 = TimestampConverterUtils.makeRealTimestamp(30n);
-      const time35 = TimestampConverterUtils.makeRealTimestamp(35n);
-      const time36 = TimestampConverterUtils.makeRealTimestamp(36n);
+      const time0 = makeRealTimestamp(0n);
+      const time10 = makeRealTimestamp(10n);
+      const time19 = makeRealTimestamp(19n);
+      const time20 = makeRealTimestamp(20n);
+      const time25 = makeRealTimestamp(25n);
+      const time30 = makeRealTimestamp(30n);
+      const time35 = makeRealTimestamp(35n);
+      const time36 = makeRealTimestamp(36n);
       const layerRect = new TraceRectBuilder()
         .setX(0)
         .setY(0)

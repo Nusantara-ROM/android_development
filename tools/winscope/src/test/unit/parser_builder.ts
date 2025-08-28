@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {Timestamp} from 'common/time/time';
+import {makeRealTimestamp} from 'test/unit/time_test_helpers';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
@@ -118,7 +118,7 @@ export class ParserBuilder<T> {
   private createTimestamps(entries: T[]): Timestamp[] {
     const timestamps = new Array<Timestamp>();
     for (let i = 0; i < entries.length; ++i) {
-      timestamps[i] = TimestampConverterUtils.makeRealTimestamp(BigInt(i));
+      timestamps[i] = makeRealTimestamp(BigInt(i));
     }
     return timestamps;
   }

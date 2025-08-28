@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import Long from 'long';
 import {DuplicateLayerIds} from 'messaging/user_warnings';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
+import {
+  makeElapsedTimestamp,
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {CustomQueryType} from 'trace_api/custom_query';
 import {Parser} from 'trace_api/parser';
@@ -64,9 +65,9 @@ describe('ParserSurfaceFlinger', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1659107089102062832n),
-        TimestampConverterUtils.makeRealTimestamp(1659107089233029344n),
-        TimestampConverterUtils.makeRealTimestamp(1659107090005226366n),
+        makeRealTimestamp(1659107089102062832n),
+        makeRealTimestamp(1659107089233029344n),
+        makeRealTimestamp(1659107090005226366n),
       ];
       expect(assertDefined(realParser.getTimestamps()).slice(0, 3)).toEqual(
         expected,
@@ -109,9 +110,9 @@ describe('ParserSurfaceFlinger', () => {
 
       it('provides timestamps', () => {
         const expected = [
-          TimestampConverterUtils.makeRealTimestamp(1659107089102062832n),
-          TimestampConverterUtils.makeRealTimestamp(1659107089233029344n),
-          TimestampConverterUtils.makeRealTimestamp(1659107090005226366n),
+          makeRealTimestamp(1659107089102062832n),
+          makeRealTimestamp(1659107089233029344n),
+          makeRealTimestamp(1659107090005226366n),
         ];
         expect(
           assertDefined(perfettoParser.getTimestamps()).slice(0, 3),
@@ -211,7 +212,7 @@ describe('ParserSurfaceFlinger', () => {
 
     it('provides timestamps', () => {
       expect(assertDefined(elapsedParser.getTimestamps())[0]).toEqual(
-        TimestampConverterUtils.makeElapsedTimestamp(850335483446n),
+        makeElapsedTimestamp(850335483446n),
       );
     });
 

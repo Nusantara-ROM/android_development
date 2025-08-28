@@ -17,10 +17,10 @@ import {ComponentFixtureAutoDetect, TestBed} from '@angular/core/testing';
 import {MatButtonModule} from '@angular/material/button';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {Timestamp} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
+import {makeRealTimestamp} from 'test/unit/time_test_helpers';
 import {
   DEFAULT_PROPERTY_FORMATTER,
   FixedStringFormatter,
@@ -63,9 +63,7 @@ describe('PropertyTreeNodeDataViewComponent', () => {
       new PropertyTreeBuilder()
         .setRootId('test node')
         .setName('timestamp')
-        .setValue(
-          TimestampConverterUtils.makeRealTimestamp(1659126889102158832n),
-        )
+        .setValue(makeRealTimestamp(1659126889102158832n))
         .setFormatter(TIMESTAMP_NODE_FORMATTER)
         .build(),
     );

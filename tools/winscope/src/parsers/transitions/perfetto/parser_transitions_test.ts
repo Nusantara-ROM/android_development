@@ -15,11 +15,11 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
@@ -47,10 +47,10 @@ describe('PerfettoParserTransitions', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1700573425448299306n),
-        TimestampConverterUtils.makeRealTimestamp(1700573426522433299n),
-        TimestampConverterUtils.makeRealTimestamp(1700573433040642612n),
-        TimestampConverterUtils.makeRealTimestamp(1700573433279358351n),
+        makeRealTimestamp(1700573425448299306n),
+        makeRealTimestamp(1700573426522433299n),
+        makeRealTimestamp(1700573433040642612n),
+        makeRealTimestamp(1700573433279358351n),
       ];
       const actual = assertDefined(parser.getTimestamps());
       expect(actual).toEqual(expected);

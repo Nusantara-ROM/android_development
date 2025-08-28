@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {ParserBuilder} from 'test/unit/parser_builder';
+import {
+  makeElapsedTimestamp,
+  makeRealTimestamp,
+  makeZeroTimestamp,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {
   extractEntries,
@@ -32,13 +36,13 @@ import {TraceType} from './trace_type';
 describe('Trace', () => {
   let trace: Trace<string>;
 
-  const time9 = TimestampConverterUtils.makeRealTimestamp(9n);
-  const time10 = TimestampConverterUtils.makeRealTimestamp(10n);
-  const time11 = TimestampConverterUtils.makeRealTimestamp(11n);
-  const time12 = TimestampConverterUtils.makeRealTimestamp(12n);
-  const time13 = TimestampConverterUtils.makeRealTimestamp(13n);
-  const time14 = TimestampConverterUtils.makeRealTimestamp(14n);
-  const time15 = TimestampConverterUtils.makeRealTimestamp(15n);
+  const time9 = makeRealTimestamp(9n);
+  const time10 = makeRealTimestamp(10n);
+  const time11 = makeRealTimestamp(11n);
+  const time12 = makeRealTimestamp(12n);
+  const time13 = makeRealTimestamp(13n);
+  const time14 = makeRealTimestamp(14n);
+  const time15 = makeRealTimestamp(15n);
 
   beforeAll(() => {
     // Time:       10    11                 12    13
@@ -880,8 +884,8 @@ describe('Trace', () => {
     ]);
 
     // time
-    const time12 = TimestampConverterUtils.makeRealTimestamp(12n);
-    const time13 = TimestampConverterUtils.makeRealTimestamp(13n);
+    const time12 = makeRealTimestamp(12n);
+    const time13 = makeRealTimestamp(13n);
     expect(await extractEntries(trace.sliceTime(time12, time12))).toEqual([]);
     expect(await extractEntries(trace.sliceTime())).toEqual([
       'entry-0',
@@ -934,8 +938,8 @@ describe('Trace', () => {
     expect(await extractEntries(empty.sliceEntries(1, 2))).toEqual([]);
 
     // time
-    const time12 = TimestampConverterUtils.makeRealTimestamp(12n);
-    const time13 = TimestampConverterUtils.makeRealTimestamp(13n);
+    const time12 = makeRealTimestamp(12n);
+    const time13 = makeRealTimestamp(13n);
     expect(await extractEntries(empty.sliceTime())).toEqual([]);
     expect(await extractEntries(empty.sliceTime(time12))).toEqual([]);
     expect(await extractEntries(empty.sliceTime(time12, time13))).toEqual([]);
@@ -1288,7 +1292,7 @@ describe('Trace', () => {
   it('isDumpWithoutTimestamp()', () => {
     const trace = new TraceBuilder<string>()
       .setEntries(['entry-0'])
-      .setTimestamps([TimestampConverterUtils.makeZeroTimestamp()])
+      .setTimestamps([makeZeroTimestamp()])
       .build();
     expect(trace.isDumpWithoutTimestamp()).toBeTrue();
   });
@@ -1299,7 +1303,7 @@ describe('Trace', () => {
         new ParserBuilder<string>()
           .setIsCorrupted(true)
           .setEntries(['entry-0'])
-          .setTimestamps([TimestampConverterUtils.makeZeroTimestamp()])
+          .setTimestamps([makeZeroTimestamp()])
           .build(),
       )
       .build();
@@ -1318,18 +1322,13 @@ describe('Trace', () => {
   });
 
   it('spansMultipleDates()', () => {
-    const time0 = TimestampConverterUtils.makeZeroTimestamp();
+    const time0 = makeZeroTimestamp();
     const emptyTrace = makeEmptyTrace(TraceType.TEST_TRACE_STRING);
     expect(emptyTrace.spansMultipleDates()).toBeFalse();
 
     const traceWithElapsedTimestamps = new TraceBuilder<string>()
       .setEntries(['entry-0', 'entry-1'])
-      .setTimestamps([
-        time0,
-        TimestampConverterUtils.makeElapsedTimestamp(
-          BigInt(TIME_UNIT_TO_NANO.d),
-        ),
-      ])
+      .setTimestamps([time0, makeElapsedTimestamp(BigInt(TIME_UNIT_TO_NANO.d))])
       .build();
     expect(traceWithElapsedTimestamps.spansMultipleDates()).toBeFalse();
 
@@ -1342,12 +1341,8 @@ describe('Trace', () => {
     const traceWitMultipleDates = new TraceBuilder<string>()
       .setEntries(['entry-0', 'entry-1'])
       .setTimestamps([
-        TimestampConverterUtils.makeRealTimestamp(
-          BigInt(TIME_UNIT_TO_NANO.h * 23),
-        ),
-        TimestampConverterUtils.makeRealTimestamp(
-          BigInt(TIME_UNIT_TO_NANO.h * 25),
-        ),
+        makeRealTimestamp(BigInt(TIME_UNIT_TO_NANO.h * 23)),
+        makeRealTimestamp(BigInt(TIME_UNIT_TO_NANO.h * 25)),
       ])
       .build();
     expect(traceWitMultipleDates.spansMultipleDates()).toBeTrue();

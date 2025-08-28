@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
+import {
+  makeRealTimestamp,
+  makeZeroTimestamp,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {TraceEntryFinder} from './trace_entry_finder';
@@ -23,18 +26,18 @@ import {TraceType} from './trace_type';
 
 describe('TraceEntryFinder', () => {
   const emptyTrace = makeEmptyTrace(TraceType.TEST_TRACE_STRING);
-  const ts10 = TimestampConverterUtils.makeRealTimestamp(10n);
-  const ts14 = TimestampConverterUtils.makeRealTimestamp(14n);
-  const ts16 = TimestampConverterUtils.makeRealTimestamp(16n);
+  const ts10 = makeRealTimestamp(10n);
+  const ts14 = makeRealTimestamp(14n);
+  const ts16 = makeRealTimestamp(16n);
   const posTs10 = TracePosition.fromTimestamp(ts10);
   const trace = new TraceBuilder<string>()
     .setType(TraceType.SURFACE_FLINGER)
     .setTimestamps([
       ts10,
-      TimestampConverterUtils.makeRealTimestamp(11n),
-      TimestampConverterUtils.makeRealTimestamp(12n),
+      makeRealTimestamp(11n),
+      makeRealTimestamp(12n),
       ts14,
-      TimestampConverterUtils.makeRealTimestamp(15n),
+      makeRealTimestamp(15n),
       ts16,
     ])
     .setEntries([
@@ -62,7 +65,7 @@ describe('TraceEntryFinder', () => {
 
   it('returns sole entry of dump without timestamp regardless of position', () => {
     const dump = new TraceBuilder<string>()
-      .setTimestamps([TimestampConverterUtils.makeZeroTimestamp()])
+      .setTimestamps([makeZeroTimestamp()])
       .setEntries(['entry-0'])
       .build();
     expect(TraceEntryFinder.findCorrespondingEntry(dump, posTs10)).toEqual(
@@ -146,7 +149,7 @@ describe('TraceEntryFinder', () => {
       trace.getEntry(0),
     );
 
-    const ts13 = TimestampConverterUtils.makeRealTimestamp(13n);
+    const ts13 = makeRealTimestamp(13n);
     const posTs13 = TracePosition.fromTimestamp(ts13);
     expect(TraceEntryFinder.findCorrespondingEntry(trace, posTs13)).toEqual(
       trace.getEntry(2),

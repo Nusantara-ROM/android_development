@@ -15,16 +15,16 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {
-  getTimestampConverter,
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import Long from 'long';
 import {FileAndParser} from 'parsers/file_and_parser';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {com} from 'protos/transitions/udc/static';
 import {convertToPerfettoTrace, getTracesParser} from 'test/unit/fixture_utils';
+import {
+  getTimestampConverter,
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {TraceFile} from 'trace/trace_file';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
@@ -64,10 +64,10 @@ describe('TracesParserTransitions', () => {
   it('provides timestamps', () => {
     const timestamps = assertDefined(parser.getTimestamps());
     const expected = [
-      TimestampConverterUtils.makeRealTimestamp(1683188477607285317n),
-      TimestampConverterUtils.makeRealTimestamp(1683188477785406289n),
-      TimestampConverterUtils.makeRealTimestamp(1683188479256449868n),
-      TimestampConverterUtils.makeRealTimestamp(1683188481345929443n),
+      makeRealTimestamp(1683188477607285317n),
+      makeRealTimestamp(1683188477785406289n),
+      makeRealTimestamp(1683188479256449868n),
+      makeRealTimestamp(1683188481345929443n),
     ];
     expect(timestamps).toEqual(expected);
   });
@@ -99,7 +99,7 @@ describe('TracesParserTransitions', () => {
 
     await (transitionsParser as TracesParserTransitions).parse();
     expect(transitionsParser.getTimestamps()?.at(0)).toEqual(
-      TimestampConverterUtils.makeRealTimestamp(0n),
+      makeRealTimestamp(0n),
     );
   });
 
@@ -204,10 +204,10 @@ describe('TracesParserTransitions', () => {
     );
     perfettoParser.createTimestamps();
     expect(perfettoParser.getTimestamps()).toEqual([
-      TimestampConverterUtils.makeRealTimestamp(1683188477607285317n),
-      TimestampConverterUtils.makeRealTimestamp(1683188477785406289n),
-      TimestampConverterUtils.makeRealTimestamp(1683188479256449868n),
-      TimestampConverterUtils.makeRealTimestamp(1683188481345929443n),
+      makeRealTimestamp(1683188477607285317n),
+      makeRealTimestamp(1683188477785406289n),
+      makeRealTimestamp(1683188479256449868n),
+      makeRealTimestamp(1683188481345929443n),
     ]);
     const entries = [
       await perfettoParser.getEntry(0),

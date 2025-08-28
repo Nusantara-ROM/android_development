@@ -16,8 +16,8 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
+import {makeElapsedTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {
   makeUiHierarchyNode,
@@ -33,8 +33,8 @@ import {SimplifyNames} from './operations/simplify_names';
 import {UserOptions} from './user_options';
 
 describe('HierarchyPresenter', () => {
-  const timestamp1 = TimestampConverterUtils.makeElapsedTimestamp(1n);
-  const timestamp2 = TimestampConverterUtils.makeElapsedTimestamp(2n);
+  const timestamp1 = makeElapsedTimestamp(1n);
+  const timestamp2 = makeElapsedTimestamp(2n);
   const tree1 = new HierarchyTreeBuilder()
     .setId('Test Trace')
     .setName('entry')

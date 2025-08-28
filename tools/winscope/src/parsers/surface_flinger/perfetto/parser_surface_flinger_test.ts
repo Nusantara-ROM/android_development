@@ -16,12 +16,12 @@
 import {assertDefined} from 'common/assert_utils';
 import {Rect} from 'common/geometry/rect';
 import {Region} from 'common/geometry/region';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {DuplicateLayerIds} from 'messaging/user_warnings';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
 import {CoarseVersion} from 'trace_api/coarse_version';
@@ -71,9 +71,9 @@ describe('PerfettoParserSurfaceFlinger', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1659107089102062832n),
-        TimestampConverterUtils.makeRealTimestamp(1659107089233029344n),
-        TimestampConverterUtils.makeRealTimestamp(1659107090005226366n),
+        makeRealTimestamp(1659107089102062832n),
+        makeRealTimestamp(1659107089233029344n),
+        makeRealTimestamp(1659107090005226366n),
       ];
       const actual = assertDefined(parser.getTimestamps()).slice(0, 3);
       expect(actual).toEqual(expected);

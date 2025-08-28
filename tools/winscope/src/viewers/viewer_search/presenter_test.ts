@@ -15,7 +15,6 @@
  */
 
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {
   InitializeTraceSearchRequest,
   TraceAddRequest,
@@ -25,6 +24,7 @@ import {
   TraceSearchInitialized,
   TraceSearchRequest,
 } from 'messaging/winscope_event';
+import {makeRealTimestamp, UTC_CONVERTER} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {UserNotifierChecker} from 'test/unit/user_notifier_checker';
@@ -61,7 +61,7 @@ describe('PresenterSearch', () => {
       new Traces(),
       new InMemoryStorage(),
       (newData: UiData) => (uiData = newData),
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
+      UTC_CONVERTER,
     );
     userNotifierChecker.reset();
     element = document.createElement('div');
@@ -154,11 +154,11 @@ describe('PresenterSearch', () => {
       new TraceSearchRequest(testQuery),
     );
 
-    const time100 = TimestampConverterUtils.makeRealTimestamp(100n);
+    const time100 = makeRealTimestamp(100n);
     const [spyQueryResult, spyIter] = makeSearchTraceSpies(time100, '123');
     spyIter.get.withArgs('property').and.returnValue('test_time_ns');
     const spyTimestamp = spyOn(
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
+      UTC_CONVERTER,
       'makeTimestampFromBootTimeNs',
     ).and.callThrough();
     const trace = new TraceBuilder<QueryResult>()

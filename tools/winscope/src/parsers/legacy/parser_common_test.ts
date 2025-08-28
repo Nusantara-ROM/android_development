@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
+import {
+  makeElapsedTimestamp,
+  makeRealTimestamp,
+  timestampEqualityTester,
+  UTC_CONVERTER,
+} from 'test/unit/time_test_helpers';
 import {TraceFile} from 'trace/trace_file';
 import {Parser} from 'trace_api/parser';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
@@ -47,7 +49,7 @@ describe('Parser', () => {
       const trace = new TraceFile(await getFixtureFile(file), undefined);
       const processed = await new ParserFactory().processFiles(
         [trace],
-        TimestampConverterUtils.TIMESTAMP_CONVERTER,
+        UTC_CONVERTER,
         {},
       );
       expect(processed.parsers.length).toBe(0);
@@ -70,9 +72,9 @@ describe('Parser', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1659107089075566202n),
-        TimestampConverterUtils.makeRealTimestamp(1659107089999048990n),
-        TimestampConverterUtils.makeRealTimestamp(1659107090010194213n),
+        makeRealTimestamp(1659107089075566202n),
+        makeRealTimestamp(1659107089999048990n),
+        makeRealTimestamp(1659107090010194213n),
       ];
       expect(assertDefined(parser.getTimestamps()).slice(0, 3)).toEqual(
         expected,
@@ -103,9 +105,9 @@ describe('Parser', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeElapsedTimestamp(850254319343n),
-        TimestampConverterUtils.makeElapsedTimestamp(850763506110n),
-        TimestampConverterUtils.makeElapsedTimestamp(850782750048n),
+        makeElapsedTimestamp(850254319343n),
+        makeElapsedTimestamp(850763506110n),
+        makeElapsedTimestamp(850782750048n),
       ];
       expect(parser.getTimestamps()).toEqual(expected);
     });

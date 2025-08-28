@@ -139,7 +139,13 @@ export class TimestampConverter
     private timezoneInfo: TimezoneInfo,
     private realToMonotonicTimeOffsetNs?: bigint,
     private realToBootTimeOffsetNs?: bigint,
-  ) {}
+    utcOffset?: Timestamp,
+  ) {
+    if (utcOffset !== undefined) {
+      this.createdTimestampType = TimestampType.REAL;
+      this.initializeUTCOffset(utcOffset);
+    }
+  }
 
   /**
    * Initializes the UTC offset.

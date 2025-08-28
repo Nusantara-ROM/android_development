@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {ProtologColumnType} from 'trace/protolog/protolog_column_type';
 import {CustomQueryType} from 'trace_api/custom_query';
@@ -47,9 +47,9 @@ describe('PerfettoParserProtolog', () => {
     expect(timestamps.length).toBe(3);
 
     const expected = [
-      TimestampConverterUtils.makeRealTimestamp(1713866817780323315n),
-      TimestampConverterUtils.makeRealTimestamp(1713866817780323415n),
-      TimestampConverterUtils.makeRealTimestamp(1713866817780323445n),
+      makeRealTimestamp(1713866817780323315n),
+      makeRealTimestamp(1713866817780323415n),
+      makeRealTimestamp(1713866817780323445n),
     ];
     expect(timestamps.slice(0, 3)).toEqual(expected);
   });

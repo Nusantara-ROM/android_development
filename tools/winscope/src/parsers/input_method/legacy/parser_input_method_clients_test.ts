@@ -15,12 +15,13 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import Long from 'long';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
+import {
+  makeElapsedTimestamp,
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
@@ -47,9 +48,9 @@ describe('ParserInputMethodClients', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1659107090215405395n),
-        TimestampConverterUtils.makeRealTimestamp(1659107090249283325n),
-        TimestampConverterUtils.makeRealTimestamp(1659107090279417928n),
+        makeRealTimestamp(1659107090215405395n),
+        makeRealTimestamp(1659107090249283325n),
+        makeRealTimestamp(1659107090279417928n),
       ];
       expect(parser.getTimestamps()?.slice(0, 3)).toEqual(expected);
     });
@@ -80,9 +81,9 @@ describe('ParserInputMethodClients', () => {
         .getParser<HierarchyTreeNode>();
 
       expect(perfettoParser.getTimestamps()?.slice(0, 3)).toEqual([
-        TimestampConverterUtils.makeRealTimestamp(1659107090215405395n),
-        TimestampConverterUtils.makeRealTimestamp(1659107090249283325n),
-        TimestampConverterUtils.makeRealTimestamp(1659107090279417928n),
+        makeRealTimestamp(1659107090215405395n),
+        makeRealTimestamp(1659107090249283325n),
+        makeRealTimestamp(1659107090279417928n),
       ]);
 
       const entry = await perfettoParser.getEntry(10);
@@ -116,7 +117,7 @@ describe('ParserInputMethodClients', () => {
 
     it('provides timestamps', () => {
       expect(assertDefined(parser.getTimestamps())[0]).toEqual(
-        TimestampConverterUtils.makeElapsedTimestamp(1149083651642n),
+        makeElapsedTimestamp(1149083651642n),
       );
     });
 

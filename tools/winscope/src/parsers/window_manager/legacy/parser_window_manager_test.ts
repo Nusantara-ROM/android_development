@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  makeElapsedTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {CustomQueryType} from 'trace_api/custom_query';
@@ -53,9 +54,9 @@ describe('ParserWindowManager', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1659107089075566202n),
-        TimestampConverterUtils.makeRealTimestamp(1659107089999048990n),
-        TimestampConverterUtils.makeRealTimestamp(1659107090010194213n),
+        makeRealTimestamp(1659107089075566202n),
+        makeRealTimestamp(1659107089999048990n),
+        makeRealTimestamp(1659107090010194213n),
       ];
       expect(assertDefined(parser.getTimestamps()).slice(0, 3)).toEqual(
         expected,
@@ -92,9 +93,9 @@ describe('ParserWindowManager', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeElapsedTimestamp(850254319343n),
-        TimestampConverterUtils.makeElapsedTimestamp(850763506110n),
-        TimestampConverterUtils.makeElapsedTimestamp(850782750048n),
+        makeElapsedTimestamp(850254319343n),
+        makeElapsedTimestamp(850763506110n),
+        makeElapsedTimestamp(850782750048n),
       ];
       expect(parser.getTimestamps()).toEqual(expected);
     });
@@ -123,9 +124,9 @@ describe('ParserWindowManager', () => {
 
     it('provides timestamps', () => {
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(1721405245732015868n),
-        TimestampConverterUtils.makeRealTimestamp(1721405246510267496n),
-        TimestampConverterUtils.makeRealTimestamp(1721405246549639200n),
+        makeRealTimestamp(1721405245732015868n),
+        makeRealTimestamp(1721405246510267496n),
+        makeRealTimestamp(1721405246549639200n),
       ];
       expect(parser.getTimestamps()?.slice(0, 3)).toEqual(expected);
     });

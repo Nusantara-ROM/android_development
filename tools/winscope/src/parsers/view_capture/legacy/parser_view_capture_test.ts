@@ -15,13 +15,13 @@
  */
 import {assertDefined} from 'common/assert_utils';
 import {utf8Encode} from 'common/string_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import Long from 'long';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
@@ -57,9 +57,9 @@ describe('ParserViewCapture', () => {
 
   it('provides timestamps', () => {
     const expected = [
-      TimestampConverterUtils.makeRealTimestamp(1691692936292808460n),
-      TimestampConverterUtils.makeRealTimestamp(1691692936301385080n),
-      TimestampConverterUtils.makeRealTimestamp(1691692936309419870n),
+      makeRealTimestamp(1691692936292808460n),
+      makeRealTimestamp(1691692936301385080n),
+      makeRealTimestamp(1691692936309419870n),
     ];
     expect(assertDefined(parser.getTimestamps()).slice(0, 3)).toEqual(expected);
   });
@@ -139,9 +139,9 @@ describe('ParserViewCapture', () => {
       .setConvertToPerfetto(true)
       .getParser<HierarchyTreeNode>();
     expect(perfettoParser.getTimestamps()?.slice(0, 3)).toEqual([
-      TimestampConverterUtils.makeRealTimestamp(1691692936292808460n),
-      TimestampConverterUtils.makeRealTimestamp(1691692936301385080n),
-      TimestampConverterUtils.makeRealTimestamp(1691692936309419870n),
+      makeRealTimestamp(1691692936292808460n),
+      makeRealTimestamp(1691692936301385080n),
+      makeRealTimestamp(1691692936309419870n),
     ]);
 
     const entry = await perfettoParser.getEntry(1);

@@ -32,9 +32,9 @@ import {
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimeRange, Timestamp} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
+import {makeRealTimestamp, UTC_CONVERTER} from 'test/unit/time_test_helpers';
 import {TracesBuilder} from 'test/unit/traces_builder';
 import {Trace} from 'trace_api/trace';
 import {TracePosition} from 'trace_api/trace_position';
@@ -52,21 +52,19 @@ describe('MiniTimelineComponent', () => {
   const zoomOutSelector = '#zoom-out-btn';
   const zoomControlSelector = '.zoom-control';
 
-  const timestamp10 = TimestampConverterUtils.makeRealTimestamp(10n);
-  const timestamp15 = TimestampConverterUtils.makeRealTimestamp(15n);
-  const timestamp16 = TimestampConverterUtils.makeRealTimestamp(16n);
-  const timestamp20 = TimestampConverterUtils.makeRealTimestamp(20n);
-  const timestamp700 = TimestampConverterUtils.makeRealTimestamp(700n);
-  const timestamp810 = TimestampConverterUtils.makeRealTimestamp(810n);
-  const timestamp1000 = TimestampConverterUtils.makeRealTimestamp(1000n);
-  const timestamp1750 = TimestampConverterUtils.makeRealTimestamp(1750n);
-  const timestamp2000 = TimestampConverterUtils.makeRealTimestamp(2000n);
-  const timestamp3000 = TimestampConverterUtils.makeRealTimestamp(3000n);
-  const timestamp4000 = TimestampConverterUtils.makeRealTimestamp(4000n);
+  const timestamp10 = makeRealTimestamp(10n);
+  const timestamp15 = makeRealTimestamp(15n);
+  const timestamp16 = makeRealTimestamp(16n);
+  const timestamp20 = makeRealTimestamp(20n);
+  const timestamp700 = makeRealTimestamp(700n);
+  const timestamp810 = makeRealTimestamp(810n);
+  const timestamp1000 = makeRealTimestamp(1000n);
+  const timestamp1750 = makeRealTimestamp(1750n);
+  const timestamp2000 = makeRealTimestamp(2000n);
+  const timestamp3000 = makeRealTimestamp(3000n);
+  const timestamp4000 = makeRealTimestamp(4000n);
 
-  const position800 = TracePosition.fromTimestamp(
-    TimestampConverterUtils.makeRealTimestamp(800n),
-  );
+  const position800 = TracePosition.fromTimestamp(makeRealTimestamp(800n));
 
   const traces = new TracesBuilder()
     .setTimestamps(TraceType.SURFACE_FLINGER, [timestamp10])
@@ -108,11 +106,7 @@ describe('MiniTimelineComponent', () => {
     dom = new DOMTestHelper(fixture, fixture.nativeElement);
 
     timelineData = new TimelineData();
-    await timelineData.initialize(
-      traces,
-      undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
-    );
+    await timelineData.initialize(traces, undefined, UTC_CONVERTER);
     component.timelineData = timelineData;
     expect(timelineData.getCurrentPosition()).toBeDefined();
     component.currentTracePosition = timelineData.getCurrentPosition()!;
@@ -658,11 +652,7 @@ describe('MiniTimelineComponent', () => {
       .setTimestamps(TraceType.WINDOW_MANAGER, [timestamp1000])
       .build();
 
-    timelineData.initialize(
-      traces,
-      undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
-    );
+    timelineData.initialize(traces, undefined, UTC_CONVERTER);
     dom.detectChanges();
   }
 
@@ -678,7 +668,7 @@ describe('MiniTimelineComponent', () => {
     assertDefined(component.timelineData).initialize(
       traces,
       undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
+      UTC_CONVERTER,
     );
   }
 

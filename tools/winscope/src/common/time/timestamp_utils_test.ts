@@ -15,9 +15,9 @@
  */
 
 import {
-  TimestampConverterUtils,
+  makeRealTimestamp,
   timestampEqualityTester,
-} from './time_test_helpers';
+} from 'test/unit/time_test_helpers';
 import {
   compareFn,
   isHumanElapsedTimeFormat,
@@ -35,20 +35,20 @@ describe('timestamp_utils', () => {
   describe('compareFn', () => {
     it('allows to sort arrays', () => {
       const array = [
-        TimestampConverterUtils.makeRealTimestamp(100n),
-        TimestampConverterUtils.makeRealTimestamp(10n),
-        TimestampConverterUtils.makeRealTimestamp(12n),
-        TimestampConverterUtils.makeRealTimestamp(110n),
-        TimestampConverterUtils.makeRealTimestamp(11n),
+        makeRealTimestamp(100n),
+        makeRealTimestamp(10n),
+        makeRealTimestamp(12n),
+        makeRealTimestamp(110n),
+        makeRealTimestamp(11n),
       ];
       array.sort(compareFn);
 
       const expected = [
-        TimestampConverterUtils.makeRealTimestamp(10n),
-        TimestampConverterUtils.makeRealTimestamp(11n),
-        TimestampConverterUtils.makeRealTimestamp(12n),
-        TimestampConverterUtils.makeRealTimestamp(100n),
-        TimestampConverterUtils.makeRealTimestamp(110n),
+        makeRealTimestamp(10n),
+        makeRealTimestamp(11n),
+        makeRealTimestamp(12n),
+        makeRealTimestamp(100n),
+        makeRealTimestamp(110n),
       ];
       expect(array).toEqual(expected);
     });

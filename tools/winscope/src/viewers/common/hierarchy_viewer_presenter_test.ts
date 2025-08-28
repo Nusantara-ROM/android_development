@@ -17,7 +17,6 @@
 import {assertDefined} from 'common/assert_utils';
 import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {
   DarkModeToggled,
   FilterPresetApplyRequest,
@@ -26,6 +25,10 @@ import {
 } from 'messaging/winscope_event';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {MockPresenter} from 'test/unit/mock_hierarchy_viewer_presenter';
+import {
+  makeElapsedTimestamp,
+  makeRealTimestamp,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {
@@ -46,8 +49,8 @@ import {UserOptions} from './user_options';
 import {ViewerEvents} from './viewer_events';
 
 describe('AbstractHierarchyViewerPresenter', () => {
-  const timestamp2 = TimestampConverterUtils.makeElapsedTimestamp(2n);
-  const timestamp3 = TimestampConverterUtils.makeElapsedTimestamp(3n);
+  const timestamp2 = makeElapsedTimestamp(2n);
+  const timestamp3 = makeElapsedTimestamp(3n);
   let uiData: UiDataHierarchy;
   let presenter: MockPresenter;
   let trace: Trace<HierarchyTreeNode>;
@@ -183,9 +186,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
     expect(uiData.propertiesTree).toBeDefined();
 
     await presenter.onAppEvent(
-      TracePositionUpdate.fromTimestamp(
-        TimestampConverterUtils.makeElapsedTimestamp(1n),
-      ),
+      TracePositionUpdate.fromTimestamp(makeElapsedTimestamp(1n)),
     );
     expect(uiData.hierarchyTrees).toBeUndefined();
     expect(uiData.pinnedItems.length).toBe(0);
@@ -305,7 +306,7 @@ describe('AbstractHierarchyViewerPresenter', () => {
     presenter.initializeRectsPresenter();
 
     const positionUpdateWithoutTraceEntry = TracePositionUpdate.fromTimestamp(
-      TimestampConverterUtils.makeRealTimestamp(0n),
+      makeRealTimestamp(0n),
     );
     await presenter.onAppEvent(positionUpdateWithoutTraceEntry);
 

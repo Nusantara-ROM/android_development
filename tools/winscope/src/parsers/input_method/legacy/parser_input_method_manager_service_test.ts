@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import Long from 'long';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
+import {
+  makeElapsedTimestamp,
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
@@ -49,7 +50,7 @@ describe('ParserInputMethodManagerService', () => {
 
     it('provides timestamps', () => {
       expect(parser.getTimestamps()).toEqual([
-        TimestampConverterUtils.makeRealTimestamp(1659107090565549479n),
+        makeRealTimestamp(1659107090565549479n),
       ]);
     });
 
@@ -83,7 +84,7 @@ describe('ParserInputMethodManagerService', () => {
         .getParser<HierarchyTreeNode>();
 
       expect(perfettoParser.getTimestamps()).toEqual([
-        TimestampConverterUtils.makeRealTimestamp(1659107090565549479n),
+        makeRealTimestamp(1659107090565549479n),
       ]);
 
       const entry = await perfettoParser.getEntry(0);
@@ -111,7 +112,7 @@ describe('ParserInputMethodManagerService', () => {
 
     it('provides timestamps', () => {
       expect(assertDefined(parser.getTimestamps())[0]).toEqual(
-        TimestampConverterUtils.makeElapsedTimestamp(1149226290110n),
+        makeElapsedTimestamp(1149226290110n),
       );
     });
 

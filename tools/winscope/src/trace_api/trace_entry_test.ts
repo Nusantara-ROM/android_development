@@ -15,9 +15,9 @@
  */
 
 import {
-  TimestampConverterUtils,
+  makeRealTimestamp,
   timestampEqualityTester,
-} from 'common/time/time_test_helpers';
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {Trace} from './trace';
 
@@ -28,12 +28,12 @@ describe('TraceEntry', () => {
     jasmine.addCustomEqualityTester(timestampEqualityTester);
     trace = new TraceBuilder<string>()
       .setTimestamps([
-        TimestampConverterUtils.makeRealTimestamp(10n),
-        TimestampConverterUtils.makeRealTimestamp(11n),
-        TimestampConverterUtils.makeRealTimestamp(12n),
-        TimestampConverterUtils.makeRealTimestamp(13n),
-        TimestampConverterUtils.makeRealTimestamp(14n),
-        TimestampConverterUtils.makeRealTimestamp(15n),
+        makeRealTimestamp(10n),
+        makeRealTimestamp(11n),
+        makeRealTimestamp(12n),
+        makeRealTimestamp(13n),
+        makeRealTimestamp(14n),
+        makeRealTimestamp(15n),
       ])
       .setEntries([
         'entry-0',
@@ -64,12 +64,8 @@ describe('TraceEntry', () => {
   });
 
   it('getTimestamp()', () => {
-    expect(trace.getEntry(0).getTimestamp()).toEqual(
-      TimestampConverterUtils.makeRealTimestamp(10n),
-    );
-    expect(trace.getEntry(1).getTimestamp()).toEqual(
-      TimestampConverterUtils.makeRealTimestamp(11n),
-    );
+    expect(trace.getEntry(0).getTimestamp()).toEqual(makeRealTimestamp(10n));
+    expect(trace.getEntry(1).getTimestamp()).toEqual(makeRealTimestamp(11n));
   });
 
   it('getFramesRange()', () => {

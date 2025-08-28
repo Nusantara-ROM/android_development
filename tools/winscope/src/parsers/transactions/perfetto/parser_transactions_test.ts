@@ -15,11 +15,11 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {TransactionColumnType} from 'trace/transactions/transaction_column_type';
 import {TransactionType} from 'trace/transactions/transaction_type';
@@ -55,9 +55,9 @@ describe('PerfettoParserTransactions', () => {
     expect(timestamps.length).toBe(712);
 
     const expected = [
-      TimestampConverterUtils.makeRealTimestamp(1659507541051480997n),
-      TimestampConverterUtils.makeRealTimestamp(1659507541118452067n),
-      TimestampConverterUtils.makeRealTimestamp(1659507542621651001n),
+      makeRealTimestamp(1659507541051480997n),
+      makeRealTimestamp(1659507541118452067n),
+      makeRealTimestamp(1659507542621651001n),
     ];
     expect(timestamps.slice(0, 3)).toEqual(expected);
   });

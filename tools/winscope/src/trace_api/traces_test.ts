@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {DO_NOTHING} from 'common/function_utils';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
+import {makeRealTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {
   extractEntries as extractTraceEntries,
@@ -36,16 +36,16 @@ import {Traces} from './traces';
 describe('Traces', () => {
   let traces: Traces;
 
-  const time1 = TimestampConverterUtils.makeRealTimestamp(1n);
-  const time2 = TimestampConverterUtils.makeRealTimestamp(2n);
-  const time3 = TimestampConverterUtils.makeRealTimestamp(3n);
-  const time4 = TimestampConverterUtils.makeRealTimestamp(4n);
-  const time5 = TimestampConverterUtils.makeRealTimestamp(5n);
-  const time6 = TimestampConverterUtils.makeRealTimestamp(6n);
-  const time7 = TimestampConverterUtils.makeRealTimestamp(7n);
-  const time8 = TimestampConverterUtils.makeRealTimestamp(8n);
-  const time9 = TimestampConverterUtils.makeRealTimestamp(9n);
-  const time10 = TimestampConverterUtils.makeRealTimestamp(10n);
+  const time1 = makeRealTimestamp(1n);
+  const time2 = makeRealTimestamp(2n);
+  const time3 = makeRealTimestamp(3n);
+  const time4 = makeRealTimestamp(4n);
+  const time5 = makeRealTimestamp(5n);
+  const time6 = makeRealTimestamp(6n);
+  const time7 = makeRealTimestamp(7n);
+  const time8 = makeRealTimestamp(8n);
+  const time9 = makeRealTimestamp(9n);
+  const time10 = makeRealTimestamp(10n);
 
   let extractedEntriesEmpty: Map<TraceType, Array<{}>>;
   let extractedEntriesFull: Map<TraceType, Array<{}>>;

@@ -31,9 +31,12 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventKey} from 'common/dom_utils';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {Timestamp} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
+import {
+  makeElapsedTimestamp,
+  makeRealTimestamp,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {TraceEntry} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';
@@ -409,11 +412,11 @@ describe('LogComponent', () => {
     let entryTime: Timestamp;
     let fieldTime: Timestamp;
     if (elapsed) {
-      entryTime = TimestampConverterUtils.makeElapsedTimestamp(1n);
-      fieldTime = TimestampConverterUtils.makeElapsedTimestamp(2n);
+      entryTime = makeElapsedTimestamp(1n);
+      fieldTime = makeElapsedTimestamp(2n);
     } else {
-      entryTime = TimestampConverterUtils.makeRealTimestamp(1n);
-      fieldTime = TimestampConverterUtils.makeRealTimestamp(2n);
+      entryTime = makeRealTimestamp(1n);
+      fieldTime = makeRealTimestamp(2n);
     }
 
     const fields1: LogField[] = [

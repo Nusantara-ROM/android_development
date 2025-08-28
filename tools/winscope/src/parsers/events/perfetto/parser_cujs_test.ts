@@ -15,11 +15,12 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+  UTC_CONVERTER,
+} from 'test/unit/time_test_helpers';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {
   DEFAULT_PROPERTY_FORMATTER,
@@ -56,9 +57,9 @@ describe('ParserCujs', () => {
 
   it('provides timestamps', () => {
     const expected = [
-      TimestampConverterUtils.makeRealTimestamp(1754580961363780030n),
-      TimestampConverterUtils.makeRealTimestamp(1754580962747188031n),
-      TimestampConverterUtils.makeRealTimestamp(1754580962769690133n),
+      makeRealTimestamp(1754580961363780030n),
+      makeRealTimestamp(1754580962747188031n),
+      makeRealTimestamp(1754580962769690133n),
     ];
     expect(assertDefined(parser.getTimestamps())).toEqual(expected);
   });
@@ -79,18 +80,12 @@ describe('ParserCujs', () => {
         },
         {
           name: 'ts',
-          value:
-            TimestampConverterUtils.TIMESTAMP_CONVERTER.makeTimestampFromNs(
-              1754580962747188031n,
-            ),
+          value: UTC_CONVERTER.makeTimestampFromNs(1754580962747188031n),
           formatter: TIMESTAMP_NODE_FORMATTER,
         },
         {
           name: 'endTimestamp',
-          value:
-            TimestampConverterUtils.TIMESTAMP_CONVERTER.makeTimestampFromNs(
-              1754580963548041327n,
-            ),
+          value: UTC_CONVERTER.makeTimestampFromNs(1754580963548041327n),
           formatter: TIMESTAMP_NODE_FORMATTER,
         },
         {

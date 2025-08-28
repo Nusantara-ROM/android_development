@@ -17,7 +17,6 @@
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventKey} from 'common/dom_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {wait} from 'common/time/time_utils';
 import {
   ActiveTraceChanged,
@@ -26,6 +25,11 @@ import {
 } from 'messaging/winscope_event';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {MockPresenter} from 'test/unit/mock_log_viewer_presenter';
+import {
+  makeElapsedTimestamp,
+  makeRealTimestamp,
+  makeZeroTimestamp,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {DEFAULT_PROPERTY_FORMATTER} from 'trace/formatters';
@@ -54,10 +58,10 @@ describe('AbstractLogViewerPresenter', () => {
   let lastEntryPositionUpdate: TracePositionUpdate;
 
   beforeAll(async () => {
-    const timestamp1 = TimestampConverterUtils.makeElapsedTimestamp(1n);
-    const timestamp2 = TimestampConverterUtils.makeElapsedTimestamp(2n);
-    const timestamp3 = TimestampConverterUtils.makeElapsedTimestamp(3n);
-    const timestamp4 = TimestampConverterUtils.makeElapsedTimestamp(4n);
+    const timestamp1 = makeElapsedTimestamp(1n);
+    const timestamp2 = makeElapsedTimestamp(2n);
+    const timestamp3 = makeElapsedTimestamp(3n);
+    const timestamp4 = makeElapsedTimestamp(4n);
     trace = new TraceBuilder<HierarchyTreeNode>()
       .setType(TraceType.TRANSACTIONS)
       .setEntries([
@@ -162,7 +166,7 @@ describe('AbstractLogViewerPresenter', () => {
     expect(spy).toHaveBeenCalledWith(uiData.entries[0].traceEntry);
 
     spy = spyOn(presenter, 'onRawTimestampClick');
-    const ts = TimestampConverterUtils.makeZeroTimestamp();
+    const ts = makeZeroTimestamp();
     element.dispatchEvent(
       new CustomEvent(ViewerEvents.TimestampClick, {
         detail: new TimestampClickDetail(undefined, ts),
@@ -250,9 +254,7 @@ describe('AbstractLogViewerPresenter', () => {
 
     await sendPositionUpdate(
       new TracePositionUpdate(
-        TracePosition.fromTimestamp(
-          TimestampConverterUtils.makeElapsedTimestamp(-1n),
-        ),
+        TracePosition.fromTimestamp(makeElapsedTimestamp(-1n)),
       ),
       true,
     );
@@ -487,7 +489,7 @@ describe('AbstractLogViewerPresenter', () => {
     const spy = jasmine.createSpy();
     presenter.setEmitEvent(spy);
 
-    const ts = TimestampConverterUtils.makeZeroTimestamp();
+    const ts = makeZeroTimestamp();
     await presenter.onRawTimestampClick(ts);
     expect(spy).toHaveBeenCalledWith(
       TracePositionUpdate.fromTimestamp(ts, true),
@@ -538,9 +540,7 @@ describe('AbstractLogViewerPresenter', () => {
     );
 
     await sendPositionUpdate(
-      TracePositionUpdate.fromTimestamp(
-        TimestampConverterUtils.makeRealTimestamp(0n),
-      ),
+      TracePositionUpdate.fromTimestamp(makeRealTimestamp(0n)),
       true,
       presenter,
     );

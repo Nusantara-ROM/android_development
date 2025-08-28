@@ -27,7 +27,6 @@ import {FilesSource} from 'app/files_source';
 import {TracePipeline} from 'app/trace_pipeline';
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {
   AppTraceViewRequest,
   AppTraceViewRequestHandled,
@@ -35,6 +34,7 @@ import {
 } from 'messaging/winscope_event';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {makeZeroTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {Traces} from 'trace_api/traces';
 import {LoadProgressComponent} from './load_progress_component';
@@ -265,7 +265,7 @@ describe('UploadTracesComponent', () => {
   it('shows error elements for corrupted traces', async () => {
     const corruptedTrace = new TraceBuilder<string>()
       .setEntries(['entry-0'])
-      .setTimestamps([TimestampConverterUtils.makeZeroTimestamp()])
+      .setTimestamps([makeZeroTimestamp()])
       .build();
     corruptedTrace.setCorruptedState(true);
     const traces = new Traces();

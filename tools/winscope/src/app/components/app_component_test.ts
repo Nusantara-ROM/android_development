@@ -49,7 +49,6 @@ import {
 import {assertDefined} from 'common/assert_utils';
 import {Download} from 'common/download';
 import {DOWNLOAD_FILENAME_REGEX} from 'common/file_utils';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {
   FailedToInitializeTimelineData,
   NoValidFiles,
@@ -63,6 +62,7 @@ import {
 } from 'messaging/winscope_event';
 import {UserNotifier} from 'services/user_notifier';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
+import {UTC_CONVERTER} from 'test/unit/time_test_helpers';
 import {waitToBeCalled} from 'test/unit/spy_utils';
 import {TracesBuilder} from 'test/unit/traces_builder';
 import {ViewerSurfaceFlingerComponent} from 'viewers/viewer_surface_flinger/viewer_surface_flinger_component';
@@ -263,7 +263,7 @@ describe('AppComponent', () => {
     component.timelineData.initialize(
       new TracesBuilder().build(),
       undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
+      UTC_CONVERTER,
     );
 
     await component.onWinscopeEvent(new ViewersUnloaded());
@@ -508,7 +508,7 @@ describe('AppComponent', () => {
       dom.findAndClick('.iframe-settings');
       expect(postMessageSpy).toHaveBeenCalledOnceWith(
         {winscopeAction: 'openSettings'},
-        parentOrigin,
+        {targetOrigin: parentOrigin},
       );
     });
   });
@@ -519,7 +519,7 @@ describe('AppComponent', () => {
     component.timelineData.initialize(
       new TracesBuilder().build(),
       undefined,
-      TimestampConverterUtils.TIMESTAMP_CONVERTER,
+      UTC_CONVERTER,
     );
     dom.detectChanges();
   }

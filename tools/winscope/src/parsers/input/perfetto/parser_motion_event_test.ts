@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {
-  TimestampConverterUtils,
-  timestampEqualityTester,
-} from 'common/time/time_test_helpers';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
+import {
+  makeRealTimestamp,
+  timestampEqualityTester,
+} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {CustomQueryType} from 'trace_api/custom_query';
@@ -51,12 +51,12 @@ describe('PerfettoParserMotionEvent', () => {
     expect(timestamps.length).toBe(6);
 
     const expected = [
-      TimestampConverterUtils.makeRealTimestamp(1718386903800330430n),
-      TimestampConverterUtils.makeRealTimestamp(1718386903800330430n),
-      TimestampConverterUtils.makeRealTimestamp(1718386903821511338n),
-      TimestampConverterUtils.makeRealTimestamp(1718386903827304592n),
-      TimestampConverterUtils.makeRealTimestamp(1718386903836681382n),
-      TimestampConverterUtils.makeRealTimestamp(1718386903841727281n),
+      makeRealTimestamp(1718386903800330430n),
+      makeRealTimestamp(1718386903800330430n),
+      makeRealTimestamp(1718386903821511338n),
+      makeRealTimestamp(1718386903827304592n),
+      makeRealTimestamp(1718386903836681382n),
+      makeRealTimestamp(1718386903841727281n),
     ];
     expect(timestamps).toEqual(expected);
   });
