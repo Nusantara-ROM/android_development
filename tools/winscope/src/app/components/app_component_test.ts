@@ -502,7 +502,9 @@ describe('AppComponent', () => {
       getReportedParentOriginSpy.and.returnValue(parentOrigin);
       isSupportedParentOriginSpy.and.returnValue(true);
       dom.detectChanges();
-      const postMessageSpy = spyOn(window.parent, 'postMessage');
+      const postMessageSpy: jasmine.Spy<
+        (message: any, targetOrigin: string, transfer?: Transferable[]) => void
+      > = spyOn(window.parent, 'postMessage');
       dom.findAndClick('.iframe-settings');
       expect(postMessageSpy).toHaveBeenCalledOnceWith(
         {winscopeAction: 'openSettings'},
