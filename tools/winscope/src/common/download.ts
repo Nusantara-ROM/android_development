@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+import {trySanitizeUrl} from 'compat/safevalues';
+import {setAnchorHref} from 'compat/safevalues/dom';
+import {assertDefined} from './assert_utils';
+
 /**
  * Utility class for downloading files.
  */
@@ -27,8 +31,7 @@ export class Download {
   static fromUrl(url: string, filename: string) {
     const a = document.createElement('a');
     document.body.appendChild(a);
-    // TODO: Do not assign non-constant values to HTMLAnchorElement#href, as this can lead to XSS
-    a.href = url;
+    setAnchorHref(a, assertDefined(trySanitizeUrl(url)));
     a.download = filename;
     a.click();
     window.URL.revokeObjectURL(url);

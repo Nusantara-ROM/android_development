@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// TODO(b/311642700): Not google3 compatible recommended trySanitizeUrl and windowOpen
+import {trySanitizeUrl} from 'compat/safevalues';
+import {windowOpen} from 'compat/safevalues/dom';
 
 /**
  * Opens a popup window with the specified URL.
@@ -22,8 +23,13 @@
  * @return True if the popup was opened successfully, false otherwise.
  */
 export function showPopupWindow(url: string): boolean {
-  const popup = window.open(
-    url,
+  const sanitizedUrl = trySanitizeUrl(url);
+  if (sanitizedUrl === undefined) {
+    return false;
+  }
+  const popup = windowOpen(
+    window,
+    sanitizedUrl,
     '_blank',
     'width=500,height=500,scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no',
   );
