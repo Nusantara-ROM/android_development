@@ -26,7 +26,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {Rect} from 'common/geometry/rect';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimeRange} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {waitToBeCalled} from 'test/unit/spy_utils';

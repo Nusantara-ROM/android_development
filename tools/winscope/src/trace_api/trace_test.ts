@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {ParserBuilder} from 'test/unit/parser_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';

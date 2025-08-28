@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {TraceType} from 'trace_api/trace_type';

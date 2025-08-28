@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {extractFrames} from 'test/unit/traces_utils';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';

@@ -18,7 +18,7 @@ import {
   getTimestampConverter,
   TimestampConverterUtils,
   timestampEqualityTester,
-} from 'common/time/test_utils';
+} from 'common/time/time_test_helpers';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {CoarseVersion} from 'trace_api/coarse_version';

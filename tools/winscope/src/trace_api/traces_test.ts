@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {DO_NOTHING} from 'common/function_utils';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {
   extractEntries as extractTraceEntries,

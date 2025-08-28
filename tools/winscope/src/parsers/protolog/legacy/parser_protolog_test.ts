@@ -19,7 +19,7 @@ import {utf8Encode} from 'common/string_utils';
 import {
   TimestampConverterUtils,
   timestampEqualityTester,
-} from 'common/time/test_utils';
+} from 'common/time/time_test_helpers';
 import {Timestamp} from 'common/time/time';
 import Long from 'long';
 import {perfetto} from 'protos/perfetto/trace/static';

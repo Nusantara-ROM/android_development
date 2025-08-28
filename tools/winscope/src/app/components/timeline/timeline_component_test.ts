@@ -35,7 +35,7 @@ import {
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
 import {PersistentStore} from 'common/store/persistent_store';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimeRange} from 'common/time/time';
 import {
   ActiveTraceChanged,

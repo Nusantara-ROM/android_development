@@ -32,7 +32,7 @@ import {
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventCode} from 'common/dom_utils';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimeRange, Timestamp} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {TracesBuilder} from 'test/unit/traces_builder';

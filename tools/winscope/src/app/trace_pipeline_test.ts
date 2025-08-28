@@ -23,7 +23,7 @@ import {
 import {
   TimestampConverterUtils,
   timestampEqualityTester,
-} from 'common/time/test_utils';
+} from 'common/time/time_test_helpers';
 import {ProgressListenerStub} from 'messaging/progress_listener_stub';
 import {UserWarning} from 'messaging/user_warning';
 import {

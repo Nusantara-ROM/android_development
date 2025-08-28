@@ -19,7 +19,7 @@ import {
   getTimestampConverter,
   TimestampConverterUtils,
   timestampEqualityTester,
-} from 'common/time/test_utils';
+} from 'common/time/time_test_helpers';
 import {TraceSearchQueryFailed} from 'messaging/user_warnings';
 import {ParserSurfaceFlinger} from 'parsers/surface_flinger/perfetto/parser_surface_flinger';
 import {getPerfettoParser} from 'test/unit/fixture_utils';

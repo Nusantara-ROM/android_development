@@ -15,7 +15,7 @@
  */
 
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {TraceBuilder} from 'test/unit/trace_builder';

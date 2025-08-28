@@ -17,7 +17,7 @@ import {assertDefined} from 'common/assert_utils';
 import {
   TimestampConverterUtils,
   timestampEqualityTester,
-} from 'common/time/test_utils';
+} from 'common/time/time_test_helpers';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {CoarseVersion} from 'trace_api/coarse_version';

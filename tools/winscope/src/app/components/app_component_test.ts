@@ -49,7 +49,7 @@ import {
 import {assertDefined} from 'common/assert_utils';
 import {Download} from 'common/download';
 import {DOWNLOAD_FILENAME_REGEX} from 'common/file_utils';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {
   FailedToInitializeTimelineData,
   NoValidFiles,

@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {unzipFile} from 'common/file_utils';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimeRange} from 'common/time/time';
 import {UserWarning} from 'messaging/user_warning';
 import {TraceHasOldData, TraceOverridden} from 'messaging/user_warnings';

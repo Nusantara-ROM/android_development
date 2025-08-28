@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TimeRange} from 'common/time/time';
 import {CannotParseAllTransitions} from 'messaging/user_warnings';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';

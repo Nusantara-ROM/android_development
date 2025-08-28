@@ -27,7 +27,7 @@ import {FilesSource} from 'app/files_source';
 import {TracePipeline} from 'app/trace_pipeline';
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {
   AppTraceViewRequest,
   AppTraceViewRequestHandled,

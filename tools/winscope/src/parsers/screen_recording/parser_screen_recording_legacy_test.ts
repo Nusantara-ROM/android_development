@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {CoarseVersion} from 'trace_api/coarse_version';
 import {MediaBasedTraceEntry} from 'trace_api/media_based_trace_entry';

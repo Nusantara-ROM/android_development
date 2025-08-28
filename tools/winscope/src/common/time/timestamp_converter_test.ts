@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import {TimestampConverterUtils, timestampEqualityTester} from './test_utils';
+import {
+  TimestampConverterUtils,
+  timestampEqualityTester,
+} from './time_test_helpers';
 import {TIME_UNIT_TO_NANO} from './time_units';
 import {TimestampConverter} from './timestamp_converter';
 

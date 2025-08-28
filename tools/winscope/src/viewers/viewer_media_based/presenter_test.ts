@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {
   ActiveTraceChanged,
   ExpandedTimelineToggled,

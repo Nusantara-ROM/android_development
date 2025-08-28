@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';

@@ -19,7 +19,7 @@ import {
   getTimestampConverter,
   TimestampConverterUtils,
   timestampEqualityTester,
-} from 'common/time/test_utils';
+} from 'common/time/time_test_helpers';
 import Long from 'long';
 import {perfetto} from 'protos/perfetto/trace/static';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';

@@ -18,7 +18,7 @@ import {assertDefined} from 'common/assert_utils';
 import {
   TimestampConverterUtils,
   timestampEqualityTester,
-} from 'common/time/test_utils';
+} from 'common/time/time_test_helpers';
 import {getTracesParser} from 'test/unit/fixture_utils';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {

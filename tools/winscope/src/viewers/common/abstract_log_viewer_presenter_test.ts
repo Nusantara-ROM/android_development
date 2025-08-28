@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {wait} from 'common/time/time_utils';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {setNumRowsSpyQueryResult} from 'trace_processor/test_utils';

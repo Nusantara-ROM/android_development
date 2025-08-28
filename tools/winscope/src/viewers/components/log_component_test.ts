@@ -31,7 +31,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
 import {KeyboardEventKey} from 'common/dom_utils';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {Timestamp} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';

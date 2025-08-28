@@ -17,7 +17,7 @@ import {assertDefined} from 'common/assert_utils';
 import {
   TimestampConverterUtils,
   timestampEqualityTester,
-} from 'common/time/test_utils';
+} from 'common/time/time_test_helpers';
 import {getFixtureFile} from 'test/unit/fixture_file_utils';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {TraceFile} from 'trace/trace_file';

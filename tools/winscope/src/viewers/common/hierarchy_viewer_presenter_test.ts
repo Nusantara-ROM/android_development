@@ -17,7 +17,7 @@
 import {assertDefined} from 'common/assert_utils';
 import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {TimestampConverterUtils} from 'common/time/test_utils';
+import {TimestampConverterUtils} from 'common/time/time_test_helpers';
 import {
   DarkModeToggled,
   FilterPresetApplyRequest,

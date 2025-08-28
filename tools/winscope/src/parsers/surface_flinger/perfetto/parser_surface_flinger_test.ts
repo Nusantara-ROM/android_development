@@ -19,7 +19,7 @@ import {Region} from 'common/geometry/region';
 import {
   TimestampConverterUtils,
   timestampEqualityTester,
-} from 'common/time/test_utils';
+} from 'common/time/time_test_helpers';
 import {DuplicateLayerIds} from 'messaging/user_warnings';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
