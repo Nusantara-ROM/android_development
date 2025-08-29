@@ -330,7 +330,7 @@ import {
         font-size: 0.8rem;
         margin-top: -0.8rem;
         margin-left: 0.2rem;
-        color: var(--primary);
+        color: var(--logo-blue);
         font-weight: 800;
       }
       .welcome-info {
