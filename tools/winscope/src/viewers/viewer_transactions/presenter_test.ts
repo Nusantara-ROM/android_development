@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {wait} from 'common/time/time_utils';
+import {Timer} from 'common/time/timer';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
@@ -188,7 +188,7 @@ class PresenterTransactionsTest extends AbstractLogViewerPresenterTest<UiData> {
 
       it('keeps properties related to what has changed regardless of hide defaults', async () => {
         await presenter.onAppEvent(this.getPositionUpdate());
-        await wait(() => !uiData.isFetchingData);
+        await new Timer().wait(() => !uiData.isFetchingData);
         await presenter.onLogEntryClick(10);
         expect(
           assertDefined(uiData.propertiesTree).getAllChildren().length,

@@ -17,7 +17,7 @@
 import {assertDefined} from 'common/assert_utils';
 import {Transform} from 'common/geometry/transform';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {wait} from 'common/time/time_utils';
+import {Timer} from 'common/time/timer';
 import {
   TabbedViewSwitchRequest,
   TracePositionUpdate,
@@ -1057,7 +1057,7 @@ class PresenterInputTest extends AbstractLogViewerPresenterTest<UiData> {
       ) {
         await presenter.onAppEvent(update);
         expect(uiData.isFetchingData).toBeTrue();
-        await wait(() => !uiData.isFetchingData);
+        await new Timer().wait(() => !uiData.isFetchingData);
       }
     });
   }

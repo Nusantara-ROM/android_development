@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {wait} from 'common/time/time_utils';
+import {Timer} from 'common/time/timer';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {makeRealTimestamp} from 'test/unit/time_test_helpers';
 import {setNumRowsSpyQueryResult} from 'trace_processor/test_utils';
@@ -42,7 +42,7 @@ export abstract class AbstractLogViewerPresenterTest<UiData extends UiDataLog> {
         presenter = await this.createPresenter((newData) => {
           uiData = newData;
         });
-        await wait(() => !uiData.isFetchingData);
+        await new Timer().wait(() => !uiData.isFetchingData);
         if (this.resetTestEnvironment) {
           this.resetTestEnvironment();
         }
@@ -58,7 +58,7 @@ export abstract class AbstractLogViewerPresenterTest<UiData extends UiDataLog> {
         await presenter.onAppEvent(
           TracePositionUpdate.fromTimestamp(makeRealTimestamp(0n)),
         );
-        await wait(() => !uiData.isFetchingData);
+        await new Timer().wait(() => !uiData.isFetchingData);
         for (const [index, expectedHeader] of this.expectedHeaders.entries()) {
           const header = uiData.headers[index];
           expect(header.spec).toEqual(expectedHeader.header.spec);
@@ -75,7 +75,7 @@ export abstract class AbstractLogViewerPresenterTest<UiData extends UiDataLog> {
         await assertDefined(presenter).onAppEvent(
           assertDefined(this.getPositionUpdate()),
         );
-        await wait(() => !uiData.isFetchingData);
+        await new Timer().wait(() => !uiData.isFetchingData);
         for (const [index, expectedHeader] of this.expectedHeaders.entries()) {
           const header = uiData.headers[index];
           expect(header).toEqual(expectedHeader.header);

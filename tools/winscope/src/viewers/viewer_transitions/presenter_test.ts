@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
-import {wait} from 'common/time/time_utils';
+import {Timer} from 'common/time/timer';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {getPerfettoParser} from 'test/unit/fixture_utils';
 import {ParserBuilder} from 'test/unit/parser_builder';
@@ -218,7 +218,9 @@ class PresenterTransitionsTest extends AbstractLogViewerPresenterTest<UiData> {
           positionUpdate,
         );
         await presenter.onAppEvent(positionUpdate);
-        await wait(() => uiData !== undefined && !uiData.isFetchingData);
+        await new Timer().wait(
+          () => uiData !== undefined && !uiData.isFetchingData,
+        );
         expect(uiData?.entries).toEqual([]);
       });
     });

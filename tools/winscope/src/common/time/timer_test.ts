@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-import {sleepMs, wait} from './time_utils';
+import {Timer} from './timer';
 
-describe('time_utils', () => {
+describe('timer', () => {
   it('waits for condition', async () => {
     let success = false;
     setTimeout(() => {
       success = true;
     }, 200);
-    await expectAsync(wait(() => success, 1000)).toBeResolved();
+    await expectAsync(new Timer(1000).wait(() => success)).toBeResolved();
   });
 
   it('times out waiting for condition', async () => {
     let success = false;
-    const promise = sleepMs(200).then(() => {
+    const promise = new Timer(1000, 200).sleepMs().then(() => {
       success = true;
     });
-    await expectAsync(wait(() => success, 100, 50)).toBeRejected();
+    await expectAsync(new Timer(100, 50).wait(() => success)).toBeRejected();
     await promise;
   });
 
   it('checks condition based on interval', async () => {
     let success = false;
-    const promise = sleepMs(250).then(() => {
+    const promise = new Timer(1000, 250).sleepMs().then(() => {
       success = true;
     });
-    await expectAsync(wait(() => success, 500, 500)).toBeRejected();
+    await expectAsync(new Timer(500, 500).wait(() => success)).toBeRejected();
     await promise;
   });
 });

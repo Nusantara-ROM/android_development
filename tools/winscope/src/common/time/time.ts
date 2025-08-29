@@ -15,6 +15,11 @@
  */
 
 /**
+ * A type for a function that creates a timestamp.
+ */
+export type MakeTimestampStrategyType = (valueNs: bigint) => Timestamp;
+
+/**
  * A constant representing an invalid time in nanoseconds.
  */
 export const INVALID_TIME_NS = 0n;
@@ -209,9 +214,34 @@ export class Timestamp {
   format(type = TimestampFormatType.FULL): string {
     return this.formatter.format(this, type);
   }
-}
 
-/**
- * A type for a function that creates a timestamp.
- */
-export type MakeTimestampStrategyType = (valueNs: bigint) => Timestamp;
+  /**
+   * Returns the minimum of two timestamps.
+   *
+   * @param ts1 The first timestamp.
+   * @param ts2 The second timestamp.
+   * @return The minimum of the two timestamps.
+   */
+  static min(ts1: Timestamp, ts2: Timestamp): Timestamp {
+    if (ts2.getValueNs() < ts1.getValueNs()) {
+      return ts2;
+    }
+
+    return ts1;
+  }
+
+  /**
+   * Returns the maximum of two timestamps.
+   *
+   * @param ts1 The first timestamp.
+   * @param ts2 The second timestamp.
+   * @return The maximum of the two timestamps.
+   */
+  static max(ts1: Timestamp, ts2: Timestamp): Timestamp {
+    if (ts2.getValueNs() > ts1.getValueNs()) {
+      return ts2;
+    }
+
+    return ts1;
+  }
+}

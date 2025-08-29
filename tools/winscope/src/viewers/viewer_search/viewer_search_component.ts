@@ -51,7 +51,7 @@ import {SEARCH_VIEWS} from 'app/trace_search/trace_search_initializer';
 import {assertDefined} from 'common/assert_utils';
 import {TimeDuration} from 'common/time/time_duration';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
-import {sleepMs} from 'common/time/time_utils';
+import {Timer} from 'common/time/timer';
 import {Analytics} from 'logging/analytics';
 import {TraceType} from 'trace_api/trace_type';
 import {CollapsibleSectionType} from 'viewers/common/collapsible_section_type';
@@ -631,7 +631,7 @@ export class ViewerSearchComponent extends ViewerComponent<UiData> {
 
   onResultTabChange(event: MatTabChangeEvent) {
     this.checkScrollViewport = event.index;
-    sleepMs(50).then(() => (this.checkScrollViewport = -1));
+    new Timer(100, 50).sleepMs().then(() => (this.checkScrollViewport = -1));
   }
 
   trackResultTabByUid(i: number, j: CurrentSearch) {
