@@ -21,7 +21,7 @@ import {
 import {assertDefined} from 'common/assert_utils';
 import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {INVALID_TIME_NS, Timestamp} from 'common/time/time';
-import {extractDateFromHumanTimestamp} from 'common/time/timestamp_utils';
+import {UserTimestamp} from 'common/time/user_timestamp';
 import {
   CustomQueryParamTypeMap,
   CustomQueryParserResultTypeMap,
@@ -529,13 +529,13 @@ export class Trace<T> {
       if (!firstTs) {
         return false;
       }
-      const firstDate = extractDateFromHumanTimestamp(firstTs);
+      const firstDate = new UserTimestamp(firstTs).extractDate();
       if (firstDate) {
-        const lastDate = extractDateFromHumanTimestamp(
+        const lastDate = new UserTimestamp(
           this.getEntry(this.lengthEntries - 1)
             .getTimestamp()
             .format(),
-        );
+        ).extractDate();
         return firstDate !== lastDate;
       }
     }

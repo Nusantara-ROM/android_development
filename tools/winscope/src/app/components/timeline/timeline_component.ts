@@ -52,11 +52,6 @@ import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {PersistentStore} from 'common/store/persistent_store';
 import {parseBigIntStrippingUnit} from 'common/string_utils';
 import {TimeRange, Timestamp, TimestampFormatType} from 'common/time/time';
-import {
-  extractDateFromHumanTimestamp,
-  isNsFormat,
-  isRealTimeOnlyFormat,
-} from 'common/time/timestamp_utils';
 import {Analytics} from 'logging/analytics';
 import {
   ActiveTraceChanged,
@@ -78,6 +73,7 @@ import {Traces} from 'trace_api/traces';
 import {multlineTooltip} from 'viewers/components/styles/tooltip.styles';
 import {ExpandedTimelineComponent} from './expanded-timeline/expanded_timeline_component';
 import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
+import {UserTimestamp} from 'common/time/user_timestamp';
 
 /**
  * A component for displaying the timeline view.
@@ -873,15 +869,15 @@ export class TimelineComponent
       return;
     }
     const target = event.target as HTMLInputElement;
-    let input = target.value;
+    let input = new UserTimestamp(target.value);
     // if hh:mm:ss.zz format, append date of current timestamp
-    if (isRealTimeOnlyFormat(input)) {
+    if (input.isRealTimeOnlyFormat()) {
       const date = assertDefined(
-        extractDateFromHumanTimestamp(
+        new UserTimestamp(
           this.getCurrentTracePosition().timestamp.format(),
-        ),
+        ).extractDate(),
       );
-      input = date + 'T' + input;
+      input = new UserTimestamp(date + 'T' + input.timestampHuman);
     }
     const timelineData = assertDefined(this.timelineData);
     const timestamp = assertDefined(
@@ -1110,7 +1106,7 @@ export class TimelineComponent
   }
 
   private validateNsFormat(control: FormControl): ValidationErrors | null {
-    const valid = isNsFormat(control.value ?? '');
+    const valid = new UserTimestamp(control.value ?? '').isNsFormat();
     return !valid ? {invalidInput: control.value} : null;
   }
 
