@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {ArrayBufferBuilder} from 'common/buffer_utils';
+import {ArrayBufferBuilder} from 'common/buffer';
 import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {binaryEncode} from 'common/string_utils';
 import {

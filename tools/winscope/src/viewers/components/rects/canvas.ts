@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {equal} from 'common/array_utils';
+import {equal} from 'common/typed_array';
 import {assertDefined, assertUnreachable} from 'common/assert_utils';
 import {Box3D} from 'common/geometry/box3d';
 import {CornerRadii} from 'common/geometry/corner_radii';

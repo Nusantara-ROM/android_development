@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import {toIntLittleEndian, toUintLittleEndian} from 'common/array_utils';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {createFile, FileInfo, MP4ArrayBuffer, MP4File, Sample} from 'mp4box';
 
@@ -106,4 +105,55 @@ export function parseIntFromBuffer(
   const value = Number(toUintLittleEndian(videoData, pos, pos + 4));
   pos += 4;
   return [pos, value];
+}
+
+/**
+ * Converts an array of bytes to a bigint in little-endian order.
+ *
+ * @param buffer The array of bytes to convert.
+ * @param start The starting index of the bytes to convert.
+ * @param end The ending index of the bytes to convert.
+ * @return The bigint representation of the bytes in little-endian order.
+ */
+export function toUintLittleEndian(
+  buffer: Uint8Array,
+  start: number,
+  end: number,
+): bigint {
+  let result = 0n;
+  for (let i = end - 1; i >= start; --i) {
+    result *= 256n;
+    result += BigInt(buffer[i]);
+  }
+  return result;
+}
+
+/**
+ * Converts an array of bytes to a bigint in little-endian order, treating the
+ * bytes as a signed integer.
+ *
+ * @param buffer The array of bytes to convert.
+ * @param start The starting index of the bytes to convert.
+ * @param end The ending index of the bytes to convert.
+ * @return The bigint representation of the bytes in little-endian order,
+ *   treating the bytes as a signed integer.
+ */
+export function toIntLittleEndian(
+  buffer: Uint8Array,
+  start: number,
+  end: number,
+): bigint {
+  const numOfBits = BigInt(Math.max(0, 8 * (end - start)));
+  if (numOfBits <= 0n) {
+    return 0n;
+  }
+
+  let result = toUintLittleEndian(buffer, start, end);
+  const maxSignedValue = 2n ** (numOfBits - 1n) - 1n;
+  if (result > maxSignedValue) {
+    const valuesRange = 2n ** numOfBits;
+    result -= valuesRange;
+  }
+
+  return result;
 }

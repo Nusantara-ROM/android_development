@@ -34,7 +34,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {equal} from 'common/array_utils';
+import {equal} from 'common/typed_array';
 import {
   assertDefined,
   assertTrue,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as JSZip from 'jszip';
-import {equal} from './array_utils';
+import {equal} from './typed_array';
 import {DO_NOTHING, OnProgressUpdateType} from './function_utils';
 
 /**

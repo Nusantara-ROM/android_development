@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {ResizableBuffer} from 'common/buffer_utils';
+import {ResizableBuffer} from 'common/buffer';
 import {binaryEncode, utf8Decode} from 'common/string_utils';
 import {showPopupWindow} from 'common/window_utils';
 import {

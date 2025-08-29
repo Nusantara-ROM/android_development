@@ -17,7 +17,7 @@
 import {
   binarySearchFirstGreater,
   binarySearchFirstGreaterOrEqual,
-} from 'common/array_utils';
+} from 'common/typed_array';
 import {assertDefined} from 'common/assert_utils';
 import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {INVALID_TIME_NS, Timestamp} from 'common/time/time';
