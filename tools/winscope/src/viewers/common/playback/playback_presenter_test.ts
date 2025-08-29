@@ -17,7 +17,7 @@
 import {PlaybackPresenter} from './playback_presenter';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
 import {Trace} from 'trace_api/trace';
-import {TimestampConverterUtils} from 'common/time/time_test_helpers';
+import {makeElapsedTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
@@ -27,8 +27,8 @@ import {makeEmptyTrace} from 'test/unit/trace_utils';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 
 describe('PlaybackPresenter', () => {
-  const timestamp1 = TimestampConverterUtils.makeElapsedTimestamp(2n);
-  const timestamp2 = TimestampConverterUtils.makeElapsedTimestamp(3n);
+  const timestamp1 = makeElapsedTimestamp(2n);
+  const timestamp2 = makeElapsedTimestamp(3n);
 
   let trace: Trace<HierarchyTreeNode>;
   let presenter: PlaybackPresenter;
