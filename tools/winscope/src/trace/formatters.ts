@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {getTypeFlags} from 'common/geometry/transform_utils';
+import {getTypeFlags} from 'common/geometry/transform';
 import {Timestamp} from 'common/time/time';
 import {TimeDuration} from 'common/time/time_duration';
 import {

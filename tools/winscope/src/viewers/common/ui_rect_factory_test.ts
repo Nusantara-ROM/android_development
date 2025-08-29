@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {Transform} from 'common/geometry/transform_utils';
+import {Transform} from 'common/geometry/transform';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';

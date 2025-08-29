@@ -23,7 +23,7 @@ import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {
   getDefaultTransform,
   TransformTypeFlags,
-} from 'common/geometry/transform_utils';
+} from 'common/geometry/transform';
 import * as THREE from 'three';
 import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
 import {ViewerEvents} from 'viewers/common/viewer_events';

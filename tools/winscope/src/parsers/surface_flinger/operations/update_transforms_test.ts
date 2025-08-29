@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TransformTypeFlags} from 'common/geometry/transform_utils';
+import {TransformTypeFlags} from 'common/geometry/transform';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {
   makeCalculatedPropertyNode,

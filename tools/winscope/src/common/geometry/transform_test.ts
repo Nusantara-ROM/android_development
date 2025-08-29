@@ -20,7 +20,7 @@ import {
   isSimpleTransform,
   Transform,
   TransformTypeFlags,
-} from './transform_utils';
+} from './transform';
 
 describe('TransformUtils', () => {
   describe('getTypeFlags', () => {

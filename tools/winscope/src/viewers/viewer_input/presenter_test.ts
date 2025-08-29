@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {Transform} from 'common/geometry/transform_utils';
+import {Transform} from 'common/geometry/transform';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {wait} from 'common/time/time_utils';
 import {

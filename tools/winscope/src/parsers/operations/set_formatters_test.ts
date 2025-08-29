@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {TransformTypeFlags} from 'common/geometry/transform_utils';
+import {TransformTypeFlags} from 'common/geometry/transform';
 import root from 'protos/test/fake_proto/json';
 import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {makeElapsedTimestamp} from 'test/unit/time_test_helpers';
