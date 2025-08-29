@@ -111,7 +111,6 @@ import com.android.compose.animation.scene.demo.transitions.systemUiTransitions
 import com.android.compose.gesture.effect.rememberOffsetOverscrollEffectFactory
 import com.android.compose.modifiers.height
 import com.android.compose.modifiers.thenIf
-import com.android.compose.windowsizeclass.calculateWindowSizeClass
 import com.android.mechanics.behavior.VerticalExpandContainerSpec
 import com.android.mechanics.debug.DebugMotionValueVisualization
 import com.android.mechanics.debug.LocalMotionValueDebugController
