@@ -57,8 +57,9 @@ export enum WinscopeEventType {
   INITIALIZE_TRACE_SEARCH_REQUEST,
   TRACE_SEARCH_INITIALIZED,
   SHOW_TRACE_UPLOAD_WARNING,
-  PLAYBACK_START,
+  PLAYBACK_PLAY,
   PLAYBACK_PAUSE,
+  PLAYBACK_SPEED_CHANGE,
 }
 
 interface TypeMap {
@@ -93,8 +94,9 @@ interface TypeMap {
   [WinscopeEventType.TRACE_SEARCH_INITIALIZED]: TraceSearchInitialized;
   [WinscopeEventType.TRACE_SEARCH_COMPLETED]: TraceSearchCompleted;
   [WinscopeEventType.SHOW_TRACE_UPLOAD_WARNING]: ShowTraceUploadWarning;
-  [WinscopeEventType.PLAYBACK_START]: PlaybackStart;
+  [WinscopeEventType.PLAYBACK_PLAY]: PlaybackPlay;
   [WinscopeEventType.PLAYBACK_PAUSE]: PlaybackPause;
+  [WinscopeEventType.PLAYBACK_SPEED_CHANGE]: PlaybackSpeedChange;
 }
 
 /**
@@ -464,22 +466,34 @@ export class ShowTraceUploadWarning extends WinscopeEvent {
 }
 
 /**
- * An event for when playback should start.
+ * An event for when playback should start playing.
+ *
+ * @param traceType The type of the trace.
+ * @param currentTraceIndex Current position in the trace
+ * @param isReverse Whether the playback should play in reverse
  */
-export class PlaybackStart extends WinscopeEvent {
-  override readonly type = WinscopeEventType.PLAYBACK_START;
+export class PlaybackPlay extends WinscopeEvent {
+  override readonly type = WinscopeEventType.PLAYBACK_PLAY;
   readonly traceType: TraceType;
   readonly currentTraceIndex: number;
+  readonly isReverse: boolean;
 
-  constructor(traceType: TraceType, currentTraceIndex: number) {
+  constructor(
+    traceType: TraceType,
+    currentTraceIndex: number,
+    isReverse: boolean,
+  ) {
     super();
     this.traceType = traceType;
     this.currentTraceIndex = currentTraceIndex;
+    this.isReverse = isReverse;
   }
 }
 
 /**
  * An event for when playback should pause.
+ *
+ * @param traceType The type of the trace.
  */
 export class PlaybackPause extends WinscopeEvent {
   override readonly type = WinscopeEventType.PLAYBACK_PAUSE;
@@ -488,5 +502,23 @@ export class PlaybackPause extends WinscopeEvent {
   constructor(traceType: TraceType) {
     super();
     this.traceType = traceType;
+  }
+}
+
+/**
+ * An event for when playback's speed should change.
+ *
+ * @param traceType The type of the trace.
+ * @param speedValue The new speed value.
+ */
+export class PlaybackSpeedChange extends WinscopeEvent {
+  override readonly type = WinscopeEventType.PLAYBACK_SPEED_CHANGE;
+  readonly traceType: TraceType;
+  readonly speedValue: number;
+
+  constructor(traceType: TraceType, speedValue: number) {
+    super();
+    this.traceType = traceType;
+    this.speedValue = speedValue;
   }
 }

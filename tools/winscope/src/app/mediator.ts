@@ -384,7 +384,7 @@ export class Mediator {
       },
     );
 
-    await event.visit(WinscopeEventType.PLAYBACK_START, async (event) => {
+    await event.visit(WinscopeEventType.PLAYBACK_PLAY, async (event) => {
       const viewer = this.findViewerByType(event.traceType);
       if (viewer) {
         const visible = this.isViewerVisible(viewer);
@@ -407,6 +407,16 @@ export class Mediator {
         await viewer.onWinscopeEvent(event);
       }
     });
+
+    await event.visit(
+      WinscopeEventType.PLAYBACK_SPEED_CHANGE,
+      async (event) => {
+        const viewer = this.findViewerByType(event.traceType);
+        if (viewer) {
+          await viewer.onWinscopeEvent(event);
+        }
+      },
+    );
   }
 
   private async loadFiles(files: File[], source: FilesSource) {

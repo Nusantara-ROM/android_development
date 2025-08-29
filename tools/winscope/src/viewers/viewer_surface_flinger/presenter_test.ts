@@ -20,8 +20,9 @@ import {Store} from 'common/store/store';
 import {
   TabbedViewSwitchRequest,
   TracePositionUpdate,
-  PlaybackStart,
+  PlaybackPlay,
   PlaybackPause,
+  PlaybackSpeedChange,
 } from 'messaging/winscope_event';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
@@ -393,11 +394,8 @@ the default for its data type.`,
       });
 
       it('initializes playback when a PlaybackStart event is received', async () => {
-        const playbackPresenterSpy = spyOn(
-          PlaybackPresenter.prototype,
-          'start',
-        );
-        const event = new PlaybackStart(TraceType.SURFACE_FLINGER, 0);
+        const playbackPresenterSpy = spyOn(PlaybackPresenter.prototype, 'play');
+        const event = new PlaybackPlay(TraceType.SURFACE_FLINGER, 0, false);
         await presenter.onAppEvent(event);
         expect(playbackPresenterSpy).toHaveBeenCalled();
       });
@@ -408,6 +406,16 @@ the default for its data type.`,
           'pause',
         );
         const event = new PlaybackPause(TraceType.SURFACE_FLINGER);
+        await presenter.onAppEvent(event);
+        expect(playbackPresenterSpy).toHaveBeenCalled();
+      });
+
+      it('changes playback speed when a PlaybackSpeedChange event is received', async () => {
+        const playbackPresenterSpy = spyOn(
+          PlaybackPresenter.prototype,
+          'changeSpeed',
+        );
+        const event = new PlaybackSpeedChange(TraceType.SURFACE_FLINGER, 2);
         await presenter.onAppEvent(event);
         expect(playbackPresenterSpy).toHaveBeenCalled();
       });

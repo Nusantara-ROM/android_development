@@ -260,9 +260,13 @@ export abstract class AbstractHierarchyViewerPresenter<
         this.refreshUIData();
       },
     );
-    await event.visit(WinscopeEventType.PLAYBACK_START, async (event) => {
-      if (this.startPlayback && this.trace) {
-        await this.startPlayback(this.trace, event.currentTraceIndex);
+    await event.visit(WinscopeEventType.PLAYBACK_PLAY, async (event) => {
+      if (this.playPlayback && this.trace) {
+        await this.playPlayback(
+          this.trace,
+          event.currentTraceIndex,
+          event.isReverse,
+        );
       }
     });
     await event.visit(WinscopeEventType.PLAYBACK_PAUSE, async () => {
@@ -270,6 +274,14 @@ export abstract class AbstractHierarchyViewerPresenter<
         await this.pausePlayback();
       }
     });
+    await event.visit(
+      WinscopeEventType.PLAYBACK_SPEED_CHANGE,
+      async (event) => {
+        if (this.playbackPresenter && this.trace) {
+          this.playbackPresenter.changeSpeed(event.speedValue);
+        }
+      },
+    );
     await this.onViewerSpecificWinscopeEvent(event);
   }
 
@@ -520,9 +532,10 @@ export abstract class AbstractHierarchyViewerPresenter<
   ): string | undefined;
   protected abstract refreshUIData(): void;
   protected initializeIfNeeded?(event: TracePositionUpdate): Promise<void>;
-  protected startPlayback?(
+  protected playPlayback?(
     trace: Trace<HierarchyTreeNode>,
     currentPosition: number,
+    isReverse: boolean,
   ): Promise<void>;
   protected pausePlayback?(): Promise<void>;
   protected processDataAfterPositionUpdate?(

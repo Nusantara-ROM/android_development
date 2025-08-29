@@ -64,8 +64,9 @@ import {
   ViewersUnloaded,
   WinscopeEvent,
   WinscopeEventType,
-  PlaybackStart,
+  PlaybackPlay,
   PlaybackPause,
+  PlaybackSpeedChange,
 } from 'messaging/winscope_event';
 
 import {WinscopeEventEmitter} from 'messaging/winscope_event_emitter';
@@ -860,7 +861,7 @@ describe('Mediator', () => {
     });
 
     it('propagates to the visible viewer matching the trace type', async () => {
-      const event = new PlaybackStart(TraceType.SURFACE_FLINGER, 0);
+      const event = new PlaybackPlay(TraceType.SURFACE_FLINGER, 0, false);
       await mediator.onWinscopeEvent(event);
 
       expect(viewerStub0.onWinscopeEvent).toHaveBeenCalledOnceWith(event);
@@ -868,7 +869,7 @@ describe('Mediator', () => {
     });
 
     it('does not propagate if the matching viewer is not visible', async () => {
-      const event = new PlaybackStart(TraceType.WINDOW_MANAGER, 0);
+      const event = new PlaybackPlay(TraceType.WINDOW_MANAGER, 0, false);
       await mediator.onWinscopeEvent(event);
 
       expect(viewerStub0.onWinscopeEvent).not.toHaveBeenCalled();
@@ -876,7 +877,7 @@ describe('Mediator', () => {
     });
 
     it('does not propagate if no viewer matches the trace type', async () => {
-      const event = new PlaybackStart(TraceType.PROTO_LOG, 0);
+      const event = new PlaybackPlay(TraceType.PROTO_LOG, 0, false);
       await mediator.onWinscopeEvent(event);
 
       expect(viewerStub0.onWinscopeEvent).not.toHaveBeenCalled();
@@ -901,6 +902,30 @@ describe('Mediator', () => {
 
     it('does not propagate if no viewer matches the trace type', async () => {
       const event = new PlaybackPause(TraceType.PROTO_LOG);
+      await mediator.onWinscopeEvent(event);
+
+      expect(viewerStub0.onWinscopeEvent).not.toHaveBeenCalled();
+      expect(viewerStub1.onWinscopeEvent).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('PlaybackSpeedChange event handling', () => {
+    beforeEach(async () => {
+      await loadFiles();
+      await loadTraceView();
+      resetSpyCalls();
+    });
+
+    it('propagates to the viewer matching the trace type', async () => {
+      const event = new PlaybackSpeedChange(TraceType.SURFACE_FLINGER, 2);
+      await mediator.onWinscopeEvent(event);
+
+      expect(viewerStub0.onWinscopeEvent).toHaveBeenCalledOnceWith(event);
+      expect(viewerStub1.onWinscopeEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not propagate if no viewer matches the trace type', async () => {
+      const event = new PlaybackSpeedChange(TraceType.PROTO_LOG, 2);
       await mediator.onWinscopeEvent(event);
 
       expect(viewerStub0.onWinscopeEvent).not.toHaveBeenCalled();

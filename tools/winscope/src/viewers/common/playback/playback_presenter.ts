@@ -30,6 +30,7 @@ export class PlaybackPresenter {
     TraceEntryEager<HierarchyTreeNode, HierarchyTreeNode | undefined>
   > = [];
   private emitWinscopeEvent: EmitEvent;
+  private isReverse: boolean = false;
 
   constructor(emitWinscopeEvent: EmitEvent) {
     this.emitWinscopeEvent = emitWinscopeEvent;
@@ -39,11 +40,27 @@ export class PlaybackPresenter {
     return !this.paused;
   }
 
-  async start(trace: Trace<HierarchyTreeNode>, currentPosition: number) {
+  async play(
+    trace: Trace<HierarchyTreeNode>,
+    currentPosition: number,
+    isReverse: boolean,
+  ) {
     this.paused = false;
     await this.buildBuffer(trace);
     this.entryIndex = currentPosition;
-    this.runPlaybackLoop();
+    this.isReverse = isReverse;
+    if (this.isReverse && this.entryIndex === 0) {
+      // if the user's cursor position is at 0 and they want to reverse play through the trace
+      // change the index to the end of trace
+      this.entryIndex = this.buffer.length - 1;
+    }
+    if (this.buffer.length > 0 && this.entryIndex < this.buffer.length) {
+      this.runPlaybackLoop();
+    }
+  }
+
+  async changeSpeed(speedValue: number) {
+    this.entryStepSize = speedValue;
   }
 
   async pause() {
@@ -51,18 +68,45 @@ export class PlaybackPresenter {
   }
 
   private async runPlaybackLoop() {
-    while (this.entryIndex < this.buffer.length && !this.paused) {
+    const lastIndex = this.buffer.length - 1;
+
+    let nextIndex;
+    let reachedEndOfTrace = false;
+
+    while (!this.paused) {
+      const currentIndex = this.entryIndex;
       await this.emitWinscopeEvent(
         new TracePositionUpdate(
-          TracePosition.fromTraceEntry(this.buffer[this.entryIndex]),
+          TracePosition.fromTraceEntry(this.buffer[currentIndex]),
           true,
         ),
       );
       // we debounce the trace position updates to allow time for UI to render
       await new Timer(10, 10).sleepMs();
-      this.entryIndex += this.entryStepSize;
+
+      if (this.isReverse) {
+        nextIndex = currentIndex - this.entryStepSize;
+        if (nextIndex < 0) {
+          reachedEndOfTrace = true;
+          this.entryIndex = 0;
+        } else {
+          this.entryIndex = nextIndex;
+        }
+      } else {
+        nextIndex = currentIndex + this.entryStepSize;
+        if (nextIndex > lastIndex) {
+          reachedEndOfTrace = true;
+          this.entryIndex = lastIndex;
+        } else {
+          this.entryIndex = nextIndex;
+        }
+      }
+
+      if (reachedEndOfTrace && this.entryIndex === currentIndex) {
+        break;
+      }
     }
-    this.paused = true;
+    this.pause();
   }
 
   private async buildBuffer(trace: Trace<HierarchyTreeNode>) {

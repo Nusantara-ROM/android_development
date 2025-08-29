@@ -258,12 +258,13 @@ the default for its data type.`,
     await this.setInitialWmActiveDisplay(event);
   }
 
-  protected override async startPlayback(
+  protected override async playPlayback(
     trace: Trace<HierarchyTreeNode>,
     currentPosition: number,
+    isReverse: boolean,
   ) {
     this.hierarchyPresenter.setShowDiffAvailability(false);
-    this.playbackPresenter.start(trace, currentPosition);
+    this.playbackPresenter.play(trace, currentPosition, isReverse);
   }
 
   protected override async pausePlayback(): Promise<void> {
