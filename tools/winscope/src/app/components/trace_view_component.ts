@@ -109,7 +109,7 @@ interface Tab {
                 [style]="{color: getTabIconColor(tab), marginRight: '0.5rem'}">
                   {{ getTabIcon(tab) }}
               </mat-icon>
-              <span>
+              <span class="tab-title">
                 {{ getTitle(tab.view) }}
               </span>
             </a>

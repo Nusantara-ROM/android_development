@@ -33,7 +33,7 @@ describe('Viewer Screenshot', () => {
   it('processes file and renders view', async () => {
     await uploadFixture('traces/screenshot/screenshot.png');
     await closeSnackBar();
-    await clickViewTracesButton();
+    await clickViewTracesButton(false);
 
     const viewer = element(by.css(viewerSelector));
     expect(await viewer.isPresent()).toBeTruthy();
@@ -49,7 +49,7 @@ describe('Viewer Screenshot', () => {
       'traces/screenshot/screenshot_2.png',
     );
     await closeSnackBar();
-    await clickViewTracesButton();
+    await clickViewTracesButton(false);
 
     const viewer = element(by.css(viewerSelector));
     expect(await viewer.isPresent()).toBeTruthy();

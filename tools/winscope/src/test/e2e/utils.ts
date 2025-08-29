@@ -64,17 +64,17 @@ export async function loadBugReport(defaulttimeMs: number) {
 export async function areMessagesEmitted(
   defaultTimeoutMs: number,
 ): Promise<boolean> {
-  // Messages are emitted quickly. There is no Need to wait for the entire
-  // default timeout to understand whether the messages where emitted or not.
+  const snackBar = element(by.css('snack-bar'));
   await browser.manage().timeouts().implicitlyWait(1000);
-  const emitted = await element(by.css('snack-bar')).isPresent();
+  const isPresent = await snackBar.isPresent();
   await browser.manage().timeouts().implicitlyWait(defaultTimeoutMs);
-  return emitted;
+  return isPresent;
 }
 
-export async function clickViewTracesButton() {
+export async function clickViewTracesButton(forceKeepLegacy = true) {
   const discardTracesBox = element(by.css('.discard-legacy-traces'));
   if (
+    forceKeepLegacy &&
     (await discardTracesBox.isPresent()) &&
     (await discardTracesBox.isEnabled())
   ) {
@@ -105,7 +105,7 @@ export async function clickUploadNewButton() {
 }
 
 export async function closeSnackBar() {
-  const closeButton = element(by.css('.snack-bar-action'));
+  const closeButton = element(by.css('.snack-bar-actions .close-button'));
   const isPresent = await closeButton.isPresent();
   if (isPresent) {
     await closeButton.click();
@@ -256,9 +256,7 @@ export async function checkItemInPropertiesTree(
 
 export async function checkRectLabel(viewer: string, expectedLabel: string) {
   const labels = await element.all(by.css(`${viewer} rects-view .rect-label`));
-
   let foundLabel: ElementFinder | undefined;
-
   for (const label of labels) {
     const text = await label.getText();
     if (text.includes(expectedLabel)) {
@@ -266,7 +264,6 @@ export async function checkRectLabel(viewer: string, expectedLabel: string) {
       break;
     }
   }
-
   expect(foundLabel).toBeTruthy();
 }
 
@@ -329,6 +326,9 @@ export async function checkSelectFilter(
 
 export async function uploadFixture(...paths: string[]) {
   const inputFile = element(by.css('input[type="file"]'));
+
+  // Clear any previously uploaded files
+  await browser.executeScript('arguments[0].value = ""', inputFile);
 
   // Uploading multiple files is not properly supported but
   // chrome handles file paths joined with new lines
@@ -400,7 +400,7 @@ async function toggleSelectFilterOptions(
     ),
   ).click();
   const optionElements: ElementFinder[] = await element.all(
-    by.css('.mat-select-panel .option'),
+    by.css('.mat-mdc-select-panel .option'),
   );
   for (const optionEl of optionElements) {
     const optionText = (await optionEl.getText()).trim();
