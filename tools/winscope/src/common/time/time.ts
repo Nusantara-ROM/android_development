@@ -62,7 +62,7 @@ export class TimeRange {
 /**
  * An interface for timezone information.
  */
-export interface TimezoneInfo {
+export declare interface TimezoneInfo {
   timezone: string;
   locale: string;
 }
@@ -70,7 +70,7 @@ export interface TimezoneInfo {
 /**
  * An interface for a timestamp formatter.
  */
-export interface TimestampFormatter {
+export declare interface TimestampFormatter {
   /**
    * Formats a timestamp.
    *

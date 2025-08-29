@@ -17,7 +17,7 @@
 /**
  * An interface for a warning.
  */
-export interface Warning {
+export declare interface Warning {
   /**
    * Gets the warning message.
    *

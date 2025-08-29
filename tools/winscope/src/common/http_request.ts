@@ -34,7 +34,7 @@ export enum HttpRequestStatus {
 /**
  * Response from an HTTP request.
  */
-export interface HttpResponse {
+export declare interface HttpResponse {
   status: HttpRequestStatus;
   type: XMLHttpRequestResponseType;
   text: string;

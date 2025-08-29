@@ -758,7 +758,7 @@ export class RectsComponent implements OnInit, OnDestroy {
 
   onMouseMove(event: MouseEvent) {
     this.panning = true;
-    const distance = new Distance(event.movementX, event.movementY);
+    const distance: Distance = {dx: event.movementX, dy: event.movementY};
     this.largeRectsMapper3d.addPanScreenDistance(distance);
     this.updateLargeRectsPosition();
   }

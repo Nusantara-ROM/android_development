@@ -18,7 +18,6 @@ import {equal} from 'common/array_utils';
 import {assertDefined} from 'common/assert_utils';
 import {Box3D} from 'common/geometry/box3d';
 import {CornerRadii} from 'common/geometry/corner_radii';
-import {Distance} from 'common/geometry/distance';
 import {Point3D} from 'common/geometry/point3d';
 import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {
@@ -78,7 +77,7 @@ describe('Canvas', () => {
     });
 
     it('changes camera lrtb and maintains scene translated position based on canvas aspect ratio', () => {
-      camera.panScreenDistance = new Distance(2, 2);
+      camera.panScreenDistance = {dx: 2, dy: 2};
 
       canvas.updateViewPosition(camera, boundingBox, boundingBox.depth);
       const [l, r, t, b] = [
@@ -114,7 +113,7 @@ describe('Canvas', () => {
       const prevPosition = graphicsScene.position.clone();
       const prevScale = graphicsScene.scale.clone();
 
-      camera.panScreenDistance = new Distance(2, 2);
+      camera.panScreenDistance = {dx: 2, dy: 2};
       canvas.updateViewPosition(camera, boundingBox, boundingBox.depth);
 
       expect(graphicsScene.position.x).toBeGreaterThan(prevPosition.x);
@@ -1067,7 +1066,7 @@ describe('Canvas', () => {
       rotationAngleX: 0,
       rotationAngleY: 0,
       zoomFactor: 1,
-      panScreenDistance: new Distance(0, 0),
+      panScreenDistance: {dx: 0, dy: 0},
     };
   }
 
