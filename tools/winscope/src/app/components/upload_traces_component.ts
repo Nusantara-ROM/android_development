@@ -63,71 +63,74 @@ import {LoadProgressComponent} from './load_progress_component';
     <mat-card class="upload-card">
       <mat-card-header class="card-header">
         <mat-card-title class="title">Upload Traces</mat-card-title>
-        <div
-          *ngIf="!isLoadingFiles && tracePipeline.getTraces().getSize() > 0"
-          class="trace-actions-container">
-          <div class="trace-action-buttons trace-action-buttons-top">
-            <button
-              class="clear-all-btn"
-              color="primary"
-              mat-stroked-button
-              [disabled]="viewersLoading"
-              (click)="onClearButtonClick()">
-              Clear all
-            </button>
+        @if (!isLoadingFiles && tracePipeline.getTraces().getSize() > 0) {
+          <div
+            class="trace-actions-container">
+            <div class="trace-action-buttons trace-action-buttons-top">
+              <button
+                class="clear-all-btn"
+                color="primary"
+                mat-stroked-button
+                [disabled]="viewersLoading"
+                (click)="onClearButtonClick()">
+                Clear all
+              </button>
 
-            <button
-              class="download-btn"
-              color="primary"
-              mat-stroked-button
-              (click)="downloadTracesClick.emit()">Download all</button>
+              <button
+                class="download-btn"
+                color="primary"
+                mat-stroked-button
+                (click)="downloadTracesClick.emit()">Download all</button>
 
-            <button
-              class="upload-btn"
-              color="primary"
-              mat-stroked-button
-              for="fileDropRef"
-              [disabled]="viewersLoading"
-              (click)="fileDropRef.click()">
-              Upload another file
-            </button>
+              <button
+                class="upload-btn"
+                color="primary"
+                mat-stroked-button
+                for="fileDropRef"
+                [disabled]="viewersLoading"
+                (click)="fileDropRef.click()">
+                Upload another file
+              </button>
+            </div>
+            <div class="trace-action-buttons trace-action-buttons-bottom">
+              <button
+                color="primary"
+                mat-raised-button
+                class="load-btn"
+                matTooltip="Upload trace with an associated viewer to visualize"
+                [matTooltipDisabled]="hasLoadedFilesWithViewers()"
+                [disabled]="isViewTracesButtonDisabled()"
+                (click)="onViewTracesButtonClick()">
+                View traces
+              </button>
+              <mat-checkbox
+                class="discard-legacy-traces wrapped-checkbox"
+                color="primary"
+                [checked]="!isDiscardLegacyTracesBoxDisabled() && discardLegacyTraces"
+                [disabled]="isDiscardLegacyTracesBoxDisabled()"
+                matTooltip="Discard legacy traces instead of converting to Perfetto to reduce loading time"
+                (change)="updateDiscardLegacyTraces()">
+                Discard legacy traces
+              </mat-checkbox>
+            </div>
           </div>
-          <div class="trace-action-buttons trace-action-buttons-bottom">
-            <button\t
-              color="primary"
-              mat-raised-button
-              class="load-btn"
-              matTooltip="Upload trace with an associated viewer to visualize"
-              [matTooltipDisabled]="hasLoadedFilesWithViewers()"
-              [disabled]="isViewTracesButtonDisabled()"
-              (click)="onViewTracesButtonClick()">
-              View traces
-            </button>
-            <mat-checkbox
-              class="discard-legacy-traces wrapped-checkbox"
-              color="primary"
-              [checked]="!isDiscardLegacyTracesBoxDisabled() && discardLegacyTraces"
-              [disabled]="isDiscardLegacyTracesBoxDisabled()"
-              matTooltip="Discard legacy traces instead of converting to Perfetto to reduce loading time"
-              (change)="updateDiscardLegacyTraces()">
-              Discard legacy traces
-            </mat-checkbox>
-          </div>
-        </div>
+        }
       </mat-card-header>
 
-      <div *ngFor="let message of warningMessages; let i = index" class="warning-banner">
-        <div class="warning-content">
-          <mat-icon class="warning-icon">warning</mat-icon>
-          <span class="warn-message mat-body-1">{{ message }}</span>
+      @for (message of warningMessages; track message; let i = $index) {
+        <div class="warning-banner">
+          <div class="warning-content">
+            <mat-icon class="warning-icon">warning</mat-icon>
+            <span class="warn-message mat-body-1">{{ message }}</span>
+          </div>
+           <button
+              mat-icon-button
+              (click)="clearWarning(i)"
+              [attr.aria-label]="'Dismiss warning: ' + message">
+              <mat-icon>close</mat-icon>
+          </button>
         </div>
-         <button
-            mat-icon-button
-            (click)="clearWarning(i)"
-            [attr.aria-label]="'Dismiss warning: ' + message">
-            <mat-icon>close</mat-icon>
-        </button>
-      </div>
+      }
 
       <mat-card-content class="upload-card-content">
         <div
@@ -146,59 +149,66 @@ import {LoadProgressComponent} from './load_progress_component';
             #fileDropRef
             (change)="onInputFiles($event)" />
 
-          <load-progress
-            *ngIf="isLoadingFiles"
-            [progressPercentage]="progressPercentage"
-            [message]="progressMessage">
-          </load-progress>
+          @if (isLoadingFiles) {
+            <load-progress
+              [progressPercentage]="progressPercentage"
+              [message]="progressMessage">
+            </load-progress>
+          }
 
-          <mat-list
-            *ngIf="!isLoadingFiles && tracePipeline.getTraces().getSize() > 0"
-            class="uploaded-files">
-            <mat-list-item
-              [class.no-visualization]="!canVisualizeTrace(trace)"
-              [class.trace-error]="trace.isCorrupted()"
-              *ngFor="let trace of tracePipeline.getTraces()">
-              <mat-icon
-                matListItemIcon
-                [style.color]="TRACE_INFO[trace.type].color">
-                {{ TRACE_INFO[trace.type].icon }}
-              </mat-icon>
+          @if (!isLoadingFiles && tracePipeline.getTraces().getSize() > 0) {
+            <mat-list
+              class="uploaded-files">
+              @for (trace of tracePipeline.getTraces(); track trace) {
+                <mat-list-item
+                  [class.no-visualization]="!canVisualizeTrace(trace)"
+                  [class.trace-error]="trace.isCorrupted()">
+                  <mat-icon
+                    matListItemIcon
+                    [style.color]="TRACE_INFO[trace.type].color">
+                    {{ TRACE_INFO[trace.type].icon }}
+                  </mat-icon>
 
-              <p matListItemTitle>{{ TRACE_INFO[trace.type].name }}</p>
-              <p
-                matListItemLine
-                *ngFor="let descriptor of trace.getDescriptors(); index as i"
-                [style.margin-bottom]="i < trace.getDescriptors().length - 1 ? '0' : undefined">{{ descriptor }}</p>
+                  <p matListItemTitle>{{ TRACE_INFO[trace.type].name }}</p>
+                  @for (descriptor of trace.getDescriptors(); track $index; let i = $index) {
+                    <p
+                      matListItemLine
+                      [style.margin-bottom]="i < trace.getDescriptors().length - 1 ? '0' : undefined">{{ descriptor }}</p>
+                  }
 
-              <div matListItemMeta [style.margin-top]="'9px'">
-                <mat-icon
-                  class="warning-icon"
-                  *ngIf="!canVisualizeTrace(trace)"
-                  [matTooltip]="cannotVisualizeTraceTooltip(trace)">warning</mat-icon>
-                <mat-icon
-                  class="error-icon"
-                  *ngIf="trace.isCorrupted()"
-                  [matTooltip]="traceErrorTooltip(trace)">error</mat-icon>
-                <button
-                  class="clear-icon"
-                  mat-icon-button
-                  (click)="onRemoveTrace($event, trace)"
-                  [disabled]="viewersLoading">
-                  <mat-icon>close</mat-icon>
-                </button>
-              </div>
-            </mat-list-item>
-          </mat-list>
+                  <div matListItemMeta [style.margin-top]="'9px'">
+                    @if (!canVisualizeTrace(trace)) {
+                      <mat-icon
+                        class="warning-icon"
+                        [matTooltip]="cannotVisualizeTraceTooltip(trace)">warning</mat-icon>
+                    }
+                    @if (trace.isCorrupted()) {
+                      <mat-icon
+                        class="error-icon"
+                        [matTooltip]="traceErrorTooltip(trace)">error</mat-icon>
+                    }
+                    <button
+                      class="clear-icon"
+                      mat-icon-button
+                      (click)="onRemoveTrace($event, trace)"
+                      [disabled]="viewersLoading">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                </mat-list-item>
+              }
+            </mat-list>
+          }
 
-          <div
-            *ngIf="!isLoadingFiles && tracePipeline.getTraces().getSize() === 0"
-            class="drop-info">
-            <p class="icon">
-              <mat-icon inline fontIcon="upload"></mat-icon>
-            </p>
-            <p class="drop-info-text mat-subtitle-2">Drag your Winscope file(s) or click to upload</p>
-          </div>
+          @if (!isLoadingFiles && tracePipeline.getTraces().getSize() === 0) {
+            <div
+              class="drop-info">
+              <p class="icon">
+                <mat-icon inline fontIcon="upload"></mat-icon>
+              </p>
+              <p class="drop-info-text mat-subtitle-2">Drag your Winscope file(s) or click to upload</p>
+            </div>
+          }
         </div>
       </mat-card-content>
     </mat-card>

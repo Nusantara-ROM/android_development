@@ -35,19 +35,21 @@ import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 
       <div class="warning-actions">
         <div class="warning-action-boxes">
-          <mat-checkbox
-            *ngFor="let option of data.options; let i = index"
-            color="primary"
-            [checked]="selectedOptions.includes(option)"
-            (change)="updateSelectedOptions(option)">{{ option }}</mat-checkbox>
+          @for (option of data.options; track option; let i = $index) {
+            <mat-checkbox
+              color="primary"
+              [checked]="selectedOptions.includes(option)"
+              (change)="updateSelectedOptions(option)">{{ option }}</mat-checkbox>
+          }
         </div>
         <div class="warning-action-buttons">
-          <button
-            *ngFor="let action of data.actions"
-            [mat-dialog-close]="getDialogResult(action)"
-            class="not-last"
-            color="primary"
-            mat-stroked-button> {{ action }} </button>
+          @for (action of data.actions; track action) {
+            <button
+              [mat-dialog-close]="getDialogResult(action)"
+              class="not-last"
+              color="primary"
+              mat-stroked-button> {{ action }} </button>
+          }
           <button
             [mat-dialog-close]="getDialogResult(data.closeText)"
             color="primary"
