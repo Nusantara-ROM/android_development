@@ -376,15 +376,17 @@ describe('TraceViewComponent', () => {
     imports: [TraceViewComponent, CommonModule],
     selector: 'host-component',
     template: `
-      <trace-view
-        *ngIf="!showSecondComponent"
-        [viewers]="viewers"
-        [store]="store"></trace-view>
+      @if (!showSecondComponent) {
+        <trace-view
+          [viewers]="viewers"
+          [store]="store"></trace-view>
+      }
 
-      <trace-view
-        *ngIf="showSecondComponent"
-        [viewers]="viewers"
-        [store]="store"></trace-view>
+      @if (showSecondComponent) {
+        <trace-view
+          [viewers]="viewers"
+          [store]="store"></trace-view>
+      }
     `,
   })
   class TestHostComponent {

@@ -941,13 +941,15 @@ describe('CollectTracesComponent', () => {
     imports: [CollectTracesComponent, CommonModule],
     selector: 'host-component',
     template: `
-      <collect-traces
-        *ngIf="showFirstComponent"
-        [storage]="storage"></collect-traces>
+      @if (showFirstComponent) {
+        <collect-traces
+          [storage]="storage"></collect-traces>
+      }
 
-      <collect-traces
-        *ngIf="showSecondComponent"
-        [storage]="storage"></collect-traces>
+      @if (showSecondComponent) {
+        <collect-traces
+          [storage]="storage"></collect-traces>
+      }
     `,
   })
   class TestHostComponent {
