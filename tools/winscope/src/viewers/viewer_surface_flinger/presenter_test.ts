@@ -20,6 +20,8 @@ import {Store} from 'common/store/store';
 import {
   TabbedViewSwitchRequest,
   TracePositionUpdate,
+  PlaybackStart,
+  PlaybackPause,
 } from 'messaging/winscope_event';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
@@ -46,6 +48,7 @@ import {ViewerEvents} from 'viewers/common/viewer_events';
 import {TraceRectType} from 'viewers/components/rects/rect_spec';
 import {Presenter} from './presenter';
 import {UiData} from './ui_data';
+import {PlaybackPresenter} from 'viewers/common/playback/playback_presenter';
 
 class PresenterSurfaceFlingerTest extends AbstractHierarchyViewerPresenterTest<UiData> {
   private traceSf: Trace<HierarchyTreeNode> | undefined;
@@ -389,6 +392,26 @@ the default for its data type.`,
         expect(spy).toHaveBeenCalledOnceWith(TraceRectType.LAYERS);
       });
 
+      it('initializes playback when a PlaybackStart event is received', async () => {
+        const playbackPresenterSpy = spyOn(
+          PlaybackPresenter.prototype,
+          'start',
+        );
+        const event = new PlaybackStart(TraceType.SURFACE_FLINGER, 0);
+        await presenter.onAppEvent(event);
+        expect(playbackPresenterSpy).toHaveBeenCalled();
+      });
+
+      it('pauses playback when a PlaybackPause event is received', async () => {
+        const playbackPresenterSpy = spyOn(
+          PlaybackPresenter.prototype,
+          'pause',
+        );
+        const event = new PlaybackPause(TraceType.SURFACE_FLINGER);
+        await presenter.onAppEvent(event);
+        expect(playbackPresenterSpy).toHaveBeenCalled();
+      });
+
       it('handles displays with no visible layers', async () => {
         await presenter?.onAppEvent(assertDefined(this.positionUpdate));
         expect(uiData?.displays?.length).toBe(5);
@@ -569,6 +592,40 @@ the default for its data type.`,
           '1970-01-01, 00:00:00.000',
         );
         expect(uiData.curatedProperties).toBeUndefined();
+      });
+
+      it('sets showDiff button as unavailable during playback', async () => {
+        await presenter.onAppEvent(this.getPositionUpdate());
+        const selectedId = this.getSelectedTreeAfterPositionUpdate().id;
+        await presenter.onHighlightedIdChange(selectedId);
+
+        const playbackPresenter = PlaybackPresenter.prototype;
+        expect(playbackPresenter).toBeDefined();
+
+        const isPlayingSpy = spyOn(playbackPresenter, 'isPlaying');
+        isPlayingSpy.and.returnValue(true);
+
+        expect(
+          uiData.propertiesUserOptions?.['showDiff']?.isUnavailable,
+        ).toBeTrue();
+      });
+
+      it("doesn't update properties tree on position update if playback is playing", async () => {
+        await presenter.onAppEvent(this.getPositionUpdate());
+        const selectedId = this.getSelectedTreeAfterPositionUpdate().id;
+        await presenter.onHighlightedIdChange(selectedId);
+        expect(uiData.propertiesTree).toBeDefined();
+        const propsTreeBeforePlayback = uiData.propertiesTree;
+
+        const playbackPresenter = PlaybackPresenter.prototype;
+        expect(playbackPresenter).toBeDefined();
+
+        const isPlayingSpy = spyOn(playbackPresenter, 'isPlaying');
+
+        isPlayingSpy.and.returnValue(true);
+
+        await presenter.onAppEvent(this.getSecondPositionUpdate());
+        expect(uiData.propertiesTree).toEqual(propsTreeBeforePlayback);
       });
 
       it('sets properties tree but no curated properties for recursive root node', async () => {

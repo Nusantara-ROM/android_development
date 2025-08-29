@@ -43,6 +43,7 @@ import {PresetHierarchy, TextFilterValues} from './preset_hierarchy';
 import {RectShowState} from './rect_show_state';
 import {UiDataHierarchy} from './ui_data_hierarchy';
 import {ViewerEvents} from './viewer_events';
+import {PlaybackPresenter} from './playback/playback_presenter';
 
 export type NotifyHierarchyViewCallbackType<UiData> = (uiData: UiData) => void;
 
@@ -52,6 +53,7 @@ export abstract class AbstractHierarchyViewerPresenter<
   protected emitWinscopeEvent: EmitEvent = DO_NOTHING_ASYNC;
   protected overridePropertiesTree: PropertyTreeNode | undefined;
   protected overridePropertiesTreeName: string | undefined;
+  protected playbackPresenter?: PlaybackPresenter;
   protected rectsPresenter?: RectsPresenter;
   protected abstract hierarchyPresenter: HierarchyPresenter;
   protected abstract propertiesPresenter: PropertiesPresenter;
@@ -258,6 +260,16 @@ export abstract class AbstractHierarchyViewerPresenter<
         this.refreshUIData();
       },
     );
+    await event.visit(WinscopeEventType.PLAYBACK_START, async (event) => {
+      if (this.startPlayback && this.trace) {
+        await this.startPlayback(this.trace, event.currentTraceIndex);
+      }
+    });
+    await event.visit(WinscopeEventType.PLAYBACK_PAUSE, async () => {
+      if (this.pausePlayback && this.trace) {
+        await this.pausePlayback();
+      }
+    });
     await this.onViewerSpecificWinscopeEvent(event);
   }
 
@@ -374,7 +386,9 @@ export abstract class AbstractHierarchyViewerPresenter<
     this.rectsPresenter?.applyHierarchyTreesChange(currentHierarchyTrees ?? []);
     this.logFetchComponentData(rectStartTime, 'rects');
 
-    await this.updatePropertiesTree();
+    if (!this.playbackPresenter || !this.playbackPresenter.isPlaying()) {
+      await this.updatePropertiesTree();
+    }
   }
 
   protected async applyHighlightedNodeChange(node: UiHierarchyTreeNode) {
@@ -506,6 +520,11 @@ export abstract class AbstractHierarchyViewerPresenter<
   ): string | undefined;
   protected abstract refreshUIData(): void;
   protected initializeIfNeeded?(event: TracePositionUpdate): Promise<void>;
+  protected startPlayback?(
+    trace: Trace<HierarchyTreeNode>,
+    currentPosition: number,
+  ): Promise<void>;
+  protected pausePlayback?(): Promise<void>;
   protected processDataAfterPositionUpdate?(
     event: TracePositionUpdate,
   ): Promise<void>;
