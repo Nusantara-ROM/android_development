@@ -508,7 +508,7 @@ describe('AppComponent', () => {
       dom.findAndClick('.iframe-settings');
       expect(postMessageSpy).toHaveBeenCalledOnceWith(
         {winscopeAction: 'openSettings'},
-        {targetOrigin: parentOrigin},
+        parentOrigin,
       );
     });
   });
