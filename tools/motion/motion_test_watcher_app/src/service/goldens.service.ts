@@ -19,7 +19,7 @@ import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map, tap } from 'rxjs/operators';
 
-import { MotionGolden, MotionGoldenData, PresubmitTest } from '../model/golden';
+import { GerritLinkPair, MotionGolden, MotionGoldenData, PresubmitTest } from '../model/golden';
 import { RecordedMotion } from '../model/recorded-motion';
 import { Timeline } from '../model/timeline';
 import { VideoSource } from '../model/video-source';
@@ -205,6 +205,21 @@ export class GoldensService {
         tap((x) => console.log(`Got response as ${x.toString()}`)),
         catchError(this.handleError<string[]>('e'))
       );
+  }
+
+  getMultipleJsonsFromGerritLinks(linkPairs : GerritLinkPair[]) : Observable<MotionGolden[]> {
+    return this.http.post<MotionGolden[]>(`${this.serverRoot}/getMultipleGoldensFromGerrit`,
+      { linkPairs },
+      {
+      headers: {
+            ...this.defaultHeaders,
+            'Content-Type': 'application/json',
+          },
+      }
+    ).pipe(
+      tap((x) => console.log(`Got response as ${x}`)),
+      catchError(this.handleError<MotionGolden[]>('e'))
+    )
   }
 
   getGerritData(leftLink: string, rightLink: string) {

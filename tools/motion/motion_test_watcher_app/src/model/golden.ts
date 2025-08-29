@@ -75,3 +75,8 @@ export function isNotFound(dataPoint: DataPoint) {
     dataPoint.type === 'not_found'
   );
 }
+
+export interface GerritLinkPair {
+  linkLeft: string;
+  linkRight: string;
+};

@@ -5,7 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { TestListComponent } from '../test-list/test-list.component';
 import { PreviewComponent } from '../preview/preview.component';
 import { TimelineComponent } from '../timeline/timeline.component';
-import { MotionGolden, PresubmitTest } from '../model/golden';
+import { GerritLinkPair, MotionGolden, PresubmitTest } from '../model/golden';
 import { finalize, Subscription } from 'rxjs';
 import { NgFor } from '@angular/common';
 import { JsonPipe, NgIf, NgStyle } from '@angular/common';
@@ -223,6 +223,7 @@ export class AppComponent implements DoCheck, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.addGerritMainChangelistDataListener();
     const searchParams = new URLSearchParams(window.location.search);
     const leftLink = searchParams.get('leftLink') ?? ""
     const rightLink = searchParams.get('rightLink') ?? ""
@@ -251,6 +252,35 @@ export class AppComponent implements DoCheck, OnInit, OnDestroy {
       }
       console.log(this.testModes)
     })
+  }
+
+  private addGerritMainChangelistDataListener() {
+    window.addEventListener("message", (event) => {
+      if (event.origin !== window.location.origin) {
+        return;
+      }
+
+      if (event.data && event.data.type === "FROM_CONTENT_SCRIPT") {
+        console.log("Received dat via postMessage from gerrit extension content script:", event.data);
+
+        const linkPairs: GerritLinkPair[] = event.data.payload as GerritLinkPair[];
+        this.fetchMultipleJsonsFromGerrit(linkPairs);
+
+      }
+    });
+  }
+
+  fetchMultipleJsonsFromGerrit(linkPairs :GerritLinkPair[]) {
+    this.testMode = TestModes.GERRIT
+    this.goldens = []
+    this.showLoaderBar()
+    this.goldenService.getMultipleJsonsFromGerritLinks(linkPairs)
+    .pipe(finalize(() => this.hideLoaderBar()))
+    .subscribe((goldens) => {
+        this.goldens = goldens as MotionGolden[]
+      })
+    this.testModes.push(TestModes.GERRIT)
+
   }
 
   fetchGerritData(leftLink: string, rightLink: string) {
