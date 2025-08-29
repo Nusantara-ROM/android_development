@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {ChangeDetectorRef, Component, Inject} from '@angular/core';
 import {assertDefined, assertUnreachable} from 'common/assert_utils';
 import {DO_NOTHING} from 'common/function_utils';
@@ -30,6 +31,8 @@ import {
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule],
   template: `
     <span class="app-title">Remote Tool Mock (simulates cross-tool protocol)</span>
 
