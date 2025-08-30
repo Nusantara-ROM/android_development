@@ -5,6 +5,7 @@ import {
   MotionGoldenFeature,
   isNotFound,
   DataSource,
+  DataPoint,
 } from '../model/golden';
 import { GoldensService } from '../service/goldens.service';
 import { PreviewService } from '../service/preview.service';
@@ -247,17 +248,30 @@ export class TimelineComponent implements OnChanges {
     });
   }
 
+  areArraysEqual(arr1?: DataPoint[], arr2?: DataPoint[]): boolean {
+    if (arr1?.length !== arr2?.length) {
+      return false;
+    }
+    return arr1?.every((value, index) => value === arr2![index]) ?? true;
+  }
+
   populateFeatureOptions(): void {
     this.availableOptions = [];
     if (this.actualData && this.actualData.features) {
       let nextId = 1;
       this.actualData.features.forEach((feature) => {
         const featureName = feature.name;
+        const expectedDataPoints = this.expectedData?.features.find(
+         (f) => f.name === featureName
+        )?.data_points;
+        const actualDataPoints = feature.data_points;
+        const isFeaturePassing = this.areArraysEqual(actualDataPoints, expectedDataPoints);
         if (featureName) {
           this.availableOptions.push({
             id: nextId++,
             name: featureName,
-            selected: true
+            selected: true,
+            passing: isFeaturePassing
           });
         }
       });
@@ -270,10 +284,13 @@ export class TimelineComponent implements OnChanges {
     if (this.receivedSelectedOptions.length === 0) {
       return true;
     }
-
+    const isFilteringByFailing = this.receivedSelectedOptions.length === 1 && this.receivedSelectedOptions[0].name === "Failing features";
+    if (isFilteringByFailing) {
+      return this.availableOptions.some((option) => option.name === featureName && !option.passing);
+    }
     return this.receivedSelectedOptions.some(selectedOption =>
       selectedOption.name === featureName
-    );
+    )
   }
 
   get showUpdateButton(): boolean {
