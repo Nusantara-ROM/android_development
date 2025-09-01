@@ -45,13 +45,13 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
     FormsModule,
   ],
   template: `
-    <ng-container [ngSwitch]="state">
-      <ng-container *ngSwitchCase="${ConnectionState.CONNECTING}">
+    @switch (state) {
+      @case (${ConnectionState.CONNECTING}) {
         <p class="connecting-message mat-body-1">
           Connecting...
         </p>
-      </ng-container>
-      <ng-container *ngSwitchCase="${ConnectionState.NOT_FOUND}">
+      }
+      @case (${ConnectionState.NOT_FOUND}) {
         <div class="further-adb-info-text">
           <p class="mat-body-1">
             Launch the Winscope ADB Connect proxy to capture traces directly from your browser.
@@ -82,9 +82,8 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
             Retry
           </button>
         </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="${ConnectionState.INVALID_VERSION}">
+      }
+      @case (${ConnectionState.INVALID_VERSION}) {
         <div class="further-adb-info-text">
           <p class="icon-information mat-body-1">
             <mat-icon class="adb-icon">update</mat-icon>
@@ -118,9 +117,8 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
             Retry
           </button>
         </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="${ConnectionState.UNAUTH}">
+      }
+      @case (${ConnectionState.UNAUTH}) {
         <div class="further-adb-info-text">
           <p class="icon-information mat-body-1">
             <mat-icon class="adb-icon">lock</mat-icon>
@@ -143,10 +141,8 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
             Connect
           </button>
         </div>
-      </ng-container>
-
-      <ng-container *ngSwitchDefault></ng-container>
-    </ng-container>
+      }
+    }
   `,
   styles: [
     `

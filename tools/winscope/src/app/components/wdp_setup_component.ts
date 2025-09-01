@@ -29,13 +29,13 @@ import {ConnectionState} from 'trace_collection/connection_state';
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatIconModule],
   template: `
-    <ng-container [ngSwitch]="state">
-      <ng-container *ngSwitchCase="${ConnectionState.CONNECTING}">
+    @switch (state) {
+      @case (${ConnectionState.CONNECTING}) {
         <p class="connecting-message mat-body-1">
           Connecting...
         </p>
-      </ng-container>
-      <ng-container *ngSwitchCase="${ConnectionState.NOT_FOUND}">
+      }
+      @case (${ConnectionState.NOT_FOUND}) {
         <div class="further-adb-info-text">
           <p class="mat-body-1">
             Failed to connect. Web Device Proxy doesn't seem to be running.
@@ -61,9 +61,8 @@ import {ConnectionState} from 'trace_collection/connection_state';
             class="retry"
             (click)="onRetryButtonClick()">Retry</button>
         </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="${ConnectionState.UNAUTH}">
+      }
+      @case (${ConnectionState.UNAUTH}) {
         <div class="further-adb-info-text">
           <p class="icon-information mat-body-1">
             <mat-icon class="adb-icon">lock</mat-icon>
@@ -78,10 +77,8 @@ import {ConnectionState} from 'trace_collection/connection_state';
             class="retry"
             (click)="onRetryButtonClick()">Retry</button>
         </div>
-      </ng-container>
-
-      <ng-container *ngSwitchDefault></ng-container>
-    </ng-container>
+      }
+    }
   `,
   styles: [proxySetupStyles],
 })
