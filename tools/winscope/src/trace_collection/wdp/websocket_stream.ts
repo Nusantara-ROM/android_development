@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import {DO_NOTHING, DO_NOTHING_ASYNC} from 'common/function_utils';
 import {Timer} from 'common/time/timer';
 
 export type ErrorListener = (msg: string) => Promise<void>;
@@ -27,8 +26,8 @@ export abstract class WebSocketStream {
 
   abstract connect(): Promise<void>;
 
-  protected onError: ErrorListener = DO_NOTHING_ASYNC;
-  protected onClose: () => void = DO_NOTHING;
+  protected onError: ErrorListener = () => Promise.resolve();
+  protected onClose: () => void = () => {};
 
   async write(data: string | Uint8Array): Promise<void> {
     await new Timer().wait(() => this.isOpen());

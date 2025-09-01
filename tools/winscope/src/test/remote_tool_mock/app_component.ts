@@ -17,7 +17,6 @@
 import {CommonModule} from '@angular/common';
 import {ChangeDetectorRef, Component, Inject} from '@angular/core';
 import {assertDefined, assertUnreachable} from 'common/assert_utils';
-import {DO_NOTHING} from 'common/function_utils';
 import {Timer} from 'common/time/timer';
 import {
   Message,
@@ -87,7 +86,7 @@ export class AppComponent {
 
   private winscope: Window | null = null;
   private isWinscopeUp = false;
-  private onMessagePongReceived = DO_NOTHING;
+  private onMessagePongReceived: () => void = () => {};
 
   constructor(
     @Inject(ChangeDetectorRef) private changeDetectorRef: ChangeDetectorRef,

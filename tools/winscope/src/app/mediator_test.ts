@@ -15,7 +15,6 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {mixin} from 'common/function_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {TimezoneInfo} from 'common/time/time';
 import {TimestampConverter} from 'common/time/timestamp_converter';
@@ -74,6 +73,7 @@ import {WinscopeEventEmitterStub} from 'messaging/winscope_event_emitter_stub';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
 import {WinscopeEventListenerStub} from 'messaging/winscope_event_listener_stub';
 import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {mixin} from 'test/unit/mixin_helpers';
 import {
   makeRealTimestamp,
   makeZeroTimestamp,

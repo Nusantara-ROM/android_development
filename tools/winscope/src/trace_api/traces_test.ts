@@ -15,7 +15,6 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {DO_NOTHING} from 'common/function_utils';
 import {makeRealTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {
@@ -351,10 +350,10 @@ describe('Traces', () => {
       traces.sliceFrames();
     }).toThrow();
     expect(() => {
-      traces.forEachFrame(DO_NOTHING);
+      traces.forEachFrame(() => {});
     }).toThrow();
     expect(() => {
-      traces.mapFrame(DO_NOTHING);
+      traces.mapFrame(() => {});
     }).toThrow();
   });
 

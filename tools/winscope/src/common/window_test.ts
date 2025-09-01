@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {showPopupWindow} from './window_utils';
+import {showPopupWindow} from './window';
 
-describe('window_utils', () => {
+describe('window', () => {
   let windowSpy: jasmine.Spy;
 
   beforeEach(() => {

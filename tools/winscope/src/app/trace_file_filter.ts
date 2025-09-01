@@ -16,7 +16,6 @@
 
 import {assertDefined} from 'common/assert_utils';
 import {getFileDirectory, isZipFile, unzipFile} from 'common/file_utils';
-import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {utf8Decode} from 'common/string_utils';
 import {TimezoneInfo} from 'common/time/time';
 import {Analytics} from 'logging/analytics';
@@ -131,7 +130,7 @@ export class TraceFileFilter
     '.perfetto',
   ];
 
-  private emitEvent: EmitEvent = DO_NOTHING_ASYNC;
+  private emitEvent: EmitEvent = () => Promise.resolve();
   private selectedFile: string | undefined;
 
   setEmitEvent(callback: EmitEvent) {

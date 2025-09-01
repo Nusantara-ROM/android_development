@@ -40,7 +40,6 @@ import {
   assertTrue,
   assertUnreachable,
 } from 'common/assert_utils';
-import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {Store} from 'common/store/store';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';
@@ -469,7 +468,7 @@ export class CollectTracesComponent
   private readonly storeKeyAdbConnectionType = 'adbConnectionType';
 
   private selectedDevice: AdbDeviceConnection | undefined;
-  private emitEvent: EmitEvent = DO_NOTHING_ASYNC;
+  private emitEvent: EmitEvent = () => Promise.resolve();
 
   private readonly notConnected = [
     ConnectionState.CONNECTING,

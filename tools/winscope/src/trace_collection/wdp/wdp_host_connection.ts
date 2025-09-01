@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {showPopupWindow} from 'common/window_utils';
+import {showPopupWindow} from 'common/window';
 import {AdbHostConnection} from 'trace_collection/adb/adb_host_connection';
 import {AdbConnectionType} from 'trace_collection/adb_connection_type';
 import {ConnectionState} from 'trace_collection/connection_state';

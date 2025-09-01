@@ -49,7 +49,7 @@ import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {PersistentStore} from 'common/store/persistent_store';
 import {Store} from 'common/store/store';
 import {Timestamp} from 'common/time/time';
-import {getRootUrl} from 'common/url_utils';
+import {getRootUrl} from 'common/window';
 import {CrossToolProtocol} from 'cross_tool/cross_tool_protocol';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';

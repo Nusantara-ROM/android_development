@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import {DO_NOTHING} from 'common/function_utils';
 import {base64Decode} from 'common/string_utils';
 import {ErrorListener, WebSocketStream} from './websocket_stream';
 
@@ -29,7 +28,7 @@ interface AdbResponse {
 export type DataListener = (data: Uint8Array) => void;
 
 export abstract class AdbWebSocketStream extends WebSocketStream {
-  protected onData: DataListener = DO_NOTHING;
+  protected onData: DataListener = () => {};
 
   constructor(
     sock: WebSocket,
