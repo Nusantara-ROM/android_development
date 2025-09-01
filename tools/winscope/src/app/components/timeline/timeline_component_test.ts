@@ -500,14 +500,14 @@ describe('TimelineComponent', () => {
     testCurrentTimestampOnButtonClick(prevEntryButton, position90, 90n);
   });
 
-  it('performs expected action on arrow key press depending on input form focus', () => {
+  it('performs expected action on arrow key press depending on input form focus', async () => {
     loadSfWmTraces();
     const timelineComponent = assertDefined(component.timeline);
 
     const spyNextEntry = spyOn(timelineComponent, 'moveToNextEntry');
     const spyPrevEntry = spyOn(timelineComponent, 'moveToPreviousEntry');
 
-    dom.keydownArrowRight(true);
+    await dom.keydownArrowRight(true);
     expect(spyNextEntry).toHaveBeenCalled();
 
     const formElement = dom.get('.time-input input').getHTMLElement();
@@ -515,7 +515,7 @@ describe('TimelineComponent', () => {
     Object.defineProperty(focusInEvent, 'target', {value: formElement});
     dom.dispatchEventInDocument(focusInEvent);
 
-    dom.keydownArrowLeft(true);
+    await dom.keydownArrowLeft(true);
     expect(spyPrevEntry).not.toHaveBeenCalled();
 
     const focusOutEvent = new FocusEvent('focusout');
