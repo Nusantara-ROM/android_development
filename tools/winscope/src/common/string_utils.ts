@@ -33,32 +33,6 @@ export function parseBigIntStrippingUnit(s: string): bigint {
 }
 
 /**
- * Converts a camelCase string to snake_case.
- *
- * @param s The string to convert.
- * @return The converted string.
- */
-export function convertCamelToSnakeCase(s: string): string {
-  const result: string[] = [];
-
-  let prevChar: string | undefined;
-  for (const currChar of s) {
-    const prevCharCouldBeWordEnd =
-      prevChar && (isDigit(prevChar) || isLowerCase(prevChar));
-    const currCharCouldBeWordStart = isUpperCase(currChar);
-    if (prevCharCouldBeWordEnd && currCharCouldBeWordStart) {
-      result.push('_');
-      result.push(currChar.toLowerCase());
-    } else {
-      result.push(currChar);
-    }
-    prevChar = currChar;
-  }
-
-  return result.join('');
-}
-
-/**
  * Converts a snake_case string to camelCase.
  *
  * @param s The string to convert.
@@ -103,28 +77,6 @@ export function isAlpha(char: string): boolean {
 export function isDigit(char: string): boolean {
   assertTrue(char.length === 1, () => 'Input must be a single character');
   return char >= '0' && char <= '9';
-}
-
-/**
- * Checks if a character is a lowercase letter.
- *
- * @param char The character to check.
- * @return True if the character is a lowercase letter, false otherwise.
- */
-export function isLowerCase(char: string): boolean {
-  assertTrue(char.length === 1, () => 'Input must be a single character');
-  return isAlpha(char) && char === char.toLowerCase();
-}
-
-/**
- * Checks if a character is an uppercase letter.
- *
- * @param char The character to check.
- * @return True if the character is an uppercase letter, false otherwise.
- */
-export function isUpperCase(char: string): boolean {
-  assertTrue(char.length === 1, () => 'Input must be a single character');
-  return isAlpha(char) && char === char.toUpperCase();
 }
 
 /**

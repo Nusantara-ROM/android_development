@@ -15,14 +15,11 @@
  */
 
 import {
-  convertCamelToSnakeCase,
   convertSnakeToCamelCase,
   isAlpha,
   isBlank,
   isDigit,
-  isLowerCase,
   isNumeric,
-  isUpperCase,
   parseBigIntStrippingUnit,
 } from './string_utils';
 
@@ -45,46 +42,6 @@ describe('StringUtils', () => {
 
     expect(() => parseBigIntStrippingUnit('invalid')).toThrow();
     expect(() => parseBigIntStrippingUnit('invalid 10 unit')).toThrow();
-  });
-
-  it('convertCamelToSnakeCase()', () => {
-    expect(convertCamelToSnakeCase('aaa')).toBe('aaa');
-    expect(convertCamelToSnakeCase('Aaa')).toBe('Aaa');
-    expect(convertCamelToSnakeCase('_aaa')).toBe('_aaa');
-    expect(convertCamelToSnakeCase('_Aaa')).toBe('_Aaa');
-
-    expect(convertCamelToSnakeCase('aaaBbb')).toBe('aaa_bbb');
-    expect(convertCamelToSnakeCase('AaaBbb')).toBe('Aaa_bbb');
-    expect(convertCamelToSnakeCase('aaa_bbb')).toBe('aaa_bbb');
-    expect(convertCamelToSnakeCase('aaa_Bbb')).toBe('aaa_Bbb');
-
-    expect(convertCamelToSnakeCase('aaaBbbCcc')).toBe('aaa_bbb_ccc');
-    expect(convertCamelToSnakeCase('aaaBbb_ccc')).toBe('aaa_bbb_ccc');
-    expect(convertCamelToSnakeCase('aaaBbb_Ccc')).toBe('aaa_bbb_Ccc');
-
-    expect(convertCamelToSnakeCase('aaaBBBccc')).toBe('aaa_bBBccc');
-    expect(convertCamelToSnakeCase('aaaBBBcccDDD')).toBe('aaa_bBBccc_dDD');
-    expect(convertCamelToSnakeCase('aaaBBB_ccc')).toBe('aaa_bBB_ccc');
-    expect(convertCamelToSnakeCase('aaaBbb_CCC')).toBe('aaa_bbb_CCC');
-
-    expect(convertCamelToSnakeCase('_field_32')).toBe('_field_32');
-    expect(convertCamelToSnakeCase('field_32')).toBe('field_32');
-    expect(convertCamelToSnakeCase('field_32Bits')).toBe('field_32_bits');
-    expect(convertCamelToSnakeCase('field_32BitsLsb')).toEqual(
-      'field_32_bits_lsb',
-    );
-    expect(convertCamelToSnakeCase('field_32bits')).toBe('field_32bits');
-    expect(convertCamelToSnakeCase('field_32bitsLsb')).toEqual(
-      'field_32bits_lsb',
-    );
-
-    expect(convertCamelToSnakeCase('_aaaAaa.bbbBbb')).toEqual(
-      '_aaa_aaa.bbb_bbb',
-    );
-    expect(convertCamelToSnakeCase('aaaAaa.bbbBbb')).toBe('aaa_aaa.bbb_bbb');
-    expect(convertCamelToSnakeCase('aaaAaa.field_32bitsLsb.bbbBbb')).toEqual(
-      'aaa_aaa.field_32bits_lsb.bbb_bbb',
-    );
   });
 
   it('convertSnakeToCamelCase()', () => {
@@ -131,26 +88,6 @@ describe('StringUtils', () => {
     expect(isDigit('_')).toBeFalse();
     expect(isDigit('0')).toBeTrue();
     expect(isDigit('9')).toBeTrue();
-  });
-
-  it('isLowerCase()', () => {
-    expect(isLowerCase('a')).toBeTrue();
-    expect(isLowerCase('z')).toBeTrue();
-    expect(isLowerCase('A')).toBeFalse();
-    expect(isLowerCase('Z')).toBeFalse();
-    expect(isLowerCase('_')).toBeFalse();
-    expect(isLowerCase('0')).toBeFalse();
-    expect(isLowerCase('9')).toBeFalse();
-  });
-
-  it('isUpperCase()', () => {
-    expect(isUpperCase('A')).toBeTrue();
-    expect(isUpperCase('Z')).toBeTrue();
-    expect(isUpperCase('a')).toBeFalse();
-    expect(isUpperCase('z')).toBeFalse();
-    expect(isUpperCase('_')).toBeFalse();
-    expect(isUpperCase('0')).toBeFalse();
-    expect(isUpperCase('9')).toBeFalse();
   });
 
   it('isBlank()', () => {
