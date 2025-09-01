@@ -93,7 +93,9 @@ describe('WinscopeProxySetupComponent', () => {
   it('download proxy button downloads proxy', () => {
     component.state = ConnectionState.NOT_FOUND;
     const spy: DownloadRequest = jasmine.createSpy('fromUrl');
-    component.downloadRequest = (url: string, fileName: string) => { spy(url, fileName) };
+    component.downloadRequest = (url: string, fileName: string) => {
+      spy(url, fileName);
+    };
     dom.detectChanges();
     dom.findAndClick('.download-proxy-btn');
     expect(spy).toHaveBeenCalledWith(

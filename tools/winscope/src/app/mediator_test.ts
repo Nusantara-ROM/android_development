@@ -72,7 +72,7 @@ import {WinscopeEventEmitter} from 'messaging/winscope_event_emitter';
 import {WinscopeEventEmitterStub} from 'messaging/winscope_event_emitter_stub';
 import {WinscopeEventListener} from 'messaging/winscope_event_listener';
 import {WinscopeEventListenerStub} from 'messaging/winscope_event_listener_stub';
-import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {getFixtureFile} from 'test/unit/io_helpers';
 import {mixin} from 'test/unit/mixin_helpers';
 import {
   makeRealTimestamp,

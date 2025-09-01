@@ -33,7 +33,7 @@ import {
   ShowTraceUploadWarning,
 } from 'messaging/winscope_event';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
-import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {getFixtureFile} from 'test/unit/io_helpers';
 import {makeZeroTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {Traces} from 'trace_api/traces';

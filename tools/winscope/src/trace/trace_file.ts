@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {removeDirFromFileName} from 'common/file_utils';
+import {removeDirFromFileName} from 'common/io';
 
 export class TraceFile {
   constructor(

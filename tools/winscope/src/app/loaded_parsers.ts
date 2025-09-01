@@ -21,7 +21,7 @@ import {
   removeDirFromFileName,
   removeExtensionFromFilename,
   OnProgressUpdateType,
-} from 'common/file_utils';
+} from 'common/io';
 import {INVALID_TIME_NS, TimeRange, Timestamp} from 'common/time/time';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {TraceHasOldData, TraceOverridden} from 'messaging/user_warnings';

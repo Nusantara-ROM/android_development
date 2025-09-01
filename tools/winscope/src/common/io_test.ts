@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {getFixtureFile} from 'test/unit/io_helpers';
 import {
   createZipArchive,
   decompressGZipFile,
@@ -23,7 +23,7 @@ import {
   removeDirFromFileName,
   removeExtensionFromFilename,
   unzipFile,
-} from './file_utils';
+} from './io';
 
 describe('file_utils', () => {
   it('extracts file extensions', () => {

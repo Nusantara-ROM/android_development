@@ -21,7 +21,7 @@ import {
   TabbedViewSwitchRequest,
   TracePositionUpdate,
 } from 'messaging/winscope_event';
-import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {getFixtureFile} from 'test/unit/io_helpers';
 import {getPerfettoParser, LegacyParserProvider} from 'test/unit/fixture_utils';
 import {TraceBuilder} from 'test/unit/trace_builder';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
