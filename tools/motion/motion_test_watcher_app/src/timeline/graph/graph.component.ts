@@ -24,7 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './graph.component.css',
 })
 export class GraphComponent implements AfterViewInit, OnChanges {
-  constructor(private previewService: PreviewService) {}
+  constructor(private previewService: PreviewService) { }
 
   @Input() expectedData: MotionGoldenData | undefined;
   @Input() actualData: MotionGoldenData | undefined;
@@ -88,7 +88,7 @@ export class GraphComponent implements AfterViewInit, OnChanges {
   }
 
   private updateData(): void {
-    if(!this.featureName) {
+    if (!this.featureName) {
       console.log("No feature name provided")
       return
     }
@@ -110,24 +110,34 @@ export class GraphComponent implements AfterViewInit, OnChanges {
     actualFeature: MotionGoldenFeature | undefined,
     expectedFeature: MotionGoldenFeature | undefined
   ) {
+
+    const actualDataPoints = actualFeature?.data_points ?? [];
+    const expectedDataPoints = expectedFeature?.data_points ?? [];
+
     const combinedLength = Math.max(
-      actualFeature?.data_points?.length || 0,
-      expectedFeature?.data_points?.length || 0
+      actualDataPoints.length,
+      expectedDataPoints.length
     );
 
+    const frameIdSource =
+      (actualDataPoints.length >= expectedDataPoints.length)
+        ? this.actualData
+        : this.expectedData;
+
+    if (!frameIdSource?.frame_ids)
+      return;
+
     for (let i = 0; i < combinedLength; i++) {
-      const actualDataPoint =
-        actualFeature?.data_points && actualFeature.data_points[i];
-      const expectedDataPoint =
-        expectedFeature?.data_points && expectedFeature.data_points[i];
+      const actualDataPoint = actualDataPoints[i];
+      const expectedDataPoint = expectedDataPoints[i];
 
       let x = -1;
-      if (this.actualData?.frame_ids[i] === 'after') {
-        x = (this.actualData?.frame_ids[i - 1] as number) + 50;
-      } else if (this.actualData?.frame_ids[i] === 'before') {
-        x = (this.actualData?.frame_ids[i + 1] as number) - 50;
+      if (frameIdSource?.frame_ids[i] === 'after') {
+        x = (frameIdSource?.frame_ids[i - 1] as number) + 50;
+      } else if (frameIdSource?.frame_ids[i] === 'before') {
+        x = (frameIdSource?.frame_ids[i + 1] as number) - 50;
       } else {
-        x = this.actualData?.frame_ids[i] as number;
+        x = frameIdSource?.frame_ids[i] as number;
       }
 
       const newPoint: DataPoint = { x };
@@ -166,8 +176,8 @@ export class GraphComponent implements AfterViewInit, OnChanges {
     if (minValue === maxValue) {
       maxValue += 1;
     }
-    if(minValue!==0) {
-      minValue-=(maxValue-minValue)/10;
+    if (minValue !== 0) {
+      minValue -= (maxValue - minValue) / 10;
     }
 
     return new LineGraphVisualization(
