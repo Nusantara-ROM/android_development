@@ -579,6 +579,7 @@ export class TimelineComponent
   private expandedTimelineScrollEvent: WheelEvent | undefined;
   private expandedTimelineMouseXRatio: number | undefined;
   private seekTracePosition?: TracePosition;
+  private isProcessingKeyPress = false;
 
   constructor(
     @Inject(DomSanitizer) private sanitizer: DomSanitizer,
@@ -805,16 +806,21 @@ export class TimelineComponent
     if (
       this.isDisabled ||
       this.isInputFormFocused ||
-      !assertDefined(this.timelineData).hasMoreThanOneDistinctTimestamp()
+      !assertDefined(this.timelineData).hasMoreThanOneDistinctTimestamp() ||
+      this.isProcessingKeyPress
     ) {
       return;
     }
     if (event.key === KeyboardEventKey.ARROW_LEFT) {
       event.preventDefault();
+      this.isProcessingKeyPress = true;
       await this.moveToPreviousEntry();
+      this.isProcessingKeyPress = false;
     } else if (event.key === KeyboardEventKey.ARROW_RIGHT) {
       event.preventDefault();
+      this.isProcessingKeyPress = true;
       await this.moveToNextEntry();
+      this.isProcessingKeyPress = false;
     }
   }
 
