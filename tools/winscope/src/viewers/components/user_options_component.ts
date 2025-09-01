@@ -18,7 +18,6 @@ import {CommonModule} from '@angular/common';
 import {Component, ElementRef, Inject, Input} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {DO_NOTHING} from 'common/function_utils';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TraceType} from 'trace_api/trace_type';
 import {UserOption, UserOptions} from 'viewers/common/user_options';
@@ -55,7 +54,7 @@ export class UserOptionsComponent {
   @Input() userOptions: UserOptions = {};
   @Input() eventType = '';
   @Input() traceType: TraceType | undefined;
-  @Input() logCallback: LogCallback = DO_NOTHING;
+  @Input() logCallback: LogCallback = () => {};
 
   constructor(@Inject(ElementRef) private elementRef: ElementRef) {}
 

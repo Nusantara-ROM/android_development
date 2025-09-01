@@ -15,7 +15,6 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {parseMap, stringifyMap} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
@@ -50,7 +49,7 @@ export type NotifyHierarchyViewCallbackType<UiData> = (uiData: UiData) => void;
 export abstract class AbstractHierarchyViewerPresenter<
   UiData extends UiDataHierarchy,
 > {
-  protected emitWinscopeEvent: EmitEvent = DO_NOTHING_ASYNC;
+  protected emitWinscopeEvent: EmitEvent = () => Promise.resolve();
   protected overridePropertiesTree: PropertyTreeNode | undefined;
   protected overridePropertiesTreeName: string | undefined;
   protected playbackPresenter?: PlaybackPresenter;

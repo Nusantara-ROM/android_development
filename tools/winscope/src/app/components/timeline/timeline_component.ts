@@ -48,7 +48,6 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert_utils';
 import {isInputTextField, KeyboardEventKey} from 'common/dom_utils';
-import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {PersistentStore} from 'common/store/persistent_store';
 import {parseBigIntStrippingUnit} from 'common/string_utils';
 import {TimeRange, Timestamp, TimestampFormatType} from 'common/time/time';
@@ -571,7 +570,7 @@ export class TimelineComponent
   isDisabled = false;
 
   private expanded = false;
-  private emitEvent: EmitEvent = DO_NOTHING_ASYNC;
+  private emitEvent: EmitEvent = () => Promise.resolve();
   private expandedTimelineScrollEvent: WheelEvent | undefined;
   private expandedTimelineMouseXRatio: number | undefined;
   private seekTracePosition?: TracePosition;

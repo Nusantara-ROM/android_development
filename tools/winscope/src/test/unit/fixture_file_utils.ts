@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {getRootUrl} from 'common/url_utils';
+import {getRootUrl} from 'common/window';
 
 export async function getFixtureFile(
   srcFilename: string,

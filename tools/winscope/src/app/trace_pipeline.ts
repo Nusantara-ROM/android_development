@@ -23,8 +23,8 @@ import {
   removeDirFromFileName,
   removeExtensionFromFilename,
   unzipFile,
+  OnProgressUpdateType,
 } from 'common/file_utils';
-import {OnProgressUpdateType} from 'common/function_utils';
 import {TimezoneInfo} from 'common/time/time';
 import {
   TimestampConverter,

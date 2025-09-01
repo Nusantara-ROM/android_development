@@ -15,7 +15,7 @@
  */
 
 import {globalConfig} from 'common/global_config';
-import {getRootUrl} from 'common/url_utils';
+import {getRootUrl} from 'common/window';
 import {initWasm} from './perfetto/wasm_engine_proxy';
 import {TraceProcessor} from './trace_processor';
 

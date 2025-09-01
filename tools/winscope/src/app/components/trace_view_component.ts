@@ -40,7 +40,6 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {overlayPanelStyles} from 'app/styles/overlay_panel.styles';
 import {assertDefined} from 'common/assert_utils';
-import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {Store} from 'common/store/store';
 import {Analytics} from 'logging/analytics';
 import {
@@ -303,7 +302,7 @@ export class TraceViewComponent
   );
 
   private currentActiveTab: undefined | Tab;
-  private emitAppEvent: EmitEvent = DO_NOTHING_ASYNC;
+  private emitAppEvent: EmitEvent = () => Promise.resolve();
   private filterPresetsStoreKey = 'filterPresets';
   private allFilterPresets: string[] = [];
 

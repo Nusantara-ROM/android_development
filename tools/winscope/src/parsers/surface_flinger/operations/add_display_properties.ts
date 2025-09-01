@@ -15,7 +15,6 @@
  */
 
 import {assertDefined, assertTrue} from 'common/assert_utils';
-import {UINT32_MAX} from 'common/math_utils';
 import {Operation} from 'tree_node/operation';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
@@ -76,3 +75,8 @@ export class AddDisplayProperties implements Operation<PropertyTreeNode> {
   private static readonly TABLET_MIN_DPS = 600;
   private static readonly DENSITY_DEFAULT = 160;
 }
+
+/**
+ * The maximum value of a 32-bit unsigned integer.
+ */
+const UINT32_MAX = 4294967295;

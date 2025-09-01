@@ -15,25 +15,6 @@
  */
 
 /**
- * Type of the onProgressUpdate callback function.
- */
-export type OnProgressUpdateType = (percentage: number) => void;
-
-/**
- * A function that does nothing.
- */
-export const DO_NOTHING = () => {
-  // do nothing
-};
-
-/**
- * A function that does nothing asynchronously.
- */
-export const DO_NOTHING_ASYNC = (): Promise<void> => {
-  return Promise.resolve();
-};
-
-/**
  * Mixin two objects together.
  *
  * This function takes two objects and returns a new object that is the

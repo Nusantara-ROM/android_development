@@ -20,7 +20,6 @@ import {
   isInputTextField,
   KeyboardEventKey,
 } from 'common/dom_utils';
-import {DO_NOTHING_ASYNC} from 'common/function_utils';
 import {Timestamp} from 'common/time/time';
 import {Analytics} from 'logging/analytics';
 import {
@@ -55,7 +54,7 @@ export abstract class AbstractLogViewerPresenter<
   TraceEntryType extends object,
 > {
   protected static readonly VALUE_NA = 'N/A';
-  protected emitAppEvent: EmitEvent = DO_NOTHING_ASYNC;
+  protected emitAppEvent: EmitEvent = () => Promise.resolve();
   protected abstract logPresenter: LogPresenter<LogEntry>;
   protected propertiesPresenter?: PropertiesPresenter;
   protected keepCalculated?: boolean;

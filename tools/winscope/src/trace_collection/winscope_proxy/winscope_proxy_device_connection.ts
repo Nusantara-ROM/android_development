@@ -15,7 +15,6 @@
  */
 
 import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
-import {DO_NOTHING} from 'common/function_utils';
 import {HttpRequestHeaderType, HttpResponse} from 'common/http_request';
 import {utf8Decode} from 'common/string_utils';
 import {ProxyTracingErrors} from 'messaging/user_warnings';
@@ -63,7 +62,7 @@ export class WinscopeProxyDeviceConnection extends AdbDeviceConnection {
     return await postToProxy(
       `${Endpoint.RUN_ADB_CMD}${this.id}/`,
       this.securityHeader,
-      DO_NOTHING,
+      () => {}, // onSuccess - no-op
       (newState, errorText) => this.setState(newState, errorText),
       {cmd: 'shell ' + cmd},
     );

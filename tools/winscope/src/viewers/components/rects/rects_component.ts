@@ -44,7 +44,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {assertDefined} from 'common/assert_utils';
 import {Distance} from 'common/geometry/distance';
 import {PersistentStore} from 'common/store/persistent_store';
-import {getRootUrl} from 'common/url_utils';
+import {getRootUrl} from 'common/window';
 import {Analytics} from 'logging/analytics';
 import {TRACE_INFO} from 'trace_api/trace_info';
 import {TraceType} from 'trace_api/trace_type';

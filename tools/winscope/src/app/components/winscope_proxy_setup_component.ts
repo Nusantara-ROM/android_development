@@ -24,7 +24,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {proxySetupStyles} from 'app/styles/proxy_setup.styles';
 import {Download} from 'common/download';
-import {getRootUrl} from 'common/url_utils';
+import {getRootUrl} from 'common/window';
 import {ConnectionState} from 'trace_collection/connection_state';
 import {VERSION} from 'trace_collection/winscope_proxy/utils';
 
