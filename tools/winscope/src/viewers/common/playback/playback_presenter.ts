@@ -19,7 +19,7 @@ import {Trace} from 'trace_api/trace';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {TracePosition} from 'trace_api/trace_position';
-import {sleepMs} from 'common/time/time_utils';
+import {Timer} from 'common/time/timer';
 import {TraceEntryEager} from 'trace_api/trace';
 
 export class PlaybackPresenter {
@@ -59,7 +59,7 @@ export class PlaybackPresenter {
         ),
       );
       // we debounce the trace position updates to allow time for UI to render
-      await sleepMs(10);
+      await new Timer(10, 10).sleepMs();
       this.entryIndex += this.entryStepSize;
     }
     this.paused = true;
