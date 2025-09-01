@@ -63,7 +63,7 @@ export class GoldensService {
     );
   }
 
-  getPresubmitTestArtifacts(invocation_id: String): Observable<PresubmitTest[]> {
+  getPresubmitTestArtifacts(invocation_id: string): Observable<PresubmitTest[]> {
     return this.http
       .post<PresubmitTest[]>(
         `${this.serverRoot}/service/presubmit_artifact/list`,
@@ -81,7 +81,7 @@ export class GoldensService {
       );
   }
 
-  getPresubmitTestArtifactsForTestName(resource_id: String): Observable<MotionGolden> {
+  getPresubmitTestArtifactsForTestName(resource_id: string): Observable<MotionGolden> {
     return this.http
       .post<MotionGolden>(
         `${this.serverRoot}/service/fetch_artifact`,
@@ -139,7 +139,7 @@ export class GoldensService {
       );
   }
 
-  switchMode(mode: String): Observable<MotionGolden[] | PresubmitTest[]> {
+  switchMode(mode: string): Observable<MotionGolden[] | PresubmitTest[]> {
     return this.http
       .post<MotionGolden[] | PresubmitTest[]>(
         `${this.serverRoot}/service/mode`,

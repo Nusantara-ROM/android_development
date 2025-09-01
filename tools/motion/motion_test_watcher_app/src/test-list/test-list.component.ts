@@ -39,7 +39,7 @@ export class TestListComponent implements OnChanges {
   @Input() presubmitTests: PresubmitTest[] = [];
   @Input() showCheckBoxes: boolean = false;
   @Input() isRefreshing: boolean = false;
-  @Input() testMode: String = "";
+  @Input() testMode: string = "";
   @Output() showCheckBoxesChange = new EventEmitter<boolean>();
   @Output() selectedTestNameChange = new EventEmitter<PresubmitTest>();
   @Output() refreshRequest = new EventEmitter<boolean>();
@@ -92,7 +92,7 @@ export class TestListComponent implements OnChanges {
     }
   }
 
-  extractLastPart(path: String): String {
+  extractLastPart(path: string): string {
     return path.split('/').pop() || '';
   }
 

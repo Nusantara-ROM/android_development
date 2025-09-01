@@ -32,12 +32,12 @@ import { TruncatePipe } from '../app/pipes/truncate.pipe';
 export class TestModeComponent implements OnChanges {
   constructor(private elementRef: ElementRef) { }
 
-  @Input() testModes: String[] = [];
-  @Input() testMode: String = "";
-  @Output() selectedTestMode = new EventEmitter<String>();
+  @Input() testModes: string[] = [];
+  @Input() testMode: string = "";
+  @Output() selectedTestMode = new EventEmitter<string>();
 
 
-  selectedMode: String = ""
+  selectedMode: string = ""
   showDropdown = false
 
   toggleDropdown(): void {
@@ -57,7 +57,7 @@ export class TestModeComponent implements OnChanges {
     }
   }
 
-  onActionSelected(action: String): void {
+  onActionSelected(action: string): void {
     if (this.selectedMode !== action) {// Take action only when selected mode changes.
       this.selectedMode = action
       this.switchMode(action)
@@ -65,7 +65,7 @@ export class TestModeComponent implements OnChanges {
     this.toggleDropdown()
   }
 
-  switchMode(mode: String) {
+  switchMode(mode: string) {
     this.selectedTestMode.emit(mode);
   }
 }

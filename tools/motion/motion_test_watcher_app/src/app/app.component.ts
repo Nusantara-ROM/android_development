@@ -108,9 +108,9 @@ export class AppComponent implements DoCheck, OnInit, OnDestroy {
   isNullOrEmpty(obj: any): Boolean {
     return (obj == null || obj.length == 0)
   }
-  testModes: String[] = []
+  testModes: string[] = []
 
-  switchMode(mode: String) {
+  switchMode(mode: string) {
     this.showLoaderBar()
     this.resetVariables()
     this.testMode = mode
@@ -187,7 +187,7 @@ export class AppComponent implements DoCheck, OnInit, OnDestroy {
   }
 
   showProgress = false;
-  testMode: String = "";
+  testMode: string = "";
   showLoader = false;
   goldens: MotionGolden[] = [];
   presubmitTests: PresubmitTest[] = [];
