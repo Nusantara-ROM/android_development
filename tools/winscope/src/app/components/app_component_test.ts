@@ -47,7 +47,7 @@ import {
   NoopAnimationsModule,
 } from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert_utils';
-import {Download} from 'common/download';
+import {DownloadRequest} from 'common/download';
 import {DOWNLOAD_FILENAME_REGEX} from 'common/file_utils';
 import {
   FailedToInitializeTimelineData,
@@ -153,7 +153,8 @@ describe('AppComponent', () => {
         Validators.pattern(DOWNLOAD_FILENAME_REGEX),
       ]),
     );
-    downloadTracesSpy = spyOn(Download, 'fromUrl');
+    downloadTracesSpy = jasmine.createSpy('fromUrl');
+    component.downloadRequest = (url: string, fileName: string) => { downloadTracesSpy(url, fileName) }; ;
     dom.detectChanges();
   });
 

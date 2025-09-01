@@ -23,7 +23,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {proxySetupStyles} from 'app/styles/proxy_setup.styles';
-import {Download} from 'common/download';
+import {DownloadRequest, downloadFromUrl} from 'common/download';
 import {getRootUrl} from 'common/window';
 import {ConnectionState} from 'trace_collection/connection_state';
 import {VERSION} from 'trace_collection/winscope_proxy/utils';
@@ -160,6 +160,12 @@ import {VERSION} from 'trace_collection/winscope_proxy/utils';
 })
 export class WinscopeProxySetupComponent {
   @Input() state: ConnectionState | undefined;
+  @Input() downloadRequest: DownloadRequest = (
+    url: string,
+    fileName: string,
+  ) => {
+    downloadFromUrl(url, fileName);
+  };
   @Output() readonly retryConnection = new EventEmitter<string>();
 
   readonly downloadProxyUrl: string = getRootUrl() + 'winscope_proxy.py';
@@ -180,6 +186,6 @@ export class WinscopeProxySetupComponent {
   }
 
   onDownloadProxyClick() {
-    Download.fromUrl(this.downloadProxyUrl, 'winscope_proxy.py');
+    this.downloadRequest(this.downloadProxyUrl, 'winscope_proxy.py');
   }
 }

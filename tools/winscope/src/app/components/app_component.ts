@@ -42,7 +42,7 @@ import {GlobalErrorHandler} from 'app/global_error_handler';
 import {Mediator} from 'app/mediator';
 import {TimelineData} from 'app/timeline_data';
 import {TracePipeline} from 'app/trace_pipeline';
-import {Download} from 'common/download';
+import {DownloadRequest, downloadFromUrl} from 'common/download';
 import {DOWNLOAD_FILENAME_REGEX} from 'common/file_utils';
 import {globalConfig} from 'common/global_config';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
@@ -451,6 +451,9 @@ export class AppComponent implements WinscopeEventListener {
 
   appStorage: Store;
   downloadProgress: number | undefined;
+  downloadRequest: DownloadRequest = (url: string, fileName: string) => {
+    downloadFromUrl(url, fileName);
+  };
 
   @ViewChild(UploadTracesComponent)
   uploadTracesComponent?: UploadTracesComponent;
@@ -865,6 +868,6 @@ export class AppComponent implements WinscopeEventListener {
 
   private downloadTraces(blob: Blob, filename: string) {
     const url = window.URL.createObjectURL(blob);
-    Download.fromUrl(url, filename);
+    this.downloadRequest(url, filename);
   }
 }

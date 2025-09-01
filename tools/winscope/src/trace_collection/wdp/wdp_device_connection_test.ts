@@ -97,7 +97,7 @@ describe('WdpDeviceConnection', () => {
     });
 
     it('closes active trace stream onDestroy', async () => {
-      spyOn(AdbWebSocketStream.prototype, 'write').and.callFake(() => Promise.resolve();
+      spyOn(AdbWebSocketStream.prototype, 'write').and.callFake(() => Promise.resolve());
       await connection.startTrace(new TraceTarget('', [], '', '', [], true));
       const closeSpy = spyOn(AdbWebSocketStream.prototype, 'close');
       connection.onDestroy();
