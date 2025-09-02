@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as JSZip from 'jszip';
+import * as jSZip from 'jszip';
 import {equal} from './typed_array';
 
 /**
@@ -30,10 +30,17 @@ export type OnFile = (file: File, parentArchive: File | undefined) => void;
 export type OnProgressUpdateType = (percentage: number) => void;
 
 /**
- * Utility functions for file operations.
+ * Regex to validate filenames for download.
+ * Allows letters, numbers, and underscores with delimiters '.', '-', '#',
+ * but not at the start or end.
  */
-//allow: letters/numbers/underscores with delimiters . - # (except at start and end)
 export const DOWNLOAD_FILENAME_REGEX = /^\w+?((|#|-|\.)\w+)+$/;
+
+/**
+ * Regex to find characters that are illegal in filenames.
+ * Matches any character that is NOT an alphanumeric, '-', '#', '.', or '_'.
+ * This is useful for sanitizing filenames before saving or processing.
+ */
 export const ILLEGAL_FILENAME_CHARACTERS_REGEX = /[^A-Za-z0-9-#._]/g;
 
 /**
@@ -107,7 +114,7 @@ export async function createZipArchive(
   files: File[],
   progressCallback?: OnProgressUpdateType,
 ): Promise<Blob> {
-  const zip = new JSZip();
+  const zip = new jSZip();
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const blob = await file.arrayBuffer();
@@ -131,7 +138,7 @@ export async function unzipFile(
   onProgressUpdate: OnProgressUpdateType = () => {},
 ): Promise<File[]> {
   const unzippedFiles: File[] = [];
-  const zip = new JSZip();
+  const zip = new jSZip();
   const content = await zip.loadAsync(file);
 
   const filenames = Object.keys(content.files);
@@ -163,7 +170,7 @@ export async function unzipFile(
  * @return A Promise that resolves to the decompressed file.
  */
 export async function decompressGZipFile(file: File): Promise<File> {
-  const decompressionStream = new (window as any).DecompressionStream('gzip');
+  const decompressionStream = new window.DecompressionStream('gzip');
   const decompressedStream = file.stream().pipeThrough(decompressionStream);
   const fileBlob = await new Response(decompressedStream).blob();
   const filename =

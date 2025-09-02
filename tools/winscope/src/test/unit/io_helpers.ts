@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import {getRootUrl} from 'common/window';
 import {FIXTURES_DIR} from './compat';
 
 /**
@@ -29,7 +28,7 @@ export async function getFixtureFile(
   srcFilename: string,
   dstFilename: string = srcFilename,
 ): Promise<File> {
-  const url = getRootUrl() + FIXTURES_DIR + srcFilename;
+  const url = FIXTURES_DIR + srcFilename;
   const response = await fetch(url);
   expect(response.ok).toBeTrue();
   const blob = await response.blob();

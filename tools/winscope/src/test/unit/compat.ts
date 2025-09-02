@@ -22,4 +22,14 @@
  * environments.
  *
  */
-export const FIXTURES_DIR = 'base/src/test/fixtures/';
+import {getRootUrl} from 'common/window';
+
+/**
+ * Fixtures directory used for compatibility between AOSP and google3.
+ *
+ * Necessary because AOSP and google3 have different build systems, library
+ * versions, code location, etc. and we need to be able to run tests in both
+ * environments.
+ *
+ */
+export const FIXTURES_DIR = getRootUrl() + 'base/src/test/fixtures/';
