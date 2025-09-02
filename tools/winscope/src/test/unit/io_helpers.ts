@@ -15,12 +15,21 @@
  */
 
 import {getRootUrl} from 'common/window';
+import {FIXTURES_DIR} from './compat';
 
+/**
+ * Gets a test fixture file.
+ *
+ * @param srcFilename The name of the file in the fixtures directory.
+ * @param dstFilename The destination filename for the created File object.
+ *   Defaults to `srcFilename`.
+ * @return A promise that resolves to the File object.
+ */
 export async function getFixtureFile(
   srcFilename: string,
   dstFilename: string = srcFilename,
 ): Promise<File> {
-  const url = getRootUrl() + 'base/src/test/fixtures/' + srcFilename;
+  const url = getRootUrl() + FIXTURES_DIR + srcFilename;
   const response = await fetch(url);
   expect(response.ok).toBeTrue();
   const blob = await response.blob();

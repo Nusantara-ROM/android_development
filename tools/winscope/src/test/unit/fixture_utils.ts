@@ -25,7 +25,7 @@ import {
 } from 'parsers/parser_time_utils';
 import {ParserFactory as PerfettoParserFactory} from 'parsers/perfetto/parser_factory';
 import {TracesParserFactory} from 'parsers/traces/traces_parser_factory';
-import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {getFixtureFile} from 'test/unit/io_helpers';
 import {getTimestampConverter} from 'test/unit/time_test_helpers';
 import {TraceFile} from 'trace/trace_file';
 import {Parser} from 'trace_api/parser';

@@ -19,7 +19,7 @@ import {
   TimestampConverter,
   UTC_TIMEZONE_INFO,
 } from 'common/time/timestamp_converter';
-import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {getFixtureFile} from 'test/unit/io_helpers';
 import {
   TIMESTAMP_CONVERTER_WITH_UTC_OFFSET,
   makeElapsedTimestamp,

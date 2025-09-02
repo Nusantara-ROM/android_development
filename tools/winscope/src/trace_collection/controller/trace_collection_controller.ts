@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {removeDirFromFileName} from 'common/file_utils';
+import {removeDirFromFileName} from 'common/io';
 import {Timer} from 'common/time/timer';
 import {ProgressListener} from 'messaging/progress_listener';
 import {ProxyTracingWarnings} from 'messaging/user_warnings';

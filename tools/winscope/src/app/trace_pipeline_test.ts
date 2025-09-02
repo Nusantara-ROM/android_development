@@ -15,11 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert_utils';
-import {
-  createZipArchive,
-  DOWNLOAD_FILENAME_REGEX,
-  unzipFile,
-} from 'common/file_utils';
+import {createZipArchive, DOWNLOAD_FILENAME_REGEX, unzipFile} from 'common/io';
 import {ProgressListenerStub} from 'messaging/progress_listener_stub';
 import {UserWarning} from 'messaging/user_warning';
 import {
@@ -31,7 +27,7 @@ import {
 } from 'messaging/user_warnings';
 import {BugreportFileSelected} from 'messaging/winscope_event';
 import {LegacyToPerfettoConverter} from 'parsers/legacy_to_perfetto_converter';
-import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {getFixtureFile} from 'test/unit/io_helpers';
 import {
   makeRealTimestampWithUTCOffset,
   timestampEqualityTester,

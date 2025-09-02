@@ -43,7 +43,7 @@ import {Mediator} from 'app/mediator';
 import {TimelineData} from 'app/timeline_data';
 import {TracePipeline} from 'app/trace_pipeline';
 import {DownloadRequest, downloadFromUrl} from 'common/download';
-import {DOWNLOAD_FILENAME_REGEX} from 'common/file_utils';
+import {DOWNLOAD_FILENAME_REGEX} from 'common/io';
 import {globalConfig} from 'common/global_config';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {PersistentStore} from 'common/store/persistent_store';

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {assertDefined} from 'common/assert_utils';
-import {getFixtureFile} from 'test/unit/fixture_file_utils';
+import {getFixtureFile} from 'test/unit/io_helpers';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {
   makeElapsedTimestamp,

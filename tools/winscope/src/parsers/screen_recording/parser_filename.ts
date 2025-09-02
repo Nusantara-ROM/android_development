@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  removeDirFromFileName,
-  removeExtensionFromFilename,
-} from 'common/file_utils';
+import {removeDirFromFileName, removeExtensionFromFilename} from 'common/io';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {
   ParserResult,

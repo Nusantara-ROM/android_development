@@ -24,7 +24,7 @@ import {
   removeExtensionFromFilename,
   unzipFile,
   OnProgressUpdateType,
-} from 'common/file_utils';
+} from 'common/io';
 import {TimezoneInfo} from 'common/time/time';
 import {
   TimestampConverter,
