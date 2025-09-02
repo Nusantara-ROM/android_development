@@ -16,7 +16,7 @@
 
 import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {HttpRequestHeaderType, HttpResponse} from 'common/http_request';
-import {utf8Decode} from 'common/string_utils';
+import {utf8Decode} from 'common/string_helpers';
 import {ProxyTracingErrors} from 'messaging/user_warnings';
 import {UserNotifier} from 'services/user_notifier';
 import {

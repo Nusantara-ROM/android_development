@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {base64Encode} from 'common/string_utils';
+import {base64Encode} from 'common/string_helpers';
 import {Timer} from 'common/time/timer';
 import {
   makeFakeWebSocket,

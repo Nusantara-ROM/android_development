@@ -15,7 +15,7 @@
  */
 
 import {ResizableBuffer} from 'common/buffer';
-import {binaryEncode, utf8Decode} from 'common/string_utils';
+import {binaryEncode, utf8Decode} from 'common/string_helpers';
 import {showPopupWindow} from 'common/window';
 import {
   ProxyTracingErrors,

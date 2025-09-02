@@ -15,7 +15,7 @@
  */
 
 import {ArrayBufferBuilder} from 'common/buffer';
-import {base64Encode, binaryEncode, utf8Decode} from 'common/string_utils';
+import {base64Encode, binaryEncode, utf8Decode} from 'common/string_helpers';
 import {
   makeFakeWebSocket,
   makeFakeWebSocketMessage,

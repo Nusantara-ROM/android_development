@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {base64Decode} from 'common/string_utils';
+import {base64Decode} from 'common/string_helpers';
 import {ErrorListener, WebSocketStream} from './websocket_stream';
 
 interface AdbResponse {

@@ -15,7 +15,7 @@
  */
 
 import {setProperty} from 'common/object_utils';
-import {convertSnakeToCamelCase} from 'common/string_utils';
+import {convertSnakeToCamelCase} from 'common/string_helpers';
 
 export type FakeProto = any;
 

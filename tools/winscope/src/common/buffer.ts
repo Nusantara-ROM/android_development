@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {binaryEncode} from './string_utils';
+import {binaryEncode} from './string_helpers';
 
 /**
  * A buffer that can be resized.

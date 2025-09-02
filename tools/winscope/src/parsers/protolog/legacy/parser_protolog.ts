@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert';
-import {utf8Encode} from 'common/string_utils';
+import {utf8Encode} from 'common/string_helpers';
 import {Timestamp} from 'common/time/time';
 import Long from 'long';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';

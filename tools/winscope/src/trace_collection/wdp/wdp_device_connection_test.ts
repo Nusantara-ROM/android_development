@@ -15,7 +15,7 @@
  */
 
 import {ArrayBufferBuilder} from 'common/buffer';
-import {binaryEncode} from 'common/string_utils';
+import {binaryEncode} from 'common/string_helpers';
 import {
   ProxyTracingErrors,
   ProxyTracingWarnings,
