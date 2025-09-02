@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import {Timestamp} from './time';
-
 /**
  * Utility functions for working with timestamps.
  */
@@ -90,7 +88,6 @@ export class UserTimestamp {
   /**
    * Checks if a string is in a human-readable real timestamp format.
    *
-   * @param timestampHuman The string to check.
    * @return True if the string is in a human-readable real timestamp format, false otherwise.
    */
   isHumanRealTimestampFormat(): boolean {
@@ -130,15 +127,4 @@ export class UserTimestamp {
     }
     return undefined;
   }
-}
-
-/**
- * Compares two timestamps.
- *
- * @param a The first timestamp.
- * @param b The second timestamp.
- * @return A negative number if a < b, a positive number if a > b, and 0 if a === b.
- */
-export function compareFn(a: Timestamp, b: Timestamp): number {
-  return Number(a.getValueNs() - b.getValueNs());
 }

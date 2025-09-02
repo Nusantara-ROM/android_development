@@ -28,6 +28,9 @@ export const ASIA_TIMEZONE_INFO: TimezoneInfo = {
   locale: 'en-US',
 };
 
+/**
+ * A TimestampConverter for UTC timezone.
+ */
 export const UTC_CONVERTER = new TimestampConverter(UTC_TIMEZONE_INFO, 0n, 0n);
 
 const noRTEOffset = new TimestampConverter({
@@ -35,6 +38,9 @@ const noRTEOffset = new TimestampConverter({
   locale: 'en-US',
 });
 
+/**
+ * A TimestampConverter with a UTC offset for Asia/Kolkata timezone.
+ */
 export const TIMESTAMP_CONVERTER_WITH_UTC_OFFSET = new TimestampConverter(
   ASIA_TIMEZONE_INFO,
   0n,
@@ -45,18 +51,41 @@ export const TIMESTAMP_CONVERTER_WITH_UTC_OFFSET = new TimestampConverter(
   }).makeTimestampFromRealNs(0n),
 );
 
+/**
+ * Creates a real timestamp.
+ *
+ * @param valueNs The timestamp value in nanoseconds.
+ * @return A real timestamp.
+ */
 export function makeRealTimestamp(valueNs: bigint): Timestamp {
   return UTC_CONVERTER.makeTimestampFromRealNs(valueNs);
 }
 
+/**
+ * Creates a real timestamp with a UTC offset.
+ *
+ * @param valueNs The timestamp value in nanoseconds.
+ * @return A real timestamp with a UTC offset.
+ */
 export function makeRealTimestampWithUTCOffset(valueNs: bigint): Timestamp {
   return TIMESTAMP_CONVERTER_WITH_UTC_OFFSET.makeTimestampFromRealNs(valueNs);
 }
 
+/**
+ * Creates an elapsed timestamp.
+ *
+ * @param valueNs The timestamp value in nanoseconds.
+ * @return An elapsed timestamp.
+ */
 export function makeElapsedTimestamp(valueNs: bigint): Timestamp {
   return noRTEOffset.makeTimestampFromMonotonicNs(valueNs);
 }
 
+/**
+ * Creates a zero timestamp.
+ *
+ * @return A zero timestamp.
+ */
 export function makeZeroTimestamp(): Timestamp {
   return noRTEOffset.makeZeroTimestamp();
 }
