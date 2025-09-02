@@ -16,7 +16,7 @@
 
 import {assertDefined} from 'common/assert';
 import {getFileDirectory, isZipFile, unzipFile} from 'common/io';
-import {utf8Decode} from 'common/string_utils';
+import {utf8Decode} from 'common/string_helpers';
 import {TimezoneInfo} from 'common/time/time';
 import {Analytics} from 'logging/analytics';
 import {UserWarning} from 'messaging/user_warning';

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {convertSnakeToCamelCase} from 'common/string_utils';
+import {convertSnakeToCamelCase} from 'common/string_helpers';
 import {ColumnType, RowIterator} from 'trace_processor/query_result';
 import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {PropertyTreeNodeFactory} from 'tree_node/property_tree_node_factory';

@@ -50,7 +50,7 @@
 import protobuf from 'protobufjs/minimal';
 import {defer, Deferred} from './deferred';
 import {assertExists, assertFalse, assertTrue} from './logging';
-import {utf8Decode} from './string_utils';
+import { utf8Decode } from './string_helpers';
 import {duration, Time, time} from './time';
 
 export type SqlValue = string | number | bigint | null | Uint8Array;

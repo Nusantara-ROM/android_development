@@ -49,7 +49,7 @@ import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert';
 import {isInputTextField, KeyboardEventKey} from 'common/dom_utils';
 import {PersistentStore} from 'common/store/persistent_store';
-import {parseBigIntStrippingUnit} from 'common/string_utils';
+import {parseBigIntStrippingUnit} from 'common/string_helpers';
 import {TimeRange, Timestamp, TimestampFormatType} from 'common/time/time';
 import {Analytics} from 'logging/analytics';
 import {

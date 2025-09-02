@@ -21,7 +21,7 @@ import {
   isDigit,
   isNumeric,
   parseBigIntStrippingUnit,
-} from './string_utils';
+} from './string_helpers';
 
 describe('StringUtils', () => {
   it('parses bigint', () => {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {isBlank, utf8Decode, utf8Encode} from 'common/string_utils';
+import {isBlank, utf8Decode, utf8Encode} from 'common/string_helpers';
 import {Timestamp} from 'common/time/time';
 import {AbstractParser} from 'parsers/legacy/abstract_parser';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';

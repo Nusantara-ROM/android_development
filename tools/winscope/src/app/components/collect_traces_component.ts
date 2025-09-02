@@ -35,11 +35,7 @@ import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {equal} from 'common/typed_array';
-import {
-  assertDefined,
-  assertTrue,
-  assertUnreachable,
-} from 'common/assert';
+import {assertDefined, assertTrue, assertUnreachable} from 'common/assert';
 import {Store} from 'common/store/store';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';

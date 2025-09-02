@@ -15,7 +15,7 @@
  */
 
 import {ArrayBufferBuilder, BufferToken, ResizableBuffer} from 'common/buffer';
-import {utf8Decode} from 'common/string_utils';
+import {utf8Decode} from 'common/string_helpers';
 import {AdbWebSocketStream} from './adb_websocket_stream';
 import {ErrorListener} from './websocket_stream';
 
