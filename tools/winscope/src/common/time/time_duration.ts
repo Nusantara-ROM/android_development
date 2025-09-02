@@ -21,7 +21,7 @@ import {TIME_UNIT_TO_NANO} from './time_units';
  * A class representing a time duration.
  */
 export class TimeDuration {
-  constructor(private timeDiffNs: bigint) {}
+  constructor(private readonly timeDiffNs: bigint) {}
   getValueNs(): bigint {
     return this.timeDiffNs;
   }

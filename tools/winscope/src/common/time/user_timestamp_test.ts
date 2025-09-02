@@ -14,39 +14,9 @@
  * limitations under the License.
  */
 
-import {
-  makeRealTimestamp,
-  timestampEqualityTester,
-} from 'test/unit/time_test_helpers';
-import {compareFn, UserTimestamp} from './user_timestamp';
+import {UserTimestamp} from './user_timestamp';
 
 describe('user_timestamp', () => {
-  beforeAll(() => {
-    jasmine.addCustomEqualityTester(timestampEqualityTester);
-  });
-
-  describe('compareFn', () => {
-    it('allows to sort arrays', () => {
-      const array = [
-        makeRealTimestamp(100n),
-        makeRealTimestamp(10n),
-        makeRealTimestamp(12n),
-        makeRealTimestamp(110n),
-        makeRealTimestamp(11n),
-      ];
-      array.sort(compareFn);
-
-      const expected = [
-        makeRealTimestamp(10n),
-        makeRealTimestamp(11n),
-        makeRealTimestamp(12n),
-        makeRealTimestamp(100n),
-        makeRealTimestamp(110n),
-      ];
-      expect(array).toEqual(expected);
-    });
-  });
-
   describe('isNsFormat', () => {
     it('accepts all expected inputs', () => {
       expect(new UserTimestamp('123').isNsFormat()).toBeTrue();

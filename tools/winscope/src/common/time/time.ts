@@ -143,7 +143,7 @@ export class Timestamp {
   /**
    * Adds a value to the timestamp.
    *
-   * @param n The value to add.
+   * @param other The value to add.
    * @return A new timestamp with the added value.
    */
   add(other: bigint | Timestamp): Timestamp {
@@ -160,7 +160,7 @@ export class Timestamp {
   /**
    * Subtracts a value from the timestamp.
    *
-   * @param n The value to subtract.
+   * @param other The value to subtract.
    * @return A new timestamp with the subtracted value.
    */
   minus(other: bigint | Timestamp): Timestamp {
@@ -176,7 +176,7 @@ export class Timestamp {
   /**
    * Multiplies the timestamp by a value.
    *
-   * @param n The value to multiply by.
+   * @param other The value to multiply by.
    * @return A new timestamp with the multiplied value.
    */
   times(other: bigint | Timestamp): Timestamp {
@@ -192,7 +192,7 @@ export class Timestamp {
   /**
    * Divides the timestamp by a value.
    *
-   * @param n The value to divide by.
+   * @param other The value to divide by.
    * @return A new timestamp with the divided value.
    */
   div(other: bigint | Timestamp): Timestamp {

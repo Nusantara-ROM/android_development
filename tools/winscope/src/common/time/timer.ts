@@ -24,23 +24,22 @@ export class Timer {
    * @param intervalMs The amount of time to wait between checks in milliseconds.
    */
   constructor(
-    private timeoutMs: number = 5000,
-    private intervalMs: number = 100,
+    private readonly timeoutMs = 5000,
+    private readonly intervalMs = 100,
   ) {}
 
   /**
    * Pauses execution for a specified amount of time.
-   * @param ms The number of milliseconds to sleep.
    */
   async sleepMs() {
-    await new Promise<void>((resolve) => setTimeout(resolve, this.intervalMs));
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, this.intervalMs);
+    });
   }
 
   /**
    * Waits for a condition to be met.
    * @param condition The condition to wait for.
-   * @param timeoutMs The maximum amount of time to wait in milliseconds.
-   * @param intervalMs The amount of time to wait between checks in milliseconds.
    */
   async wait(condition: () => boolean) {
     const startTimeMs = Date.now();

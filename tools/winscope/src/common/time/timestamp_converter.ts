@@ -15,74 +15,16 @@
  */
 
 import {assertDefined, assertTrue} from 'common/assert';
-import {divideAndRound} from 'common/bigint_math';
-import {
-  INVALID_TIME_NS,
-  Timestamp,
-  TimestampFormatter,
-  TimestampFormatType,
-  TimezoneInfo,
-} from './time';
+import {INVALID_TIME_NS, Timestamp, TimezoneInfo} from './time';
 import {TIME_UNIT_TO_NANO, TIME_UNITS} from './time_units';
 import {UserTimestamp} from './user_timestamp';
 import {UTCOffset} from './utc_offset';
-
-// Pre-T traces do not provide real-to-boottime or real-to-monotonic offsets,so
-// we group their timestamps under the "ELAPSED" umbrella term, and hope that
-// the CPU was not suspended before the tracing session, causing them to diverge.
-enum TimestampType {
-  ELAPSED,
-  REAL,
-}
-
-class RealTimestampFormatter implements TimestampFormatter {
-  constructor(private utcOffset: UTCOffset) {}
-
-  setUTCOffset(value: UTCOffset) {
-    this.utcOffset = value;
-  }
-
-  format(timestamp: Timestamp, type: TimestampFormatType): string {
-    const timestampNanos =
-      timestamp.getValueNs() + (this.utcOffset.getValueNs() ?? 0n);
-    const ms = divideAndRound(timestampNanos, BigInt(TIME_UNIT_TO_NANO.ms));
-    const formattedTimestamp = new Date(Number(ms))
-      .toISOString()
-      .replace('Z', '')
-      .replace('T', ', ');
-    if (type === TimestampFormatType.DROP_DATE) {
-      return assertDefined(new UserTimestamp(formattedTimestamp).extractTime());
-    }
-    return formattedTimestamp;
-  }
-}
-const REAL_TIMESTAMP_FORMATTER_UTC = new RealTimestampFormatter(
-  new UTCOffset(),
-);
-
-class ElapsedTimestampFormatter {
-  format(timestamp: Timestamp): string {
-    let leftNanos = timestamp.getValueNs();
-    const parts: Array<{value: bigint; unit: string}> = TIME_UNITS.slice()
-      .reverse()
-      .map(({nanosInUnit, unit}) => {
-        let amountOfUnit = BigInt(0);
-        if (leftNanos >= nanosInUnit) {
-          amountOfUnit = leftNanos / BigInt(nanosInUnit);
-        }
-        leftNanos = leftNanos % BigInt(nanosInUnit);
-        return {value: amountOfUnit, unit};
-      });
-
-    // Remove all 0ed units at start
-    while (parts.length > 1 && parts[0].value === 0n) {
-      parts.shift();
-    }
-
-    return parts.map((part) => `${part.value}${part.unit}`).join('');
-  }
-}
-const ELAPSED_TIMESTAMP_FORMATTER = new ElapsedTimestampFormatter();
+import {
+  ELAPSED_TIMESTAMP_FORMATTER,
+  REAL_TIMESTAMP_FORMATTER_UTC,
+  RealTimestampFormatter,
+  TimestampType,
+} from './timestamp_formatter';
 
 /**
  * An interface for converting timestamps for parsers.
@@ -387,7 +329,7 @@ export class TimestampConverter
     timestampHuman += this.utcOffset.format().slice(3);
 
     return this.makeTimestampFromRealNs(
-      BigInt(Date.parse(timestampHuman)) * BigInt(TIME_UNIT_TO_NANO['ms']) +
+      BigInt(Date.parse(timestampHuman)) * BigInt(TIME_UNIT_TO_NANO.ms) +
         BigInt(nanos),
     );
   }

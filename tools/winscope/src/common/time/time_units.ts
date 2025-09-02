@@ -15,26 +15,26 @@
  */
 
 /**
- * An enum for converting time units to nanoseconds.
+ * An map for converting time units to nanoseconds.
  */
-export enum TIME_UNIT_TO_NANO {
-  ns = 1,
-  us = 1000,
-  ms = 1000000,
-  s = 1000000 * 1000,
-  m = 1000000 * 1000 * 60,
-  h = 1000000 * 1000 * 60 * 60,
-  d = 1000000 * 1000 * 60 * 60 * 24,
-}
+export const TIME_UNIT_TO_NANO = {
+  ns: 1,
+  us: 1000,
+  ms: 1000000,
+  s: 1000000 * 1000,
+  m: 1000000 * 1000 * 60,
+  h: 1000000 * 1000 * 60 * 60,
+  d: 1000000 * 1000 * 60 * 60 * 24,
+};
 
 /**
  * A list of time units and their conversion factors to nanoseconds.
  */
 export const TIME_UNITS = [
-  {nanosInUnit: TIME_UNIT_TO_NANO['ns'], unit: 'ns'},
-  {nanosInUnit: TIME_UNIT_TO_NANO['ms'], unit: 'ms'},
-  {nanosInUnit: TIME_UNIT_TO_NANO['s'], unit: 's'},
-  {nanosInUnit: TIME_UNIT_TO_NANO['m'], unit: 'm'},
-  {nanosInUnit: TIME_UNIT_TO_NANO['h'], unit: 'h'},
-  {nanosInUnit: TIME_UNIT_TO_NANO['d'], unit: 'd'},
+  {nanosInUnit: TIME_UNIT_TO_NANO.ns, unit: 'ns'},
+  {nanosInUnit: TIME_UNIT_TO_NANO.ms, unit: 'ms'},
+  {nanosInUnit: TIME_UNIT_TO_NANO.s, unit: 's'},
+  {nanosInUnit: TIME_UNIT_TO_NANO.m, unit: 'm'},
+  {nanosInUnit: TIME_UNIT_TO_NANO.h, unit: 'h'},
+  {nanosInUnit: TIME_UNIT_TO_NANO.d, unit: 'd'},
 ];
