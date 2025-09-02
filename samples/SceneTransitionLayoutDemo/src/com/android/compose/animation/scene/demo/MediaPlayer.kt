@@ -164,7 +164,6 @@ fun ContentScope.MediaPlayer(
                         motionBuilderContext = motionBuilderContext,
                         deltaY = deltaY,
                         label = "mediaPlayer",
-                        debug = true,
                     )
                 }
                 .fillMaxWidth()
@@ -184,7 +183,6 @@ fun ContentScope.MediaPlayer(
                                 motionBuilderContext = motionBuilderContext,
                                 deltaY = deltaY,
                                 label = "mediaPlayer",
-                                debug = true,
                             )
                         }
                         .padding(8.dp)
