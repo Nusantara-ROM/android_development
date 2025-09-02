@@ -16,7 +16,7 @@
 
 import {CommonModule} from '@angular/common';
 import {ChangeDetectorRef, Component, Inject} from '@angular/core';
-import {assertDefined, assertUnreachable} from 'common/assert_utils';
+import {assertDefined, assertUnreachable} from 'common/assert';
 import {Timer} from 'common/time/timer';
 import {
   Message,

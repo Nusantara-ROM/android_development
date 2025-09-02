@@ -28,7 +28,7 @@ import {
   BrowserAnimationsModule,
   NoopAnimationsModule,
 } from '@angular/platform-browser/animations';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {TimeRange} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {makeRealTimestamp, UTC_CONVERTER} from 'test/unit/time_test_helpers';

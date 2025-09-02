@@ -39,7 +39,7 @@ import {
   assertDefined,
   assertTrue,
   assertUnreachable,
-} from 'common/assert_utils';
+} from 'common/assert';
 import {Store} from 'common/store/store';
 import {Analytics} from 'logging/analytics';
 import {ProgressListener} from 'messaging/progress_listener';

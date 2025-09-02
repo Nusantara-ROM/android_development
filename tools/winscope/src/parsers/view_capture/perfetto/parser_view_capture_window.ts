@@ -21,7 +21,7 @@ import {
   assertNumberOrUndefined,
   assertString,
   assertStringOrUndefined,
-} from 'common/assert_utils';
+} from 'common/assert';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {AddDefaults} from 'parsers/operations/add_defaults';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';

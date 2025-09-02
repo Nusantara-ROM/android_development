@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Store} from 'common/store/store';
 import {Timestamp} from 'common/time/time';
 import {TransitionStatus} from 'trace/transitions/status';

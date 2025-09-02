@@ -31,7 +31,7 @@ import {
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {TimelineData} from 'app/timeline_data';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {KeyboardEventCode} from 'common/dom_utils';
 import {PersistentStore} from 'common/store/persistent_store';
 import {TimeRange, Timestamp} from 'common/time/time';

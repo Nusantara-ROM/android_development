@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {isNumeric} from 'common/string_utils';
 import {EventTag} from 'parsers/events/legacy/event_tag';
 import {CujType} from 'trace/cuj_type';

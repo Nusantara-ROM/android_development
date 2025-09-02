@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined, assertUnreachable} from 'common/assert_utils';
+import {assertDefined, assertUnreachable} from 'common/assert';
 import {Timestamp} from 'common/time/time';
 import {RemoteToolTimestampConverter} from 'common/time/timestamp_converter';
 import {

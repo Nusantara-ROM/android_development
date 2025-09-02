@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {TracePositionUpdate} from 'messaging/winscope_event';
 import {
   makeRealTimestamp,

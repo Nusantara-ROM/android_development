@@ -30,7 +30,7 @@ import {
   NoopAnimationsModule,
 } from '@angular/platform-browser/animations';
 import {TimelineData} from 'app/timeline_data';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {KeyboardEventCode} from 'common/dom_utils';
 import {TimeRange, Timestamp} from 'common/time/time';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';

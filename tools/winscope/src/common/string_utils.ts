@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {assertTrue} from './assert_utils';
+import {assertTrue} from './assert';
 
 /**
  * String utility functions.

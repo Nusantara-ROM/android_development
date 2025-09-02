@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertTrue} from 'common/assert_utils';
+import {assertTrue} from 'common/assert';
 import {Sample} from 'mp4box';
 import {startsWithMagicNumber} from 'parsers/legacy/parsing_utils';
 import {

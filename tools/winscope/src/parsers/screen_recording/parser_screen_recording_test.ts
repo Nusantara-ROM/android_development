@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {

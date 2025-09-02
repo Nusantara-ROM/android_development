@@ -20,7 +20,7 @@ import {
   assertDefined,
   assertString,
   assertStringOrUndefined,
-} from 'common/assert_utils';
+} from 'common/assert';
 import {Rect} from 'common/geometry/rect';
 import {TraceGeometryData} from 'parsers/trace_geometry_data';
 import {TraceRectBuilderFromQueryRow} from 'parsers/trace_rect_builder_from_query_row';

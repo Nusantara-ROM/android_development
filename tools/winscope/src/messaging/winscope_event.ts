@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertTrue} from 'common/assert_utils';
+import {assertTrue} from 'common/assert';
 import {Timestamp} from 'common/time/time';
 import {Trace, TraceEntry} from 'trace_api/trace';
 import {TracePosition} from 'trace_api/trace_position';

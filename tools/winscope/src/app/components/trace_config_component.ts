@@ -39,7 +39,7 @@ import {
 } from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {overlayPanelStyles} from 'app/styles/overlay_panel.styles';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {isElementOverflowing} from 'common/dom_utils';
 import {globalConfig} from 'common/global_config';
 import {Store} from 'common/store/store';

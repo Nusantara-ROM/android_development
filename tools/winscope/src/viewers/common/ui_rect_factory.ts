@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Point} from 'common/geometry/point';
 import {DispatchedPointerAxis} from 'trace/input/dispatched_pointer_axis';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';

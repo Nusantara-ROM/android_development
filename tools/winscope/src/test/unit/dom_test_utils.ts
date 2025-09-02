@@ -17,7 +17,7 @@
 import {Type} from '@angular/core';
 import {ComponentFixture} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {KeyboardEventKey, KeyboardEventKeyCode} from 'common/dom_utils';
 
 export class DOMTestHelper<T> {

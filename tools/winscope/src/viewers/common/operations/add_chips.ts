@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertNumberOrUndefined} from 'common/assert_utils';
+import {assertNumberOrUndefined} from 'common/assert';
 import {LayerCompositionType} from 'trace/surface_flinger/layer_composition_type';
 import {Operation} from 'tree_node/operation';
 import {

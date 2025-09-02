@@ -19,7 +19,7 @@ import {
   assertBigIntOrUndefined,
   assertDefined,
   assertString,
-} from 'common/assert_utils';
+} from 'common/assert';
 import {UserWarning} from 'messaging/user_warning';
 import {
   DuplicateLayerIds,

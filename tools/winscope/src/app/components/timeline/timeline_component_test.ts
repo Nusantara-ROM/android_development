@@ -33,7 +33,7 @@ import {
   MatDrawerContent,
 } from 'app/components/bottomnav/bottom_drawer_component';
 import {TimelineData} from 'app/timeline_data';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {PersistentStore} from 'common/store/persistent_store';
 import {TimeRange} from 'common/time/time';
 import {

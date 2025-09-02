@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from './assert_utils';
+import {assertDefined} from './assert';
 
 /**
  * Type for HTTP request headers.

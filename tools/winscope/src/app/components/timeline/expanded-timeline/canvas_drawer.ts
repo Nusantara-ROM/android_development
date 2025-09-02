@@ -15,7 +15,7 @@
  */
 
 import {convertHexToRgb} from 'app/components/timeline/timeline_utils';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Rect} from 'common/geometry/rect';
 
 /**

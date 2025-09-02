@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Store} from 'common/store/store';
 import {ProtologColumnType} from 'trace/protolog/protolog_column_type';
 import {Trace} from 'trace_api/trace';

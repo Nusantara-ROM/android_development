@@ -19,7 +19,7 @@ import {
   assertBigIntOrUndefined,
   assertNumber,
   assertNumberOrUndefined,
-} from 'common/assert_utils';
+} from 'common/assert';
 import {CornerRadii} from 'common/geometry/corner_radii';
 import {Rect} from 'common/geometry/rect';
 import {Region} from 'common/geometry/region';

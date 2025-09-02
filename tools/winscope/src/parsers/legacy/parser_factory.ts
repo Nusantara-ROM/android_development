@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {assertTrue} from 'common/assert_utils';
+import {assertTrue} from 'common/assert';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {ProgressListener} from 'messaging/progress_listener';
 import {InvalidLegacyTrace} from 'messaging/user_warnings';

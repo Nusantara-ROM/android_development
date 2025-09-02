@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertUnreachable} from 'common/assert_utils';
+import {assertUnreachable} from 'common/assert';
 import {
   HttpRequest,
   HttpRequestHeaderType,

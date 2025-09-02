@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {makeElapsedTimestamp} from 'test/unit/time_test_helpers';

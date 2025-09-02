@@ -55,11 +55,12 @@ export function assertTrue(value: boolean, lazyErrorMessage?: () => string) {
  * Ensures at compile-time that a certain line is not reachable.
  * E.g., make sure that a switch/case handles all possible input values.
  *
- * @param _ The value to assert.
+ * @param value The value to assert.
  * @throws {Error} If the line is reachable.
  * @return The value, asserted to be unreachable.
  */
-export function assertUnreachable(_: never): never {
+// tslint:disable-next-line:no-unused-variable
+export function assertUnreachable(value: never): never {
   throw new Error('This line should never execute');
 }
 

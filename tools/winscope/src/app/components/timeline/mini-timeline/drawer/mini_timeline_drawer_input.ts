@@ -22,7 +22,7 @@ import {
   isTransitionWithUnknownStart,
 } from 'app/components/timeline/timeline_utils';
 import {TimelineData} from 'app/timeline_data';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {TimeRange, Timestamp} from 'common/time/time';
 import {Trace, TraceEntry} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';

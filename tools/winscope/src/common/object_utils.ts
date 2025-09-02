@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined, assertTrue} from './assert_utils';
+import {assertDefined, assertTrue} from './assert';
 
 /**
  * Represents a key in an object, which may be a simple key or an array key.

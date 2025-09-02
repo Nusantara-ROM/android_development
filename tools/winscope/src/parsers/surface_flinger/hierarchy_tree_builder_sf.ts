@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined, assertNumber} from 'common/assert_utils';
+import {assertDefined, assertNumber} from 'common/assert';
 import {HierarchyTreeBuilder} from 'parsers/hierarchy_tree_builder';
 import {PropertyTreeBuilderFromProto} from 'parsers/property_tree_builder_from_proto';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';

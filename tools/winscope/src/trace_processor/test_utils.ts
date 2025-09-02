@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Timestamp} from 'common/time/time';
 import {ColumnType, QueryResult, RowIterator} from './query_result';
 import {TraceProcessorFactory} from './trace_processor_factory';

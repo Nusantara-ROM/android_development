@@ -15,7 +15,7 @@
  */
 
 import {Component, Input} from '@angular/core';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Point} from 'common/geometry/point';
 import {Rect} from 'common/geometry/rect';
 import {Timestamp} from 'common/time/time';

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined, assertTrue} from 'common/assert_utils';
+import {assertDefined, assertTrue} from 'common/assert';
 import {divideAndRound} from 'common/bigint_math';
 import {
   INVALID_TIME_NS,

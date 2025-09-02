@@ -21,7 +21,7 @@ import {
   isTransitionWithUnknownEnd,
   isTransitionWithUnknownStart,
 } from 'app/components/timeline/timeline_utils';
-import {assertDefined, assertTrue} from 'common/assert_utils';
+import {assertDefined, assertTrue} from 'common/assert';
 import {Point} from 'common/geometry/point';
 import {Rect} from 'common/geometry/rect';
 import {TimeRange, Timestamp} from 'common/time/time';

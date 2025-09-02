@@ -48,7 +48,7 @@ import {
 } from '@angular/material/tabs';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {SEARCH_VIEWS} from 'app/trace_search/trace_search_initializer';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {TimeDuration} from 'common/time/time_duration';
 import {TIME_UNIT_TO_NANO} from 'common/time/time_units';
 import {Timer} from 'common/time/timer';

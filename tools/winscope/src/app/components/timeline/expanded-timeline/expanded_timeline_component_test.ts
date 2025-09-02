@@ -29,7 +29,7 @@ import {
   NoopAnimationsModule,
 } from '@angular/platform-browser/animations';
 import {TimelineData} from 'app/timeline_data';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {DOMTestHelper} from 'test/unit/dom_test_utils';
 import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {makeRealTimestamp, UTC_CONVERTER} from 'test/unit/time_test_helpers';

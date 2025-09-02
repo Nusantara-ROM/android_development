@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {ParserTimestampConverter} from 'common/time/timestamp_converter';
 import {throwIfMagicNumberDoesNotMatch} from 'parsers/legacy/parsing_utils';
 import root from 'protos/viewcapture/udc/json';

@@ -21,7 +21,7 @@ import {
   assertNumberOrUndefined,
   assertString,
   assertStringOrUndefined,
-} from 'common/assert_utils';
+} from 'common/assert';
 import {HierarchyTreeBuilderLog} from 'parsers/hierarchy_tree_builder_log';
 import {InputCoordinatePropagator} from 'parsers/input/operations/input_coordinate_propagator';
 import {TranslateIntDef} from 'parsers/operations/translate_intdef';

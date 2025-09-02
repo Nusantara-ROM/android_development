@@ -41,7 +41,7 @@ import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {DomSanitizer} from '@angular/platform-browser';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Distance} from 'common/geometry/distance';
 import {PersistentStore} from 'common/store/persistent_store';
 import {getRootUrl} from 'common/window';

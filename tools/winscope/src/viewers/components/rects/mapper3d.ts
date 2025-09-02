@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Box3D} from 'common/geometry/box3d';
 import {Distance} from 'common/geometry/distance';
 import {Point3D} from 'common/geometry/point3d';

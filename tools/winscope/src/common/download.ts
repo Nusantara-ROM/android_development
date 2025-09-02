@@ -16,7 +16,7 @@
 
 import {trySanitizeUrl} from 'compat/safevalues';
 import {setAnchorHref} from 'compat/safevalues/dom';
-import {assertDefined} from './assert_utils';
+import {assertDefined} from './assert';
 
 /**
  * Type for requesting a download

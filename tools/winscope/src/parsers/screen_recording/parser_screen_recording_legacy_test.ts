@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
 import {makeElapsedTimestamp} from 'test/unit/time_test_helpers';
 import {CoarseVersion} from 'trace_api/coarse_version';

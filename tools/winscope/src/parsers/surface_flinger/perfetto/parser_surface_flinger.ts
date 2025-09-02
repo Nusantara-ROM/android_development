@@ -18,7 +18,7 @@ import {
   assertBigIntOrUndefined,
   assertDefined,
   assertStringOrUndefined,
-} from 'common/assert_utils';
+} from 'common/assert';
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {queryVsyncId} from 'parsers/perfetto/utils';
 import {EntryHierarchyTreeFactory} from 'parsers/surface_flinger/entry_hierarchy_tree_factory';

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import Long from 'long';
 import {FailedToConvertLegacyTraces} from 'messaging/user_warnings';
 import {perfetto} from 'protos/perfetto/trace/static';

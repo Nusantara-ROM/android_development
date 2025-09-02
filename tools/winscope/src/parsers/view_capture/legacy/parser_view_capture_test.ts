@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {utf8Encode} from 'common/string_utils';
 import Long from 'long';
 import {perfetto} from 'protos/perfetto/trace/static';

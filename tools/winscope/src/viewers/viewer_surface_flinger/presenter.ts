@@ -19,7 +19,7 @@ import {
   assertDefined,
   assertNumberOrUndefined,
   assertString,
-} from 'common/assert_utils';
+} from 'common/assert';
 import {createPersistentStoreProxy} from 'common/store/persistent_store_proxy';
 import {Store} from 'common/store/store';
 import {

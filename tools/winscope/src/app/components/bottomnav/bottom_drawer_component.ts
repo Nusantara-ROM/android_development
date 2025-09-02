@@ -36,7 +36,7 @@ import {
   NgZone,
   ViewEncapsulation,
 } from '@angular/core';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Subject} from 'rxjs';
 import {debounceTime, takeUntil} from 'rxjs/operators';
 

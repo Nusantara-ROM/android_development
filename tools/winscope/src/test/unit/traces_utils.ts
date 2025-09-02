@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {AbsoluteFrameIndex} from 'trace_api/index_types';
 import {Trace} from 'trace_api/trace';
 import {TraceType} from 'trace_api/trace_type';

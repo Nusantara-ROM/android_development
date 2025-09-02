@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {FilterFlag} from 'common/filter_flag';
 import {Timestamp} from 'common/time/time';
 import {WindowType} from 'trace/window_manager/window_type';

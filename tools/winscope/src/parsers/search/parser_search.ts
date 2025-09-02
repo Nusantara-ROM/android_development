@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertBigInt, assertDefined} from 'common/assert_utils';
+import {assertBigInt, assertDefined} from 'common/assert';
 import {NOT_IMPLEMENTED_ERROR} from 'common/errors';
 import {INVALID_TIME_NS, Timestamp} from 'common/time/time';
 import {TimestampConverter} from 'common/time/timestamp_converter';

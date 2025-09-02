@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Computation} from 'tree_node/computation';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 

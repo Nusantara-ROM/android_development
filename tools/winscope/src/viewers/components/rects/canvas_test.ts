@@ -15,7 +15,7 @@
  */
 
 import {equal} from 'common/typed_array';
-import {assertDefined} from 'common/assert_utils';
+import {assertDefined} from 'common/assert';
 import {Box3D} from 'common/geometry/box3d';
 import {CornerRadii} from 'common/geometry/corner_radii';
 import {Point3D} from 'common/geometry/point3d';
