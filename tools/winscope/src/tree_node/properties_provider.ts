@@ -15,7 +15,6 @@
  */
 
 import {assertDefined} from 'common/assert';
-import {SetFormatters} from 'viewers/operations/set_formatters';
 import {OperationChain} from './operation_chain';
 import {PropertySource, PropertyTreeNode} from './property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from './property_tree_node_factory';
@@ -48,7 +47,6 @@ export class PropertiesProvider {
   }
 
   addEagerProperty(property: PropertyTreeNode) {
-    new SetFormatters().apply(property);
     this.eagerPropertiesRoot.addOrReplaceChild(property);
   }
 
