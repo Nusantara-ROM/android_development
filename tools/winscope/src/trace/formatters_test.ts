@@ -27,7 +27,7 @@ import {
   makeRectNode,
   makeSizeNode,
   makeTransformNode,
-} from 'test/unit/tree_node_utils';
+} from 'test/unit/tree_node_test_helpers';
 import {PropertySource, PropertyTreeNode} from 'tree_node/property_tree_node';
 import {
   BUFFER_FORMATTER,

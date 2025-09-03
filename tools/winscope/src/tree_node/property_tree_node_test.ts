@@ -22,7 +22,7 @@ import {
   makePositionNode,
   makeRectNode,
   makeSizeNode,
-} from 'test/unit/tree_node_utils';
+} from 'test/unit/tree_node_test_helpers';
 
 describe('property_tree_node', () => {
   it('identifies color', () => {

@@ -26,7 +26,7 @@ import {
   makeRectNode,
   makeSizeNode,
   makeTransformNode,
-} from 'test/unit/tree_node_utils';
+} from 'test/unit/tree_node_test_helpers';
 import {EMPTY_OBJ_STRING, LAYER_ID_FORMATTER} from 'trace/formatters';
 import {
   TamperedMessageType,

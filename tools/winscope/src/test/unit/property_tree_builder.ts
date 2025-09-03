@@ -22,6 +22,12 @@ import {
 } from 'tree_node/property_tree_node';
 import {TreeBuilder} from './tree_builder';
 
+/**
+ * A test utility class for building `PropertyTreeNode` instances and their
+ * hierarchies in a more readable way within unit tests.
+ * It extends `TreeBuilder` to provide specific methods for configuring
+ * `PropertyTreeNode` properties like source, value, and formatter.
+ */
 export class PropertyTreeBuilder extends TreeBuilder<
   PropertyTreeNode,
   ChildProperty
@@ -91,6 +97,11 @@ export class PropertyTreeBuilder extends TreeBuilder<
   }
 }
 
+/**
+ * Represents a child property used when building a `PropertyTreeNode` tree
+ * with `PropertyTreeBuilder`. It defines the structure of a child node,
+ * including its name, value, optional children, source, and formatter.
+ */
 export interface ChildProperty {
   name: string;
   value?: any;

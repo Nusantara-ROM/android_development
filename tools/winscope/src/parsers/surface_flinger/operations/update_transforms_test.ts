@@ -20,7 +20,7 @@ import {PropertyTreeBuilder} from 'test/unit/property_tree_builder';
 import {
   makeCalculatedPropertyNode,
   makePropertyNode,
-} from 'test/unit/tree_node_utils';
+} from 'test/unit/tree_node_test_helpers';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {UpdateTransforms} from './update_transforms';
 
