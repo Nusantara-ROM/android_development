@@ -32,7 +32,7 @@ import {
   AppTraceViewRequestHandled,
   ShowTraceUploadWarning,
 } from 'messaging/winscope_event';
-import {DOMTestHelper} from 'test/unit/dom_test_utils';
+import {DOMTestHelper} from 'test/unit/dom_test_helpers';
 import {getFixtureFile} from 'test/unit/io_helpers';
 import {makeZeroTimestamp} from 'test/unit/time_test_helpers';
 import {TraceBuilder} from 'test/unit/trace_builder';

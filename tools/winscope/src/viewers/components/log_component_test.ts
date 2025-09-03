@@ -30,9 +30,9 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert';
-import {KeyboardEventKey} from 'common/dom_utils';
+import {KeyboardEventKey} from 'common/dom';
 import {Timestamp} from 'common/time/time';
-import {DOMTestHelper} from 'test/unit/dom_test_utils';
+import {DOMTestHelper} from 'test/unit/dom_test_helpers';
 import {
   makeElapsedTimestamp,
   makeRealTimestamp,

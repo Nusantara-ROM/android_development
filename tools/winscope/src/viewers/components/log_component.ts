@@ -40,7 +40,7 @@ import {
   isElementOverflowing,
   isElementVisible,
   KeyboardEventKey,
-} from 'common/dom_utils';
+} from 'common/dom';
 import {Timestamp, TimestampFormatType} from 'common/time/time';
 import {Timer} from 'common/time/timer';
 import {TraceType} from 'trace_api/trace_type';

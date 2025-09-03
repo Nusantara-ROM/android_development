@@ -28,7 +28,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {Color} from 'app/colors';
-import {isElementOverflowing, KeyboardEventKey} from 'common/dom_utils';
+import {isElementOverflowing, KeyboardEventKey} from 'common/dom';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {PersistentStore} from 'common/store/persistent_store';
 import {Warning} from 'common/warning';
