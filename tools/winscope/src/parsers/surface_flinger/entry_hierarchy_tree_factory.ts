@@ -258,16 +258,8 @@ export class EntryHierarchyTreeFactory {
         // some row ids will be repeated due querying multiple fill region rects
         const layerIdBigint = assertBigInt(it.get('layer_id'));
         const layerRects = rects.get(layerIdBigint);
-        if (layerRects?.input) {
-          const fillRegionRect = RectExtractor.extractFillRegionRect(
-            it,
-            traceGeometryData,
-          );
-          if (fillRegionRect) {
-            assertDefined(layerRects.input.fillRegion).rects.push(
-              fillRegionRect,
-            );
-          }
+        if (layerRects) {
+          this.tryUpdateFillRegion(layerRects, it, traceGeometryData);
         }
         continue;
       }
@@ -299,6 +291,7 @@ export class EntryHierarchyTreeFactory {
         traceProcessor,
       );
       layers.push(layerProps);
+      const uniqueNodeId = layerProps.getEagerProperties().id;
 
       if (visibleLayerInputRects.has(layerIdBigint)) {
         const precomputedRects = assertDefined(
@@ -308,23 +301,13 @@ export class EntryHierarchyTreeFactory {
       } else {
         const layerRects = RectExtractor.extractLayerRects(
           it,
-          uniqueRowId.toString(),
+          uniqueNodeId,
           layerName,
           traceGeometryData,
         );
         if (layerRects) {
           rects.set(layerIdBigint, layerRects);
-          if (layerRects?.input) {
-            const fillRegionRect = RectExtractor.extractFillRegionRect(
-              it,
-              traceGeometryData,
-            );
-            if (fillRegionRect) {
-              assertDefined(layerRects.input.fillRegion).rects.push(
-                fillRegionRect,
-              );
-            }
-          }
+          this.tryUpdateFillRegion(layerRects, it, traceGeometryData);
         }
       }
     }
@@ -348,6 +331,22 @@ export class EntryHierarchyTreeFactory {
       rects,
       warnings,
     };
+  }
+
+  private tryUpdateFillRegion(
+    layerRects: LayerRects,
+    row: RowIterator,
+    traceGeometryData: TraceGeometryData,
+  ) {
+    if (layerRects?.input) {
+      const fillRegionRect = RectExtractor.extractFillRegionRect(
+        row,
+        traceGeometryData,
+      );
+      if (fillRegionRect) {
+        assertDefined(layerRects.input.fillRegion).rects.push(fillRegionRect);
+      }
+    }
   }
 
   private makeLayerPropertiesProvider(

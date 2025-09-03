@@ -34,13 +34,6 @@ describe('SurfaceFlinger RectExtractor', () => {
     dsdy: 5,
     ty: 6,
   });
-  let mockTraceGeometryData: jasmine.SpyObj<TraceGeometryData>;
-  beforeEach(() => {
-    mockTraceGeometryData = jasmine.createSpyObj<TraceGeometryData>(
-      'TraceGeometryData',
-      ['getRect', 'getTransform'],
-    );
-  });
   const rectId1 = 'RectId1';
   const rectName1 = 'RectName1';
 
@@ -49,7 +42,18 @@ describe('SurfaceFlinger RectExtractor', () => {
   const displayRectGeom = new Rect(0, 0, 1000, 2000);
   const fillRegionGeom = new Rect(1, 2, 3, 4);
 
+  let mockTraceGeometryData: jasmine.SpyObj<TraceGeometryData>;
+
+  beforeEach(() => {
+    mockTraceGeometryData = jasmine.createSpyObj<TraceGeometryData>(
+      'TraceGeometryData',
+      ['getRect', 'getTransform'],
+    );
+  });
+
   describe('extractAllRects', () => {
+    const snapshotId = 100n;
+
     let snapshotResult: jasmine.SpyObj<QueryResult>;
     let rectsResult: jasmine.SpyObj<QueryResult>;
     let snapshotIter: jasmine.SpyObj<RowIterator>;
@@ -57,7 +61,6 @@ describe('SurfaceFlinger RectExtractor', () => {
     let extractDisplayRectsSpy: jasmine.Spy;
     let extractLayerInputRectsSpy: jasmine.Spy;
 
-    const snapshotId = 100n;
     beforeEach(() => {
       snapshotIter = makeSpyRowIterator();
       snapshotResult = jasmine.createSpyObj<QueryResult>('snapshotResult', [
@@ -82,7 +85,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       );
       extractLayerInputRectsSpy = spyOn(
         RectExtractor,
-        'extractLayerInputRectsForSnapshot',
+        'extractLayerRectsForSnapshot',
       );
       extractDisplayRectsSpy.and.callFake(
         (iter: RowIterator, currentId: bigint) => {
@@ -278,7 +281,7 @@ describe('SurfaceFlinger RectExtractor', () => {
     }
   });
 
-  describe('extractLayerInputRectsForSnapshot', () => {
+  describe('extractLayerRectsForSnapshot', () => {
     let layersIter: jasmine.SpyObj<RowIterator>;
     let extractLayerRectsSpy: jasmine.Spy;
 
@@ -295,7 +298,7 @@ describe('SurfaceFlinger RectExtractor', () => {
 
       extractLayerRectsSpy.and.returnValue({input: mockInputRect});
 
-      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+      const {rects} = RectExtractor.extractLayerRectsForSnapshot(
         layersIter,
         currSnapshotId,
         mockTraceGeometryData,
@@ -327,7 +330,7 @@ describe('SurfaceFlinger RectExtractor', () => {
         {input: mockInputRect2},
       );
 
-      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+      const {rects} = RectExtractor.extractLayerRectsForSnapshot(
         layersIter,
         currSnapshotId,
         mockTraceGeometryData,
@@ -348,7 +351,7 @@ describe('SurfaceFlinger RectExtractor', () => {
         bounds: mockBoundsRect,
       });
 
-      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+      const {rects} = RectExtractor.extractLayerRectsForSnapshot(
         layersIter,
         currSnapshotId,
         mockTraceGeometryData,
@@ -386,7 +389,7 @@ describe('SurfaceFlinger RectExtractor', () => {
         },
       );
 
-      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+      const {rects} = RectExtractor.extractLayerRectsForSnapshot(
         layersIter,
         currSnapshotId,
         mockTraceGeometryData,
@@ -412,7 +415,7 @@ describe('SurfaceFlinger RectExtractor', () => {
         input: mockInput,
       });
 
-      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+      const {rects} = RectExtractor.extractLayerRectsForSnapshot(
         layersIter,
         currSnapshotId,
         mockTraceGeometryData,
@@ -455,7 +458,7 @@ describe('SurfaceFlinger RectExtractor', () => {
       );
       extractFillRegionRectSpy.and.returnValue(new Rect(2, 2, 2, 2));
 
-      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+      const {rects} = RectExtractor.extractLayerRectsForSnapshot(
         layersIter,
         currSnapshotId,
         mockTraceGeometryData,
