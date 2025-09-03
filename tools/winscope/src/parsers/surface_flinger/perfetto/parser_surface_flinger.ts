@@ -22,7 +22,10 @@ import {
 import {AbstractParser} from 'parsers/perfetto/abstract_parser';
 import {queryVsyncId} from 'parsers/perfetto/utils';
 import {EntryHierarchyTreeFactory} from 'parsers/surface_flinger/entry_hierarchy_tree_factory';
-import {RectExtractor} from 'parsers/surface_flinger/rect_extractor';
+import {
+  RectExtractor,
+  SnapshotRects,
+} from 'parsers/surface_flinger/rect_extractor';
 import {TraceGeometryData} from 'parsers/trace_geometry_data';
 import {
   CustomQueryParserResultTypeMap,
@@ -33,17 +36,10 @@ import {EntriesRange} from 'trace_api/index_types';
 import {TraceType} from 'trace_api/trace_type';
 import {QueryResult} from 'trace_processor/query_result';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
-import {LayerRects} from 'parsers/surface_flinger/rect_extractor';
-import {TraceRect} from 'tree_node/trace_rect';
 
 export class ParserSurfaceFlinger extends AbstractParser<HierarchyTreeNode> {
   private readonly factory = new EntryHierarchyTreeFactory();
-  private visibleAndDisplayRects:
-    | Map<
-        bigint,
-        {displayRects: TraceRect[]; layerRects: Map<bigint, LayerRects>}
-      >
-    | undefined = undefined;
+  private visibleAndDisplayRects: Map<bigint, SnapshotRects> | undefined;
 
   override getTraceType(): TraceType {
     return TraceType.SURFACE_FLINGER;

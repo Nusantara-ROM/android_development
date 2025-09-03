@@ -32,11 +32,8 @@ export class RectExtractor {
     snapshotResult: QueryResult,
     rectsResult: QueryResult,
     traceGeometryData: TraceGeometryData,
-  ) {
-    const allRectsMap = new Map<
-      bigint,
-      {displayRects: TraceRect[]; layerRects: Map<bigint, LayerRects>}
-    >();
+  ): Map<bigint, SnapshotRects> {
+    const allRectsMap = new Map<bigint, SnapshotRects>();
     const currRect = rectsResult.iter({});
     const currSnapshot = snapshotResult.iter({});
     while (currSnapshot.valid()) {
@@ -47,8 +44,8 @@ export class RectExtractor {
         currentId,
         traceGeometryData,
       );
-      // currRect is iterated in extractLayerInputRectsForSnapshot
-      const {rects} = RectExtractor.extractLayerInputRectsForSnapshot(
+      // currRect is iterated in extractLayerRectsForSnapshot
+      const {rects} = RectExtractor.extractLayerRectsForSnapshot(
         currRect,
         currentId,
         traceGeometryData,
@@ -62,7 +59,7 @@ export class RectExtractor {
     return allRectsMap;
   }
 
-  static extractLayerInputRectsForSnapshot(
+  static extractLayerRectsForSnapshot(
     rectIter: RowIterator,
     currSnapshotId: bigint,
     traceGeometryData: TraceGeometryData,
@@ -313,4 +310,9 @@ export class RectExtractor {
 export interface LayerRects {
   bounds?: TraceRect;
   input?: TraceRect;
+}
+
+export interface SnapshotRects {
+  displayRects: TraceRect[];
+  layerRects: Map<bigint, LayerRects>;
 }
