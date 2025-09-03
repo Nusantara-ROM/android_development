@@ -22,13 +22,15 @@ import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from './property_tree_node_factory';
 
 export type LazyPropertiesStrategyType = () => Promise<PropertyTreeNode>;
 
+/**
+ * A provider for properties of a tree node.
+ */
 export class PropertiesProvider {
-  private eagerPropertiesRoot: PropertyTreeNode;
   private lazyPropertiesRoot: PropertyTreeNode | undefined;
   private allPropertiesRoot: PropertyTreeNode | undefined;
 
   constructor(
-    eagerPropertiesRoot: PropertyTreeNode,
+    private readonly eagerPropertiesRoot: PropertyTreeNode,
     private readonly lazyPropertiesStrategy:
       | LazyPropertiesStrategyType
       | undefined,

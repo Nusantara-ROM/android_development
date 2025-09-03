@@ -14,21 +14,38 @@
  * limitations under the License.
  */
 
-import {GeometryFactory} from './geometry_factory';
+import {makeRect} from './geometry_factory';
 import {PropertyTreeNode} from './property_tree_node';
 
+/**
+ * Checks if a PropertyTreeNode represents an "empty" object.
+ *
+ * This function is useful for filtering out objects that, despite having some
+ * structure, represent a null or empty state (e.g., a color with alpha 0,
+ * or an empty rectangle).
+ * @param obj The PropertyTreeNode to check.
+ * @return True if the object is considered empty, false otherwise.
+ */
 export function isEmptyObj(obj: PropertyTreeNode): boolean {
   if (isColor(obj)) {
     return isEmptyColor(obj);
   }
 
   if (isRect(obj)) {
-    return GeometryFactory.makeRect(obj).isEmpty();
+    return makeRect(obj).isEmpty();
   }
 
   return false;
 }
 
+/**
+ * Checks if a PropertyTreeNode represents a color.
+ *
+ * This is useful for identifying color definitions within raw trace data,
+ * allowing for special handling or visualization of color properties.
+ * @param obj The PropertyTreeNode to check.
+ * @return True if the object contains color components (r, g, b, or a), false otherwise.
+ */
 export function isColor(obj: PropertyTreeNode): boolean {
   return (
     (obj.getChildByName('r') !== undefined &&
@@ -38,6 +55,14 @@ export function isColor(obj: PropertyTreeNode): boolean {
   );
 }
 
+/**
+ * Checks if a PropertyTreeNode represents a rectangle.
+ *
+ * This helps in identifying geometric bounds within the trace data,
+ * which can be used for layout or visual representation.
+ * @param obj The PropertyTreeNode to check.
+ * @return True if the object has 'right'/'bottom' or 'left'/'top' children, false otherwise.
+ */
 export function isRect(obj: PropertyTreeNode): boolean {
   return (
     (obj.getChildByName('right') !== undefined &&
@@ -47,6 +72,14 @@ export function isRect(obj: PropertyTreeNode): boolean {
   );
 }
 
+/**
+ * Checks if a PropertyTreeNode represents a buffer.
+ *
+ * This is useful for identifying properties related to graphical buffers,
+ * such as stride and format.
+ * @param obj The PropertyTreeNode to check.
+ * @return True if the object has 'stride' and 'format' children, false otherwise.
+ */
 export function isBuffer(obj: PropertyTreeNode): boolean {
   return (
     obj.getChildByName('stride') !== undefined &&
@@ -54,6 +87,14 @@ export function isBuffer(obj: PropertyTreeNode): boolean {
   );
 }
 
+/**
+ * Checks if a PropertyTreeNode represents a size.
+ *
+ * This helps in extracting dimension information (width and height) from
+ * the raw data.
+ * @param obj The PropertyTreeNode to check.
+ * @return True if the object has 'w' or 'h' children and at most two children in total, false otherwise.
+ */
 export function isSize(obj: PropertyTreeNode): boolean {
   return (
     obj.getAllChildren().length <= 2 &&
@@ -62,6 +103,14 @@ export function isSize(obj: PropertyTreeNode): boolean {
   );
 }
 
+/**
+ * Checks if a PropertyTreeNode represents a position.
+ *
+ * This is useful for extracting coordinate information (x and y) from
+ * the raw data.
+ * @param obj The PropertyTreeNode to check.
+ * @return True if the object has 'x' or 'y' children and at most two children in total, false otherwise.
+ */
 export function isPosition(obj: PropertyTreeNode): boolean {
   return (
     obj.getAllChildren().length <= 2 &&
@@ -70,6 +119,15 @@ export function isPosition(obj: PropertyTreeNode): boolean {
   );
 }
 
+/**
+ * Checks if a PropertyTreeNode represents a region.
+ *
+ * A region is defined as an object containing a 'rect' child, where all
+ * children of 'rect' are themselves rectangles. This is useful for parsing
+ * complex region definitions in trace data.
+ * @param obj The PropertyTreeNode to check.
+ * @return True if the object is a valid region, false otherwise.
+ */
 export function isRegion(obj: PropertyTreeNode): boolean {
   const rect = obj.getChildByName('rect');
   return (
@@ -80,6 +138,15 @@ export function isRegion(obj: PropertyTreeNode): boolean {
   );
 }
 
+/**
+ * Checks if a property tree node is a matrix.
+ *
+ * This function identifies objects that represent transformation matrices
+ * by looking for common matrix components like 'dsdx', 'dtdx', etc.,
+ * and ensuring no 'type' field is present.
+ * @param obj The property tree node to check.
+ * @return True if the object is a matrix, false otherwise.
+ */
 export function isMatrix(obj: PropertyTreeNode): boolean {
   return (
     !obj.getChildByName('type') &&

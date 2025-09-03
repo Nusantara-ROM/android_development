@@ -23,6 +23,9 @@ import {
 } from './properties_provider';
 import {PropertyTreeNode} from './property_tree_node';
 
+/**
+ * A builder for a properties provider.
+ */
 export class PropertiesProviderBuilder {
   private eagerProperties: PropertyTreeNode | undefined;
   private lazyPropertiesStrategy: LazyPropertiesStrategyType | undefined;

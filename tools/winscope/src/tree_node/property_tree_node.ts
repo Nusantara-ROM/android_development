@@ -16,6 +16,9 @@
 
 import {TreeNode} from './tree_node';
 
+/**
+ * A node in a property tree.
+ */
 export class PropertyTreeNode extends TreeNode {
   protected formatter: PropertyFormatter | undefined = undefined;
   protected internalIsRoot = false;
@@ -55,6 +58,9 @@ export class PropertyTreeNode extends TreeNode {
   }
 }
 
+/**
+ * The source of a property.
+ */
 export enum PropertySource {
   PROTO,
   DEFAULT,
@@ -62,6 +68,9 @@ export enum PropertySource {
   TP,
 }
 
-export interface PropertyFormatter {
+/**
+ * A formatter for a property tree node.
+ */
+export declare interface PropertyFormatter {
   format(node: PropertyTreeNode): string;
 }

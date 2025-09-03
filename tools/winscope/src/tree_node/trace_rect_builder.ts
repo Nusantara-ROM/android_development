@@ -20,6 +20,9 @@ import {TransformMatrix} from 'common/geometry/transform_matrix';
 import {Transform} from 'common/geometry/transform';
 import {TraceRect} from './trace_rect';
 
+/**
+ * A builder for a trace rectangle.
+ */
 export class TraceRectBuilder {
   private x: number | undefined;
   private y: number | undefined;

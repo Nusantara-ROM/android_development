@@ -20,13 +20,16 @@ import {PropertyTreeNode} from './property_tree_node';
 import {TraceRect} from './trace_rect';
 import {TreeNode} from './tree_node';
 
+/**
+ * A node in a hierarchy tree.
+ */
 export class HierarchyTreeNode extends TreeNode {
   private rects: TraceRect[] | undefined;
   private secondaryRects: TraceRect[] | undefined;
   private zParent: HierarchyTreeNode | undefined;
   private parent: this | undefined;
-  private relativeChildren: HierarchyTreeNode[] = [];
-  private warnings: Warning[] = [];
+  private readonly relativeChildren: HierarchyTreeNode[] = [];
+  private readonly warnings: Warning[] = [];
 
   constructor(
     id: string,

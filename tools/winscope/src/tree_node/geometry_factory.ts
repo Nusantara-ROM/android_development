@@ -16,12 +16,16 @@
 import {Rect} from 'common/geometry/rect';
 import {PropertyTreeNode} from './property_tree_node';
 
-export class GeometryFactory {
-  static makeRect(node: PropertyTreeNode): Rect {
-    const left = node.getChildByName('left')?.getValue() ?? 0;
-    const top = node.getChildByName('top')?.getValue() ?? 0;
-    const right = node.getChildByName('right')?.getValue() ?? 0;
-    const bottom = node.getChildByName('bottom')?.getValue() ?? 0;
-    return new Rect(left, top, right - left, bottom - top);
-  }
+/**
+ * Creates a `Rect` from a `PropertyTreeNode`.
+ *
+ * @param node The property tree node to extract the rectangle from.
+ * @return The created rectangle.
+ */
+export function makeRect(node: PropertyTreeNode): Rect {
+  const left = node.getChildByName('left')?.getValue() ?? 0;
+  const top = node.getChildByName('top')?.getValue() ?? 0;
+  const right = node.getChildByName('right')?.getValue() ?? 0;
+  const bottom = node.getChildByName('bottom')?.getValue() ?? 0;
+  return new Rect(left, top, right - left, bottom - top);
 }
