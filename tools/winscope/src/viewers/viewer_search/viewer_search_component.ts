@@ -209,7 +209,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
           [mat-stretch-tabs]="false"
           (selectedTabChange)="onResultTabChange($event)"
           class="result-tabs">
-          @for (curr of getCurrentSearchesWithResults(); track trackResultTabByUid($index, curr)) {
+          @for (curr of getCurrentSearchesWithResults(); track curr.uid) {
             <mat-tab
               [label]="getQueryLabel(curr.uid)">
               <div class="result">
@@ -249,7 +249,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
           </span>
 
           <cdk-accordion class="how-to-accordion" [multi]="true">
-            @for (searchView of SEARCH_VIEWS; track searchView) {
+            @for (searchView of SEARCH_VIEWS; track searchView.name) {
               <cdk-accordion-item class="accordion-item" #accordionItem="cdkAccordionItem">
                 <span
                   class="mat-body-1 accordion-item-header"
@@ -278,7 +278,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
                     </span>
                     <span class="mat-body-2">Spec:</span>
                     <table>
-                      @for (column of searchView.columns; track column) {
+                      @for (column of searchView.columns; track column.name) {
                         <tr>
                           <td><code>{{column.name}}</code></td>
                           <td class="mat-body-1">{{column.desc}}</td>
@@ -288,7 +288,7 @@ import {CurrentSearch, ListedSearch, UiData} from './ui_data';
                     <span class="mat-body-2">
                       Examples:
                     </span>
-                    @for (example of searchView.examples; track example) {
+                    @for (example of searchView.examples; track example.query) {
                       <pre><code>{{example.query}}</code></pre>
                       <span class="mat-body-1 indented"><i>{{example.desc}}</i></span>
                     }
@@ -648,10 +648,6 @@ export class ViewerSearchComponent extends ViewerComponent<UiData> {
   onResultTabChange(event: MatTabChangeEvent) {
     this.checkScrollViewport = event.index;
     new Timer(100, 50).sleepMs().then(() => (this.checkScrollViewport = -1));
-  }
-
-  trackResultTabByUid(i: number, j: CurrentSearch) {
-    return j.uid;
   }
 
   private updateSearchSections(simpleChanges: SimpleChanges) {

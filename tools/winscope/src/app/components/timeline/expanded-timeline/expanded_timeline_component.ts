@@ -51,7 +51,7 @@ import {TransitionTimelineComponent} from './transition_timeline_component';
   ],
   template: `
     <div id="expanded-timeline-wrapper" #expandedTimelineWrapper>
-      @for (trace of getTracesSortedByDisplayOrder(); track trackTraceByType($index, trace)) {
+      @for (trace of getTracesSortedByDisplayOrder(); track trace) {
         <div
             class="timeline row">
           <div class="icon-wrapper">
@@ -177,10 +177,6 @@ export class ExpandedTimelineComponent {
   onResize(event: Event) {
     this.resizeCanvases();
   }
-
-  trackTraceByType = (index: number, trace: Trace<{}>): TraceType => {
-    return trace.type;
-  };
 
   getTracesSortedByDisplayOrder(): Array<Trace<{}>> {
     const traces = assertDefined(this.timelineData)

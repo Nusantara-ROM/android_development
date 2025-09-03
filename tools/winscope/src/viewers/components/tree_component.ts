@@ -78,7 +78,7 @@ import {TreeNodeComponent} from './tree_node_component';
         [class.flattened]="isFlattened"
         [class.with-gutter]="addGutter()"
         [hidden]="!isExpanded()">
-        @for (child of node.children.values(); track childTrackById(child.id, child)) {
+        @for (child of node.children.values(); track child.id) {
           <tree-view
             class="subtree"
             [node]="child"
@@ -133,13 +133,6 @@ export class TreeComponent {
 
   private localExpandedState = true;
   private storeKeyCollapsedState = '';
-
-  childTrackById(
-    index: number,
-    child: UiPropertyTreeNode | UiHierarchyTreeNode,
-  ): string {
-    return child.id;
-  }
 
   constructor(
     @Inject(ElementRef) public elementRef: ElementRef,

@@ -109,7 +109,7 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
                     @if (traceConfig[advancedSettingsKey].config.checkboxConfigs.length > 0) {
 <div
                       class="enable-config-opt overlay-panel-section mat-body-1">
-                      @for (checkboxConfig of getSortedConfigs(traceConfig[advancedSettingsKey].config.checkboxConfigs); track checkboxConfig) {
+                      @for (checkboxConfig of getSortedConfigs(traceConfig[advancedSettingsKey].config.checkboxConfigs); track checkboxConfig.key) {
 <mat-checkbox
                         color="primary"
                         class="enable-config"
@@ -123,7 +123,7 @@ import {userOptionStyle} from 'viewers/components/styles/user_option.styles';
                     @if (traceConfig[advancedSettingsKey].config.selectionConfigs.length > 0) {
 <div
                       class="selection-config-opt overlay-panel-section mat-body-1">
-                      @for (selectionConfig of getSortedConfigs(traceConfig[advancedSettingsKey].config.selectionConfigs); track selectionConfig) {
+                      @for (selectionConfig of getSortedConfigs(traceConfig[advancedSettingsKey].config.selectionConfigs); track selectionConfig.key) {
                         <mat-form-field
                           class="config-selection"
                           subscriptSizing="dynamic"

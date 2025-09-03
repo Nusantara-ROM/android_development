@@ -161,7 +161,7 @@ import {WinscopeProxySetupComponent} from './winscope_proxy_setup_component';
                   class="device-selection">
                   <p class="mat-body-1 instruction">Select a device:</p>
                   <mat-action-list>
-                    @for (device of controller.getDevices(); track device) {
+                    @for (device of controller.getDevices(); track device.id) {
                       <mat-list-item
                         [disabled]="device.state === ${AdbDeviceState.OFFLINE}"
                         (click)="onDeviceClick(device)"

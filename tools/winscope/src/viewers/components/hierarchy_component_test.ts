@@ -211,7 +211,13 @@ describe('HierarchyComponent', () => {
 
     component.trees = [
       component.trees[0],
-      UiHierarchyTreeNode.from(component.trees[0]),
+      UiHierarchyTreeNode.from(
+        new HierarchyTreeBuilder()
+          .setId('RootNode2')
+          .setName('Root node')
+          .setChildren([{id: 'Child2', name: 'Child node'}])
+          .build(),
+      ),
     ];
     dom.detectChanges();
     const warning1 = new DuplicateLayerIds([123]);

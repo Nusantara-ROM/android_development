@@ -34,7 +34,7 @@ import {hierarchyTreeNodeDataViewStyles} from 'viewers/components/styles/tree_no
           &ngsp;-&ngsp;
         }
         <span class="display-name" [matTooltip]="getNameTooltip()" [matTooltipShowDelay]="300">{{ node.getDisplayName() }}</span>
-        @for (chip of node.getChips(); track chip) {
+        @for (chip of node.getChips(); track chip.short) {
           <div [class]="chipClass(chip)" [matTooltip]="chip.long">
             {{ chip.short }}
           </div>

@@ -40,7 +40,7 @@ import {ListedSearch} from './ui_data';
         {{placeholderText}}
       </span>
     }
-    @for (search of searches; track search) {
+    @for (search of searches; track $index) {
       <div class="listed-search">
         <span
           #searchName
@@ -49,7 +49,7 @@ import {ListedSearch} from './ui_data';
           matTooltipPosition="right"
           [matTooltip]="getTooltip(search)"> {{search.name}} </span>
         <div class="listed-search-date-options">
-          @for (opt of listItemOptions; track opt) {
+          @for (opt of listItemOptions; track opt.name) {
             @if (opt.onClickCallback) {
               <button
                 mat-icon-button

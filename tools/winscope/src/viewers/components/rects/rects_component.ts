@@ -210,7 +210,7 @@ interface CanColor {
               appearance="legacy"
               class="rect-type-toggle"
               [hideSingleSelectionIndicator]="true">
-              @for (spec of allRectSpecs; track spec) {
+              @for (spec of allRectSpecs; track $index) {
                 <mat-button-toggle [value]="spec">
                   <mat-icon
                     [color]="spec === rectSpec ? 'primary' : 'accent'"
@@ -238,7 +238,7 @@ interface CanColor {
                   {{ getSelectTriggerValue() }}
                 </span>
               </mat-select-trigger>
-              @for (display of internalDisplays; track display) {
+              @for (display of internalDisplays; track display.displayId) {
                 <mat-option
                   [value]="display"
                   [matTooltip]="'Display Id: ' + display.displayId"
