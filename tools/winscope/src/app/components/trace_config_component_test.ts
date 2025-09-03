@@ -30,10 +30,10 @@ import {
   NoopAnimationsModule,
 } from '@angular/platform-browser/animations';
 import {assertDefined} from 'common/assert';
-import {KeyboardEventCode} from 'common/dom_utils';
+import {KeyboardEventCode} from 'common/dom';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {Store} from 'common/store/store';
-import {checkTooltips, DOMTestHelper} from 'test/unit/dom_test_utils';
+import {checkTooltips, DOMTestHelper} from 'test/unit/dom_test_helpers';
 import {TraceType} from 'trace_api/trace_type';
 import {ConfigurationOptions} from 'trace_collection/ui/ui_trace_configuration';
 import {TraceConfigComponent} from './trace_config_component';

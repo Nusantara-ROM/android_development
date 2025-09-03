@@ -31,9 +31,9 @@ import {
 } from '@angular/platform-browser/animations';
 import {TimelineData} from 'app/timeline_data';
 import {assertDefined} from 'common/assert';
-import {KeyboardEventCode} from 'common/dom_utils';
+import {KeyboardEventCode} from 'common/dom';
 import {TimeRange, Timestamp} from 'common/time/time';
-import {DOMTestHelper} from 'test/unit/dom_test_utils';
+import {DOMTestHelper} from 'test/unit/dom_test_helpers';
 import {makeRealTimestamp, UTC_CONVERTER} from 'test/unit/time_test_helpers';
 import {TracesBuilder} from 'test/unit/traces_builder';
 import {Trace} from 'trace_api/trace';

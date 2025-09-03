@@ -60,7 +60,7 @@ import {
   ViewersUnloaded,
 } from 'messaging/winscope_event';
 import {UserNotifier} from 'services/user_notifier';
-import {DOMTestHelper} from 'test/unit/dom_test_utils';
+import {DOMTestHelper} from 'test/unit/dom_test_helpers';
 import {UTC_CONVERTER} from 'test/unit/time_test_helpers';
 import {waitToBeCalled} from 'test/unit/spy_utils';
 import {TracesBuilder} from 'test/unit/traces_builder';

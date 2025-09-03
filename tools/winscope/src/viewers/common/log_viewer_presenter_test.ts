@@ -15,7 +15,7 @@
  */
 
 import {assertDefined} from 'common/assert';
-import {KeyboardEventKey} from 'common/dom_utils';
+import {KeyboardEventKey} from 'common/dom';
 import {InMemoryStorage} from 'common/store/in_memory_storage';
 import {Timer} from 'common/time/timer';
 import {
