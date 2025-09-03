@@ -17,10 +17,13 @@ export class LineGraphVisualization implements Visualization {
   margin = { top: 20, right: 20, bottom: 30, left: 50 };
   chartWidth = 0;
   chartHeight = 0;
+  legendMarginBottom = 30;
   xScale = d3.scaleLinear();
   yScale = d3.scaleLinear();
   solidLineLegend: string = '';
-  dottedLineLegend: string ='';
+  dottedLineLegend: string = '';
+  undefinedExpectedLegend: string = "Undefined Expected";
+  undefinedActualLegend: string = "Undefined Actual";
   firstValidDataPoint: number = 0;
   currentShowMarkerState: boolean = true;
 
@@ -34,16 +37,16 @@ export class LineGraphVisualization implements Visualization {
     this.minValue = minValue;
     this.maxValue = maxValue;
     this.graphId = graphId;
-    this.dataSource= dataSource;
+    this.dataSource = dataSource;
     this.previewService.currentFrameFromView$.subscribe((frame) => {
       if (this.viewSelectedCurrentFrame === frame) return;
       this.viewSelectedCurrentFrame = frame ? frame : 0;
       this.updateMarker();
     });
-    this.previewService.showMarker$.subscribe((showMarker) =>{
-      this.currentShowMarkerState= showMarker;
+    this.previewService.showMarker$.subscribe((showMarker) => {
+      this.currentShowMarkerState = showMarker;
       this.graph.selectAll('.currentFrameLine').remove();
-      if(!showMarker) return;
+      if (!showMarker) return;
       this.addMarker(this.graph, this.xScale(this.firstValidDataPoint));
     });
   }
@@ -55,7 +58,7 @@ export class LineGraphVisualization implements Visualization {
     height: number
   ): void {
     this.chartWidth = width - this.margin.left - this.margin.right;
-    this.chartHeight = height - this.margin.top - this.margin.bottom;
+    this.chartHeight = height - this.margin.top - this.margin.bottom - this.legendMarginBottom;
 
     this.xScale = d3
       .scaleLinear()
@@ -93,21 +96,21 @@ export class LineGraphVisualization implements Visualization {
     const currentYAxisTicks = this.yScale.ticks().length;
     const newYAxisTicks = Math.max(1, Math.floor(currentYAxisTicks / 2));
     const yAxis = d3.axisLeft(this.yScale)
-                    .ticks(newYAxisTicks);
-    const xAxisGroup= g.append('g')
+      .ticks(newYAxisTicks);
+    const xAxisGroup = g.append('g')
       .attr('class', 'x axis')
       .attr('transform', `translate(0, ${this.chartHeight})`)
       .call(xAxis);
-      xAxisGroup.selectAll('path').attr('stroke', COLORS.gray); // Main axis line
-      xAxisGroup.selectAll('line').attr('stroke', COLORS.gray); // Tick marks
-      xAxisGroup.selectAll('text').attr('fill', COLORS.gray); // Labels
+    xAxisGroup.selectAll('path').attr('stroke', COLORS.gray); // Main axis line
+    xAxisGroup.selectAll('line').attr('stroke', COLORS.gray); // Tick marks
+    xAxisGroup.selectAll('text').attr('fill', COLORS.gray); // Labels
 
-    const yAxisGroup= g.append('g')
+    const yAxisGroup = g.append('g')
       .attr('class', 'y axis')
       .call(yAxis);
-      yAxisGroup.selectAll('path').attr('stroke', COLORS.gray); // Main axis line
-      yAxisGroup.selectAll('line').attr('stroke', COLORS.gray); // Tick marks
-      yAxisGroup.selectAll('text').attr('fill', COLORS.gray); // Labels
+    yAxisGroup.selectAll('path').attr('stroke', COLORS.gray); // Main axis line
+    yAxisGroup.selectAll('line').attr('stroke', COLORS.gray); // Tick marks
+    yAxisGroup.selectAll('text').attr('fill', COLORS.gray); // Labels
   }
 
   private drawExpected(
@@ -123,21 +126,21 @@ export class LineGraphVisualization implements Visualization {
     g.append('path')
       .datum(data)
       .attr('fill', 'none')
-      .attr('stroke',COLORS.green)
+      .attr('stroke', COLORS.green)
       .attr('stroke-width', 2.4)
       .attr('stroke-dasharray', '10, 5')
       .attr('d', expectedLine);
 
     g.selectAll('.dot-expected')
-      .data(data.filter((d) => d.expectedValue !== undefined))
+      .data(data)
       .enter()
       .append('circle')
       .attr('class', 'dot-expected')
       .attr('cx', (d) => this.xScale(d.x))
-      .attr('cy', (d) => this.yScale(d.expectedValue || 0))
+      .attr('cy', (d) => this.yScale(d.expectedValue || this.minValue))
       .attr('r', 5)
       .attr('fill', 'none')
-      .attr('stroke', COLORS.green)
+      .attr('stroke', (d) => d.expectedValue != undefined ? COLORS.green : COLORS.dark_gray)
       .attr('stroke-width', 2);
   }
 
@@ -165,22 +168,25 @@ export class LineGraphVisualization implements Visualization {
 
       g.append('line')
         .attr('x1', this.xScale(p1.x))
-        .attr('y1', this.yScale(p1.actualValue))
+        .attr('y1', this.yScale(p1.actualValue || this.minValue))
         .attr('x2', this.xScale(p2.x))
-        .attr('y2', this.yScale(p2.actualValue))
+        .attr('y2', this.yScale(p2.actualValue || this.minValue))
         .attr('stroke', segmentColor)
         .attr('stroke-width', 2.5)
     }
     g.selectAll('.dot-actual')
-      .data(data.filter((d) => d.actualValue !== undefined))
+      .data(data)
       .enter()
       .append('circle')
       .attr('class', 'dot-actual')
       .attr('cx', (d) => this.xScale(d.x))
-      .attr('cy', (d) => this.yScale(d.actualValue || 0))
+      .attr('cy', (d) => this.yScale(d.actualValue || this.minValue))
       .attr('r', (d) => { return isActualDifferentFromExpected(d) ? 4 : 3 })
       .attr('fill', (d) => {
-        return isActualDifferentFromExpected(d) ? COLORS.red : COLORS.blue;
+        if (d.actualValue != undefined) {
+          return isActualDifferentFromExpected(d) ? COLORS.red : COLORS.blue;
+        }
+        return COLORS.dark_gray;
       })
   }
 
@@ -191,7 +197,7 @@ export class LineGraphVisualization implements Visualization {
       .attr('class', 'legend')
       .attr(
         'transform',
-        `translate(${this.chartWidth - 100}, ${this.chartHeight - 100})`
+        `translate(0, ${this.chartHeight + this.legendMarginBottom})`
       );
 
     legend
@@ -221,19 +227,49 @@ export class LineGraphVisualization implements Visualization {
 
     legend
       .append('line')
-      .attr('x1', 0)
-      .attr('y1', 20)
-      .attr('x2', 20)
-      .attr('y2', 20)
+      .attr('x1', 85)
+      .attr('y1', 0)
+      .attr('x2', 105)
+      .attr('y2', 0)
       .attr('stroke', COLORS.green)
       .attr('stroke-dasharray', '8, 3')
       .attr('stroke-width', 2.5);
 
     legend
       .append('text')
-      .attr('x', 25)
-      .attr('y', 20)
+      .attr('x', 110)
+      .attr('y', 0)
       .text(this.dottedLineLegend)
+      .attr('alignment-baseline', 'middle');
+
+    legend
+      .append('circle')
+      .attr('r', 5)
+      .attr('cx', 195)
+      .attr('cy', 0)
+      .attr('fill', 'none')
+      .attr('stroke', COLORS.dark_gray)
+      .attr('stroke-width', 2);
+
+    legend
+      .append('text')
+      .attr('x', 205)
+      .attr('y', 0)
+      .text(this.undefinedExpectedLegend)
+      .attr('alignment-baseline', 'middle');
+
+    legend
+      .append('circle')
+      .attr('r', 4)
+      .attr('cx', 365)
+      .attr('cy', 0)
+      .attr('fill', COLORS.dark_gray)
+
+    legend
+      .append('text')
+      .attr('x', 375)
+      .attr('y', 0)
+      .text(this.undefinedActualLegend)
       .attr('alignment-baseline', 'middle');
   }
 
@@ -318,7 +354,7 @@ export class LineGraphVisualization implements Visualization {
 
           tooltip.attr(
             'transform',
-            `translate(${tooltipX},${this.yScale(dataPoint.actualValue || 0)})`
+            `translate(${tooltipX},${this.yScale(dataPoint.actualValue || this.minValue)})`
           );
 
           tooltip.style('display', 'block');
@@ -367,8 +403,8 @@ export class LineGraphVisualization implements Visualization {
     }
   }
 
-  private updateLegend(): void{
-    switch(this.dataSource){
+  private updateLegend(): void {
+    switch (this.dataSource) {
       case DataSource.GERRIT:
         this.solidLineLegend = 'Right';
         this.dottedLineLegend = 'Left';
