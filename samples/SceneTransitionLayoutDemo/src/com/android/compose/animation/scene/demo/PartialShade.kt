@@ -33,7 +33,6 @@ import com.android.compose.animation.scene.ContentScope
 import com.android.compose.animation.scene.ElementKey
 import com.android.compose.animation.scene.mechanics.rememberGestureContext
 import com.android.compose.modifiers.thenIf
-import com.android.mechanics.MotionValueCollection
 import com.android.mechanics.behavior.VerticalExpandContainerSpec
 import com.android.mechanics.behavior.verticalExpandContainerBackground
 import com.android.mechanics.compose.modifier.motionDriver
@@ -70,7 +69,6 @@ fun ContentScope.PartialShade(
             .thenIf(isSplitShade) { Modifier.padding(16.dp) }
             .element(rootElement)
             .thenIf(revealEffect) {
-                MotionValueCollection.isTraceEnabled = true
                 Modifier.motionDriver(gestureContext = gestureContext, label = "PartialShade")
             }
             .verticalExpandContainerBackground(
