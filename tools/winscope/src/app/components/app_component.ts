@@ -327,6 +327,7 @@ import {
             [allTraces]="tracePipeline.getTraces()"
             [timelineData]="timelineData"
             [store]="persistentStore"
+            [initialTabTraceType]="mediator.initialTimelineTabTraceType"
             (collapsedTimelineSizeChanged)="onCollapsedTimelineSizeChanged($event)"></timeline>
         }
       </mat-drawer>

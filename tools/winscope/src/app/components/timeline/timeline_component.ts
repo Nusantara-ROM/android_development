@@ -58,6 +58,9 @@ import {
   TracePositionUpdate,
   WinscopeEvent,
   WinscopeEventType,
+  TabbedViewSwitched,
+  PlaybackStateChange,
+  PlaybackSpeedChange,
 } from 'messaging/winscope_event';
 import {
   EmitEvent,
@@ -73,6 +76,8 @@ import {multlineTooltip} from 'viewers/components/styles/tooltip.styles';
 import {ExpandedTimelineComponent} from './expanded-timeline/expanded_timeline_component';
 import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
 import {UserTimestamp} from 'common/time/user_timestamp';
+import {PlaybackControlsComponent} from './playback_component';
+import {PlaybackState} from 'viewers/common/playback/playback_state';
 
 /**
  * A component for displaying the timeline view.
@@ -94,6 +99,7 @@ import {UserTimestamp} from 'common/time/user_timestamp';
     ClipboardModule,
     MatSelectModule,
     MatRippleModule,
+    PlaybackControlsComponent,
   ],
   template: `
     @if (isDisabled) {
@@ -218,6 +224,13 @@ import {UserTimestamp} from 'common/time/user_timestamp';
                   [disabled]="!hasPrevEntry()">
                   <mat-icon>chevron_left</mat-icon>
                 </button>
+                @if (traceSupportsPlayback()) {
+                  <playback-controls
+                    [currentState]="playbackState"
+                    (playbackStateChange)="onPlaybackStateChange($event)"
+                    (speedChange)="onPlaybackSpeedChange($event)">
+                  </playback-controls>
+                }
                 <button
                   mat-icon-button
                   id="next_entry_button"
@@ -553,10 +566,12 @@ export class TimelineComponent
 {
   readonly TOGGLE_BUTTON_CLASS: string = 'button-toggle-expansion';
   readonly MAX_SELECTED_TRACES = 3;
+  readonly PlaybackState = PlaybackState;
 
   @Input() timelineData: TimelineData | undefined;
   @Input() allTraces: Traces | undefined;
   @Input() store: PersistentStore | undefined;
+  @Input() initialTabTraceType: TraceType | undefined;
 
   @Output() readonly collapsedTimelineSizeChanged = new EventEmitter<number>();
 
@@ -586,6 +601,7 @@ export class TimelineComponent
   storeKeyDeselectedTraces = 'miniTimeline.deselectedTraces';
   bookmarks: Timestamp[] = [];
   isDisabled = false;
+  playbackState: PlaybackState = PlaybackState.PAUSED;
 
   private expanded = false;
   private emitEvent: EmitEvent = () => Promise.resolve();
@@ -593,6 +609,7 @@ export class TimelineComponent
   private expandedTimelineMouseXRatio: number | undefined;
   private seekTracePosition?: TracePosition;
   private isProcessingKeyPress = false;
+  private currentTabTraceType: TraceType | undefined;
 
   constructor(
     @Inject(DomSanitizer) private sanitizer: DomSanitizer,
@@ -601,6 +618,7 @@ export class TimelineComponent
 
   ngOnInit() {
     const timelineData = assertDefined(this.timelineData);
+    this.currentTabTraceType = this.initialTabTraceType;
     if (timelineData.hasTimestamps()) {
       this.updateTimeInputValuesToCurrentTimestamp();
     }
@@ -747,6 +765,17 @@ export class TimelineComponent
     await event.visit(WinscopeEventType.TRACE_SEARCH_COMPLETED, async () =>
       this.setIsDisabled(false),
     );
+    await event.visit(WinscopeEventType.PLAYBACK_STATE_CHANGE, async () =>
+      this.setIsPaused(),
+    );
+    await event.visit(
+      WinscopeEventType.TABBED_VIEW_SWITCHED,
+      async (event: TabbedViewSwitched) => {
+        this.currentTabTraceType = event.newFocusedView.traces[0]?.type;
+        await this.onPlaybackStateChange(PlaybackState.PAUSED);
+        this.changeDetectorRef.detectChanges();
+      },
+    );
   }
 
   async toggleExpand() {
@@ -837,6 +866,15 @@ export class TimelineComponent
     }
   }
 
+  onPlaybackSpeedChange(selectedSpeed: number) {
+    this.emitEvent(
+      new PlaybackSpeedChange(
+        assertDefined(this.currentTabTraceType),
+        selectedSpeed,
+      ),
+    );
+  }
+
   hasPrevEntry(): boolean {
     const activeTrace = this.timelineData?.getActiveTrace();
     if (!activeTrace) {
@@ -879,6 +917,35 @@ export class TimelineComponent
     timelineData.moveToNextEntryFor(activeTrace);
     const position = assertDefined(timelineData.getCurrentPosition());
     await this.emitEvent(new TracePositionUpdate(position));
+  }
+
+  async onPlaybackStateChange(state: PlaybackState) {
+    this.playbackState = state;
+
+    switch (state) {
+      case PlaybackState.FORWARDS:
+      case PlaybackState.BACKWARDS:
+        this.emitEvent(
+          new PlaybackStateChange(
+            assertDefined(this.currentTabTraceType),
+            this.playbackState,
+            this.getPlaybackStartingPosition(),
+          ),
+        );
+        return;
+
+      case PlaybackState.PAUSED:
+        this.emitEvent(
+          new PlaybackStateChange(
+            assertDefined(this.currentTabTraceType),
+            this.playbackState,
+          ),
+        );
+        return;
+
+      default:
+        return;
+    }
   }
 
   async onHumanTimeInputChange(event: Event) {
@@ -1054,6 +1121,13 @@ export class TimelineComponent
     return tooltip;
   }
 
+  private traceSupportsPlayback() {
+    if (!this.currentTabTraceType) {
+      return false;
+    }
+    return TraceTypeUtils.supportsPlayback(this.currentTabTraceType);
+  }
+
   private updateSelectedTraces(trace: Trace<object> | undefined) {
     if (!trace) {
       return;
@@ -1064,6 +1138,29 @@ export class TimelineComponent
       this.selectedTraces = [...this.selectedTraces, trace];
       this.selectedTracesFormControl.setValue(this.selectedTraces);
     }
+  }
+  private getPlaybackStartingPosition() {
+    const timelineData = assertDefined(this.timelineData);
+    if (!this.currentTabTraceType) {
+      return;
+    }
+
+    const playableTrace = timelineData
+      .getTraces()
+      .getTrace(this.currentTabTraceType);
+
+    if (playableTrace === undefined) {
+      return;
+    }
+
+    const startingPosition = timelineData
+      .findCurrentEntryFor(playableTrace as Trace<object>)
+      ?.getIndex();
+
+    if (startingPosition === undefined) {
+      return;
+    }
+    return startingPosition;
   }
 
   private updateTimeInputValuesToCurrentTimestamp() {
@@ -1134,5 +1231,9 @@ export class TimelineComponent
   private setIsDisabled(value: boolean) {
     this.isDisabled = value;
     this.changeDetectorRef.detectChanges();
+  }
+
+  private setIsPaused() {
+    this.playbackState = PlaybackState.PAUSED;
   }
 }

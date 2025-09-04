@@ -24,7 +24,10 @@ import {HierarchyTreeBuilder} from 'test/unit/hierarchy_tree_builder';
 import {TraceType} from 'trace_api/trace_type';
 import {Timer} from 'common/time/timer';
 import {makeEmptyTrace} from 'test/unit/trace_utils';
-import {TracePositionUpdate} from 'messaging/winscope_event';
+import {
+  PlaybackStateChange,
+  TracePositionUpdate,
+} from 'messaging/winscope_event';
 
 describe('PlaybackPresenter', () => {
   const timestamp1 = makeElapsedTimestamp(2n);
@@ -88,29 +91,41 @@ describe('PlaybackPresenter', () => {
     it('plays through all the entries in the trace', async () => {
       await presenter.play(trace, 0, false);
       await new Timer(1000).wait(() => !presenter.isPlaying());
-      expect(mockEmitWinscopeEvent).toHaveBeenCalledTimes(trace.lengthEntries);
-      await presenter.pause();
+      const allUpdates = mockEmitWinscopeEvent.calls.all();
+      for (let i = 0; i < trace.lengthEntries; i++) {
+        expect(allUpdates[i].args[0]).toBeInstanceOf(TracePositionUpdate);
+      }
+      expect(allUpdates[trace.lengthEntries].args[0]).toBeInstanceOf(
+        PlaybackStateChange,
+      );
     });
 
     it('in reverse plays through all the entries in the trace', async () => {
       await presenter.play(trace, 0, true);
       await new Timer(1000).wait(() => !presenter.isPlaying());
-      expect(mockEmitWinscopeEvent).toHaveBeenCalledTimes(trace.lengthEntries);
-      await presenter.pause();
+      const allUpdates = mockEmitWinscopeEvent.calls.all();
+      for (let i = 0; i < trace.lengthEntries; i++) {
+        expect(allUpdates[i].args[0]).toBeInstanceOf(TracePositionUpdate);
+      }
+      expect(allUpdates[trace.lengthEntries].args[0]).toBeInstanceOf(
+        PlaybackStateChange,
+      );
     });
 
     it('plays from specific starting entry', async () => {
       await presenter.play(trace, 1, false);
       await new Timer(1000).wait(() => !presenter.isPlaying());
-      const update = mockEmitWinscopeEvent.calls.mostRecent().args[0];
+      const update = mockEmitWinscopeEvent.calls.all()[1].args[0];
       expect(update).toBeInstanceOf(TracePositionUpdate);
       expect(
         (update as TracePositionUpdate).position.entry?.getIndex(),
       ).toEqual(2);
+    });
 
+    it('plays from specific starting entry in reverse', async () => {
       await presenter.play(trace, 1, true);
       await new Timer(1000).wait(() => !presenter.isPlaying());
-      const reverseUpdate = mockEmitWinscopeEvent.calls.mostRecent().args[0];
+      const reverseUpdate = mockEmitWinscopeEvent.calls.all()[1].args[0];
       expect(reverseUpdate).toBeInstanceOf(TracePositionUpdate);
       expect(
         (reverseUpdate as TracePositionUpdate).position.entry?.getIndex(),
@@ -132,13 +147,13 @@ describe('PlaybackPresenter', () => {
     it('stops the playback loop', async () => {
       await presenter.play(trace, 0, false);
       expect(presenter.isPlaying()).toBeTrue();
-      await presenter.pause();
+      await presenter.pause(trace);
       expect(presenter.isPlaying()).toBeFalse();
     });
 
     it('has no effect when already paused', async () => {
       expect(presenter.isPlaying()).toBeFalse();
-      await presenter.pause();
+      await presenter.pause(trace);
       expect(mockEmitWinscopeEvent).not.toHaveBeenCalled();
     });
   });
@@ -148,7 +163,7 @@ describe('PlaybackPresenter', () => {
       presenter.play(trace, 0, false);
       presenter.changeSpeed(2);
       await new Timer(1000).wait(() => !presenter.isPlaying());
-      expect(mockEmitWinscopeEvent).toHaveBeenCalledTimes(2);
+      expect(mockEmitWinscopeEvent).toHaveBeenCalledTimes(3);
     });
   });
 });

@@ -267,9 +267,11 @@ the default for its data type.`,
     this.playbackPresenter.play(trace, currentPosition, isReverse);
   }
 
-  protected override async pausePlayback(): Promise<void> {
+  protected override async pausePlayback(
+    trace: Trace<HierarchyTreeNode>,
+  ): Promise<void> {
     this.hierarchyPresenter.setShowDiffAvailability(true);
-    this.playbackPresenter.pause();
+    this.playbackPresenter.pause(trace);
   }
 
   protected override async processDataAfterPositionUpdate(): Promise<void> {

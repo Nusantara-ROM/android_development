@@ -280,7 +280,7 @@ export abstract class AbstractHierarchyViewerPresenter<
 
           case PlaybackState.PAUSED:
             if (this.pausePlayback) {
-              await this.pausePlayback();
+              await this.pausePlayback(this.trace);
             }
             return;
           default:
@@ -551,7 +551,7 @@ export abstract class AbstractHierarchyViewerPresenter<
     currentPosition: number,
     isReverse: boolean,
   ): Promise<void>;
-  protected pausePlayback?(): Promise<void>;
+  protected pausePlayback?(trace: Trace<HierarchyTreeNode>): Promise<void>;
   protected processDataAfterPositionUpdate?(
     event: TracePositionUpdate,
   ): Promise<void>;

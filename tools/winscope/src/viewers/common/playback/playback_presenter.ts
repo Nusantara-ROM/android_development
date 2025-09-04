@@ -17,10 +17,14 @@
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {Trace} from 'trace_api/trace';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
-import {TracePositionUpdate} from 'messaging/winscope_event';
+import {
+  PlaybackStateChange,
+  TracePositionUpdate,
+} from 'messaging/winscope_event';
 import {TracePosition} from 'trace_api/trace_position';
 import {Timer} from 'common/time/timer';
 import {TraceEntryEager} from 'trace_api/trace';
+import {PlaybackState} from './playback_state';
 
 export class PlaybackPresenter {
   private paused: boolean = true;
@@ -55,7 +59,7 @@ export class PlaybackPresenter {
       this.entryIndex = this.buffer.length - 1;
     }
     if (this.buffer.length > 0 && this.entryIndex < this.buffer.length) {
-      this.runPlaybackLoop();
+      this.runPlaybackLoop(trace);
     }
   }
 
@@ -63,11 +67,16 @@ export class PlaybackPresenter {
     this.entryStepSize = speedValue;
   }
 
-  async pause() {
-    this.paused = true;
+  async pause(trace: Trace<HierarchyTreeNode>) {
+    if (this.isPlaying()) {
+      this.paused = true;
+      await this.emitWinscopeEvent(
+        new PlaybackStateChange(trace.type, PlaybackState.PAUSED),
+      );
+    }
   }
 
-  private async runPlaybackLoop() {
+  private async runPlaybackLoop(trace: Trace<HierarchyTreeNode>) {
     const lastIndex = this.buffer.length - 1;
 
     let nextIndex;
@@ -106,7 +115,7 @@ export class PlaybackPresenter {
         break;
       }
     }
-    this.pause();
+    await this.pause(trace);
   }
 
   private async buildBuffer(trace: Trace<HierarchyTreeNode>) {

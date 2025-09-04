@@ -108,6 +108,13 @@ export class TraceTypeUtils {
     TraceType.CUJS,
   ];
 
+  // TODO(b/322805621) add other traces once support is provided
+  private static TRACES_SUPPORTING_PLAYBACK = [TraceType.SURFACE_FLINGER];
+
+  static supportsPlayback(t: TraceType): boolean {
+    return TraceTypeUtils.TRACES_SUPPORTING_PLAYBACK.includes(t);
+  }
+
   static isTraceTypeWithViewer(t: TraceType): boolean {
     return TraceTypeUtils.TRACES_WITH_VIEWERS_DISPLAY_ORDER.includes(t);
   }
