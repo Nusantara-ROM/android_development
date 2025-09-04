@@ -37,6 +37,9 @@ import {TAMPERED_PROTOS_UDC} from './tampered_protos_udc';
 
 type WindowManagerProto = com.android.server.wm.IWindowManagerTraceProto;
 
+/**
+ * Parser for WindowManager trace files.
+ */
 export class ParserWindowManager extends AbstractParser<
   HierarchyTreeNode,
   WindowManagerProto

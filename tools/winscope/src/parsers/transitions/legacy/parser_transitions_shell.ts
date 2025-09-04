@@ -24,6 +24,9 @@ import {TraceType} from 'trace_api/trace_type';
 type TransitionProto = com.android.wm.shell.ITransition;
 type HandlerProto = com.android.wm.shell.IHandlerMapping;
 
+/**
+ * Parser for Shell Transition trace files.
+ */
 export class ParserTransitionsShell extends AbstractParser<
   TransitionProto,
   TransitionProto

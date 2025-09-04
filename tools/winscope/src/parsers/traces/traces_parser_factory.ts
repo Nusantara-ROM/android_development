@@ -24,6 +24,9 @@ import {UserNotifier} from 'services/user_notifier';
 import {Parser} from 'trace_api/parser';
 import {Traces} from 'trace_api/traces';
 
+/**
+ * A factory for creating traces parsers.
+ */
 export class TracesParserFactory {
   static readonly PARSERS = [
     TracesParserCujs,

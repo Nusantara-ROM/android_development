@@ -27,6 +27,9 @@ import {AbsoluteEntryIndex, EntriesRange} from 'trace_api/index_types';
 import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
 
+/**
+ * A parser that processes and merges multiple traces of different types.
+ */
 export abstract class AbstractTracesParser<T> implements Parser<T> {
   protected timestamps: Timestamp[] | undefined;
   protected timestampConverter: ParserTimestampConverter;

@@ -19,6 +19,11 @@ import {HierarchyTreeBuilder} from 'parsers/hierarchy_tree_builder';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {PropertiesProvider} from 'tree_node/properties_provider';
 
+/**
+ * Builder for a VC hierarchy tree.
+ *
+ * The builder is not reusable, it should only be used to build one tree.
+ */
 export class HierarchyTreeBuilderVc extends HierarchyTreeBuilder {
   protected override buildIdentifierToChildrenMap(
     views: PropertiesProvider[],

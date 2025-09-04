@@ -25,6 +25,9 @@ interface WindowAndPackage {
   package: string;
 }
 
+/**
+ * A parser for Perfetto ViewCapture traces.
+ */
 export class ParserViewCapture {
   private readonly traceFile: TraceFile;
   private readonly traceProcessor: TraceProcessor;

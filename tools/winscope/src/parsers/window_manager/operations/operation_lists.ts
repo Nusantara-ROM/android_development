@@ -28,7 +28,10 @@ import {SetFormatters} from 'viewers/operations/set_formatters';
 import {AddIsVisible} from './add_is_visible';
 import {AddWindowType} from './add_window_type';
 
-export interface OperationLists {
+/**
+ * A collection of operations to be applied to a PropertyTreeNode.
+ */
+export declare interface OperationLists {
   common: Array<Operation<PropertyTreeNode>>;
   eager: Array<Operation<PropertyTreeNode>>;
   lazy: Array<Operation<PropertyTreeNode>>;
@@ -36,6 +39,9 @@ export interface OperationLists {
 
 const commonFormatters = new Map([['hashCode', HEX_FORMATTER]]);
 
+/**
+ * Creates operation lists for all proto types found in a WM trace.
+ */
 export class WmOperationLists {
   private readonly LISTS: Map<ProtoType, OperationLists>;
 

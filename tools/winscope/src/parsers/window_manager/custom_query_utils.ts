@@ -49,6 +49,10 @@ type WindowTokenProto =
   | com.android.server.wm.IWindowTokenProto
   | perfetto.protos.IWindowTokenProto;
 
+/**
+ * A parser for a custom query on the WM trace, which extracts all valid window
+ * tokens and their titles from the trace.
+ */
 export class WmCustomQueryUtils {
   private static readonly NA = 'n/a';
 

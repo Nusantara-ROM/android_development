@@ -19,6 +19,10 @@ import {Computation} from 'tree_node/computation';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 
+/**
+ * A computation that adds a calculated `isComputedVisible` property to a view
+ * capture hierarchy tree.
+ */
 export class VisibilityComputation implements Computation {
   private static readonly VISIBLE = 0;
 

@@ -36,6 +36,9 @@ import {Traces} from 'trace_api/traces';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {TraceBuilder} from './trace_builder';
 
+/**
+ * Provides a parser for a trace file from the test fixtures.
+ */
 export class LegacyParserProvider {
   private files: Array<{src: string; dst?: string}> = [];
   private timestampConverter = getTimestampConverter();
@@ -44,6 +47,10 @@ export class LegacyParserProvider {
   private convertToPerfetto = false;
   private existingPerfettoFile: TraceFile | undefined;
 
+  /**
+   * @param src Path to the trace file in the test fixtures.
+   * @param dst An optional destination file name.
+   */
   addFile(src: string, dst?: string) {
     this.files.push({src, dst});
     return this;
@@ -74,6 +81,9 @@ export class LegacyParserProvider {
     return this;
   }
 
+  /**
+   * @return The parser for the specified trace file.
+   */
   async getParser<T>(): Promise<Parser<T>> {
     const parsers = await this.getParsers();
 
@@ -88,6 +98,9 @@ export class LegacyParserProvider {
     return parsers[0] as Parser<T>;
   }
 
+  /**
+   * @return The parsers for the specified trace files.
+   */
   async getParsers(): Promise<Array<Parser<object>>> {
     const files = [];
     for (const fixture of this.files) {
@@ -132,6 +145,14 @@ export class LegacyParserProvider {
   }
 }
 
+/**
+ * Converts legacy traces to a single Perfetto trace.
+ *
+ * @param fileAndParsers The legacy traces to convert.
+ * @param timestampConverter The timestamp converter to use.
+ * @param existingPerfettoFile An optional existing Perfetto file to merge with.
+ * @return The converted Perfetto trace.
+ */
 export async function convertToPerfettoTrace(
   fileAndParsers: FileAndParser[],
   timestampConverter: TimestampConverter,
@@ -156,6 +177,11 @@ export async function convertToPerfettoTrace(
   return fileAndParsers;
 }
 
+/**
+ * @param type The type of the trace to get.
+ * @param filename The name of the trace file in the test fixtures.
+ * @return The trace.
+ */
 export async function getTrace<T extends TraceType>(
   type: T,
   filename: string,
@@ -207,6 +233,12 @@ function createTimestamps(
   });
 }
 
+/**
+ * @param traceType The type of the trace to get.
+ * @param fixturePath The path to the trace file in the test fixtures.
+ * @param withUTCOffset Whether to include the UTC offset in the timestamp converter.
+ * @return The parser for the specified trace file.
+ */
 export async function getPerfettoParser<T extends TraceType>(
   traceType: T,
   fixturePath: string,
@@ -219,6 +251,12 @@ export async function getPerfettoParser<T extends TraceType>(
   return parser as Parser<TraceEntryTypeMap[T]>;
 }
 
+/**
+ * @param fixturePath The path to the trace file in the test fixtures.
+ * @param withUTCOffset Whether to include the UTC offset in the timestamp converter.
+ * @param isPerfetto Whether the trace file is a Perfetto trace.
+ * @return The parsers for the specified trace file.
+ */
 export async function getPerfettoParsers(
   fixturePath: string,
   withUTCOffset = false,
@@ -246,6 +284,11 @@ export async function getPerfettoParsers(
   return parsers;
 }
 
+/**
+ * @param filenames The names of the trace files in the test fixtures.
+ * @param withUTCOffset Whether to include the UTC offset in the timestamp converter.
+ * @return The traces parser and its constituent parsers.
+ */
 export async function getTracesParser(
   filenames: string[],
   withUTCOffset = false,
@@ -295,6 +338,10 @@ export async function getTracesParser(
   return {tracesParser: tracesParsers[0], constituentParsers: parsersArray};
 }
 
+/**
+ * @param index The index of the entry to get.
+ * @return The WindowManager state at the specified index.
+ */
 export async function getWindowManagerState(
   index = 0,
 ): Promise<HierarchyTreeNode> {
@@ -304,6 +351,9 @@ export async function getWindowManagerState(
   );
 }
 
+/**
+ * @return The IME trace entries.
+ */
 export async function getImeTraceEntries(): Promise<
   [Map<TraceType, HierarchyTreeNode>, Map<TraceType, HierarchyTreeNode>]
 > {

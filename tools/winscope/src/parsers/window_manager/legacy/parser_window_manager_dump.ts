@@ -35,6 +35,9 @@ import {TAMPERED_PROTOS_UDC} from './tampered_protos_udc';
 
 type DumpProto = com.android.server.wm.IWindowManagerServiceDumpProto;
 
+/**
+ * Parser for WindowManager dump files.
+ */
 class ParserWindowManagerDump extends AbstractParser<
   HierarchyTreeNode,
   DumpProto

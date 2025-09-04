@@ -102,6 +102,9 @@ class RectWmFactory {
   }
 }
 
+/**
+ * A computation that adds rects to a window manager hierarchy tree.
+ */
 export class RectsComputation implements Computation {
   private root: HierarchyTreeNode | undefined;
   private readonly rectsFactory = new RectWmFactory();

@@ -19,6 +19,10 @@ import {AddOperation} from 'tree_node/add_operation';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 
+/**
+ * Adds a calculated `windowType` property to a PropertyTreeNode representing a
+ * WindowState proto.
+ */
 export class AddWindowType extends AddOperation<PropertyTreeNode> {
   protected override makeProperties(
     windowState: PropertyTreeNode,

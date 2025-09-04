@@ -22,6 +22,9 @@ import {TraceType} from 'trace_api/trace_type';
 
 type TransitionProto = com.android.server.wm.shell.ITransition;
 
+/**
+ * Parser for WM Transition trace files.
+ */
 export class ParserTransitionsWm extends AbstractParser<
   TransitionProto,
   TransitionProto
