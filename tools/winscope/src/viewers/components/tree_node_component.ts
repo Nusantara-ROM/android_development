@@ -71,7 +71,7 @@ import {PropertyTreeNodeDataViewComponent} from './property_tree_node_data_view_
       </div>
     }
 
-    @if (!showChevron()) {
+    @if (!showChevron() && !isInPinnedSection) {
       <div class="icon-wrapper leaf-node-icon-wrapper">
         <mat-icon class="leaf-node-icon"></mat-icon>
       </div>

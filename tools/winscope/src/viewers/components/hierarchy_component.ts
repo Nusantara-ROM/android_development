@@ -105,9 +105,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
           [properties]="tableProperties"></properties-table>
       }
       @if (pinnedItems.length > 0) {
-        <div
-          class="pinned-items"
-          [style.padding]="getPinnedItemsPadding()">
+        <div class="pinned-items">
           @for (pinnedItem of pinnedItems; track pinnedItem.id) {
             <tree-node
               class="node full-opacity"
@@ -258,11 +256,6 @@ export class HierarchyComponent {
 
   disableTooltip(el: HTMLElement): boolean {
     return !isElementOverflowing(el);
-  }
-
-  getPinnedItemsPadding(): string {
-    const addGutter = (this.rectIdToShowState?.size ?? 0) > 0;
-    return `0px 10.5px 0px ${addGutter ? 22.5 : 10.5}px`;
   }
 
   getPlaceholderText(): string {

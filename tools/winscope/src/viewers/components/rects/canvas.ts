@@ -485,8 +485,8 @@ export class Canvas {
 
   private createPinnedBorderRects(rect: UiRect3D): THREE.Shape[] {
     const cornerRadii = this.getAdjustedCornerRadii(rect);
-    const xBoldWidth = Canvas.RECT_EDGE_BOLD_WIDTH / rect.transform.dsdx;
-    const yBorderWidth = Canvas.RECT_EDGE_BOLD_WIDTH / rect.transform.dsdy;
+    const xBoldWidth = Canvas.RECT_EDGE_BOLD_WIDTH;
+    const yBorderWidth = Canvas.RECT_EDGE_BOLD_WIDTH;
     const borderRects = [
       // left and bottom borders
       new THREE.Shape()
