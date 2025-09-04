@@ -20,8 +20,7 @@ import {Store} from 'common/store/store';
 import {
   TabbedViewSwitchRequest,
   TracePositionUpdate,
-  PlaybackPlay,
-  PlaybackPause,
+  PlaybackStateChange,
   PlaybackSpeedChange,
 } from 'messaging/winscope_event';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
@@ -50,6 +49,7 @@ import {TraceRectType} from 'viewers/components/rects/rect_spec';
 import {Presenter} from './presenter';
 import {UiData} from './ui_data';
 import {PlaybackPresenter} from 'viewers/common/playback/playback_presenter';
+import {PlaybackState} from 'viewers/common/playback/playback_state';
 
 class PresenterSurfaceFlingerTest extends AbstractHierarchyViewerPresenterTest<UiData> {
   private traceSf: Trace<HierarchyTreeNode> | undefined;
@@ -395,7 +395,11 @@ the default for its data type.`,
 
       it('initializes playback when a PlaybackStart event is received', async () => {
         const playbackPresenterSpy = spyOn(PlaybackPresenter.prototype, 'play');
-        const event = new PlaybackPlay(TraceType.SURFACE_FLINGER, 0, false);
+        const event = new PlaybackStateChange(
+          TraceType.SURFACE_FLINGER,
+          PlaybackState.FORWARDS,
+          0,
+        );
         await presenter.onAppEvent(event);
         expect(playbackPresenterSpy).toHaveBeenCalled();
       });
@@ -405,7 +409,10 @@ the default for its data type.`,
           PlaybackPresenter.prototype,
           'pause',
         );
-        const event = new PlaybackPause(TraceType.SURFACE_FLINGER);
+        const event = new PlaybackStateChange(
+          TraceType.SURFACE_FLINGER,
+          PlaybackState.PAUSED,
+        );
         await presenter.onAppEvent(event);
         expect(playbackPresenterSpy).toHaveBeenCalled();
       });

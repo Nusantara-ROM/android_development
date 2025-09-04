@@ -59,6 +59,7 @@ import {FilesSource} from './files_source';
 import {TimelineData} from './timeline_data';
 import {TracePipeline} from './trace_pipeline';
 import {TraceSearchInitializer} from './trace_search/trace_search_initializer';
+import {PlaybackState} from 'viewers/common/playback/playback_state';
 
 /**
  * Mediator class for communication between components
@@ -384,29 +385,39 @@ export class Mediator {
       },
     );
 
-    await event.visit(WinscopeEventType.PLAYBACK_PLAY, async (event) => {
-      const viewer = this.findViewerByType(event.traceType);
-      if (viewer) {
-        const visible = this.isViewerVisible(viewer);
-        if (visible) {
-          const trace = this.tracePipeline
-            .getTraces()
-            .getTrace(event.traceType);
-          if (trace === undefined) {
+    await event.visit(
+      WinscopeEventType.PLAYBACK_STATE_CHANGE,
+      async (event) => {
+        const viewer = this.findViewerByType(event.traceType);
+        if (!viewer) {
+          return;
+        }
+        switch (event.state) {
+          case PlaybackState.FORWARDS:
+          case PlaybackState.BACKWARDS: {
+            const visible = this.isViewerVisible(viewer);
+            if (!visible) {
+              return;
+            }
+
+            const trace = this.tracePipeline
+              .getTraces()
+              .getTrace(event.traceType);
+            if (trace === undefined) {
+              return;
+            }
+
+            this.timelineData.trySetActiveTrace(trace as Trace<object>);
+            await viewer.onWinscopeEvent(event);
             return;
           }
-          this.timelineData.trySetActiveTrace(trace as Trace<object>);
-          await viewer.onWinscopeEvent(event);
+          case PlaybackState.PAUSED:
+            return await viewer.onWinscopeEvent(event);
+          default:
+            return;
         }
-      }
-    });
-
-    await event.visit(WinscopeEventType.PLAYBACK_PAUSE, async (event) => {
-      const viewer = this.findViewerByType(event.traceType);
-      if (viewer) {
-        await viewer.onWinscopeEvent(event);
-      }
-    });
+      },
+    );
 
     await event.visit(
       WinscopeEventType.PLAYBACK_SPEED_CHANGE,

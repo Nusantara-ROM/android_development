@@ -43,6 +43,7 @@ import {RectShowState} from './rect_show_state';
 import {UiDataHierarchy} from './ui_data_hierarchy';
 import {ViewerEvents} from './viewer_events';
 import {PlaybackPresenter} from './playback/playback_presenter';
+import {PlaybackState} from './playback/playback_state';
 
 export type NotifyHierarchyViewCallbackType<UiData> = (uiData: UiData) => void;
 
@@ -259,20 +260,34 @@ export abstract class AbstractHierarchyViewerPresenter<
         this.refreshUIData();
       },
     );
-    await event.visit(WinscopeEventType.PLAYBACK_PLAY, async (event) => {
-      if (this.playPlayback && this.trace) {
-        await this.playPlayback(
-          this.trace,
-          event.currentTraceIndex,
-          event.isReverse,
-        );
-      }
-    });
-    await event.visit(WinscopeEventType.PLAYBACK_PAUSE, async () => {
-      if (this.pausePlayback && this.trace) {
-        await this.pausePlayback();
-      }
-    });
+    await event.visit(
+      WinscopeEventType.PLAYBACK_STATE_CHANGE,
+      async (event) => {
+        if (!this.trace) {
+          return;
+        }
+        switch (event.state) {
+          case PlaybackState.FORWARDS:
+          case PlaybackState.BACKWARDS:
+            if (this.playPlayback) {
+              await this.playPlayback(
+                this.trace,
+                assertDefined(event.currentTraceIndex),
+                event.state === PlaybackState.BACKWARDS,
+              );
+            }
+            return;
+
+          case PlaybackState.PAUSED:
+            if (this.pausePlayback) {
+              await this.pausePlayback();
+            }
+            return;
+          default:
+            return;
+        }
+      },
+    );
     await event.visit(
       WinscopeEventType.PLAYBACK_SPEED_CHANGE,
       async (event) => {
