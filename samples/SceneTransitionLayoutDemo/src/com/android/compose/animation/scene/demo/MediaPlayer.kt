@@ -44,7 +44,6 @@ import com.android.compose.animation.scene.content.state.TransitionState
 import com.android.compose.modifiers.thenIf
 import com.android.mechanics.compose.modifier.verticalFadeContentReveal
 import com.android.mechanics.compose.modifier.verticalTactileSurfaceReveal
-import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 
 object MediaPlayer {
     object Elements {
@@ -153,18 +152,13 @@ fun ContentScope.MediaPlayer(
                 MediaPlayer.Elements.MediaPlayer
             }
 
-        val motionBuilderContext = rememberMotionBuilderContext()
         val deltaY = -with(LocalDensity.current) { QuickSettingsGrid.Dimensions.Spacing.toPx() }
 
         MovableElement(
             key,
             modifier
                 .thenIf(revealEffect) {
-                    Modifier.verticalTactileSurfaceReveal(
-                        motionBuilderContext = motionBuilderContext,
-                        deltaY = deltaY,
-                        label = "mediaPlayer",
-                    )
+                    Modifier.verticalTactileSurfaceReveal(deltaY = deltaY, label = "mediaPlayer")
                 }
                 .fillMaxWidth()
                 .height(
@@ -180,7 +174,6 @@ fun ContentScope.MediaPlayer(
                         )
                         .thenIf(revealEffect) {
                             Modifier.verticalFadeContentReveal(
-                                motionBuilderContext = motionBuilderContext,
                                 deltaY = deltaY,
                                 label = "mediaPlayer",
                             )

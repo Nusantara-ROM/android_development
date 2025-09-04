@@ -53,8 +53,6 @@ import com.android.compose.animation.scene.ValueKey
 import com.android.compose.grid.VerticalGrid
 import com.android.mechanics.compose.modifier.verticalFadeContentReveal
 import com.android.mechanics.compose.modifier.verticalTactileSurfaceReveal
-import com.android.mechanics.spec.builder.MotionBuilderContext
-import com.android.mechanics.spec.builder.rememberMotionBuilderContext
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.roundToInt
@@ -122,7 +120,7 @@ object QuickSettingsGrid {
     }
 }
 
-class RevealEffectConfig(val deltaY: Float, val motionBuilderContext: MotionBuilderContext)
+class RevealEffectConfig(val deltaY: Float)
 
 /**
  * Display all [tiles] as a grid with [nColumns] columns. The tiles will be expanded if [isExpanded]
@@ -140,13 +138,11 @@ fun ContentScope.QuickSettingsGrid(
 ) {
     val tileHeight = tileHeight(isExpanded)
     val density = LocalDensity.current
-    val motionBuilderContext: MotionBuilderContext = rememberMotionBuilderContext()
     val revealEffectConfig =
-        remember(revealEffect, density, motionBuilderContext) {
+        remember(revealEffect, density) {
             if (!revealEffect) return@remember null
             RevealEffectConfig(
-                deltaY = with(density) { QuickSettingsGrid.Dimensions.Spacing.toPx() },
-                motionBuilderContext = motionBuilderContext,
+                deltaY = with(density) { QuickSettingsGrid.Dimensions.Spacing.toPx() }
             )
         }
 
@@ -220,7 +216,6 @@ private fun ContentScope.Tile(
                 .then(
                     if (revealEffectConfig != null) {
                         Modifier.verticalTactileSurfaceReveal(
-                            motionBuilderContext = revealEffectConfig.motionBuilderContext,
                             deltaY = revealEffectConfig.deltaY,
                             label = "tile($tileId)",
                         )
@@ -237,7 +232,6 @@ private fun ContentScope.Tile(
                 .then(
                     if (revealEffectConfig != null) {
                         Modifier.verticalFadeContentReveal(
-                            motionBuilderContext = revealEffectConfig.motionBuilderContext,
                             deltaY = revealEffectConfig.deltaY,
                             label = "tile($tileId)",
                         )
