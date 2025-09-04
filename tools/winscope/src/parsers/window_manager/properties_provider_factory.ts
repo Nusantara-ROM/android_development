@@ -64,6 +64,9 @@ type WindowContainerChildProto =
   | com.android.server.wm.IWindowContainerChildProto
   | perfetto.protos.IWindowContainerChildProto;
 
+/**
+ * Creates PropertyProvider objects for each container type in a WM trace.
+ */
 export class PropertiesProviderFactory {
   private readonly operationLists: WmOperationLists;
 

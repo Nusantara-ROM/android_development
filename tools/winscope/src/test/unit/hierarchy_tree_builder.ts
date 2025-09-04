@@ -25,6 +25,11 @@ import {SetFormatters} from 'viewers/operations/set_formatters';
 import {ChildProperty, PropertyTreeBuilder} from './property_tree_builder';
 import {TreeBuilder} from './tree_builder';
 
+/**
+ * Builder for a hierarchy tree.
+ *
+ * The builder is not reusable, it should only be used to build one tree.
+ */
 export class HierarchyTreeBuilder extends TreeBuilder<
   HierarchyTreeNode,
   ChildHierarchy
@@ -103,7 +108,10 @@ export class HierarchyTreeBuilder extends TreeBuilder<
   }
 }
 
-export interface ChildHierarchy {
+/**
+ * A child in a hierarchy tree.
+ */
+export declare interface ChildHierarchy {
   id: string | number;
   name: string;
   properties?: object;

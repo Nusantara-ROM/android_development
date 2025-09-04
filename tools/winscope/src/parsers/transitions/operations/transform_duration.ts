@@ -19,6 +19,10 @@ import {AddOperation} from 'tree_node/add_operation';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 
+/**
+ * Transforms a nanosecond resolution duration property into a human-readable
+ * TimeDuration property.
+ */
 export class TransformDuration extends AddOperation<PropertyTreeNode> {
   override makeProperties(value: PropertyTreeNode): PropertyTreeNode[] {
     const durationNs = value.getChildByName('durationNs');

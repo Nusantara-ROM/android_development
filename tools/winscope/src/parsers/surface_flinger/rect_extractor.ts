@@ -27,6 +27,9 @@ import {TraceRectBuilderFromQueryRow} from 'parsers/trace_rect_builder_from_quer
 import {QueryResult, RowIterator} from 'trace_processor/query_result';
 import {TraceRect} from 'tree_node/trace_rect';
 
+/**
+ * Extracts rects from a trace processor query result.
+ */
 export class RectExtractor {
   static extractAllVisibleAndDisplayRects(
     snapshotResult: QueryResult,
@@ -307,12 +310,18 @@ export class RectExtractor {
   }
 }
 
-export interface LayerRects {
+/**
+ * Rects associated with a layer.
+ */
+export declare interface LayerRects {
   bounds?: TraceRect;
   input?: TraceRect;
 }
 
-export interface SnapshotRects {
+/**
+ * Rects associated with a snapshot.
+ */
+export declare interface SnapshotRects {
   displayRects: TraceRect[];
   layerRects: Map<bigint, LayerRects>;
 }

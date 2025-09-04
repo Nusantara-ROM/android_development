@@ -84,8 +84,14 @@ class RectVcFactory {
     return rect;
   }
 }
+/**
+ * A factory for creating rects from a view capture hierarchy tree.
+ */
 export const rectsFactory = new RectVcFactory();
 
+/**
+ * A computation that adds rects to a view capture hierarchy tree.
+ */
 export class RectsComputation {
   private readonly rectsFactory = new RectVcFactory();
   private root: HierarchyTreeNode | undefined;

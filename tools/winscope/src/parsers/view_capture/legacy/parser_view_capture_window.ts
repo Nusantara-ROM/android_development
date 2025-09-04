@@ -32,6 +32,9 @@ import {Parser} from 'trace_api/parser';
 import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 
+/**
+ * A parser for a single window in a legacy ViewCapture trace.
+ */
 export class ParserViewCaptureWindow implements Parser<HierarchyTreeNode> {
   private static readonly PACKAGE_OR_WINDOW_IID = 1;
 

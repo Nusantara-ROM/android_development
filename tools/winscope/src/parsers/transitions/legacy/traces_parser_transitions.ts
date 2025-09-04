@@ -29,6 +29,9 @@ import {Traces} from 'trace_api/traces';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {ParserTransitionsShell} from './parser_transitions_shell';
 
+/**
+ * A parser that processes and merges WM and Shell transition traces.
+ */
 export class TracesParserTransitions extends AbstractTracesParser<PropertyTreeNode> {
   private readonly wmTransitionTrace: Trace<WmTransition> | undefined;
   private readonly shellTransitionTrace: Trace<ShellTransition> | undefined;

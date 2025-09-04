@@ -48,6 +48,9 @@ import {PropertyTreeNode} from 'tree_node/property_tree_node';
 import {SetFormatters} from 'viewers/operations/set_formatters';
 import {HierarchyTreeBuilderVc} from './hierarchy_tree_builder_vc';
 
+/**
+ * A parser for a single window in a Perfetto ViewCapture trace.
+ */
 export class ParserViewCaptureWindow extends AbstractParser<HierarchyTreeNode> {
   private static readonly PROTO_VIEWCAPTURE_FIELD = assertDefined(
     TAMPERED_WINSCOPE_EXTENSIONS.fields[

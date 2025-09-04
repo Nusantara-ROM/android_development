@@ -50,6 +50,9 @@ import {
 } from 'tree_node/property_tree_node';
 import {SetFormatters} from 'viewers/operations/set_formatters';
 
+/**
+ * Parser for Transitions Perfetto traces.
+ */
 export class ParserTransitions extends AbstractParser<HierarchyTreeNode> {
   private static readonly TRANSITION_FIELD =
     TAMPERED_TRACE_PACKET.fields['shellTransition'];

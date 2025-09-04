@@ -25,6 +25,9 @@ import {TraceType} from 'trace_api/trace_type';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {ParserViewCaptureWindow} from './parser_view_capture_window';
 
+/**
+ * A parser for legacy ViewCapture traces.
+ */
 export class ParserViewCapture {
   private static readonly ExportedDataProto = root.lookupType(
     'com.android.app.viewcapture.data.ExportedData',

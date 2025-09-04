@@ -79,6 +79,9 @@ import {
     <p class="paragraph-received-boottime-timestamp"></p>
   `,
 })
+/**
+ * A mock remote tool that can be used to test the cross-tool communication protocol.
+ */
 export class AppComponent {
   static readonly TARGET = 'http://localhost:8080';
   static readonly TIMESTAMP_IN_BUGREPORT_MESSAGE = 1670509911000000000n;
