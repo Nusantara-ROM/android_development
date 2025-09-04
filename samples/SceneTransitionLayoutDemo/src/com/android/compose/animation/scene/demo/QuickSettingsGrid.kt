@@ -223,7 +223,6 @@ private fun ContentScope.Tile(
                             motionBuilderContext = revealEffectConfig.motionBuilderContext,
                             deltaY = revealEffectConfig.deltaY,
                             label = "tile($tileId)",
-                            debug = tileId % 2 == 0,
                         )
                     } else Modifier
                 )
@@ -241,7 +240,6 @@ private fun ContentScope.Tile(
                             motionBuilderContext = revealEffectConfig.motionBuilderContext,
                             deltaY = revealEffectConfig.deltaY,
                             label = "tile($tileId)",
-                            debug = tileId % 2 == 0,
                         )
                     } else Modifier
                 ),
