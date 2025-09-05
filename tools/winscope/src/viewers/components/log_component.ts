@@ -41,7 +41,7 @@ import {
   isElementVisible,
   KeyboardEventKey,
 } from 'common/dom';
-import {Timestamp, TimestampFormatType} from 'common/time/time';
+import {Timestamp} from 'common/time/time';
 import {Timer} from 'common/time/timer';
 import {TraceType} from 'trace_api/trace_type';
 import {TextFilter} from 'viewers/common/text_filter';
@@ -73,6 +73,8 @@ import {
   viewerCardInnerStyle,
   viewerCardStyle,
 } from 'viewers/components/styles/viewer_card.styles';
+import {assertDefined} from 'common/assert';
+import {UserTimestamp} from 'common/time/user_timestamp';
 
 @Component({
   selector: 'log-view',
@@ -381,7 +383,12 @@ export class LogComponent {
 
   formatTimestamp(timestamp: Timestamp) {
     if (!this.areMultipleDatesPresent()) {
-      return timestamp.format(TimestampFormatType.DROP_DATE);
+      const fmtTime = timestamp.format();
+      const parsedTime = new UserTimestamp(fmtTime).extractTime();
+      if (!parsedTime) {
+        return fmtTime;
+      }
+      return assertDefined(parsedTime);
     }
     return timestamp.format();
   }

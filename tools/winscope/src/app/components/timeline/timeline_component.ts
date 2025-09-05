@@ -50,7 +50,7 @@ import {assertDefined} from 'common/assert';
 import {isInputTextField, KeyboardEventKey} from 'common/dom';
 import {PersistentStore} from 'common/store/persistent_store';
 import {parseBigIntStrippingUnit} from 'common/string_helpers';
-import {TimeRange, Timestamp, TimestampFormatType} from 'common/time/time';
+import {TimeRange, Timestamp} from 'common/time/time';
 import {Analytics} from 'logging/analytics';
 import {
   ActiveTraceChanged,
@@ -1071,11 +1071,15 @@ export class TimelineComponent
       this.getCurrentTracePosition().timestamp.getValueNs();
     const timelineData = assertDefined(this.timelineData);
 
-    const formattedCurrentTimestamp = assertDefined(
-      timelineData.getTimestampConverter(),
-    )
-      .makeTimestampFromNs(currentTimestampNs)
-      .format(TimestampFormatType.DROP_DATE);
+    const converter = assertDefined(timelineData.getTimestampConverter());
+
+    const timestamp = converter.makeTimestampFromNs(currentTimestampNs);
+    let formattedCurrentTimestamp = timestamp.format();
+    const parser = new UserTimestamp(formattedCurrentTimestamp);
+    if (converter.canMakeRealTimestamps()) {
+      formattedCurrentTimestamp = assertDefined(parser.extractTime());
+    }
+
     this.selectedTimeFormControl.setValue(formattedCurrentTimestamp);
     this.selectedNsFormControl.setValue(`${currentTimestampNs} ns`);
   }

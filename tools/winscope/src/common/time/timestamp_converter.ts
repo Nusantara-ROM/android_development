@@ -44,6 +44,7 @@ export declare interface ComponentTimestampConverter {
   getUTCOffset(): string;
   makeTimestampFromNs(valueNs: bigint): Timestamp;
   validateHumanInput(timestampHuman: string): boolean;
+  canMakeRealTimestamps(): boolean;
 }
 
 /**
@@ -285,7 +286,7 @@ export class TimestampConverter
     this.utcOffset.clear();
   }
 
-  private canMakeRealTimestamps(): boolean {
+  canMakeRealTimestamps(): boolean {
     return this.createdTimestampType === TimestampType.REAL;
   }
 

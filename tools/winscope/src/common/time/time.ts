@@ -83,15 +83,7 @@ export declare interface TimestampFormatter {
    * @param type The format type.
    * @return The formatted timestamp.
    */
-  format(timestamp: Timestamp, type: TimestampFormatType): string;
-}
-
-/**
- * An enum for timestamp format types.
- */
-export enum TimestampFormatType {
-  FULL,
-  DROP_DATE,
+  format(timestampNs: bigint): string;
 }
 
 /**
@@ -211,8 +203,8 @@ export class Timestamp {
    * @param type The format type.
    * @return The formatted timestamp.
    */
-  format(type = TimestampFormatType.FULL): string {
-    return this.formatter.format(this, type);
+  format(): string {
+    return this.formatter.format(this.getValueNs());
   }
 
   /**
