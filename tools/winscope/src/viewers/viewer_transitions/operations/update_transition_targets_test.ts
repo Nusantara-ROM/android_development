@@ -44,15 +44,15 @@ describe('UpdateTransitionTargets', () => {
   });
 
   it('handles null id values', () => {
-    const propertyRoot = makeRoot(null, null);
+    const propertyRoot = makeRoot(undefined, undefined);
     operation.apply(propertyRoot);
     checkLayerId(propertyRoot, '');
     checkWindowId(propertyRoot, '');
   });
 
   function makeRoot(
-    layer: number | null,
-    window: bigint | null,
+    layer: number | undefined,
+    window: bigint | undefined,
   ): PropertyTreeNode {
     return new PropertyTreeBuilder()
       .setIsRoot(true)

@@ -116,7 +116,9 @@ export class PropertyTreeNodeDataViewComponent {
   }
 
   onTimestampClicked(timestampNode: UiPropertyTreeNode) {
-    const timestamp: Timestamp = timestampNode.getValue();
+    const timestamp: Timestamp = assertDefined(
+      timestampNode.getValue<Timestamp>(),
+    );
     const customEvent = new CustomEvent(ViewerEvents.TimestampClick, {
       bubbles: true,
       detail: new TimestampClickDetail(undefined, timestamp),

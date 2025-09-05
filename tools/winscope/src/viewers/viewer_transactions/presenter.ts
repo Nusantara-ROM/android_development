@@ -178,7 +178,9 @@ export class Presenter extends AbstractLogViewerPresenter<
     ) {
       const entry = this.trace.getEntry(traceIndex);
       const entryNode = assertDefined(entryNodes.at(traceIndex));
-      const vsyncId = entryNode.getEagerPropertyByName('vsyncId')?.getValue();
+      const vsyncId = entryNode
+        .getEagerPropertyByName('vsyncId')
+        ?.getValue<number>();
 
       for (const transactionNode of entryNode.getAllChildren()) {
         const transactionType = assertDefined(

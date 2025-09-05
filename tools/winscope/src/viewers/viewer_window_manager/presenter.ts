@@ -151,7 +151,7 @@ the default for its data type.`,
     if (node.name !== 'hashCode') {
       return;
     }
-    const token = (node.getValue() ?? 0).toString(16);
+    const token = (node.getValue<number>() ?? 0).toString(16);
     const target = this.uiData.hierarchyTrees
       ?.at(0)
       ?.findDfs((node) => node.id.includes(token));

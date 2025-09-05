@@ -39,7 +39,9 @@ export class ZOrderPathsComputation implements Computation {
     assertDefined(this.root).forEachNodeDfs((node) => {
       if (node.isRoot()) return;
       layerIdToTreeNode.set(
-        assertDefined(node.getEagerPropertyByName('layerId')).getValue(),
+        assertDefined(
+          node.getEagerPropertyByName('layerId')?.getValue<number>(),
+        ),
         node,
       );
     });
@@ -52,7 +54,7 @@ export class ZOrderPathsComputation implements Computation {
     assertDefined(this.root).forEachNodeDfs((node) => {
       const zOrderRelativeOf = node
         .getEagerPropertyByName('zOrderRelativeOf')
-        ?.getValue();
+        ?.getValue<number>();
       if (zOrderRelativeOf && zOrderRelativeOf > 0) {
         const zParent = layerIdToTreeNode.get(zOrderRelativeOf);
         if (!zParent) {

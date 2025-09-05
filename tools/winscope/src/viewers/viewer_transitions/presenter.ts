@@ -227,8 +227,10 @@ export class Presenter extends AbstractLogViewerPresenter<
         {
           spec: Presenter.COLUMNS.id,
           value: assertDefined(
-            transitionNode.getEagerPropertyByName('transitionId'),
-          ).getValue(),
+            transitionNode
+              .getEagerPropertyByName('transitionId')
+              ?.getValue<number>(),
+          ),
         },
         {spec: Presenter.COLUMNS.type, value: transitionType},
         {

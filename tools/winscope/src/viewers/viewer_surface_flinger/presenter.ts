@@ -439,7 +439,8 @@ the default for its data type.`,
         inputWindowInfo?.getChildByName('inputConfig')?.formattedValue() ??
         'null',
       ignoreDestinationFrame:
-        (flags.getValue() & LayerFlag.IGNORE_DESTINATION_FRAME) ===
+        ((flags.getValue<number>() ?? 0) &
+          LayerFlag.IGNORE_DESTINATION_FRAME) ===
         LayerFlag.IGNORE_DESTINATION_FRAME,
       hasInputChannel,
     };

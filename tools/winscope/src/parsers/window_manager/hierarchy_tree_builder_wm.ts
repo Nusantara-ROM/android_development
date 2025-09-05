@@ -37,8 +37,8 @@ export class HierarchyTreeBuilderWm extends HierarchyTreeBuilder {
         container,
       );
       const token = assertDefined(
-        containerProperties.getChildByName('token'),
-      ).getValue();
+        containerProperties.getChildByName('token')?.getValue<string>(),
+      );
       map.set(token, [containerNode]);
       return map;
     }, new Map<string, HierarchyTreeNode[]>());
@@ -64,7 +64,8 @@ export class HierarchyTreeBuilderWm extends HierarchyTreeBuilder {
         node.getEagerPropertyByName('children')?.getAllChildren() ?? [];
     }
     for (const childToken of childrenTokens) {
-      const child = identifierToChildren.get(childToken.getValue())?.at(0);
+      const tokenValue = assertDefined(childToken.getValue<string | number>());
+      const child = identifierToChildren.get(tokenValue)?.at(0);
       if (child) {
         this.setParentChildRelationship(node, child);
         this.assignParentChildRelationships(child, identifierToChildren);

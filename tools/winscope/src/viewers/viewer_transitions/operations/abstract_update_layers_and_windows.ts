@@ -44,11 +44,11 @@ export abstract class AbstractUpdateLayersAndWindows<T extends TreeNode>
   }
 
   protected updateWindowId(windowId: PropertyTreeNode) {
-    let windowIdValue = windowId.getValue() ?? undefined;
-    if (windowIdValue === undefined) {
+    const value = windowId.getValue<string>() ?? undefined;
+    if (value === undefined) {
       return;
     }
-    windowIdValue = Number(windowIdValue);
+    const windowIdValue = Number(value);
     const windowIdString = formatAsHex(windowIdValue);
     const windowTitle = this.windowTokenToTitle.get(windowIdValue.toString(16));
     windowId.setFormatter(

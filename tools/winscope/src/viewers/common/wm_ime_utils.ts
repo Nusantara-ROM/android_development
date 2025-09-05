@@ -38,7 +38,9 @@ export function getFocusedActivity(
   if (focusedDisplay && resumedActivity) {
     const rootTasks = getRootTasks(focusedDisplay);
     focusedActivity = getActivityByName(
-      assertDefined(resumedActivity.getChildByName('title')).getValue(),
+      assertDefined(
+        resumedActivity.getChildByName('title')?.getValue<string>(),
+      ),
       rootTasks,
     );
   } else if (focusedDisplay && focusedWindow) {

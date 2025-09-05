@@ -18,6 +18,24 @@ import {Rect} from 'common/geometry/rect';
 import {TreeNode} from './tree_node';
 
 /**
+ * Represents the possible types for the value of a `PropertyTreeNode`.
+ *
+ * These values come from TraceProcessor table or proto fields (for backwards
+ * compatibility) and are used when the value of a property is a leaf node.
+ */
+export type PropertyValue =
+  | string
+  | bigint
+  | number
+  | boolean
+  | object
+  | string[]
+  | bigint[]
+  | number[]
+  | boolean[]
+  | object[];
+
+/**
  * A node in a property tree.
  */
 export class PropertyTreeNode extends TreeNode {
@@ -28,13 +46,13 @@ export class PropertyTreeNode extends TreeNode {
     id: string,
     name: string,
     readonly source: PropertySource,
-    protected readonly value: any,
+    protected readonly value: PropertyValue | undefined,
   ) {
     super(id, name);
   }
 
-  getValue(): any {
-    return this.value;
+  getValue<T>(): T | undefined {
+    return this.value as T;
   }
 
   setFormatter(formatter: PropertyFormatter): this {
@@ -64,12 +82,7 @@ export class PropertyTreeNode extends TreeNode {
     }
 
     if (this.isRect()) {
-      const left = this.getChildByName('left')?.getValue() ?? 0;
-      const top = this.getChildByName('top')?.getValue() ?? 0;
-      const right = this.getChildByName('right')?.getValue() ?? 0;
-      const bottom = this.getChildByName('bottom')?.getValue() ?? 0;
-      const rect = new Rect(left, top, right - left, bottom - top);
-      return rect.isEmpty();
+      return this.isEmptyRect();
     }
 
     return false;
@@ -136,6 +149,21 @@ export class PropertyTreeNode extends TreeNode {
     );
   }
 
+  private isEmptyRect(): boolean {
+    const left = this.getChildByName('left')?.getValue() ?? 0;
+    const top = this.getChildByName('top')?.getValue() ?? 0;
+    const right = this.getChildByName('right')?.getValue() ?? 0;
+    const bottom = this.getChildByName('bottom')?.getValue() ?? 0;
+
+    if (left !== undefined && typeof left !== 'number') return false;
+    if (top !== undefined && typeof top !== 'number') return false;
+    if (right !== undefined && typeof right !== 'number') return false;
+    if (bottom !== undefined && typeof bottom !== 'number') return false;
+
+    const rect = new Rect(left, top, right - left, bottom - top);
+    return rect.isEmpty();
+  }
+
   private isEmptyColor(): boolean {
     const [r, g, b, a] = [
       this.getChildByName('r')?.getValue() ?? 0,
@@ -143,6 +171,12 @@ export class PropertyTreeNode extends TreeNode {
       this.getChildByName('b')?.getValue() ?? 0,
       this.getChildByName('a')?.getValue() ?? 0,
     ];
+
+    if (r !== undefined && typeof r !== 'number') return false;
+    if (g !== undefined && typeof g !== 'number') return false;
+    if (b !== undefined && typeof b !== 'number') return false;
+    if (a !== undefined && typeof a !== 'number') return false;
+
     if (a === 0) return true;
     return r < 0 || g < 0 || b < 0;
   }

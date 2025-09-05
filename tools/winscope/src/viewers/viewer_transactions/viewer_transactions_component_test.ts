@@ -62,7 +62,7 @@ class ViewerTransactionsComponentTest extends AbstractLogViewerComponentTest<Vie
     const propertiesTree = new PropertyTreeBuilder()
       .setRootId('Transactions')
       .setName('tree')
-      .setValue(null)
+      .setValue(undefined)
       .build();
 
     const ts = makeElapsedTimestamp(1n);
@@ -110,7 +110,7 @@ class ViewerTransactionsComponentTest extends AbstractLogViewerComponentTest<Vie
     const propertiesTree = new PropertyTreeBuilder()
       .setRootId('Transactions')
       .setName('tree')
-      .setValue(null)
+      .setValue(undefined)
       .build();
 
     const ts = makeElapsedTimestamp(1n);
