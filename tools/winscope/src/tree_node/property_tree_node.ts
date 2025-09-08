@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {makeRect} from './geometry_factory';
+import {Rect} from 'common/geometry/rect';
 import {TreeNode} from './tree_node';
 
 /**
@@ -64,7 +64,12 @@ export class PropertyTreeNode extends TreeNode {
     }
 
     if (this.isRect()) {
-      return makeRect(this).isEmpty();
+      const left = this.getChildByName('left')?.getValue() ?? 0;
+      const top = this.getChildByName('top')?.getValue() ?? 0;
+      const right = this.getChildByName('right')?.getValue() ?? 0;
+      const bottom = this.getChildByName('bottom')?.getValue() ?? 0;
+      const rect = new Rect(left, top, right - left, bottom - top);
+      return rect.isEmpty();
     }
 
     return false;
