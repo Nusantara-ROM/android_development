@@ -64,11 +64,17 @@ describe('ParserTransitionsShell', () => {
     expect(entry.handler).toBe(2);
   });
 
-  it('provides shell mapping', async () => {
+  it('creates shell mapping packet', async () => {
     expect(parser).toBeInstanceOf(ParserTransitionsShell);
-    const mapping = (
+    const mappingPacketEnc = (
       parser as unknown as ParserTransitionsShell
-    ).getShellHandlerMapping();
+    ).createHandlerMappingPacket(2);
+
+    expect(mappingPacketEnc.trustedPacketSequenceId).toEqual(2);
+    const mapping = assertDefined(
+      mappingPacketEnc.shellHandlerMappings?.mapping,
+    );
+
     expect(mapping.length).toBe(2);
     expect(mapping[0].id).toBe(2);
     expect(mapping[0].name).toBe(
