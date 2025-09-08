@@ -148,7 +148,7 @@ import {
                 <button
                   mat-icon-button
                   [matTooltip]="getCrossToolSyncTooltip()"
-                  class="cross-tool-sync-button"
+                  class="cross-tool-sync-button no-touch-target-button"
                   (click)="onCrossToolSyncButtonClick()"
                   [color]="getCrossToolSyncButtonColor()">
                   <mat-icon class="material-symbols-outlined">cloud_sync</mat-icon>
