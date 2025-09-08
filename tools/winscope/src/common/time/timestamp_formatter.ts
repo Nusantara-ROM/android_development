@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import {assertDefined} from 'common/assert';
 import {divideAndRound} from 'common/bigint_math';
-import {Timestamp, TimestampFormatter, TimestampFormatType} from './time';
+import {TimestampFormatter} from './time';
 import {TIME_UNIT_TO_NANO, TIME_UNITS} from './time_units';
-import {UserTimestamp} from './user_timestamp';
 import {UTCOffset} from './utc_offset';
 
 /**
@@ -50,17 +48,13 @@ export class RealTimestampFormatter implements TimestampFormatter {
     this.utcOffset = value;
   }
 
-  format(timestamp: Timestamp, type: TimestampFormatType): string {
-    const timestampNanos =
-      timestamp.getValueNs() + (this.utcOffset.getValueNs() ?? 0n);
+  format(timestampNs: bigint): string {
+    const timestampNanos = timestampNs + (this.utcOffset.getValueNs() ?? 0n);
     const ms = divideAndRound(timestampNanos, BigInt(TIME_UNIT_TO_NANO.ms));
     const formattedTimestamp = new Date(Number(ms))
       .toISOString()
       .replace('Z', '')
       .replace('T', ', ');
-    if (type === TimestampFormatType.DROP_DATE) {
-      return assertDefined(new UserTimestamp(formattedTimestamp).extractTime());
-    }
     return formattedTimestamp;
   }
 }
@@ -73,8 +67,8 @@ export class RealTimestampFormatter implements TimestampFormatter {
  * such as timestamps from traces that only provide monotonic time.
  */
 export class ElapsedTimestampFormatter {
-  format(timestamp: Timestamp): string {
-    let leftNanos = timestamp.getValueNs();
+  format(timestampNs: bigint): string {
+    let leftNanos = timestampNs;
     const parts: Array<{value: bigint; unit: string}> = TIME_UNITS.slice()
       .reverse()
       .map(({nanosInUnit, unit}) => {
