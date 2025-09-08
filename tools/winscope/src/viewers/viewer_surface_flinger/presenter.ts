@@ -66,6 +66,7 @@ import {
 import {UiRect} from 'viewers/components/rects/ui_rect';
 import {UiData} from './ui_data';
 import {PlaybackPresenter} from 'viewers/common/playback/playback_presenter';
+import {PlaybackState} from 'viewers/common/playback/playback_state';
 
 export class Presenter extends AbstractHierarchyViewerPresenter<UiData> {
   static readonly DENYLIST_PROPERTY_NAMES = [
@@ -261,10 +262,10 @@ the default for its data type.`,
   protected override async playPlayback(
     trace: Trace<HierarchyTreeNode>,
     currentPosition: number,
-    isReverse: boolean,
+    requestedState: PlaybackState,
   ) {
     this.hierarchyPresenter.setShowDiffAvailability(false);
-    this.playbackPresenter.play(trace, currentPosition, isReverse);
+    this.playbackPresenter.play(trace, currentPosition, requestedState);
   }
 
   protected override async pausePlayback(

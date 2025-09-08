@@ -18,7 +18,7 @@ import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {Trace} from 'trace_api/trace';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
 import {
-  PlaybackStateChange,
+  PlaybackStateChangeHandled,
   TracePositionUpdate,
 } from 'messaging/winscope_event';
 import {TracePosition} from 'trace_api/trace_position';
@@ -27,38 +27,42 @@ import {TraceEntryEager} from 'trace_api/trace';
 import {PlaybackState} from './playback_state';
 
 export class PlaybackPresenter {
-  private paused: boolean = true;
   private entryIndex: number = 0;
   private entryStepSize: number = 1;
   private buffer: Array<
     TraceEntryEager<HierarchyTreeNode, HierarchyTreeNode | undefined>
   > = [];
   private emitWinscopeEvent: EmitEvent;
-  private isReverse: boolean = false;
+  private currPlaybackState: PlaybackState = PlaybackState.PAUSED;
 
   constructor(emitWinscopeEvent: EmitEvent) {
     this.emitWinscopeEvent = emitWinscopeEvent;
   }
 
   isPlaying() {
-    return !this.paused;
+    return this.currPlaybackState !== PlaybackState.PAUSED;
   }
 
   async play(
     trace: Trace<HierarchyTreeNode>,
     currentPosition: number,
-    isReverse: boolean,
+    requestedState: PlaybackState,
   ) {
-    this.paused = false;
     await this.buildBuffer(trace);
     this.entryIndex = currentPosition;
-    this.isReverse = isReverse;
-    if (this.isReverse && this.entryIndex === 0) {
+    this.currPlaybackState = requestedState;
+    if (
+      this.currPlaybackState === PlaybackState.BACKWARDS &&
+      this.entryIndex === 0
+    ) {
       // if the user's cursor position is at 0 and they want to reverse play through the trace
       // change the index to the end of trace
       this.entryIndex = this.buffer.length - 1;
     }
     if (this.buffer.length > 0 && this.entryIndex < this.buffer.length) {
+      await this.emitWinscopeEvent(
+        new PlaybackStateChangeHandled(this.currPlaybackState),
+      );
       this.runPlaybackLoop(trace);
     }
   }
@@ -69,9 +73,9 @@ export class PlaybackPresenter {
 
   async pause(trace: Trace<HierarchyTreeNode>) {
     if (this.isPlaying()) {
-      this.paused = true;
+      this.currPlaybackState = PlaybackState.PAUSED;
       await this.emitWinscopeEvent(
-        new PlaybackStateChange(trace.type, PlaybackState.PAUSED),
+        new PlaybackStateChangeHandled(this.currPlaybackState),
       );
     }
   }
@@ -82,7 +86,7 @@ export class PlaybackPresenter {
     let nextIndex;
     let reachedEndOfTrace = false;
 
-    while (!this.paused) {
+    while (this.currPlaybackState !== PlaybackState.PAUSED) {
       const currentIndex = this.entryIndex;
       await this.emitWinscopeEvent(
         new TracePositionUpdate(
@@ -93,7 +97,7 @@ export class PlaybackPresenter {
       // we debounce the trace position updates to allow time for UI to render
       await new Timer(10, 10).sleepMs();
 
-      if (this.isReverse) {
+      if (this.currPlaybackState === PlaybackState.BACKWARDS) {
         nextIndex = currentIndex - this.entryStepSize;
         if (nextIndex < 0) {
           reachedEndOfTrace = true;

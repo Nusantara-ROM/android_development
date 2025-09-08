@@ -261,7 +261,7 @@ export abstract class AbstractHierarchyViewerPresenter<
       },
     );
     await event.visit(
-      WinscopeEventType.PLAYBACK_STATE_CHANGE,
+      WinscopeEventType.PLAYBACK_STATE_CHANGE_REQUEST,
       async (event) => {
         if (!this.trace) {
           return;
@@ -273,7 +273,7 @@ export abstract class AbstractHierarchyViewerPresenter<
               await this.playPlayback(
                 this.trace,
                 assertDefined(event.currentTraceIndex),
-                event.state === PlaybackState.BACKWARDS,
+                event.state,
               );
             }
             return;
@@ -549,7 +549,7 @@ export abstract class AbstractHierarchyViewerPresenter<
   protected playPlayback?(
     trace: Trace<HierarchyTreeNode>,
     currentPosition: number,
-    isReverse: boolean,
+    requestedState: PlaybackState,
   ): Promise<void>;
   protected pausePlayback?(trace: Trace<HierarchyTreeNode>): Promise<void>;
   protected processDataAfterPositionUpdate?(

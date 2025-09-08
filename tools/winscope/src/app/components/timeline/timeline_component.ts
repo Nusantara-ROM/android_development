@@ -59,7 +59,7 @@ import {
   WinscopeEvent,
   WinscopeEventType,
   TabbedViewSwitched,
-  PlaybackStateChange,
+  PlaybackStateChangeRequest,
   PlaybackSpeedChange,
 } from 'messaging/winscope_event';
 import {
@@ -765,14 +765,15 @@ export class TimelineComponent
     await event.visit(WinscopeEventType.TRACE_SEARCH_COMPLETED, async () =>
       this.setIsDisabled(false),
     );
-    await event.visit(WinscopeEventType.PLAYBACK_STATE_CHANGE, async () =>
-      this.setIsPaused(),
+    await event.visit(
+      WinscopeEventType.PLAYBACK_STATE_CHANGE_HANDLED,
+      async (event) => this.setPlaybackState(event.stateToReflect),
     );
     await event.visit(
       WinscopeEventType.TABBED_VIEW_SWITCHED,
       async (event: TabbedViewSwitched) => {
-        this.currentTabTraceType = event.newFocusedView.traces[0]?.type;
         await this.onPlaybackStateChange(PlaybackState.PAUSED);
+        this.currentTabTraceType = event.newFocusedView.traces[0]?.type;
         this.changeDetectorRef.detectChanges();
       },
     );
@@ -920,15 +921,13 @@ export class TimelineComponent
   }
 
   async onPlaybackStateChange(state: PlaybackState) {
-    this.playbackState = state;
-
     switch (state) {
       case PlaybackState.FORWARDS:
       case PlaybackState.BACKWARDS:
         this.emitEvent(
-          new PlaybackStateChange(
+          new PlaybackStateChangeRequest(
             assertDefined(this.currentTabTraceType),
-            this.playbackState,
+            state,
             this.getPlaybackStartingPosition(),
           ),
         );
@@ -936,9 +935,9 @@ export class TimelineComponent
 
       case PlaybackState.PAUSED:
         this.emitEvent(
-          new PlaybackStateChange(
+          new PlaybackStateChangeRequest(
             assertDefined(this.currentTabTraceType),
-            this.playbackState,
+            state,
           ),
         );
         return;
@@ -1233,7 +1232,7 @@ export class TimelineComponent
     this.changeDetectorRef.detectChanges();
   }
 
-  private setIsPaused() {
-    this.playbackState = PlaybackState.PAUSED;
+  private setPlaybackState(stateToReflect: PlaybackState) {
+    this.playbackState = stateToReflect;
   }
 }

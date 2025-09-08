@@ -63,8 +63,9 @@ import {
   ViewersUnloaded,
   WinscopeEvent,
   WinscopeEventType,
-  PlaybackStateChange,
+  PlaybackStateChangeRequest,
   PlaybackSpeedChange,
+  PlaybackStateChangeHandled,
 } from 'messaging/winscope_event';
 
 import {WinscopeEventEmitter} from 'messaging/winscope_event_emitter';
@@ -853,7 +854,7 @@ describe('Mediator', () => {
     );
   });
 
-  describe('PlaybackStart event handling', () => {
+  describe('Playback state change event handling', () => {
     beforeEach(async () => {
       await loadFiles();
       await loadTraceView();
@@ -861,7 +862,7 @@ describe('Mediator', () => {
     });
 
     it('propagates to the visible viewer matching the trace type', async () => {
-      const event = new PlaybackStateChange(
+      const event = new PlaybackStateChangeRequest(
         TraceType.SURFACE_FLINGER,
         PlaybackState.FORWARDS,
         0,
@@ -873,7 +874,7 @@ describe('Mediator', () => {
     });
 
     it('does not propagate if the matching viewer is not visible', async () => {
-      const event = new PlaybackStateChange(
+      const event = new PlaybackStateChangeRequest(
         TraceType.WINDOW_MANAGER,
         PlaybackState.FORWARDS,
         0,
@@ -885,7 +886,7 @@ describe('Mediator', () => {
     });
 
     it('does not propagate if no viewer matches the trace type', async () => {
-      const event = new PlaybackStateChange(
+      const event = new PlaybackStateChangeRequest(
         TraceType.PROTO_LOG,
         PlaybackState.FORWARDS,
         0,
@@ -895,35 +896,11 @@ describe('Mediator', () => {
       expect(viewerStub0.onWinscopeEvent).not.toHaveBeenCalled();
       expect(viewerStub1.onWinscopeEvent).not.toHaveBeenCalled();
     });
-  });
 
-  describe('PlaybackPause event handling', () => {
-    beforeEach(async () => {
-      await loadFiles();
-      await loadTraceView();
-      resetSpyCalls();
-    });
-
-    it('propagates to the viewer matching the trace type', async () => {
-      const event = new PlaybackStateChange(
-        TraceType.SURFACE_FLINGER,
-        PlaybackState.PAUSED,
-      );
+    it('once handled propagates to the timeline component', async () => {
+      const event = new PlaybackStateChangeHandled(PlaybackState.FORWARDS);
       await mediator.onWinscopeEvent(event);
-
-      expect(viewerStub0.onWinscopeEvent).toHaveBeenCalledOnceWith(event);
-      expect(viewerStub1.onWinscopeEvent).not.toHaveBeenCalled();
-    });
-
-    it('does not propagate if no viewer matches the trace type', async () => {
-      const event = new PlaybackStateChange(
-        TraceType.PROTO_LOG,
-        PlaybackState.PAUSED,
-      );
-      await mediator.onWinscopeEvent(event);
-
-      expect(viewerStub0.onWinscopeEvent).not.toHaveBeenCalled();
-      expect(viewerStub1.onWinscopeEvent).not.toHaveBeenCalled();
+      expect(timelineComponent.onWinscopeEvent).toHaveBeenCalledWith(event);
     });
   });
 

@@ -20,7 +20,7 @@ import {Store} from 'common/store/store';
 import {
   TabbedViewSwitchRequest,
   TracePositionUpdate,
-  PlaybackStateChange,
+  PlaybackStateChangeRequest,
   PlaybackSpeedChange,
 } from 'messaging/winscope_event';
 import {LegacyParserProvider} from 'test/unit/fixture_utils';
@@ -395,7 +395,7 @@ the default for its data type.`,
 
       it('initializes playback when a PlaybackStart event is received', async () => {
         const playbackPresenterSpy = spyOn(PlaybackPresenter.prototype, 'play');
-        const event = new PlaybackStateChange(
+        const event = new PlaybackStateChangeRequest(
           TraceType.SURFACE_FLINGER,
           PlaybackState.FORWARDS,
           0,
@@ -409,7 +409,7 @@ the default for its data type.`,
           PlaybackPresenter.prototype,
           'pause',
         );
-        const event = new PlaybackStateChange(
+        const event = new PlaybackStateChangeRequest(
           TraceType.SURFACE_FLINGER,
           PlaybackState.PAUSED,
         );

@@ -388,7 +388,7 @@ export class Mediator {
     );
 
     await event.visit(
-      WinscopeEventType.PLAYBACK_STATE_CHANGE,
+      WinscopeEventType.PLAYBACK_STATE_CHANGE_REQUEST,
       async (event) => {
         const viewer = this.findViewerByType(event.traceType);
         if (!viewer) {
@@ -414,11 +414,18 @@ export class Mediator {
             return;
           }
           case PlaybackState.PAUSED:
-            await viewer.onWinscopeEvent(event);
-            return this.timelineComponent?.onWinscopeEvent(event);
+            return await viewer.onWinscopeEvent(event);
+
           default:
             return;
         }
+      },
+    );
+
+    await event.visit(
+      WinscopeEventType.PLAYBACK_STATE_CHANGE_HANDLED,
+      async (event) => {
+        return this.timelineComponent?.onWinscopeEvent(event);
       },
     );
 

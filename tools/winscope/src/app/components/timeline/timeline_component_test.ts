@@ -40,6 +40,9 @@ import {
   ActiveTraceChanged,
   ExpandedTimelineToggled,
   InitializeTraceSearchRequest,
+  PlaybackSpeedChange,
+  PlaybackStateChangeHandled,
+  PlaybackStateChangeRequest,
   TraceAddRequest,
   TracePositionUpdate,
   TraceRemoveRequest,
@@ -68,6 +71,8 @@ import {MiniTimelineDrawerImpl} from './mini-timeline/drawer/mini_timeline_drawe
 import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
 import {SliderComponent} from './mini-timeline/slider_component';
 import {TimelineComponent} from './timeline_component';
+import {PlaybackState} from 'viewers/common/playback/playback_state';
+import {PlaybackControlsComponent} from './playback_component';
 
 describe('TimelineComponent', () => {
   const time90 = makeRealTimestamp(90n);
@@ -120,6 +125,7 @@ describe('TimelineComponent', () => {
         SliderComponent,
         TestHostComponent,
         TransitionTimelineComponent,
+        PlaybackControlsComponent,
       ],
     })
       .overrideComponent(TimelineComponent, {
@@ -1111,6 +1117,53 @@ describe('TimelineComponent', () => {
     expect(miniDrawSpy).toHaveBeenCalledTimes(1); // all on one canvas so spy called once
   });
 
+  describe('PlaybackControls', async () => {
+    beforeEach(() => {
+      component.initialTabTraceType = TraceType.SURFACE_FLINGER;
+      loadSfWmTraces();
+    });
+
+    it('emits PlaybackSpeedChange event', async () => {
+      const timelineComponent = assertDefined(component.timeline);
+      const emitEventSpy = jasmine.createSpy('emitEvent');
+      timelineComponent.setEmitEvent(emitEventSpy);
+
+      await dom.openMatSelect();
+      const selectPanel = dom.getMatSelectPanel();
+      await selectPanel.clickByIndexAndWaitStable('mat-option', 2);
+      const event = emitEventSpy.calls.mostRecent().args[0];
+      expect(emitEventSpy).toHaveBeenCalledTimes(1);
+      expect(event).toBeInstanceOf(PlaybackSpeedChange);
+    });
+
+    it('handles PlaybackStateChangeHandled event', async () => {
+      const timelineComponent = assertDefined(component.timeline);
+      const emitEventSpy = jasmine.createSpy('emitEvent');
+      timelineComponent.setEmitEvent(emitEventSpy);
+
+      dom.findAndClick('playback-controls #play_playback_button');
+      const event = emitEventSpy.calls.mostRecent().args[0];
+      expect(event.state).toEqual(PlaybackState.FORWARDS);
+      await timelineComponent.onWinscopeEvent(
+        new PlaybackStateChangeHandled(event.state),
+      );
+      expect(timelineComponent.playbackState).toEqual(event.state);
+    });
+
+    it('emits PlaybackStateChangeRequest event on a playback button clicked', async () => {
+      const timelineComponent = assertDefined(component.timeline);
+      const emitEventSpy = jasmine.createSpy('emitEvent');
+      timelineComponent.setEmitEvent(emitEventSpy);
+
+      dom.findAndClick('playback-controls #play_playback_button');
+      expect(emitEventSpy).toHaveBeenCalledTimes(1);
+      const event = emitEventSpy.calls.mostRecent().args[0];
+      expect(event).toBeInstanceOf(PlaybackStateChangeRequest);
+      expect(event.state).toEqual(PlaybackState.FORWARDS);
+      expect(event.traceType).toEqual(TraceType.SURFACE_FLINGER);
+    });
+  });
+
   function loadSfWmTraces(hostComponent = component, domHelper = dom) {
     const traces = new TracesBuilder()
       .setTimestamps(TraceType.SURFACE_FLINGER, [time100, time110])
@@ -1387,13 +1440,15 @@ describe('TimelineComponent', () => {
       <timeline
         [allTraces]="allTraces"
         [timelineData]="timelineData"
-        [store]="store"></timeline>
+        [store]="store"
+        [initialTabTraceType]="initialTabTraceType"></timeline>
     `,
   })
   class TestHostComponent {
     timelineData = new TimelineData();
     allTraces = new Traces();
     store = new PersistentStore();
+    initialTabTraceType: TraceType | undefined;
 
     @ViewChild(TimelineComponent)
     timeline: TimelineComponent | undefined;

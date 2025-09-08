@@ -58,7 +58,8 @@ export enum WinscopeEventType {
   INITIALIZE_TRACE_SEARCH_REQUEST,
   TRACE_SEARCH_INITIALIZED,
   SHOW_TRACE_UPLOAD_WARNING,
-  PLAYBACK_STATE_CHANGE,
+  PLAYBACK_STATE_CHANGE_REQUEST,
+  PLAYBACK_STATE_CHANGE_HANDLED,
   PLAYBACK_SPEED_CHANGE,
 }
 
@@ -94,7 +95,8 @@ interface TypeMap {
   [WinscopeEventType.TRACE_SEARCH_INITIALIZED]: TraceSearchInitialized;
   [WinscopeEventType.TRACE_SEARCH_COMPLETED]: TraceSearchCompleted;
   [WinscopeEventType.SHOW_TRACE_UPLOAD_WARNING]: ShowTraceUploadWarning;
-  [WinscopeEventType.PLAYBACK_STATE_CHANGE]: PlaybackStateChange;
+  [WinscopeEventType.PLAYBACK_STATE_CHANGE_REQUEST]: PlaybackStateChangeRequest;
+  [WinscopeEventType.PLAYBACK_STATE_CHANGE_HANDLED]: PlaybackStateChangeHandled;
   [WinscopeEventType.PLAYBACK_SPEED_CHANGE]: PlaybackSpeedChange;
 }
 
@@ -465,14 +467,14 @@ export class ShowTraceUploadWarning extends WinscopeEvent {
 }
 
 /**
- * An event for when the playback state should change.
+ * An event for when the playback state change is requested.
  *
  * @param traceType The type of the trace.
  * @param state The desired playback state (FORWARDS, BACKWARDS, or PAUSE).
  * @param currentTraceIndex Current position in the trace (relevant for FORWARDS/BACKWARDS states).
  */
-export class PlaybackStateChange extends WinscopeEvent {
-  override readonly type = WinscopeEventType.PLAYBACK_STATE_CHANGE;
+export class PlaybackStateChangeRequest extends WinscopeEvent {
+  override readonly type = WinscopeEventType.PLAYBACK_STATE_CHANGE_REQUEST;
   readonly traceType: TraceType;
   readonly currentTraceIndex?: number;
   readonly state: PlaybackState;
@@ -486,6 +488,21 @@ export class PlaybackStateChange extends WinscopeEvent {
     this.traceType = traceType;
     this.state = state;
     this.currentTraceIndex = currentTraceIndex;
+  }
+}
+
+/**
+ * An event for when the playback state change is reflected back to timeline.
+ *
+ * @param stateToReflect The reflected playback state (FORWARDS, BACKWARDS, or PAUSE).
+ */
+export class PlaybackStateChangeHandled extends WinscopeEvent {
+  override readonly type = WinscopeEventType.PLAYBACK_STATE_CHANGE_HANDLED;
+  readonly stateToReflect: PlaybackState;
+
+  constructor(stateToReflect: PlaybackState) {
+    super();
+    this.stateToReflect = stateToReflect;
   }
 }
 
