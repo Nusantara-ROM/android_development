@@ -182,9 +182,10 @@ $dark-theme: mat.m2-define-dark-theme(
 .file-name-input-field {
   @include mat.form-field-overrides(
     (
-      container-height: 36px,
-      filled-with-label-container-padding-top: 12px,
-      filled-with-label-container-padding-bottom: 8px,
+      container-height: 32px,
+      filled-with-label-container-padding-top: 8px,
+      filled-with-label-container-padding-bottom: 0px,
+      filled-container-shape: 0px,
     )
   );
 }
@@ -304,10 +305,14 @@ $dark-theme: mat.m2-define-dark-theme(
     touch-target-display: -1,
   )
 );
+.toolbar {
+  @include mat.icon-button-density(-5);
+};
 .no-touch-target-button,
 .rect-legend,
 .search-box,
-.listed-search-option {
+.listed-search-option,
+.toolbar {
   @include mat.icon-button-overrides(
     (
       touch-target-display: none,
@@ -334,7 +339,15 @@ $dark-theme: mat.m2-define-dark-theme(
 @include mat.slider-theme($light-theme);
 @include mat.snack-bar-theme($light-theme);
 @include mat.tabs-theme($light-theme);
+
 @include mat.toolbar-theme($light-theme);
+@include mat.toolbar-overrides(
+  (
+    standard-height: 32px,
+    mobile-height: 32px,
+  )
+);
+
 @include mat.tooltip-theme($light-theme);
 
 @mixin winscope-color-overrides() {

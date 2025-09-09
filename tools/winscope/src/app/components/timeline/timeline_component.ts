@@ -436,7 +436,7 @@ import {UserTimestamp} from 'common/time/user_timestamp';
         font-size: 18px;
         width: 18px;
         height: 18px;
-        padding-left: 4px;fweb
+        padding-left: 4px;
         padding-right: 4px;
         padding-top: 2px;
       }
