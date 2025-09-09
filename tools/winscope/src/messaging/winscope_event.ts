@@ -21,6 +21,7 @@ import {TracePosition} from 'trace_api/trace_position';
 import {TraceType} from 'trace_api/trace_type';
 import {AdbFiles} from 'trace_collection/adb_files';
 import {View, Viewer, ViewType} from 'viewers/viewer';
+import {PlaybackState} from 'viewers/common/playback/playback_state';
 
 /**
  * An enum for Winscope event types.
@@ -57,8 +58,8 @@ export enum WinscopeEventType {
   INITIALIZE_TRACE_SEARCH_REQUEST,
   TRACE_SEARCH_INITIALIZED,
   SHOW_TRACE_UPLOAD_WARNING,
-  PLAYBACK_PLAY,
-  PLAYBACK_PAUSE,
+  PLAYBACK_STATE_CHANGE_REQUEST,
+  PLAYBACK_STATE_CHANGE_HANDLED,
   PLAYBACK_SPEED_CHANGE,
 }
 
@@ -94,8 +95,8 @@ interface TypeMap {
   [WinscopeEventType.TRACE_SEARCH_INITIALIZED]: TraceSearchInitialized;
   [WinscopeEventType.TRACE_SEARCH_COMPLETED]: TraceSearchCompleted;
   [WinscopeEventType.SHOW_TRACE_UPLOAD_WARNING]: ShowTraceUploadWarning;
-  [WinscopeEventType.PLAYBACK_PLAY]: PlaybackPlay;
-  [WinscopeEventType.PLAYBACK_PAUSE]: PlaybackPause;
+  [WinscopeEventType.PLAYBACK_STATE_CHANGE_REQUEST]: PlaybackStateChangeRequest;
+  [WinscopeEventType.PLAYBACK_STATE_CHANGE_HANDLED]: PlaybackStateChangeHandled;
   [WinscopeEventType.PLAYBACK_SPEED_CHANGE]: PlaybackSpeedChange;
 }
 
@@ -466,42 +467,42 @@ export class ShowTraceUploadWarning extends WinscopeEvent {
 }
 
 /**
- * An event for when playback should start playing.
+ * An event for when the playback state change is requested.
  *
  * @param traceType The type of the trace.
- * @param currentTraceIndex Current position in the trace
- * @param isReverse Whether the playback should play in reverse
+ * @param state The desired playback state (FORWARDS, BACKWARDS, or PAUSE).
+ * @param currentTraceIndex Current position in the trace (relevant for FORWARDS/BACKWARDS states).
  */
-export class PlaybackPlay extends WinscopeEvent {
-  override readonly type = WinscopeEventType.PLAYBACK_PLAY;
+export class PlaybackStateChangeRequest extends WinscopeEvent {
+  override readonly type = WinscopeEventType.PLAYBACK_STATE_CHANGE_REQUEST;
   readonly traceType: TraceType;
-  readonly currentTraceIndex: number;
-  readonly isReverse: boolean;
+  readonly currentTraceIndex?: number;
+  readonly state: PlaybackState;
 
   constructor(
     traceType: TraceType,
-    currentTraceIndex: number,
-    isReverse: boolean,
+    state: PlaybackState,
+    currentTraceIndex?: number,
   ) {
     super();
     this.traceType = traceType;
+    this.state = state;
     this.currentTraceIndex = currentTraceIndex;
-    this.isReverse = isReverse;
   }
 }
 
 /**
- * An event for when playback should pause.
+ * An event for when the playback state change is reflected back to timeline.
  *
- * @param traceType The type of the trace.
+ * @param stateToReflect The reflected playback state (FORWARDS, BACKWARDS, or PAUSE).
  */
-export class PlaybackPause extends WinscopeEvent {
-  override readonly type = WinscopeEventType.PLAYBACK_PAUSE;
-  readonly traceType: TraceType;
+export class PlaybackStateChangeHandled extends WinscopeEvent {
+  override readonly type = WinscopeEventType.PLAYBACK_STATE_CHANGE_HANDLED;
+  readonly stateToReflect: PlaybackState;
 
-  constructor(traceType: TraceType) {
+  constructor(stateToReflect: PlaybackState) {
     super();
-    this.traceType = traceType;
+    this.stateToReflect = stateToReflect;
   }
 }
 

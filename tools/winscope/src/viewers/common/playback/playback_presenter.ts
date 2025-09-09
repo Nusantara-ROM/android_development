@@ -17,63 +17,77 @@
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
 import {Trace} from 'trace_api/trace';
 import {EmitEvent} from 'messaging/winscope_event_emitter';
-import {TracePositionUpdate} from 'messaging/winscope_event';
+import {
+  PlaybackStateChangeHandled,
+  TracePositionUpdate,
+} from 'messaging/winscope_event';
 import {TracePosition} from 'trace_api/trace_position';
 import {Timer} from 'common/time/timer';
 import {TraceEntryEager} from 'trace_api/trace';
+import {PlaybackState} from './playback_state';
 
 export class PlaybackPresenter {
-  private paused: boolean = true;
-  private entryIndex: number = 0;
-  private entryStepSize: number = 1;
+  private entryIndex = 0;
+  private entrySleepTime = 50;
   private buffer: Array<
     TraceEntryEager<HierarchyTreeNode, HierarchyTreeNode | undefined>
   > = [];
+  private readonly baseTime = 50;
   private emitWinscopeEvent: EmitEvent;
-  private isReverse: boolean = false;
+  private currPlaybackState: PlaybackState = PlaybackState.PAUSED;
 
   constructor(emitWinscopeEvent: EmitEvent) {
     this.emitWinscopeEvent = emitWinscopeEvent;
   }
 
   isPlaying() {
-    return !this.paused;
+    return this.currPlaybackState !== PlaybackState.PAUSED;
   }
 
   async play(
     trace: Trace<HierarchyTreeNode>,
     currentPosition: number,
-    isReverse: boolean,
+    requestedState: PlaybackState,
   ) {
-    this.paused = false;
     await this.buildBuffer(trace);
     this.entryIndex = currentPosition;
-    this.isReverse = isReverse;
-    if (this.isReverse && this.entryIndex === 0) {
+    this.currPlaybackState = requestedState;
+    if (
+      this.currPlaybackState === PlaybackState.BACKWARDS &&
+      this.entryIndex === 0
+    ) {
       // if the user's cursor position is at 0 and they want to reverse play through the trace
       // change the index to the end of trace
       this.entryIndex = this.buffer.length - 1;
     }
     if (this.buffer.length > 0 && this.entryIndex < this.buffer.length) {
-      this.runPlaybackLoop();
+      await this.emitWinscopeEvent(
+        new PlaybackStateChangeHandled(this.currPlaybackState),
+      );
+      this.runPlaybackLoop(trace);
     }
   }
 
-  async changeSpeed(speedValue: number) {
-    this.entryStepSize = speedValue;
+  async changeSpeed(speedScale: number) {
+    this.entrySleepTime = this.baseTime / speedScale;
   }
 
-  async pause() {
-    this.paused = true;
+  async pause(trace: Trace<HierarchyTreeNode>) {
+    if (this.isPlaying()) {
+      this.currPlaybackState = PlaybackState.PAUSED;
+      await this.emitWinscopeEvent(
+        new PlaybackStateChangeHandled(this.currPlaybackState),
+      );
+    }
   }
 
-  private async runPlaybackLoop() {
+  private async runPlaybackLoop(trace: Trace<HierarchyTreeNode>) {
     const lastIndex = this.buffer.length - 1;
 
     let nextIndex;
     let reachedEndOfTrace = false;
 
-    while (!this.paused) {
+    while (this.currPlaybackState !== PlaybackState.PAUSED) {
       const currentIndex = this.entryIndex;
       await this.emitWinscopeEvent(
         new TracePositionUpdate(
@@ -82,10 +96,10 @@ export class PlaybackPresenter {
         ),
       );
       // we debounce the trace position updates to allow time for UI to render
-      await new Timer(10, 10).sleepMs();
+      await new Timer(this.entrySleepTime, this.entrySleepTime).sleepMs();
 
-      if (this.isReverse) {
-        nextIndex = currentIndex - this.entryStepSize;
+      if (this.currPlaybackState === PlaybackState.BACKWARDS) {
+        nextIndex = currentIndex - 1;
         if (nextIndex < 0) {
           reachedEndOfTrace = true;
           this.entryIndex = 0;
@@ -93,7 +107,7 @@ export class PlaybackPresenter {
           this.entryIndex = nextIndex;
         }
       } else {
-        nextIndex = currentIndex + this.entryStepSize;
+        nextIndex = currentIndex + 1;
         if (nextIndex > lastIndex) {
           reachedEndOfTrace = true;
           this.entryIndex = lastIndex;
@@ -106,7 +120,7 @@ export class PlaybackPresenter {
         break;
       }
     }
-    this.pause();
+    await this.pause(trace);
   }
 
   private async buildBuffer(trace: Trace<HierarchyTreeNode>) {
