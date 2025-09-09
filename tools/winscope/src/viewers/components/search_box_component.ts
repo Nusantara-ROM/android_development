@@ -101,16 +101,6 @@ import {AbstractFormFieldComponent} from './abstract_form_field_component';
       top: 4px;
       position: relative;
     }
-    .search-box button {
-      padding: 0px;
-      height: 24px;
-      width: 24px;
-    }
-    .search-box .mat-icon {
-      font-size: 18px;
-      height: 18px;
-      width: 18px;
-    }
     .wide-field {
       width: 100%;
     }
@@ -146,7 +136,7 @@ export class SearchBoxComponent extends AbstractFormFieldComponent {
 
   getFormFieldClasses(): string {
     return (
-      'search-box ' +
+      'search-box small-icon-container ' +
       ((this.textFilter?.filterString.length ?? 0) > 0 ? 'highlighted ' : '') +
       this.formFieldClass
     );

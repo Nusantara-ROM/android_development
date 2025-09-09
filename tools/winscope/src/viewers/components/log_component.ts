@@ -279,12 +279,13 @@ import {UserTimestamp} from 'common/time/user_timestamp';
               @if (field.icon) {
                 <mat-icon
                     aria-hidden="false"
+                    class="icon-small"
                     [style]="{color: field.iconColor}"> {{field.icon}} </mat-icon>
               }
               @if (field.spec.canCopy) {
                 <button
                     mat-icon-button
-                    class="copy-button"
+                    class="copy-button icon-button-small"
                     [cdkCopyToClipboard]="field.value.toString()">
                   <mat-icon>content_copy</mat-icon>
                 </button>

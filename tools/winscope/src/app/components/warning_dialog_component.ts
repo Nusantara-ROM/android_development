@@ -63,11 +63,6 @@ import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
       .warning-dialog-title {
         display: flex;
       }
-      .warning-close-button {
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-      }
       .warning-content {
         overflow: visible;
       }

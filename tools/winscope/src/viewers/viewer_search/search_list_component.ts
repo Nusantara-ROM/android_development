@@ -53,7 +53,7 @@ import {ListedSearch} from './ui_data';
             @if (opt.onClickCallback) {
               <button
                 mat-icon-button
-                class="listed-search-option"
+                class="listed-search-option icon-button-small"
                 [matTooltip]="opt.name"
                 [matTooltipShowDelay]="500"
                 (click)="opt.onClickCallback(search)">
@@ -63,7 +63,7 @@ import {ListedSearch} from './ui_data';
             @if (opt.menu) {
               <button
                 mat-icon-button
-                class="listed-search-option"
+                class="listed-search-option icon-button-small"
                 [matTooltip]="opt.name"
                 [matTooltipShowDelay]="500"
                 (click)="searchOptionsTarget = search"
@@ -120,15 +120,7 @@ import {ListedSearch} from './ui_data';
         text-align: right;
       }
       .listed-search-option {
-        width: 24px;
-        height: 24px;
-        padding: 0;
         cursor: pointer;
-      }
-      .listed-search-option .mat-icon {
-        width: 18px;
-        height: 18px;
-        font-size: 18px;
       }
     `,
   ],

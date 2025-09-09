@@ -93,7 +93,7 @@ import {viewerCardInnerStyle} from './styles/viewer_card.styles';
               class="mat-body-1 warning"
               [matTooltip]="warning.getMessage()"
               [matTooltipDisabled]="disableTooltip(warningEl)">
-              <mat-icon class="warning-icon"> warning </mat-icon>
+              <mat-icon class="warning-icon icon-small"> warning </mat-icon>
               <span class="warning-message text-no-overflow" #warningEl>{{warning.getMessage()}}</span>
             </span>
           }

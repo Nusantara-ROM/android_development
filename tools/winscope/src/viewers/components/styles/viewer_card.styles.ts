@@ -115,13 +115,7 @@ export const viewerCardInnerStyle = `
     align-items: center;
     width: 100%;
   }
-  .warning-icon, .inline-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
+  .warning-icon {
     padding-inline-end: 4px;
-  }
-  .inline-icon {
-    padding-inline-start: 4px;
   }
 `;
