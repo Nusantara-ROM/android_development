@@ -1130,7 +1130,7 @@ describe('TimelineComponent', () => {
 
       await dom.openMatSelect();
       const selectPanel = dom.getMatSelectPanel();
-      await selectPanel.clickByIndexAndWaitStable('mat-option', 2);
+      await selectPanel.clickByIndexAndWaitStable('mat-option', 3);
       const event = emitEventSpy.calls.mostRecent().args[0];
       expect(emitEventSpy).toHaveBeenCalledTimes(1);
       expect(event).toBeInstanceOf(PlaybackSpeedChange);

@@ -167,11 +167,11 @@ describe('PlaybackPresenter', () => {
   });
 
   describe('speed change', () => {
-    it('skips entries while playing through the trace sped up', async () => {
+    it('does not skip entries while playing through the trace', async () => {
       await presenter.play(trace, 0, PlaybackState.FORWARDS);
       presenter.changeSpeed(2);
       await new Timer(1000).wait(() => !presenter.isPlaying());
-      expect(mockEmitWinscopeEvent).toHaveBeenCalledTimes(4);
+      expect(mockEmitWinscopeEvent).toHaveBeenCalledTimes(5);
     });
   });
 });

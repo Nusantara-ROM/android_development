@@ -50,7 +50,7 @@ describe('PlaybackControlsComponent', () => {
   });
 
   it('should have default speed selected', () => {
-    expect(hostComponent.component.selectedSpeed).toBe(1);
+    expect(hostComponent.component.selectedScale).toBe(1);
   });
 
   it('should emit PlaybackState.FORWARDS when play forwards button is clicked', () => {
@@ -112,14 +112,14 @@ describe('PlaybackControlsComponent', () => {
       hostComponent.component.playbackSpeedSelection.length,
     );
 
-    options[2].click();
+    options[3].click();
     await dom.detectChangesAndWaitStable();
 
     expect(hostComponent.onSpeedChange).toHaveBeenCalledTimes(1);
-    expect(hostComponent.onSpeedChange).toHaveBeenCalledWith(4);
-    expect(hostComponent.component.selectedSpeed).toBe(4);
+    expect(hostComponent.onSpeedChange).toHaveBeenCalledWith(2);
+    expect(hostComponent.component.selectedScale).toBe(2);
 
-    dom.get('.mat-mdc-select-value-text').checkText('4x');
+    dom.get('.mat-mdc-select-value-text').checkText('2');
   });
 
   @Component({

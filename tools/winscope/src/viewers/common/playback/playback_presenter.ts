@@ -27,11 +27,12 @@ import {TraceEntryEager} from 'trace_api/trace';
 import {PlaybackState} from './playback_state';
 
 export class PlaybackPresenter {
-  private entryIndex: number = 0;
-  private entryStepSize: number = 1;
+  private entryIndex = 0;
+  private entrySleepTime = 50;
   private buffer: Array<
     TraceEntryEager<HierarchyTreeNode, HierarchyTreeNode | undefined>
   > = [];
+  private readonly baseTime = 50;
   private emitWinscopeEvent: EmitEvent;
   private currPlaybackState: PlaybackState = PlaybackState.PAUSED;
 
@@ -67,8 +68,8 @@ export class PlaybackPresenter {
     }
   }
 
-  async changeSpeed(speedValue: number) {
-    this.entryStepSize = speedValue;
+  async changeSpeed(speedScale: number) {
+    this.entrySleepTime = this.baseTime / speedScale;
   }
 
   async pause(trace: Trace<HierarchyTreeNode>) {
@@ -95,10 +96,10 @@ export class PlaybackPresenter {
         ),
       );
       // we debounce the trace position updates to allow time for UI to render
-      await new Timer(10, 10).sleepMs();
+      await new Timer(this.entrySleepTime, this.entrySleepTime).sleepMs();
 
       if (this.currPlaybackState === PlaybackState.BACKWARDS) {
-        nextIndex = currentIndex - this.entryStepSize;
+        nextIndex = currentIndex - 1;
         if (nextIndex < 0) {
           reachedEndOfTrace = true;
           this.entryIndex = 0;
@@ -106,7 +107,7 @@ export class PlaybackPresenter {
           this.entryIndex = nextIndex;
         }
       } else {
-        nextIndex = currentIndex + this.entryStepSize;
+        nextIndex = currentIndex + 1;
         if (nextIndex > lastIndex) {
           reachedEndOfTrace = true;
           this.entryIndex = lastIndex;

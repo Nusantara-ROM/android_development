@@ -77,14 +77,14 @@ import {PlaybackState} from 'viewers/common/playback/playback_state';
         <span class="mat-body-1 speed-label"> Speed: </span>
         <mat-form-field
           subscriptSizing="dynamic"
-          class="mat-form-field-appearance-none playback-speed-selector">
+          class="mat-form-field-appearance-none playback-speed-selector no-ripple-field">
           <mat-select
             (selectionChange)="changeSpeed($event)"
-            [(value)]="selectedSpeed"
-            panelWidth='35px'>
-            @for (speed of playbackSpeedSelection; track speed.value) {
-              <mat-option [value]="speed.value">
-                {{speed.label}}
+            [(value)]="selectedScale"
+            panelWidth='80px'>
+            @for (speed of playbackSpeedSelection; track speed) {
+              <mat-option [value]="speed">
+                {{speed}}
               </mat-option>
             }
           </mat-select>
@@ -114,15 +114,15 @@ import {PlaybackState} from 'viewers/common/playback/playback_state';
         margin-right: 4px;
       }
       .playback-speed-selector {
-        width: 35px;
+        width: 45px;
       }
       .force-icon-flip {
         transform: scaleX(-1);
       }
       mat-option {
         padding-left: 10px;
-        height: 30px;
-        min-height: 30px;
+        height: 25px;
+        justify-content: left;
       }
   `,
   ],
@@ -136,13 +136,8 @@ export class PlaybackControlsComponent {
   @Output() readonly playbackStateChange = new EventEmitter<PlaybackState>();
   @Output() readonly speedChange = new EventEmitter<number>();
 
-  playbackSpeedSelection = [
-    {value: 1, label: '1x'},
-    {value: 2, label: '2x'},
-    {value: 4, label: '4x'},
-    {value: 8, label: '8x'},
-  ];
-  selectedSpeed = 1;
+  playbackSpeedSelection = [0.25, 0.5, 1, 2, 4];
+  selectedScale = 1;
 
   changePlaybackState(newState: PlaybackState): void {
     if (this.currentState !== newState) {
@@ -151,7 +146,7 @@ export class PlaybackControlsComponent {
   }
 
   changeSpeed(event: MatSelectChange): void {
-    this.selectedSpeed = event.value;
-    this.speedChange.emit(this.selectedSpeed);
+    this.selectedScale = event.value;
+    this.speedChange.emit(this.selectedScale);
   }
 }

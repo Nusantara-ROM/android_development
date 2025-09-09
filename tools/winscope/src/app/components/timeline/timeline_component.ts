@@ -78,6 +78,7 @@ import {MiniTimelineComponent} from './mini-timeline/mini_timeline_component';
 import {UserTimestamp} from 'common/time/user_timestamp';
 import {PlaybackControlsComponent} from './playback_component';
 import {PlaybackState} from 'viewers/common/playback/playback_state';
+import {globalConfig} from 'common/global_config';
 
 /**
  * A component for displaying the timeline view.
@@ -867,11 +868,11 @@ export class TimelineComponent
     }
   }
 
-  onPlaybackSpeedChange(selectedSpeed: number) {
+  onPlaybackSpeedChange(selectedScale: number) {
     this.emitEvent(
       new PlaybackSpeedChange(
         assertDefined(this.currentTabTraceType),
-        selectedSpeed,
+        selectedScale,
       ),
     );
   }
@@ -1124,7 +1125,10 @@ export class TimelineComponent
     if (!this.currentTabTraceType) {
       return false;
     }
-    return TraceTypeUtils.supportsPlayback(this.currentTabTraceType);
+    if (globalConfig.MODE === 'PROD') return false;
+    else {
+      return TraceTypeUtils.supportsPlayback(this.currentTabTraceType);
+    }
   }
 
   private updateSelectedTraces(trace: Trace<object> | undefined) {
