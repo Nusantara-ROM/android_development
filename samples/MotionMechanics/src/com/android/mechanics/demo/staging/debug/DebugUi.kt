@@ -55,23 +55,23 @@ import com.android.compose.modifiers.height
 import com.android.mechanics.debug.DebugMotionValueVisualization
 import com.android.mechanics.debug.LocalMotionValueDebugController
 import com.android.mechanics.debug.MotionValueDebuggerProvider
+import com.android.mechanics.debug.OutputRangeFn
 
 /**  */
 @Composable
 fun DebugUi(
     visualizationInputRange: ClosedFloatingPointRange<Float>,
+    outputRange: OutputRangeFn,
     expandedGraphHeight: Dp,
     collapsedGraphHeight: Dp,
     modifier: Modifier = Modifier,
-    content: @Composable (modifier: Modifier) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     MotionValueDebuggerProvider {
         Box(modifier = modifier.fillMaxHeight()) {
-            Box(modifier = Modifier.fillMaxWidth().align(Alignment.TopStart)) {
-                content(Modifier.align(Alignment.TopStart))
-            }
+            Box(modifier = Modifier.fillMaxWidth().align(Alignment.TopStart)) { content() }
 
-            var isExpanded by rememberSaveable(key = "debugUiExpanded") { mutableStateOf(false) }
+            var isExpanded by rememberSaveable(key = "debugUiExpanded") { mutableStateOf(true) }
             Card(modifier = Modifier.fillMaxWidth().padding(16.dp).align(Alignment.BottomStart)) {
                 Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                     Row(
@@ -80,7 +80,6 @@ fun DebugUi(
                     ) {
                         Text(text = "Motion Value Visualization", style = typography.titleMedium)
                         val rotation by animateFloatAsState(if (isExpanded) 180f else 0f)
-
                         Icon(
                             Icons.Default.ExpandMore,
                             null,
@@ -109,8 +108,9 @@ fun DebugUi(
                                         )
 
                                     DebugMotionValueVisualization(
-                                        it,
-                                        visualizationInputRange,
+                                        motionValue = it,
+                                        inputRange = visualizationInputRange,
+                                        outputRange = outputRange,
                                         modifier =
                                             Modifier.height { height.toPx().toInt() }
                                                 .fillMaxWidth()
