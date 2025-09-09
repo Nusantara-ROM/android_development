@@ -48,10 +48,10 @@ describe('Timestamp', () => {
 
     it('can divide', () => {
       let timestamp = makeRealTimestamp(10n).div(2n);
-      expect(timestamp).toBe(5n);
+      expect(timestamp.getValueNs()).toBe(5n);
 
       timestamp = ELAPSED_TIMESTAMP_10.div(2n);
-      expect(timestamp).toBe(5n);
+      expect(timestamp.getValueNs()).toBe(5n);
     });
   });
 

@@ -171,14 +171,8 @@ export class Timestamp {
    * @param other The value to multiply by.
    * @return A new timestamp with the multiplied value.
    */
-  times(other: bigint | Timestamp): Timestamp {
-    let n: bigint;
-    if (other instanceof Timestamp) {
-      n = other.getValueNs();
-    } else {
-      n = other;
-    }
-    return new Timestamp(this.getValueNs() * n, this.formatter);
+  times(other: bigint): Timestamp {
+    return new Timestamp(this.getValueNs() * other, this.formatter);
   }
 
   /**
@@ -187,14 +181,8 @@ export class Timestamp {
    * @param other The value to divide by.
    * @return A new timestamp with the divided value.
    */
-  div(other: bigint | Timestamp): Timestamp {
-    let n: bigint;
-    if (other instanceof Timestamp) {
-      n = other.getValueNs();
-    } else {
-      n = other;
-    }
-    return new Timestamp(this.getValueNs() / n, this.formatter);
+  div(other: bigint): Timestamp {
+    return new Timestamp(this.getValueNs() / other, this.formatter);
   }
 
   /**

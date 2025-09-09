@@ -52,9 +52,11 @@ describe('UTCOffset', () => {
 
   it('does not set offset for invalid value', () => {
     const utcOffset = new UTCOffset();
-    utcOffset.initialize(BigInt(TIME_UNIT_TO_NANO.h * 15)); // later than UTC+14:00
-    expect(utcOffset.getValueNs()).toBeUndefined();
-    utcOffset.initialize(BigInt(TIME_UNIT_TO_NANO.h * -13)); // earlier than UTC-12:00
-    expect(utcOffset.getValueNs()).toBeUndefined();
+    expect(() =>
+      utcOffset.initialize(BigInt(TIME_UNIT_TO_NANO.h * 15)),
+    ).toThrowError('Failed to set timezone offset greater than UTC+14:00');
+    expect(() =>
+      utcOffset.initialize(BigInt(TIME_UNIT_TO_NANO.h * -13)),
+    ).toThrowError('Failed to set timezone offset greater than UTC-12:00');
   });
 });

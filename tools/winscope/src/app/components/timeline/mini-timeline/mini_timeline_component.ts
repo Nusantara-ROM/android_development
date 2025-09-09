@@ -572,14 +572,14 @@ export class MiniTimelineComponent {
 
     newFrom = zoomTowards.minus(
       zoomToWidth
-        .times(zoomTowards.minus(currentZoomRange.from))
-        .div(currentZoomWidth),
+        .times(zoomTowards.minus(currentZoomRange.from).getValueNs())
+        .div(currentZoomWidth.getValueNs()),
     );
 
     newTo = zoomTowards.add(
       zoomToWidth
-        .times(currentZoomRange.to.minus(zoomTowards))
-        .div(currentZoomWidth),
+        .times(currentZoomRange.to.minus(zoomTowards).getValueNs())
+        .div(currentZoomWidth.getValueNs()),
     );
 
     if (newFrom.getValueNs() < fullRange.startNs) {
