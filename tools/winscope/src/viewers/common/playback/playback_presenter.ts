@@ -72,7 +72,7 @@ export class PlaybackPresenter {
     this.entrySleepTime = this.baseTime / speedScale;
   }
 
-  async pause(trace: Trace<HierarchyTreeNode>) {
+  async pause() {
     if (this.isPlaying()) {
       this.currPlaybackState = PlaybackState.PAUSED;
       await this.emitWinscopeEvent(
@@ -120,7 +120,7 @@ export class PlaybackPresenter {
         break;
       }
     }
-    await this.pause(trace);
+    await this.pause();
   }
 
   private async buildBuffer(trace: Trace<HierarchyTreeNode>) {

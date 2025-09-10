@@ -155,13 +155,13 @@ describe('PlaybackPresenter', () => {
     it('stops the playback loop', async () => {
       await presenter.play(trace, 0, PlaybackState.FORWARDS);
       expect(presenter.isPlaying()).toBeTrue();
-      await presenter.pause(trace);
+      await presenter.pause();
       expect(presenter.isPlaying()).toBeFalse();
     });
 
     it('has no effect when already paused', async () => {
       expect(presenter.isPlaying()).toBeFalse();
-      await presenter.pause(trace);
+      await presenter.pause();
       expect(mockEmitWinscopeEvent).not.toHaveBeenCalled();
     });
   });
