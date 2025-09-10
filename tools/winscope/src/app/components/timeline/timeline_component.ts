@@ -153,7 +153,7 @@ import {globalConfig} from 'common/global_config';
       <div class="navbar-toggle">
         <div class="navbar" #collapsedTimeline>
           @if (timelineData.hasTimestamps()) {
-            <div id="time-selector">
+            <div id="time-selector" class="small-icon-container">
               <form [formGroup]="timestampForm" class="time-selector-form">
                 <mat-form-field
                   class="time-input human"
@@ -272,7 +272,7 @@ import {globalConfig} from 'common/global_config';
                       </button>
                     </div>
                   </div>
-                  <mat-select-trigger matRipple class="shown-selection">
+                  <mat-select-trigger matRipple class="shown-selection small-icon-container">
                     <div class="filter-header">
                       <span class="mat-body-2"> Filter </span>
                       <mat-icon class="material-symbols-outlined">expand_circle_up</mat-icon>
@@ -431,25 +431,7 @@ import {globalConfig} from 'common/global_config';
         width: 90%;
         background-color: var(--drawer-block-secondary);
       }
-      #time-selector .mat-mdc-icon-button {
-        width: 24px;
-        height: 24px;
-        padding-left: 3px;
-        padding-right: 3px;
-        display: flex;
-        align-items: center;
-      }
-      #time-selector .mat-icon {
-        display: flex;
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-        line-height: 18px;
-      }
       .shown-selection .trace-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
         padding-left: 4px;
         padding-right: 4px;
         padding-top: 2px;

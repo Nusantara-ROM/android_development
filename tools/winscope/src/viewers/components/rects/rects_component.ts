@@ -115,7 +115,7 @@ interface CanColor {
             <mat-icon
               color="accent"
               matTooltip="Rotation"
-              class="slider-icon"
+              class="slider-icon icon-small"
               (mouseenter)="onInteractionStart([rotationSlider, rotationSliderIcon])"
               (mouseleave)="onInteractionEnd([rotationSlider, rotationSliderIcon])" #rotationSliderIcon> rotate_90_degrees_ccw </mat-icon>
             <mat-slider
@@ -137,7 +137,7 @@ interface CanColor {
             <mat-icon
               color="accent"
               matTooltip="Spacing"
-              class="slider-icon material-symbols-outlined"
+              class="slider-icon icon-small material-symbols-outlined"
               (mouseenter)="onInteractionStart([spacingSlider, spacingSliderIcon])"
               (mouseleave)="onInteractionEnd([spacingSlider, spacingSliderIcon])" #spacingSliderIcon> format_letter_spacing </mat-icon>
             <mat-slider
@@ -261,7 +261,7 @@ interface CanColor {
     @if (showRectSpecWarning()) {
       <span
         class="mat-body-1 warning">
-        <mat-icon class="warning-icon"> warning </mat-icon>
+        <mat-icon class="warning-icon icon-small"> warning </mat-icon>
         <span class="warning-message text-no-overflow">
           Showing {{rectSpec.type}} - change rect type via toggle above
         </span>
@@ -348,10 +348,6 @@ interface CanColor {
       }
       .slider-icon {
         min-width: 18px;
-        width: 18px;
-        height: 18px;
-        line-height: 18px;
-        font-size: 18px;
       }
       .filter-controls {
         justify-content: space-between;

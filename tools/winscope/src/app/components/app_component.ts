@@ -138,7 +138,7 @@ import {
         }
       </div>
 
-      <div class="horizontal-align vertical-align icon-actions">
+      <div class="horizontal-align vertical-align icon-actions small-icon-container">
         @if (showDataLoadedElements) {
           @let packetLoss = packetLossWarning();
           @let showFileWarningStyle = downloadProgress === undefined
@@ -386,23 +386,6 @@ import {
       }
       .icon-actions {
         height: 100%;
-      }
-
-      .toolbar .mat-mdc-icon-button {
-        height: 24px;
-        width: 24px;
-        display: flex;
-        padding: 0px;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .toolbar .mat-icon {
-        display: flex;
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-        line-height: 18px;
       }
 
       .download-files-section {
