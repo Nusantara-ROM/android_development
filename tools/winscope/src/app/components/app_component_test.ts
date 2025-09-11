@@ -37,6 +37,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSliderModule} from '@angular/material/slider';
+import {MatMenuModule} from '@angular/material/menu';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -120,6 +121,7 @@ describe('AppComponent', () => {
         MatSnackBarModule,
         MatCheckboxModule,
         MatProgressBarModule,
+        MatMenuModule,
         MatTabsModule,
         WinscopeProxySetupComponent,
         WdpSetupComponent,
@@ -536,112 +538,133 @@ describe('AppComponent', () => {
       ).and.returnValue(undefined);
     });
 
-    it('is not shown if not in winscope proxy iframe', () => {
-      isInsideWinscopeProxyFrameSpy.and.returnValue(false);
-      dom.detectChanges();
-      expect(dom.find('.share-btn')).toBeUndefined();
-    });
-
-    it('is shown if in winscope proxy iframe', () => {
-      isInsideWinscopeProxyFrameSpy.and.returnValue(true);
+    it('is always shown', () => {
       dom.detectChanges();
       expect(dom.find('.share-btn')).toBeTruthy();
     });
 
-    it('generates correct share link', async () => {
+    describe('when not in winscope proxy iframe', () => {
+      beforeEach(() => {
+        isInsideWinscopeProxyFrameSpy.and.returnValue(false);
+        dom.detectChanges();
+      });
+
+      it('is disabled', () => {
+        const shareButton = dom.get('.share-btn');
+        shareButton.checkDisabled(true);
+      });
+
+      it('shows tooltip explaining why it is disabled', async () => {
+        const shareButtonWrapper = dom.get('.share-btn-wrapper');
+        await shareButtonWrapper.checkTooltip(
+          'Share functionality is not available for the provided traces',
+        );
+      });
+    });
+
+    describe('when in winscope proxy iframe', () => {
       const parentOrigin = 'https://winscope.corp.google.com';
       const request: RequestData = {
         artifacts: [{name: 'artifact', invocationId: '123'}],
       };
-      isInsideWinscopeProxyFrameSpy.and.returnValue(true);
-      getReportedParentOriginSpy.and.returnValue(parentOrigin);
-      getReportedRequestSpy.and.returnValue(request);
 
-      component.updateShareLink();
-      dom.detectChanges();
+      beforeEach(() => {
+        isInsideWinscopeProxyFrameSpy.and.returnValue(true);
+        getReportedParentOriginSpy.and.returnValue(parentOrigin);
+        getReportedRequestSpy.and.returnValue(request);
+        dom.detectChanges();
+      });
 
-      const params = new URLSearchParams();
-      params.set(
-        'request',
-        btoa(JSON.stringify({artifacts: request.artifacts})),
-      );
-      const expectedLink = `${parentOrigin}?${params.toString()}`;
-      expect(component.generatedShareLink).toEqual(expectedLink);
+      it('is enabled', () => {
+        const shareButton = dom.get('.share-btn');
+        shareButton.checkDisabled(false);
+      });
 
-      dom.findAndClick('.share-btn');
-      await dom.whenStable();
+      it('shows "Share" tooltip', async () => {
+        const shareButton = dom.get('.share-btn');
+        await shareButton.checkTooltip('Share');
+      });
 
-      const shareInputElement = document.querySelector(
-        '.share-link-field input',
-      ) as HTMLInputElement;
-      assertDefined(shareInputElement);
-      expect(shareInputElement?.value).toEqual(expectedLink);
+      it('generates correct share link and shows it in menu', async () => {
+        component.updateShareLink();
+        dom.detectChanges();
 
-      const copyButton = dom.getInDocument('.share-link-container button');
-      copyButton.checkDisabled(false);
-    });
+        const params = new URLSearchParams();
+        params.set(
+          'request',
+          btoa(JSON.stringify({artifacts: request.artifacts})),
+        );
+        const expectedLink = `${parentOrigin}?${params.toString()}`;
+        expect(component.generatedShareLink).toEqual(expectedLink);
 
-    it('generates correct share link with no artifacts', async () => {
-      const parentOrigin = 'https://winscope.corp.google.com';
-      const request: RequestData = {
-        artifacts: [],
-      };
-      isInsideWinscopeProxyFrameSpy.and.returnValue(true);
-      getReportedParentOriginSpy.and.returnValue(parentOrigin);
-      getReportedRequestSpy.and.returnValue(request);
+        dom.findAndClick('.share-btn');
+        await dom.whenStable();
 
-      component.updateShareLink();
-      dom.detectChanges();
+        const shareInputElement = document.querySelector(
+          '.share-link-field input',
+        ) as HTMLInputElement;
+        assertDefined(shareInputElement);
+        expect(shareInputElement.value).toEqual(expectedLink);
 
-      const params = new URLSearchParams();
-      params.set('request', btoa(JSON.stringify({artifacts: []})));
-      const expectedLink = `${parentOrigin}?${params.toString()}`;
-      expect(component.generatedShareLink).toEqual(expectedLink);
+        const copyButton = dom.getInDocument('.share-link-container button');
+        copyButton.checkDisabled(false);
+      });
 
-      dom.findAndClick('.share-btn');
-      await dom.whenStable();
+      it('generates correct share link with no artifacts', async () => {
+        const request: RequestData = {
+          artifacts: [],
+        };
+        getReportedRequestSpy.and.returnValue(request);
 
-      const shareInputElement = document.querySelector(
-        '.share-link-field input',
-      ) as HTMLInputElement;
-      assertDefined(shareInputElement);
-      expect(shareInputElement?.value).toEqual(expectedLink);
-    });
+        component.updateShareLink();
+        dom.detectChanges();
 
-    it('generates correct share link when original request is undefined', async () => {
-      const parentOrigin = 'https://winscope.corp.google.com';
-      isInsideWinscopeProxyFrameSpy.and.returnValue(true);
-      getReportedParentOriginSpy.and.returnValue(parentOrigin);
-      getReportedRequestSpy.and.returnValue(undefined);
+        const params = new URLSearchParams();
+        params.set('request', btoa(JSON.stringify({artifacts: []})));
+        const expectedLink = `${parentOrigin}?${params.toString()}`;
+        expect(component.generatedShareLink).toEqual(expectedLink);
 
-      component.updateShareLink();
-      dom.detectChanges();
+        dom.findAndClick('.share-btn');
+        await dom.whenStable();
 
-      const params = new URLSearchParams();
-      params.set('request', btoa(JSON.stringify({artifacts: []})));
-      const expectedLink = `${parentOrigin}?${params.toString()}`;
-      expect(component.generatedShareLink).toEqual(expectedLink);
+        const shareInputElement = document.querySelector(
+          '.share-link-field input',
+        ) as HTMLInputElement;
+        assertDefined(shareInputElement);
+        expect(shareInputElement.value).toEqual(expectedLink);
+      });
 
-      dom.findAndClick('.share-btn');
-      await dom.whenStable();
+      it('generates correct share link when original request is undefined', async () => {
+        getReportedRequestSpy.and.returnValue(undefined);
 
-      const shareInputElement = document.querySelector(
-        '.share-link-field input',
-      ) as HTMLInputElement;
-      assertDefined(shareInputElement);
-      expect(shareInputElement?.value).toEqual(expectedLink);
-    });
+        component.updateShareLink();
+        dom.detectChanges();
 
-    it('disables copy button when no link is generated', async () => {
-      isInsideWinscopeProxyFrameSpy.and.returnValue(true);
-      component.generatedShareLink = '';
-      dom.detectChanges();
+        const params = new URLSearchParams();
+        params.set('request', btoa(JSON.stringify({artifacts: []})));
+        const expectedLink = `${parentOrigin}?${params.toString()}`;
+        expect(component.generatedShareLink).toEqual(expectedLink);
 
-      dom.findAndClick('.share-btn');
-      await dom.whenStable();
+        dom.findAndClick('.share-btn');
+        await dom.whenStable();
 
-      const copyButton = dom.getInDocument('.share-link-container button');
-      copyButton.checkDisabled(true);
+        const shareInputElement = document.querySelector(
+          '.share-link-field input',
+        ) as HTMLInputElement;
+        assertDefined(shareInputElement);
+        expect(shareInputElement.value).toEqual(expectedLink);
+      });
+
+      it('disables copy button when no link is generated', async () => {
+        component.generatedShareLink = '';
+        dom.detectChanges();
+
+        dom.findAndClick('.share-btn');
+        await dom.whenStable();
+
+        const copyButton = dom.getInDocument('.share-link-container button');
+        copyButton.checkDisabled(true);
+      });
     });
   });
 

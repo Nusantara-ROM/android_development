@@ -287,29 +287,30 @@ import {RequestData} from 'cross_tool/g3_proxy';
           </mat-icon>
         </button>
 
-        @if (isInsideWinscopeProxyFrame()) {
+        <div class="share-btn-wrapper" matTooltip="Share functionality is not available for the provided traces" [matTooltipDisabled]="isInsideWinscopeProxyFrame()">
           <button
             mat-icon-button
             matTooltip="Share"
             class="share-btn"
+            [disabled]="!isInsideWinscopeProxyFrame()"
             [matMenuTriggerFor]="shareMenu">
             <mat-icon>share</mat-icon>
           </button>
-          <mat-menu #shareMenu="matMenu" (click)="$event.stopPropagation()">
-            <div class="share-menu-content" (click)="$event.stopPropagation()">
-              <div class="share-link-container">
-                <mat-form-field class="share-link-field" subscriptSizing="dynamic">
-                  <mat-label>Shareable link</mat-label>
-                  <input matInput readonly [value]="generatedShareLink">
-                </mat-form-field>
+        </div>
+        <mat-menu #shareMenu="matMenu" (click)="$event.stopPropagation()">
+          <div class="share-menu-content" (click)="$event.stopPropagation()">
+            <div class="share-link-container">
+              <mat-form-field class="share-link-field" subscriptSizing="dynamic">
+                <mat-label>Shareable link</mat-label>
+                <input matInput readonly [value]="generatedShareLink">
+              </mat-form-field>
 
-                <button mat-icon-button [cdkCopyToClipboard]="generatedShareLink" matTooltip="Copy link" [disabled]="!generatedShareLink">
-                  <mat-icon>content_copy</mat-icon>
-                </button>
-              </div>
+              <button mat-icon-button [cdkCopyToClipboard]="generatedShareLink" matTooltip="Copy link" [disabled]="!generatedShareLink">
+                <mat-icon>content_copy</mat-icon>
+              </button>
             </div>
-          </mat-menu>
-        }
+          </div>
+        </mat-menu>
 
         @if (isInsideWinscopeProxyFrame()) {
           <button
