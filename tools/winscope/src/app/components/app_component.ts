@@ -803,7 +803,6 @@ export class AppComponent implements WinscopeEventListener {
       this.isSupportedReportedParentOrigin(parentOrigin)
     ) {
       // Send message to the parent window
-      console.log('Sending message to parent window...', window.parent.origin);
       window.parent.postMessage({winscopeAction: 'openSettings'}, parentOrigin);
     } else {
       console.warn(
