@@ -98,6 +98,11 @@ import {
   WarningDialogData,
   WarningDialogResult,
 } from './warning_dialog_component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatMenuModule} from '@angular/material/menu';
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {FormsModule} from '@angular/forms';
+import {RequestData} from 'cross_tool/g3_proxy';
 
 /**
  * The root component of the Winscope app.
@@ -107,13 +112,17 @@ import {
   encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [
+    ClipboardModule,
     CommonModule,
+    FormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatTooltipModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
+    MatMenuModule,
+    MatCheckboxModule,
     ReactiveFormsModule,
     MatProgressBarModule,
     MatDividerModule,
@@ -277,6 +286,30 @@ import {
             {{ isDarkModeOn ? 'brightness_5' : 'brightness_4' }}
           </mat-icon>
         </button>
+
+        @if (isInsideWinscopeProxyFrame()) {
+          <button
+            mat-icon-button
+            matTooltip="Share"
+            class="share-btn"
+            [matMenuTriggerFor]="shareMenu">
+            <mat-icon>share</mat-icon>
+          </button>
+          <mat-menu #shareMenu="matMenu" (click)="$event.stopPropagation()">
+            <div class="share-menu-content" (click)="$event.stopPropagation()">
+              <div class="share-link-container">
+                <mat-form-field class="share-link-field" subscriptSizing="dynamic">
+                  <mat-label>Shareable link</mat-label>
+                  <input matInput readonly [value]="generatedShareLink">
+                </mat-form-field>
+
+                <button mat-icon-button [cdkCopyToClipboard]="generatedShareLink" matTooltip="Copy link" [disabled]="!generatedShareLink">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+            </div>
+          </mat-menu>
+        }
 
         @if (isInsideWinscopeProxyFrame()) {
           <button
@@ -448,6 +481,24 @@ import {
         flex-grow: 1;
         margin: auto;
       }
+
+      .share-menu-content {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+      }
+      .share-menu-content mat-checkbox {
+        margin-bottom: 8px;
+      }
+      .share-link-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .share-link-field {
+        flex-grow: 1;
+      }
     `,
     iconDividerStyle,
   ],
@@ -464,6 +515,8 @@ export class AppComponent implements WinscopeEventListener {
   isEditingFilename = false;
   persistentStore = new PersistentStore();
   viewers: Viewer[] = [];
+
+  generatedShareLink = '';
 
   isDarkModeOn = false;
   changeDetectorRef: ChangeDetectorRef;
@@ -513,6 +566,8 @@ export class AppComponent implements WinscopeEventListener {
       this,
       new PersistentStore(),
     );
+
+    this.updateShareLink();
 
     const storeDarkMode = this.persistentStore.get('dark-mode');
     const prefersDarkQuery = window.matchMedia?.(
@@ -778,9 +833,18 @@ export class AppComponent implements WinscopeEventListener {
     }
   }
 
-  getReportedParentOrigin() {
+  getReportedParentOrigin(): string | null {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('parentOrigin');
+  }
+
+  getReportedRequest(): RequestData | undefined {
+    const urlParams = new URLSearchParams(window.location.search);
+    const request = urlParams.get('request');
+    if (request == null) {
+      return undefined;
+    }
+    return JSON.parse(atob(request));
   }
 
   isSupportedReportedParentOrigin(parentOrigin: string): boolean {
@@ -811,6 +875,22 @@ export class AppComponent implements WinscopeEventListener {
         window.top?.origin,
       );
     }
+  }
+
+  updateShareLink() {
+    const originalRequest = this.getReportedRequest();
+
+    const newRequest: RequestData = {
+      artifacts: [],
+    };
+    if (originalRequest && originalRequest.artifacts) {
+      newRequest.artifacts = originalRequest.artifacts;
+    }
+
+    const params = new URLSearchParams();
+    params.set('request', btoa(JSON.stringify(newRequest)));
+    const baseUrl = this.getReportedParentOrigin() || getRootUrl();
+    this.generatedShareLink = `${baseUrl}?${params.toString()}`;
   }
 
   allTracesAreDumps(): boolean {
