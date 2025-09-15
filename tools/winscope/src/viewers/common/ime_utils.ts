@@ -347,10 +347,10 @@ class ImeAdditionalPropertiesUtils {
     const inputMethodWindowOrLayer = displayContent.findDfs(
       this.isInputMethodSurface,
     );
-    return assertDefined(
+    return (
       inputMethodWindowOrLayer
         ?.getEagerPropertyByName('isComputedVisible')
-        ?.getValue<boolean>(),
+        ?.getValue<boolean>() ?? false
     );
   }
 }
