@@ -93,9 +93,9 @@ describe('Formatters', () => {
       ).toBe('false');
       expect(
         DEFAULT_PROPERTY_FORMATTER.format(
-          new PropertyTreeNode('', '', PropertySource.PROTO, null),
+          new PropertyTreeNode('', '', PropertySource.PROTO, undefined),
         ),
-      ).toBe('null');
+      ).toBe('undefined');
     });
   });
 

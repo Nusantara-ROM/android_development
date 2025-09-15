@@ -19,6 +19,7 @@ import {
   PropertyFormatter,
   PropertySource,
   PropertyTreeNode,
+  PropertyValue,
 } from 'tree_node/property_tree_node';
 import {TreeBuilder} from './tree_builder';
 
@@ -34,7 +35,7 @@ export class PropertyTreeBuilder extends TreeBuilder<
 > {
   isRoot = false;
   source = PropertySource.PROTO;
-  value: any;
+  value: PropertyValue | undefined;
   formatter: PropertyFormatter | undefined;
 
   setIsRoot(value: boolean): this {
@@ -52,7 +53,7 @@ export class PropertyTreeBuilder extends TreeBuilder<
     return this;
   }
 
-  setValue(value: any): this {
+  setValue(value: PropertyValue | undefined): this {
     this.value = value;
     return this;
   }
@@ -104,7 +105,7 @@ export class PropertyTreeBuilder extends TreeBuilder<
  */
 export interface ChildProperty {
   name: string;
-  value?: any;
+  value?: PropertyValue;
   children?: ChildProperty[];
   source?: PropertySource;
   formatter?: PropertyFormatter;

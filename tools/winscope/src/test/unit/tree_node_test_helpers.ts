@@ -16,7 +16,7 @@
 
 import {TransformTypeFlags} from 'common/geometry/transform';
 import {HierarchyTreeNode} from 'tree_node/hierarchy_tree_node';
-import {PropertyTreeNode} from 'tree_node/property_tree_node';
+import {PropertyTreeNode, PropertyValue} from 'tree_node/property_tree_node';
 import {DEFAULT_PROPERTY_TREE_NODE_FACTORY} from 'tree_node/property_tree_node_factory';
 import {ChildHierarchy, HierarchyTreeBuilder} from './hierarchy_tree_builder';
 import {PropertyTreeBuilder} from './property_tree_builder';
@@ -210,7 +210,7 @@ export function makeHierarchyNode(
 export function makePropertyNode(
   rootId: string,
   name: string,
-  value: any,
+  value: PropertyValue | undefined,
 ): PropertyTreeNode {
   return DEFAULT_PROPERTY_TREE_NODE_FACTORY.makeProtoProperty(
     rootId,

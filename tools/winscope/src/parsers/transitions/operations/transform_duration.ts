@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {assertDefined} from 'common/assert';
 import {TimeDuration} from 'common/time/time_duration';
 import {AddOperation} from 'tree_node/add_operation';
 import {PropertyTreeNode} from 'tree_node/property_tree_node';
@@ -33,7 +34,9 @@ export class TransformDuration extends AddOperation<PropertyTreeNode> {
       DEFAULT_PROPERTY_TREE_NODE_FACTORY.makeTpProperty(
         value.id,
         durationNs.name,
-        new TimeDuration(BigInt(durationNs.getValue()?.toString())),
+        new TimeDuration(
+          BigInt(assertDefined(durationNs.getValue<bigint>()).toString()),
+        ),
       );
     return [transformedDuration];
   }

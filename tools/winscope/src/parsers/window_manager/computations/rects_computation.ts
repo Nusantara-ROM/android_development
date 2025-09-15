@@ -28,13 +28,13 @@ class RectWmFactory {
   ): TraceRect {
     const displayInfo = display.getEagerPropertyByName('displayInfo');
     const displayRectWidth =
-      displayInfo?.getChildByName('logicalWidth')?.getValue() ?? 0;
+      displayInfo?.getChildByName('logicalWidth')?.getValue<number>() ?? 0;
     const displayRectHeight =
-      displayInfo?.getChildByName('logicalHeight')?.getValue() ?? 0;
+      displayInfo?.getChildByName('logicalHeight')?.getValue<number>() ?? 0;
 
     const displayFocusedApp = display
       .getEagerPropertyByName('focusedApp')
-      ?.getValue();
+      ?.getValue<string>();
 
     return new TraceRectBuilder()
       .setX(0)
@@ -44,7 +44,7 @@ class RectWmFactory {
       .setId(display.id)
       .setName(`Display - ${display.name}`)
       .setGroupId(
-        assertDefined(display.getEagerPropertyByName('id')).getValue(),
+        assertDefined(display.getEagerPropertyByName('id')?.getValue<number>()),
       )
       .setIsVisible(false)
       .setIsDisplay(true)
@@ -58,20 +58,23 @@ class RectWmFactory {
     container: HierarchyTreeNode,
     absoluteZ: number,
   ): TraceRect | undefined {
-    const displayId = container.getEagerPropertyByName('displayId')?.getValue();
+    const displayId = container
+      .getEagerPropertyByName('displayId')
+      ?.getValue<number>();
     if (displayId === undefined) {
       return undefined;
     }
 
     const isVisible =
-      container.getEagerPropertyByName('isComputedVisible')?.getValue() ??
-      false;
+      container
+        .getEagerPropertyByName('isComputedVisible')
+        ?.getValue<boolean>() ?? false;
 
     const alpha =
       container
         .getEagerPropertyByName('attributes')
         ?.getChildByName('alpha')
-        ?.getValue() ?? 1;
+        ?.getValue<number>() ?? 1;
 
     const frame = container
       .getEagerPropertyByName('windowFrames')
@@ -80,10 +83,18 @@ class RectWmFactory {
       return undefined;
     }
 
-    const rectLeft = assertDefined(frame.getChildByName('left')).getValue();
-    const rectTop = assertDefined(frame.getChildByName('top')).getValue();
-    const rectRight = assertDefined(frame.getChildByName('right')).getValue();
-    const rectBottom = assertDefined(frame.getChildByName('bottom')).getValue();
+    const rectLeft = assertDefined(
+      frame.getChildByName('left')?.getValue<number>(),
+    );
+    const rectTop = assertDefined(
+      frame.getChildByName('top')?.getValue<number>(),
+    );
+    const rectRight = assertDefined(
+      frame.getChildByName('right')?.getValue<number>(),
+    );
+    const rectBottom = assertDefined(
+      frame.getChildByName('bottom')?.getValue<number>(),
+    );
 
     return new TraceRectBuilder()
       .setX(rectLeft)
@@ -119,9 +130,9 @@ export class RectsComputation implements Computation {
       throw new Error('root not set in WM rects computation');
     }
 
-    const focusedApp = this.root
-      .getEagerPropertyByName('focusedApp')
-      ?.getValue();
+    const focusedApp = assertDefined(
+      this.root.getEagerPropertyByName('focusedApp')?.getValue<string>(),
+    );
 
     this.root.getAllChildren().forEach((displayContent) => {
       const displayRect = this.rectsFactory.makeDisplayRect(

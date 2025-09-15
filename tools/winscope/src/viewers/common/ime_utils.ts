@@ -161,9 +161,13 @@ class ImeAdditionalPropertiesUtils {
     const imeContainerProps: ImeContainerProperties = {
       id: imeContainerLayer.id,
       zOrderRelativeOfId: assertDefined(
-        imeContainerAllProps.getChildByName('zOrderRelativeOf'),
-      ).getValue(),
-      z: assertDefined(imeContainerAllProps.getChildByName('z')).getValue(),
+        imeContainerAllProps
+          .getChildByName('zOrderRelativeOf')
+          ?.getValue<number>(),
+      ),
+      z: assertDefined(
+        imeContainerAllProps.getChildByName('z')?.getValue<number>(),
+      ),
     };
 
     const inputMethodSurfaceAllProps =
@@ -171,8 +175,10 @@ class ImeAdditionalPropertiesUtils {
     const inputMethodSurfaceProps: InputMethodSurfaceProperties = {
       id: inputMethodSurfaceLayer.id,
       isVisible: assertDefined(
-        inputMethodSurfaceAllProps.getChildByName('isVisible'),
-      ).getValue(),
+        inputMethodSurfaceAllProps
+          .getChildByName('isVisible')
+          ?.getValue<boolean>(),
+      ),
       screenBounds: inputMethodSurfaceAllProps.getChildByName('screenBounds'),
       rect: inputMethodSurfaceAllProps.getChildByName('bounds'),
     };
@@ -228,12 +234,14 @@ class ImeAdditionalPropertiesUtils {
     const focusedWindow = getFocusedWindow(entry);
     if (focusedWindow) {
       const token = assertDefined(
-        focusedWindow.getEagerPropertyByName('token'),
-      ).getValue();
+        focusedWindow.getEagerPropertyByName('token')?.getValue<string>(),
+      );
       const windowTypeSuffix = this.getWindowTypeSuffix(
         assertDefined(
-          focusedWindow.getEagerPropertyByName('windowType'),
-        ).getValue(),
+          focusedWindow
+            .getEagerPropertyByName('windowType')
+            ?.getValue<number>(),
+        ),
       );
       const type = assertDefined(
         focusedWindow
@@ -339,9 +347,11 @@ class ImeAdditionalPropertiesUtils {
     const inputMethodWindowOrLayer = displayContent.findDfs(
       this.isInputMethodSurface,
     );
-    return inputMethodWindowOrLayer
-      ?.getEagerPropertyByName('isComputedVisible')
-      ?.getValue();
+    return assertDefined(
+      inputMethodWindowOrLayer
+        ?.getEagerPropertyByName('isComputedVisible')
+        ?.getValue<boolean>(),
+    );
   }
 }
 

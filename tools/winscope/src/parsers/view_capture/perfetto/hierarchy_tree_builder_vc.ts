@@ -35,7 +35,9 @@ export class HierarchyTreeBuilderVc extends HierarchyTreeBuilder {
         viewProperties.name,
         view,
       );
-      const id = assertDefined(viewProperties.getChildByName('id')).getValue();
+      const id = assertDefined(
+        viewProperties.getChildByName('id')?.getValue<string>(),
+      );
       map.set(id, [viewNode]);
       return map;
     }, new Map<string, HierarchyTreeNode[]>());

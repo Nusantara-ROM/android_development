@@ -42,15 +42,15 @@ export function isHighlighted(item: TreeNode, highlighted: string): boolean {
  */
 export const isVisible: (node: TreeNode) => boolean = (node: TreeNode) => {
   if (!(node instanceof UiHierarchyTreeNode)) {
-    return;
+    return false;
   }
   const isComputedVisible = node
     .getEagerPropertyByName('isComputedVisible')
-    ?.getValue();
+    ?.getValue<boolean>();
   if (isComputedVisible !== undefined) {
     return isComputedVisible;
   }
-  return node.getEagerPropertyByName('isVisible')?.getValue() ?? false;
+  return node.getEagerPropertyByName('isVisible')?.getValue<boolean>() ?? false;
 };
 
 /**

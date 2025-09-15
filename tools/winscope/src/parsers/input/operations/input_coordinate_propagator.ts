@@ -119,20 +119,24 @@ export class InputCoordinatePropagator implements Operation<PropertyTreeNode> {
       .getChildByName('pointer')
       ?.getAllChildren()
       .forEach((pointer) => {
-        const pointerId = pointer.getChildByName('pointerId')?.getValue();
+        const pointerId = pointer
+          .getChildByName('pointerId')
+          ?.getValue<number>();
         if (pointerId === undefined) return;
 
         const axisValues = pointer.getChildByName('axisValue');
         let x: number | undefined;
         let y: number | undefined;
         axisValues?.getAllChildren()?.forEach((axisValue) => {
-          const axis = Number(axisValue.getChildByName('axis')?.getValue());
+          const axis = Number(
+            axisValue.getChildByName('axis')?.getValue<string>(),
+          );
           if (axis === DispatchedPointerAxis.X) {
-            x = axisValue.getChildByName('value')?.getValue();
+            x = axisValue.getChildByName('value')?.getValue<number>();
             return;
           }
           if (axis === DispatchedPointerAxis.Y) {
-            y = axisValue.getChildByName('value')?.getValue();
+            y = axisValue.getChildByName('value')?.getValue<number>();
             return;
           }
         });

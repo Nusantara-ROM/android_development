@@ -86,7 +86,8 @@ describe('PerfettoParserTransitions', () => {
         entry.getEagerPropertyByName('layers'),
       )
         .getAllChildren()
-        .map((child) => child.getValue());
+        .map((child) => child.getValue())
+        .filter((value): value is bigint => value !== undefined);
       expect(layerParticipants.length).toBe(2);
       expect(layerParticipants).toContain(47n);
       expect(layerParticipants).toContain(398n);
@@ -95,7 +96,8 @@ describe('PerfettoParserTransitions', () => {
         entry.getEagerPropertyByName('windows'),
       )
         .getAllChildren()
-        .map((child) => child.getValue());
+        .map((child) => child.getValue())
+        .filter((value): value is bigint => value !== undefined);
       expect(windowParticipants.length).toBe(2);
       expect(windowParticipants).toContain(159077656n);
       expect(windowParticipants).toContain(193491296n);

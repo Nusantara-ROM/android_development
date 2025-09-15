@@ -82,10 +82,10 @@ export class UpdateTransforms implements Operation<PropertyTreeNode> {
   // be carefully written to the proto correctly, and should not be adjusted here.
   private adjustDeprecatedTransformNode(transformNode: PropertyTreeNode) {
     // Get the corrected values from the transform node.
-    const dsdx = transformNode.getChildByName('dsdx')?.getValue() ?? 0;
-    const dtdx = transformNode.getChildByName('dsdy')?.getValue() ?? 0;
-    const dtdy = transformNode.getChildByName('dtdx')?.getValue() ?? 0;
-    const dsdy = transformNode.getChildByName('dtdy')?.getValue() ?? 0;
+    const dsdx = transformNode.getChildByName('dsdx')?.getValue<number>() ?? 0;
+    const dtdx = transformNode.getChildByName('dsdy')?.getValue<number>() ?? 0;
+    const dtdy = transformNode.getChildByName('dtdx')?.getValue<number>() ?? 0;
+    const dsdy = transformNode.getChildByName('dtdy')?.getValue<number>() ?? 0;
 
     const id = transformNode.id;
     transformNode.addOrReplaceChild(
@@ -108,25 +108,38 @@ export class UpdateTransforms implements Operation<PropertyTreeNode> {
   ): Transform {
     if (transformNode.getAllChildren().length === 0) return Transform.EMPTY;
 
-    const transformType = transformNode.getChildByName('type')?.getValue() ?? 0;
+    const transformType =
+      transformNode.getChildByName('type')?.getValue<number>() ?? 0;
     const matrixNode = transformNode.getChildByName('matrix');
 
     if (matrixNode) {
       return new Transform(
         transformType,
         TransformMatrix.from({
-          dsdx: assertDefined(matrixNode.getChildByName('dsdx')).getValue(),
-          dtdx: assertDefined(matrixNode.getChildByName('dtdx')).getValue(),
-          tx: assertDefined(matrixNode.getChildByName('tx')).getValue(),
-          dtdy: assertDefined(matrixNode.getChildByName('dtdy')).getValue(),
-          dsdy: assertDefined(matrixNode.getChildByName('dsdy')).getValue(),
-          ty: assertDefined(matrixNode.getChildByName('ty')).getValue(),
+          dsdx: assertDefined(
+            matrixNode.getChildByName('dsdx')?.getValue<number>(),
+          ),
+          dtdx: assertDefined(
+            matrixNode.getChildByName('dtdx')?.getValue<number>(),
+          ),
+          tx: assertDefined(
+            matrixNode.getChildByName('tx')?.getValue<number>(),
+          ),
+          dtdy: assertDefined(
+            matrixNode.getChildByName('dtdy')?.getValue<number>(),
+          ),
+          dsdy: assertDefined(
+            matrixNode.getChildByName('dsdy')?.getValue<number>(),
+          ),
+          ty: assertDefined(
+            matrixNode.getChildByName('ty')?.getValue<number>(),
+          ),
         }),
       );
     }
 
-    const x = position?.getChildByName('x')?.getValue() ?? 0;
-    const y = position?.getChildByName('y')?.getValue() ?? 0;
+    const x = position?.getChildByName('x')?.getValue<number>() ?? 0;
+    const y = position?.getChildByName('y')?.getValue<number>() ?? 0;
 
     if (isSimpleTransform(transformType)) {
       return getDefaultTransform(transformType, x, y);
@@ -135,11 +148,11 @@ export class UpdateTransforms implements Operation<PropertyTreeNode> {
     return new Transform(
       transformType,
       TransformMatrix.from({
-        dsdx: transformNode.getChildByName('dsdx')?.getValue() ?? 0,
-        dtdx: transformNode.getChildByName('dtdx')?.getValue() ?? 0,
+        dsdx: transformNode.getChildByName('dsdx')?.getValue<number>() ?? 0,
+        dtdx: transformNode.getChildByName('dtdx')?.getValue<number>() ?? 0,
         tx: x,
-        dtdy: transformNode.getChildByName('dtdy')?.getValue() ?? 0,
-        dsdy: transformNode.getChildByName('dsdy')?.getValue() ?? 0,
+        dtdy: transformNode.getChildByName('dtdy')?.getValue<number>() ?? 0,
+        dsdy: transformNode.getChildByName('dsdy')?.getValue<number>() ?? 0,
         ty: y,
       }),
     );

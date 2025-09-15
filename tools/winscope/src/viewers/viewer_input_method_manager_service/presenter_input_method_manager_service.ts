@@ -39,7 +39,7 @@ export class PresenterInputMethodManagerService extends AbstractPresenterInputMe
     const inputShown =
       inputMethodManagerService
         ?.getEagerPropertyByName('inputShown')
-        ?.getValue() ?? false;
+        ?.getValue<boolean>() ?? false;
 
     return {
       ...new ImManagerServiceTableProperties(

@@ -83,9 +83,9 @@ export class TracesParserCujs extends AbstractTracesParser<HierarchyTreeNode> {
     this.timestamps = [];
     for (let index = 0; index < this.getLengthEntries(); index++) {
       const entry = await this.getEntry(index);
-      const timestamp = entry
-        ?.getEagerPropertyByName('startTimestamp')
-        ?.getValue();
+      const timestamp = assertDefined(
+        entry?.getEagerPropertyByName('startTimestamp')?.getValue<Timestamp>(),
+      );
       this.timestamps.push(timestamp);
     }
   }
@@ -117,7 +117,7 @@ export class TracesParserCujs extends AbstractTracesParser<HierarchyTreeNode> {
 
   private makeCujTimestampObject(timestamp: PropertyTreeNode): Timestamp {
     return this.timestampConverter.makeTimestampFromRealNs(
-      assertDefined(timestamp.getChildByName('unixNanos')).getValue(),
+      assertDefined(timestamp.getChildByName('unixNanos')?.getValue<bigint>()),
     );
   }
 
@@ -137,8 +137,8 @@ export class TracesParserCujs extends AbstractTracesParser<HierarchyTreeNode> {
     const cujs: HierarchyTreeNode[] = [];
     for (const startEvent of startEvents) {
       const cujType = assertDefined(
-        startEvent.getChildByName('cujType'),
-      ).getValue();
+        startEvent.getChildByName('cujType')?.getValue<number>(),
+      );
       const startTimestamp = assertDefined(
         startEvent.getChildByName('cujTimestamp'),
       );
@@ -167,8 +167,9 @@ export class TracesParserCujs extends AbstractTracesParser<HierarchyTreeNode> {
         closingEvent.getChildByName('cujTimestamp'),
       );
       const canceled =
-        assertDefined(closingEvent.getChildByName('tag')?.getValue()) ===
-        EventTag.JANK_CUJ_CANCEL_TAG;
+        assertDefined(
+          closingEvent.getChildByName('tag')?.getValue<EventTag>(),
+        ) === EventTag.JANK_CUJ_CANCEL_TAG;
 
       const cuj: Cuj = {
         cujType,
@@ -196,7 +197,9 @@ export class TracesParserCujs extends AbstractTracesParser<HierarchyTreeNode> {
     targetTag: EventTag,
   ): PropertyTreeNode[] {
     return events.filter((event) => {
-      const tag = assertDefined(event.getChildByName('tag')).getValue();
+      const tag = assertDefined(
+        event.getChildByName('tag')?.getValue<EventTag>(),
+      );
       return tag === targetTag;
     });
   }
@@ -207,7 +210,9 @@ export class TracesParserCujs extends AbstractTracesParser<HierarchyTreeNode> {
     startTimestamp: PropertyTreeNode,
   ): PropertyTreeNode | undefined {
     return events.find((event) => {
-      const cujType = assertDefined(event.getChildByName('cujType')).getValue();
+      const cujType = assertDefined(
+        event.getChildByName('cujType'),
+      ).getValue<number>();
       const timestamp = assertDefined(event.getChildByName('cujTimestamp'));
       return (
         targetCujType === cujType &&
@@ -221,11 +226,11 @@ export class TracesParserCujs extends AbstractTracesParser<HierarchyTreeNode> {
     b: PropertyTreeNode,
   ): boolean {
     const aUnixNanos: bigint = assertDefined(
-      a.getChildByName('unixNanos'),
-    ).getValue();
+      a.getChildByName('unixNanos')?.getValue<bigint>(),
+    );
     const bUnixNanos: bigint = assertDefined(
-      b.getChildByName('unixNanos'),
-    ).getValue();
+      b.getChildByName('unixNanos')?.getValue<bigint>(),
+    );
     return aUnixNanos > bUnixNanos;
   }
 

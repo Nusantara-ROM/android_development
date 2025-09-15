@@ -105,7 +105,7 @@ describe('PropertiesComponent', () => {
     const tree = new PropertyTreeBuilder()
       .setRootId('selectedItem')
       .setName('property')
-      .setValue(null)
+      .setValue(undefined)
       .build();
     tree.setIsRoot(true);
     component.propertiesTree = UiPropertyTreeNode.from(tree);
@@ -124,7 +124,7 @@ describe('PropertiesComponent', () => {
     const tree = new PropertyTreeBuilder()
       .setRootId('selectedItem')
       .setName('property')
-      .setValue(null)
+      .setValue(undefined)
       .build();
     tree.setIsRoot(true);
     component.propertiesTree = UiPropertyTreeNode.from(tree);

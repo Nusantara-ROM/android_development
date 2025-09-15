@@ -27,7 +27,7 @@ export class AddIsVisible extends AddOperation<PropertyTreeNode> {
     value: PropertyTreeNode,
   ): PropertyTreeNode[] {
     // ActivityRecordProto
-    const visible = value.getChildByName('visible')?.getValue();
+    const visible = value.getChildByName('visible')?.getValue<boolean>();
     if (visible !== undefined) {
       return [
         DEFAULT_PROPERTY_TREE_NODE_FACTORY.makeCalculatedProperty(
@@ -43,7 +43,7 @@ export class AddIsVisible extends AddOperation<PropertyTreeNode> {
     const alpha = value
       .getChildByName('attributes')
       ?.getChildByName('alpha')
-      ?.getValue();
+      ?.getValue<number>();
     if (alpha !== undefined) {
       return [
         DEFAULT_PROPERTY_TREE_NODE_FACTORY.makeCalculatedProperty(

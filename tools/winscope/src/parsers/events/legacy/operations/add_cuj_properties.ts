@@ -26,8 +26,12 @@ export class AddCujProperties extends AddOperation<PropertyTreeNode> {
   protected override makeProperties(
     value: PropertyTreeNode,
   ): PropertyTreeNode[] {
-    const data = assertDefined(value.getChildByName('eventData')).getValue();
-    const tag = assertDefined(value.getChildByName('tag')).getValue();
+    const data = assertDefined(
+      value.getChildByName('eventData')?.getValue<string>(),
+    );
+    const tag = assertDefined(
+      value.getChildByName('tag')?.getValue<EventTag>(),
+    );
     const dataEntries = this.getDataEntries(data, tag);
     const cujType = this.getCujTypeFromData(dataEntries);
     const cujTag = this.getCujTagFromData(dataEntries, tag);

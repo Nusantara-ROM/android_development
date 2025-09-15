@@ -32,8 +32,10 @@ export class AddDisplayProperties implements Operation<PropertyTreeNode> {
       if (!(dpiX && dpiY)) continue;
 
       const size = assertDefined(display.getChildByName('size'));
-      const width = assertDefined(size.getChildByName('w')).getValue();
-      const height = assertDefined(size.getChildByName('h')).getValue();
+      const width = assertDefined(size.getChildByName('w')?.getValue<number>());
+      const height = assertDefined(
+        size.getChildByName('h')?.getValue<number>(),
+      );
       const smallestWidth = this.dpiFromPx(
         Math.min(width, height),
         Number(dpiX.getValue()),

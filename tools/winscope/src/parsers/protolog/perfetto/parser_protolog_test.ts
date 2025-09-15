@@ -90,9 +90,11 @@ describe('PerfettoParserProtolog', () => {
   it('messages are ordered by timestamp', async () => {
     let prevEntryTs = 0n;
     for (let i = 0; i < parser.getLengthEntries(); i++) {
-      const ts = (await parser.getEntry(i))
-        .getEagerPropertyByName('ts')
-        ?.getValue();
+      const ts = assertDefined(
+        (await parser.getEntry(i))
+          .getEagerPropertyByName('ts')
+          ?.getValue<bigint>(),
+      );
       expect(ts >= prevEntryTs).toBeTrue();
       prevEntryTs = ts;
     }

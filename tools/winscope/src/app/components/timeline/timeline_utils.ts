@@ -30,7 +30,7 @@ export function isTransitionWithUnknownStart(
 ): boolean {
   const dispatchTimestamp: Timestamp | undefined = transition
     ?.getEagerPropertyByName('dispatchTimeNs')
-    ?.getValue();
+    ?.getValue<Timestamp>();
   return dispatchTimestamp === undefined;
 }
 
@@ -44,8 +44,10 @@ export function isTransitionWithUnknownEnd(
 ): boolean {
   const aborted = isAborted(transition);
   const finishOrAbortTimestamp: Timestamp | undefined = aborted
-    ? transition?.getEagerPropertyByName('shellAbortTimeNs')?.getValue()
-    : transition?.getEagerPropertyByName('finishTimeNs')?.getValue();
+    ? transition
+        ?.getEagerPropertyByName('shellAbortTimeNs')
+        ?.getValue<Timestamp>()
+    : transition?.getEagerPropertyByName('finishTimeNs')?.getValue<Timestamp>();
   return finishOrAbortTimestamp === undefined;
 }
 
