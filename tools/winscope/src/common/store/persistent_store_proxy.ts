@@ -64,7 +64,7 @@ function wrapWithPersistentStoreProxy<T extends object>(
         throw new Error("Can't use symbol keys only strings");
       }
       if (Array.isArray(target) && !Number.isNaN(Number(prop))) {
-        (target as unknown[])[Number(prop)] = newValue;
+        target[Number(prop)] = newValue;
         storage.add(storeKey, JSON.stringify(baseObject, stringifyMap));
         return true;
       }
@@ -74,7 +74,7 @@ function wrapWithPersistentStoreProxy<T extends object>(
         storage.add(storeKey, JSON.stringify(baseObject, stringifyMap));
         return true;
       }
-      if (!Array.isArray(target) && updatableProps.includes(prop as string)) {
+      if (!Array.isArray(target) && updatableProps.includes(prop)) {
         (target as Record<string, unknown>)[prop] = newValue;
         storage.add(storeKey, JSON.stringify(baseObject, stringifyMap));
         return true;
@@ -104,13 +104,13 @@ function mergeDeepKeepingStructure(target: object, source: unknown) {
         continue;
       }
 
-      const targetValue = (target as Record<string, unknown>)[key];
-      const sourceValue = (source as Record<string, unknown>)[key];
+      const targetValue = target[key];
+      const sourceValue = source[key];
 
       if (isObject(targetValue) && isObject(sourceValue)) {
         mergeDeepKeepingStructure(targetValue, sourceValue);
       } else if (!isObject(targetValue) && !isObject(sourceValue)) {
-        (target as Record<string, unknown>)[key] = sourceValue;
+        target[key] = sourceValue;
       }
     }
   }
@@ -124,20 +124,13 @@ function mergeDeep(target: object, ...sources: object[]): object {
 
   if (isObject(target) && isObject(source)) {
     for (const key in source) {
-      const sourceValue = (source as Record<string, unknown>)[key];
-      if (isObject(sourceValue)) {
-        if (
-          !(target as Record<string, unknown>)[key] ||
-          !isObject((target as Record<string, unknown>)[key])
-        ) {
-          (target as Record<string, unknown>)[key] = {};
+      if (isObject(source[key])) {
+        if (!target[key] || !isObject(target[key])) {
+          target[key] = {};
         }
-        mergeDeep(
-          (target as Record<string, unknown>)[key] as object,
-          sourceValue,
-        );
+        mergeDeep(target[key] as object, source[key]);
       } else {
-        (target as Record<string, unknown>)[key] = sourceValue;
+        target[key] = source[key];
       }
     }
   }
