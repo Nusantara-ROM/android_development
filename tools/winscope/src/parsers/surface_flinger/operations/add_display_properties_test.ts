@@ -25,7 +25,7 @@ describe('AddDisplayProperties', () => {
 
   beforeEach(() => {
     operation = new AddDisplayProperties();
-    propertyRoot = makePropertyNode('LayerTraceEntry', 'root', null);
+    propertyRoot = makePropertyNode('LayerTraceEntry', 'root', undefined);
   });
 
   it('adds isLargeScreen true', () => {

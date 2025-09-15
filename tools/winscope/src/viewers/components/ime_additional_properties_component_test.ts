@@ -160,7 +160,7 @@ describe('ImeAdditionalPropertiesComponent', () => {
             imeControlTarget: makePropertyNode(
               'DisplayContent.inputMethodControlTarget',
               'inputMethodControlTarget',
-              null,
+              undefined,
             ),
             imeInputTarget: undefined,
             imeLayeringTarget: undefined,

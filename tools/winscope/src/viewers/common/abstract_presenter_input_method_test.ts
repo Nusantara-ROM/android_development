@@ -215,7 +215,7 @@ the default for its data type.`,
         );
         const selectedItem = {
           name: '',
-          treeNode: makePropertyNode('', '', null),
+          treeNode: makePropertyNode('', '', undefined),
         };
         element.dispatchEvent(
           new CustomEvent(ViewerEvents.AdditionalPropertySelected, {
