@@ -53,7 +53,7 @@ import com.android.mechanics.spec.MotionSpec
 import com.android.mechanics.spec.builder.spatialMotionSpec
 
 object NotificationDismissDemoStep4 : Demo<Unit>, HasMotionValueVisualization {
-    override val identifier = "single_notification_dismiss_demo_step4"
+    override val identifier = "notification_demo4"
 
     var notificationWidth by mutableFloatStateOf(0f)
 
@@ -96,7 +96,7 @@ object NotificationDismissDemoStep4 : Demo<Unit>, HasMotionValueVisualization {
     }
 
     override val visualizationInputRange: ClosedFloatingPointRange<Float>
-        get() = -notificationWidth..notificationWidth
+        get() = -notificationWidth / 4..notificationWidth
 
     override fun computeOutputRange(spec: MotionSpec, inputRange: ClosedFloatingPointRange<Float>) =
         DebugMotionValueVisualization.inputRange(spec, inputRange)

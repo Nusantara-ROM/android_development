@@ -46,20 +46,15 @@ import com.android.mechanics.debug.DebugMotionValueVisualization
 import com.android.mechanics.debug.debugMotionValue
 import com.android.mechanics.docs.Demo
 import com.android.mechanics.docs.HasMotionValueVisualization
-import com.android.mechanics.effects.FixedValue
 import com.android.mechanics.effects.MagneticDetach
 import com.android.mechanics.rememberDistanceGestureContext
 import com.android.mechanics.rememberMotionSpecAsState
 import com.android.mechanics.rememberMotionValue
-import com.android.mechanics.spec.InputDirection
 import com.android.mechanics.spec.MotionSpec
-import com.android.mechanics.spec.builder.fixedSpatialValueSpec
 import com.android.mechanics.spec.builder.spatialMotionSpec
-import kotlin.math.abs
-import kotlin.math.sign
 
 object NotificationDismissDemoStep6 : Demo<Unit>, HasMotionValueVisualization {
-    override val identifier = "single_notification_dismiss_demo_step6"
+    override val identifier = "notification_demo6"
 
     var notificationWidth by mutableFloatStateOf(0f)
 
@@ -80,20 +75,10 @@ object NotificationDismissDemoStep6 : Demo<Unit>, HasMotionValueVisualization {
                 input = { gestureContext.dragOffset },
                 spec =
                     rememberMotionSpecAsState {
-                        when (val state = state) {
-                            State.Idle -> fixedSpatialValueSpec(0f)
-                            is State.Dismissed ->
-                                fixedSpatialValueSpec(notificationWidth * state.directionSign)
-                            State.Dragging ->
-                                spatialMotionSpec {
-                                    val detachEffect = MagneticDetach(detachPosition = 100.dp)
-                                    before(0f, detachEffect)
-                                    after(0f, detachEffect)
-
-                                    val dismissPosition = notificationWidth - 90.dp.toPx()
-                                    after(dismissPosition, FixedValue(notificationWidth))
-                                    before(-dismissPosition, FixedValue(-notificationWidth))
-                                }
+                        spatialMotionSpec {
+                            val detachEffect = MagneticDetach(detachPosition = 100.dp)
+                            before(0f, detachEffect)
+                            after(0f, detachEffect)
                         }
                     },
                 gestureContext = gestureContext,
@@ -114,27 +99,6 @@ object NotificationDismissDemoStep6 : Demo<Unit>, HasMotionValueVisualization {
                     .draggable(
                         rememberDraggableState { gestureContext.dragOffset += it },
                         Orientation.Horizontal,
-                        onDragStarted = {
-                            gestureContext.reset(xPosition.output, InputDirection.Max)
-                            state = State.Dragging
-                        },
-                        onDragStopped = { velocity ->
-                            val sideSign = xPosition.outputTarget.sign
-                            val isAbort = abs(velocity) > with(density) { AbortVelocity.toPx() }
-                            val isFling = abs(velocity) > with(density) { FlingVelocity.toPx() }
-                            val isMovingInSameDirection = velocity.sign == sideSign
-
-                            val isDismissed =
-                                when (xPosition[MagneticDetach.Defaults.AttachDetachState]) {
-                                    MagneticDetach.State.Attached ->
-                                        isFling && !isMovingInSameDirection
-                                    MagneticDetach.State.Detached ->
-                                        !isAbort || isMovingInSameDirection
-                                    else -> isFling
-                                }
-
-                            state = if (isDismissed) State.Dismissed(sideSign) else State.Idle
-                        },
                     ),
         )
 
@@ -150,7 +114,4 @@ object NotificationDismissDemoStep6 : Demo<Unit>, HasMotionValueVisualization {
         DebugMotionValueVisualization.inputRange(spec, inputRange)
 
     @Composable override fun rememberDefaultConfig() = Unit
-
-    val AbortVelocity = 100.dp // dp/s
-    val FlingVelocity = 1000.dp // dp/s
 }
