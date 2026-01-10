@@ -45,7 +45,7 @@ export class TestLegacyFileReaderBuilder extends TestFileReaderBuilder {
       this.timestamps,
       this.descriptors,
       this.noOffsets,
-      this.traceFile ?? new TraceFile(new File([], '')),
+      this.traceFile ?? new TraceFile(new File([], this.descriptors[0])),
       this.tracePackets,
     );
   }
